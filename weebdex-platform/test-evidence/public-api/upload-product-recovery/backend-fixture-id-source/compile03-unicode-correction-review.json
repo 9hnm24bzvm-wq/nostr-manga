@@ -1,0 +1,42 @@
+{
+  "schema": "upload-fixture-unicode-correction-independent-review-v1",
+  "verdict": "exact_test_only_syntax_delta_source_clear",
+  "files": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/tests/public_uploads.rs",
+      "sha256": "653b11ee9f4f433cea5dc01909bed025e2cbde17c9eb72466685164fb03f50e9"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/src/public_api/auth.rs",
+      "sha256": "b8a053ac097515df7dd014854318a31411060ea34f027211faf38e50a782d9a7"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile03-public_uploads.rs.retained",
+      "sha256": "3b1571d719d019ea065ea4ad1003f89c70a75f36fe94abb2b01a1faceb035251"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/backend-test-compile-03/receipt.json",
+      "sha256": "d3b484873c63ca7d52ba066c3dfbb4afb66a9983fbc463e1629328e51c382cfd"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/backend-test-compile-03/cargo-test-no-run.log",
+      "sha256": "5880a60d7bdab9e12c6acc36552a76a8b72843f3221d689b3d53657eb99cf054"
+    }
+  ],
+  "source_review_predecessor": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-fixture-id-lock-seam-independent-source-review-20261017.json",
+    "sha256": "b41a4d1b3116c9973c045966498c7ec1c21c3873a5e25b4e154a2d782c9d4805"
+  },
+  "delta": "Only five invalid Rust unicode escapes in the negative ID fixture replaced with five literal UTF-8 \u00e9 characters; full predecessor substitution exactly recovers current test. This still tests ten UTF-8 bytes that fail the ASCII-alphanumeric requirement.",
+  "failed_compile": {
+    "exit_code": 101,
+    "errors": 5,
+    "source_unchanged": true,
+    "child_reaped": true,
+    "terminal_errors": [],
+    "site": "Rust Unicode escape syntax in negative test string; no test or seam executed",
+    "old_artifact_observed_only": "fcad0a91e53dfc70a7224442bead581cdcf8708ece18826d1610b762d246fed8"
+  },
+  "next_scope": "Fresh owner compile04 plan over unchanged lock-mode source; no runtime qualification or product lock change inferred.",
+  "review_method": "Exact source substitution, retained failure receipt/log and current pins; no Cargo/test/database execution by reviewer."
+}

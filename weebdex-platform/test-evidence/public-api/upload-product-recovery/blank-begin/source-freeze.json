@@ -1,0 +1,44 @@
+{
+  "schema": "reconstructed-upload-begin-autosave-source-v1",
+  "basis": "New minimal reconstruction on verified older remote source; not byte restoration of lost product2c7 source",
+  "baseline_commit": "e7588f7d6032ad11a08131b3ea6da8c2b5457cfc",
+  "baseline_tree": "499e3bf32b0f5a5e768e42bba2d2a7fc1d7a26ba",
+  "runtime_qualified": false,
+  "frontend_build_executed": false,
+  "source_records_appended": 4,
+  "existing_overlay_records_unchanged": true,
+  "original_frontend_and_resume_helper_unchanged": {
+    "frontend/src/lib/components/upload/UploadChapter.svelte": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+    "frontend/src/lib/components/upload/UploadChapterEdit.svelte": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+    "platform-integrations/frontend-behavior/upload-resume.ts": "64d7910713f122deca1fcd222243d63b4299bc159b5b74adf747a8a4624376ab"
+  },
+  "source_files": {
+    "platform-integrations/frontend-overlays.mjs": "abc0ba638dde61b4406a27f20c2701c829ebf9ee3582de504b589628bcc940af",
+    "tests/ci/test_upload_begin_autosave_recovery.mjs": "51913a1025a6f961fb909791a236bb95d351602dfd3a59af58363b8a8d95edbf",
+    "docs/verification/upload-product-recovery-source-audit.md": "d9e5188f5a3287e529a421cf7d305deb46871299df3c3fdbc34bc743ed763d18"
+  },
+  "finite": {
+    "controlled_cases_passed": 16,
+    "log": "finite-first-attempt.log",
+    "log_sha256": "676bbbd4db6783021951647c296fe2e10518736a6e9ada1aa6c75e9bc660f9bc",
+    "explicit_command": "node --test tests/ci/test_upload_begin_autosave_recovery.mjs",
+    "scope": "Source-extracted begin/persist/snapshot/acknowledge with explicit response/save inputs; no backend or durable acceptance"
+  },
+  "recovered_base_counterexamples": {
+    "command": "UPLOAD_AUTOSAVE_USE_RECOVERED_BASE=1 node --test tests/ci/test_upload_begin_autosave_recovery.mjs",
+    "exit": 1,
+    "passed": 10,
+    "failed": 6,
+    "log": "recovered-base-counterexamples.log",
+    "sha256": "04fafd1bca066791f6790a35c1cc8f23f3982646498317b13a763a55846c4ec4"
+  },
+  "independent": {
+    "review": "independent-review.json",
+    "review_sha256": "6a54c514aadca96f8c138edaffc40e71dc24362bb21db37abf457428b2a0a70d",
+    "newer_order_cases_passed": 2,
+    "test_sha256": "c269f7a4b716fdc1ae67eeb3848590f7e9eb62e585f9adb0a9367280a5fdc2df",
+    "log_sha256": "be52eef541a1d9d84d99cb2d7d0428e757b4cede0da5c6cc1cba7cd3828959a0"
+  },
+  "accepted202_gap": "Late public client and exact receipt route absent from recovered baseline; no invented endpoint or broad public/Nostr parity claim",
+  "remote_write_performed": false
+}

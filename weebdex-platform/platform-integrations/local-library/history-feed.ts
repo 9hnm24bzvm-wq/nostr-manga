@@ -1,0 +1,36 @@
+import { get } from 'svelte/store';
+import { PUBLIC_API_URL, PUBLIC_MANGADEX_CATALOGUE } from '$env/static/public';
+import { encodeParams, assertCurrentCatalogueScopeValue, assertCatalogueScope, captureLibraryView, assertLibraryView, captureLibraryContext, assertLibraryContext, currentDeviceSnapshot, localLibraryState, isCurrentCatalogueId } from './library';
+import { HistoryPager, type HistoryKey, type HistoryBudget } from './history-pagination';
+import { historyJson } from './history-transport';
+import { publicHistoryBatch } from '../public-api/history-catalogue';
+import { MAX_RECORDS } from './protocol/limits.js';
+async function nativeHistoryBatch(keys: readonly HistoryKey[], input: URLSearchParams, budget: HistoryBudget): Promise<Chapter[]> {
+  if (!keys.length) return [];
+  const query = new URLSearchParams(input); for (const field of ['page', 'limit', 'id', 'sort', 'order']) query.delete(field);
+  for (const key of keys) query.append('id', key.id);
+  query.set('page', '1'); query.set('limit', '100');
+  const response = await historyJson(PUBLIC_API_URL.replace(/\/$/, '') + '/chapter/feed?' + encodeParams(query), budget, true);
+  if (response.status < 200 || response.status >= 300) throw Error('History catalogue lookup failed (' + response.status + '). Retry without skipping this batch.');
+  const body = response.body as { total?: unknown; data?: Chapter[]; limit?: number; page?: number };
+  if (!Number.isSafeInteger(body.total) || Number(body.total) < 0 || Number(body.total) > keys.length || !Array.isArray(body.data) || body.data.length !== body.total || body.limit !== 100 || body.page !== 1) throw Error('History lookup returned an incomplete or unscoped native page');
+  return body.data;
+}
+// The caller owns lifetime, filter identity and cancellation. No singleton pager,
+// sessionStorage payload, unbounded hydrated catalogue or persistent IDB index.
+export async function openDeviceHistoryFeed(input: URLSearchParams, assertOwner: () => void = () => {}): Promise<HistoryPager<ChapterHistory>> {
+  assertOwner(); await assertCatalogueScope(); assertOwner();
+  const view = captureLibraryView(), context = captureLibraryContext();
+  if (context.mode !== 'device') throw Error('Device history cannot read an account library');
+  const check = () => { assertOwner(); assertLibraryView(view); assertLibraryContext(context); };
+  const query = new URLSearchParams(input), limit = Number(query.get('limit') ?? 100);
+  if (query.getAll('order').length > 1 || query.getAll('sort').length > 1 || query.getAll('limit').length > 1 || query.has('sort') && query.get('sort') !== 'readAt') throw Error('Device history requires one local readAt order');
+  const snapshot = await currentDeviceSnapshot(); check(); assertCurrentCatalogueScopeValue(snapshot.scope);
+  if (snapshot.migration_reason || snapshot.revision !== get(localLibraryState).revision || snapshot.records.length > MAX_RECORDS) throw Error('The device history snapshot changed or exceeded its local record budget. Reload this view.');
+  const keys = snapshot.records.filter(row => row.family === 'chapters' && row.completed && isCurrentCatalogueId(row.id) && isCurrentCatalogueId(row.mangaId)).map(row => ({ id: row.id!, mangaId: row.mangaId!, readAt: row.readAt ?? new Date(row.updated_at * 1000).toISOString() }));
+  check();
+  return new HistoryPager<ChapterHistory>(keys, async (batch, budget) => {
+    check(); const rows = PUBLIC_MANGADEX_CATALOGUE === '1' ? await publicHistoryBatch(batch, query, budget) : await nativeHistoryBatch(batch, query, budget);
+    check(); return rows as ChapterHistory[];
+  }, check, limit, query.get('order') ?? 'desc');
+}

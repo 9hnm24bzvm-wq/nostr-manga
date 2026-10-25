@@ -1,0 +1,2 @@
+cd /workspace/shared/nostr-manga-recovery-20261017/account-library-worktree
+npm install --ignore-scripts --no-audit --no-fund --prefix weebdex-platform/.build/browser-dom-dependencies --cache weebdex-platform/.build/npm-cache

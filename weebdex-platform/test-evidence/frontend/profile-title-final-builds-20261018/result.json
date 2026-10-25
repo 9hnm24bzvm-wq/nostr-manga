@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "source_association": "source-association.json",
+  "profiles": [
+    {
+      "profile": "default",
+      "build_exit_code": 0,
+      "build_elapsed_seconds": 47.0,
+      "css_consumer_exit_code": 0,
+      "css_consumer_cases": 1,
+      "artifact_files": 449,
+      "artifact_bytes": 7266859,
+      "artifact_directory": "/workspace/shared/nostr-manga-recovery-20261017/profile-title-final-builds-evidence-20261018/artifact-default",
+      "artifact_manifest_sha256": "68f289ccf4bb53b4a227badfa306b008fb6c3351a4e9fb10851b064f1272cfae",
+      "index_sha256": "a040196d05bd53d5ab18fc2ae09c7a93b33e2133c985f27dfbb0c68217004dbc",
+      "minimum_observed_free_bytes": 4717826048,
+      "maximum_sampled_owned_rss_bytes": 2605076480,
+      "cleanup_verified": true,
+      "owned_survivors": [],
+      "protected_write_attempts": 0,
+      "cache_guard_audits": 4
+    },
+    {
+      "profile": "enabled",
+      "build_exit_code": 0,
+      "build_elapsed_seconds": 46.062,
+      "css_consumer_exit_code": 0,
+      "css_consumer_cases": 1,
+      "artifact_files": 450,
+      "artifact_bytes": 7312354,
+      "artifact_directory": "/workspace/shared/nostr-manga-recovery-20261017/profile-title-final-builds-evidence-20261018/artifact-enabled",
+      "artifact_manifest_sha256": "c800349a65868f7defdcfc06a5289da81a643abc6043322a9d3e755d8e8dbe0b",
+      "index_sha256": "1a0578c19ed1fcede2e4629c5ac1dd768e1e3a2858e5862f040fed724986b188",
+      "minimum_observed_free_bytes": 4676706304,
+      "maximum_sampled_owned_rss_bytes": 2641248256,
+      "cleanup_verified": true,
+      "owned_survivors": [],
+      "protected_write_attempts": 0,
+      "cache_guard_audits": 4
+    }
+  ],
+  "combined_artifact_files": 899,
+  "combined_artifact_bytes": 14579213,
+  "mandatory_actual_css_artifact_cases_passed": 2,
+  "full_browser_executed": false,
+  "backend_runtime_executed_by_this_qualification": false,
+  "raw_logs": [
+    {
+      "profile": "default",
+      "original_name": "build.log",
+      "raw_bytes": 95963,
+      "raw_sha256": "7c1db0940e78655370871646a23301be822dd99835c515fbed0d2584f8be4577",
+      "gzip_path": "default/build.log.gz",
+      "gzip_sha256": "2ba27746fe352f508e9dd9956a8aa5bcfcac3c02d817f201b5e778a043c02a7e"
+    },
+    {
+      "profile": "default",
+      "original_name": "css-consumer.log",
+      "raw_bytes": 209,
+      "raw_sha256": "31ef3ebcae2d14b7b831ae3517f5e2ea4337f31fb9f90a34c52541b24aff0704",
+      "gzip_path": "default/css-consumer.log.gz",
+      "gzip_sha256": "f86d2370a8a3c31108dba859398c25dcdf1ca84f0423585f897d9443fa789f55"
+    },
+    {
+      "profile": "enabled",
+      "original_name": "build.log",
+      "raw_bytes": 89858,
+      "raw_sha256": "4abe8a8917b37a5fa9329a4afa1aa348c0d4ac97435e65ec5d7841358c672798",
+      "gzip_path": "enabled/build.log.gz",
+      "gzip_sha256": "b9a2d3185e49e3056276198911cb02b1106868b9375da1883d1381e1b3f68bcf"
+    },
+    {
+      "profile": "enabled",
+      "original_name": "css-consumer.log",
+      "raw_bytes": 209,
+      "raw_sha256": "68faea0b80a9a9e49250caa6f6ff1a3abdaaef43b3530961fe0ad1c5bbfcdbde",
+      "gzip_path": "enabled/css-consumer.log.gz",
+      "gzip_sha256": "be5f4a087df564cd30c3b2df40bbc3a6c73b155c9e1c1f10598c9dd954a0a27f"
+    }
+  ],
+  "resource_profile": {
+    "node_heap_MiB": 2048,
+    "terser_workers": 1,
+    "per_build_deadline_seconds": 900,
+    "disk_floor_bytes": 4294967296,
+    "live_cleanup_reserve_bytes": 134217728,
+    "launch_headroom_bytes": 268435456,
+    "owned_rss_stop_bytes": 4294967296,
+    "available_memory_reserve_bytes": 1073741824,
+    "monitor": "sampled live resources; exact birth/pidfd-owned descendants only; all terminal receipts clean"
+  },
+  "cache_audit_process_association": {
+    "path": "cache-audit-process-association.json",
+    "sampled_births": 7,
+    "unsampled_short_lived_build_child_audits": 1,
+    "exact_argv_and_birth_for_unsampled_child": "not_observed",
+    "terminal_parent_and_synchronous_child_completion": "passed; no surviving owned processes"
+  }
+}

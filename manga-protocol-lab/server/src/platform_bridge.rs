@@ -213,6 +213,9 @@ impl Repository {
 pub struct VisibleResource {
     pub event: Event,
     pub compatibility_id: String,
+    /// Actual immutable chapter parent from original validated ingestion.
+    /// Consumers must not infer parent authority from a platform UUID join.
+    pub series: Option<String>,
 }
 
 /// Original generation and signed body are captured under the caller's source
@@ -249,7 +252,7 @@ pub async fn visible_resource_ids<C: tokio_postgres::GenericClient + Sync>(
     );
     let bytes:i64=client.query_one(&format!("SELECT COALESCE(sum(octet_length(e.raw_event::text)),0)::bigint FROM events e WHERE {predicate}"),&[&ids]).await?.get(0);
     ensure!(bytes <= 2 * 1048576, "resource mapping signed-body budget");
-    let rows=client.query(&format!("SELECT e.id,e.raw_event,COALESCE((SELECT id FROM compatibility_ids i WHERE i.kind=CASE WHEN e.kind=1002 THEN 'manga' ELSE 'chapter' END AND i.target=encode(e.id,'hex') AND i.preferred LIMIT 1),'') FROM events e WHERE {predicate} ORDER BY e.id"),&[&ids]).await?;
+    let rows=client.query(&format!("SELECT e.id,e.raw_event,COALESCE((SELECT id FROM compatibility_ids i WHERE i.kind=CASE WHEN e.kind=1002 THEN 'manga' ELSE 'chapter' END AND i.target=encode(e.id,'hex') AND i.preferred LIMIT 1),''),encode(e.series,'hex') FROM events e WHERE {predicate} ORDER BY e.id"),&[&ids]).await?;
     let mut result = Vec::with_capacity(rows.len());
     for row in rows {
         let event: Event = serde_json::from_value(row.get(1))?;
@@ -273,9 +276,12 @@ pub async fn visible_resource_ids<C: tokio_postgres::GenericClient + Sync>(
             crate::mangadex_compat::valid_uuid(&compatibility_id),
             "invalid original compatibility alias"
         );
+        let series: Option<String> = row.get(3);
+        ensure!(match event.kind {1001=>series.as_deref().is_some_and(crate::auth::valid_hash),1002=>series.is_none(),_=>false},"invalid original resource parent");
         result.push(VisibleResource {
             event,
             compatibility_id,
+            series,
         });
     }
     Ok(result)

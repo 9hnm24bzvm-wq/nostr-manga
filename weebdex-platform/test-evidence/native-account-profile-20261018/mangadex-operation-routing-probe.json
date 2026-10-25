@@ -1,0 +1,1030 @@
+{
+  "fallback_controls": {
+    "generic_unknown_route_detail_rejected": true,
+    "unknown_path": 404,
+    "wrong_method": 405
+  },
+  "inventory_sha256": "004031ccdfc4b66727dd1f85d09b5300cf60235bbab2de6f6ea4816094bd6d33",
+  "observations": [
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 200,
+      "method": "GET",
+      "operation_id": "get-ping",
+      "path": "/ping",
+      "response_bytes": 4,
+      "response_sha256": "9795c5ff8937f23526ccb207a5684c1fc94a7854e19c021b39d944e51f5baef2"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 200,
+      "method": "GET",
+      "operation_id": "get-search-manga",
+      "path": "/manga",
+      "response_bytes": 1975,
+      "response_sha256": "cc039a44fa6a063b3358fba9f4181d0eeb86e5c74cd65a71ccae61cd46287e20"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-manga",
+      "path": "/manga",
+      "response_bytes": 173,
+      "response_sha256": "606966852e1a85c082d73207bccc356ccab7bc47c74996dbd8e60e449144f57a"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-manga-aggregate",
+      "path": "/manga/{id}/aggregate",
+      "response_bytes": 138,
+      "response_sha256": "9e15bff94dc300a561ffa6f0edab1d625aaa34465b576038368690f9d3900466"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-manga-recommendation",
+      "path": "/manga/{id}/recommendation",
+      "response_bytes": 138,
+      "response_sha256": "abac77585d4b511e8ac39e448fed0b6022c4996b71eba491a78977fcd0a2ad37"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-manga-id",
+      "path": "/manga/{id}",
+      "response_bytes": 138,
+      "response_sha256": "af6753c60187eb28976795dadcbb34d7e3622d675ea16f5b1fcf25bb07b93878"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "PUT",
+      "operation_id": "put-manga-id",
+      "path": "/manga/{id}",
+      "response_bytes": 173,
+      "response_sha256": "9acc2957ec0c39447fbbd8cf2d88d0f8730886929374eef470c75633fa93d26c"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "DELETE",
+      "operation_id": "delete-manga-id",
+      "path": "/manga/{id}",
+      "response_bytes": 173,
+      "response_sha256": "cb79dbb3dbafa85e2868f0050af12dbb6cb9bb5f6072b64b14a7caa86afa3d02"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-auth-login",
+      "path": "/auth/login",
+      "response_bytes": 159,
+      "response_sha256": "925d0a04edcfcbd97f7b82b95ef76ee5c7131e2fb2448d182ecce21c3b9253f8"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-auth-check",
+      "path": "/auth/check",
+      "response_bytes": 173,
+      "response_sha256": "0e6d0766c07e509a1a676f133ff0fc396cda545e5eb9cae3f5e7de24127b6e9c"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-auth-logout",
+      "path": "/auth/logout",
+      "response_bytes": 159,
+      "response_sha256": "4208f65454cdaadc9ae60641da10545d4a6cb94be6c0519bee8d8ab57b6094e8"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-auth-refresh",
+      "path": "/auth/refresh",
+      "response_bytes": 159,
+      "response_sha256": "4aced55c92d79c91b8bd7680c61c8f8c065e3bb6c1c2ce5994d87ce35a582b27"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "GET",
+      "operation_id": "get-list-apiclients",
+      "path": "/client",
+      "response_bytes": 159,
+      "response_sha256": "f4ffcba8c16687fd95671432e10565f791b681f8fc26d5ccd3882807cc39fa70"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-create-apiclient",
+      "path": "/client",
+      "response_bytes": 159,
+      "response_sha256": "22e315b860bd0fac981878badaf0c0c7b1b4dfe9e3863f12a408f676d5e5e3a7"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "GET",
+      "operation_id": "get-apiclient",
+      "path": "/client/{id}",
+      "response_bytes": 159,
+      "response_sha256": "5c7f5b48524c43a79c96e30851b107ee7a094abfdacbcb0fdb6931e91919323a"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-edit-apiclient",
+      "path": "/client/{id}",
+      "response_bytes": 159,
+      "response_sha256": "ef53b0f1bee14c857e8006666aadd2cc026fa160208c5c02276bfa6e1eb891ef"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "DELETE",
+      "operation_id": "delete-apiclient",
+      "path": "/client/{id}",
+      "response_bytes": 159,
+      "response_sha256": "7e02cde3ad0d04f1923844161d0f8cc3f3827d7cb8642c8f68d8e315cc4d0666"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "GET",
+      "operation_id": "get-apiclient-secret",
+      "path": "/client/{id}/secret",
+      "response_bytes": 159,
+      "response_sha256": "94c760fd64095a3ee7909604dc118a53ec5c3deaa0722f2df5371bd34bd614e5"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-regenerate-apiclient-secret",
+      "path": "/client/{id}/secret",
+      "response_bytes": 159,
+      "response_sha256": "ddaf7f9e3f0baaf62523b12b868dd2d6c3bee7dfcfacc3b61105195a0c1cb694"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 200,
+      "method": "GET",
+      "operation_id": "get-search-group",
+      "path": "/group",
+      "response_bytes": 588,
+      "response_sha256": "da99c0081dd182bd9d67328191b64c43026268a5a1a4b22467c48249e7fb1529"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-group",
+      "path": "/group",
+      "response_bytes": 173,
+      "response_sha256": "f80840f01aec3ca7a36ed619f58ecbba7d4cbc13635c9bc1948690d3ddaee2bd"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-group-id",
+      "path": "/group/{id}",
+      "response_bytes": 138,
+      "response_sha256": "dcc821fc42378b8a8e6052ec9bafe42891ae065fd40d0eaf965247fcc36e6061"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "PUT",
+      "operation_id": "put-group-id",
+      "path": "/group/{id}",
+      "response_bytes": 173,
+      "response_sha256": "e80c268e7a0184da360c718e21b54b607786c76c8c576c64714d3e0012d52b86"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "DELETE",
+      "operation_id": "delete-group-id",
+      "path": "/group/{id}",
+      "response_bytes": 152,
+      "response_sha256": "238b6d313355eb0ec9805bfac06e8b7a9ec685a2cd1e2847362ff1540e55a143"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-group-id-follow",
+      "path": "/group/{id}/follow",
+      "response_bytes": 173,
+      "response_sha256": "3852c567471e3f900a0bca6e9d4cd778a04d2735f5c04a1ebdf32442b973b02b"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "DELETE",
+      "operation_id": "delete-group-id-follow",
+      "path": "/group/{id}/follow",
+      "response_bytes": 173,
+      "response_sha256": "5e51ad488fc9315d072ffb42221f55832c9c7378385918486efd53aac2806431"
+    },
+    {
+      "classification": "known_501_unimplemented",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-list",
+      "path": "/list",
+      "response_bytes": 159,
+      "response_sha256": "5e46c32bab3a451e7706b1f60295914b2f89d1951f37fe6073bf32c119d3f59b"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-list-id",
+      "path": "/list/{id}",
+      "response_bytes": 138,
+      "response_sha256": "871cb487ff74bec2fef9c6f457b1cb454a80aa9b04b99f67dc4502775ff75743"
+    },
+    {
+      "classification": "known_501_unimplemented",
+      "http_status": 501,
+      "method": "PUT",
+      "operation_id": "put-list-id",
+      "path": "/list/{id}",
+      "response_bytes": 159,
+      "response_sha256": "b8006ecfc609ca3dea12ef3289563dca5140cdc0d239c4bf4aa1335205557170"
+    },
+    {
+      "classification": "known_501_unimplemented",
+      "http_status": 501,
+      "method": "DELETE",
+      "operation_id": "delete-list-id",
+      "path": "/list/{id}",
+      "response_bytes": 159,
+      "response_sha256": "77419b41c56e048016eb7b54e1bcf440fed45973f12be02ad351daf352463adc"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "follow-list-id",
+      "path": "/list/{id}/follow",
+      "response_bytes": 173,
+      "response_sha256": "aa1c960e9c79780ab15d883ce87cded67834c4a5e86c4bc8b1a95319e2f3e188"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "DELETE",
+      "operation_id": "unfollow-list-id",
+      "path": "/list/{id}/follow",
+      "response_bytes": 173,
+      "response_sha256": "d26680d7b3f97d758ad386f653452e2c2015edde1bf784829794833391037056"
+    },
+    {
+      "classification": "known_501_unimplemented",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-manga-id-list-listId",
+      "path": "/manga/{id}/list/{listId}",
+      "response_bytes": 159,
+      "response_sha256": "bc17344403e6b2e66a7731b681fcd09eca250f6f0594a8da07c781511245e4db"
+    },
+    {
+      "classification": "known_501_unimplemented",
+      "http_status": 501,
+      "method": "DELETE",
+      "operation_id": "delete-manga-id-list-listId",
+      "path": "/manga/{id}/list/{listId}",
+      "response_bytes": 159,
+      "response_sha256": "2821675074f92bdb489f0a4c0b41106274f800ce698d4fbab58761ad12fb60b8"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-list",
+      "path": "/user/list",
+      "response_bytes": 173,
+      "response_sha256": "7b4471a4b019e8f3539e44ca1e7c076c86ea4a4ab12bbc2e9a56c2751e27fa7a"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-user-id-list",
+      "path": "/user/{id}/list",
+      "response_bytes": 138,
+      "response_sha256": "f2a1cc5c16344dd70a3ad5d8fb0e155415a1e5b11c0a8e1fc7cd75f1f20c344d"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user",
+      "path": "/user",
+      "response_bytes": 173,
+      "response_sha256": "a9d40fd0495f93c0e632452371c6e9abffd3a967f9e2fc87f5e280284e7ac3ae"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-user-id",
+      "path": "/user/{id}",
+      "response_bytes": 138,
+      "response_sha256": "1cc380f824de6170bff7fd78f5ae524550ac97c9d6e4bff7e90f7d6431a40e2d"
+    },
+    {
+      "classification": "known_501_unimplemented",
+      "http_status": 501,
+      "method": "DELETE",
+      "operation_id": "delete-user-id",
+      "path": "/user/{id}",
+      "response_bytes": 159,
+      "response_sha256": "3424ec2c0d27d0d637d9ac38053288b392d4b3479b1bbc0d0a81514bbe5fcb73"
+    },
+    {
+      "classification": "known_501_unimplemented",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-user-delete-code",
+      "path": "/user/delete/{code}",
+      "response_bytes": 159,
+      "response_sha256": "9b289eda18d5dec52c5328156afbdaebdc1e53e3f9ac6d17b301087aad5bd4c2"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 200,
+      "method": "GET",
+      "operation_id": "get-chapter",
+      "path": "/chapter",
+      "response_bytes": 1329,
+      "response_sha256": "a17b0ad6677c5816542c816ee16db910c677b4a05cd6fea0e89e01ec4899c280"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-chapter-id",
+      "path": "/chapter/{id}",
+      "response_bytes": 138,
+      "response_sha256": "fc8e43cfb0e3f4197c1c124e603ff785e0c3fa26dec190d7bf27ba1a2b630a29"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "PUT",
+      "operation_id": "put-chapter-id",
+      "path": "/chapter/{id}",
+      "response_bytes": 173,
+      "response_sha256": "b68589c77a64d15cc970ee3469109bb580fcdf7d4dd7933d381ed2b320f27b82"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "DELETE",
+      "operation_id": "delete-chapter-id",
+      "path": "/chapter/{id}",
+      "response_bytes": 163,
+      "response_sha256": "a0e8d2fb9d8568c571eb522f5aa2fe2465424bdcdba445e1456b3eaec0d7b99e"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-follows-manga-feed",
+      "path": "/user/follows/manga/feed",
+      "response_bytes": 173,
+      "response_sha256": "ab8151eed994de8fc97a603fbad491c5b83da9e34675c9b34c1734f1a677ba93"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-list-id-feed",
+      "path": "/list/{id}/feed",
+      "response_bytes": 138,
+      "response_sha256": "0297cd7604ad1335de7952616d4276520937f19bb5bef41d0867cd85334003fc"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "DELETE",
+      "operation_id": "delete-manga-id-follow",
+      "path": "/manga/{id}/follow",
+      "response_bytes": 173,
+      "response_sha256": "de6ca94209790177007896a1d3d728eb8290b88bf1469c9710fc53b9701a9040"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-manga-id-follow",
+      "path": "/manga/{id}/follow",
+      "response_bytes": 173,
+      "response_sha256": "39537846f6071eed0d0ea492f946f4417d4c162d153c0ec609e0532fd6367539"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 200,
+      "method": "GET",
+      "operation_id": "get-cover",
+      "path": "/cover",
+      "response_bytes": 81,
+      "response_sha256": "cb5554d22714fe885d66b32cdfd6641ab4047ea129d1e21171320e51f0ea12d6"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 415,
+      "method": "POST",
+      "operation_id": "upload-cover",
+      "path": "/cover/{mangaOrCoverId}",
+      "response_bytes": 161,
+      "response_sha256": "a50b1372f87a2f0de1860b80e51a184de64322469891777eff81a2cc16f0c20b"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-cover-id",
+      "path": "/cover/{mangaOrCoverId}",
+      "response_bytes": 138,
+      "response_sha256": "7c0d0aca2447bf078e43929183ec20e50d627096cf20db63ad5a72926e336d5c"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "PUT",
+      "operation_id": "edit-cover",
+      "path": "/cover/{mangaOrCoverId}",
+      "response_bytes": 173,
+      "response_sha256": "ac9db42b54f4d17bf96f10be875dae20b4a914702de45d3d8f263b0f6fd21e69"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "DELETE",
+      "operation_id": "delete-cover",
+      "path": "/cover/{mangaOrCoverId}",
+      "response_bytes": 173,
+      "response_sha256": "220c8b3c5d1f00c2cfd58416bbe567da7f51f3337cf6e6fc12a207e82c622d81"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 200,
+      "method": "GET",
+      "operation_id": "get-author",
+      "path": "/author",
+      "response_bytes": 81,
+      "response_sha256": "cb5554d22714fe885d66b32cdfd6641ab4047ea129d1e21171320e51f0ea12d6"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-author",
+      "path": "/author",
+      "response_bytes": 173,
+      "response_sha256": "1efdf6f5113de0974204482f5dfa99100b4aa386e35f38932e230709c26334ac"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-author-id",
+      "path": "/author/{id}",
+      "response_bytes": 138,
+      "response_sha256": "44c2d766af928be93bbb62bf0847d235a13ea989674646f8479b85e815c9ca78"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "PUT",
+      "operation_id": "put-author-id",
+      "path": "/author/{id}",
+      "response_bytes": 173,
+      "response_sha256": "94c41b9bcc3bcdb6d1f27826ca6676e042d58d6139fa02e4d93f3735b0828abd"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "DELETE",
+      "operation_id": "delete-author-id",
+      "path": "/author/{id}",
+      "response_bytes": 152,
+      "response_sha256": "df10ae596003d5056e7aa4c067adbe949b235c2487d76f6598da7d45ec1cc3bd"
+    },
+    {
+      "classification": "known_501_unimplemented",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-legacy-mapping",
+      "path": "/legacy/mapping",
+      "response_bytes": 159,
+      "response_sha256": "3cd80d23c528797a99a9e693d8c3193488fc488f22a66db98625aba8e8534b47"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-manga-id-feed",
+      "path": "/manga/{id}/feed",
+      "response_bytes": 138,
+      "response_sha256": "c9ac2ef1ca899ec8617eb4998605dd28a8cc86b163911b2788c33db83b266824"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-manga-chapter-readmarkers",
+      "path": "/manga/{id}/read",
+      "response_bytes": 173,
+      "response_sha256": "305860d8eedeae66a7008b0691ca84b3f3a23fe3836f2a13fa6292a19476ec04"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-manga-chapter-readmarkers",
+      "path": "/manga/{id}/read",
+      "response_bytes": 270,
+      "response_sha256": "738e60d732e1abe69815d56a9547931186f33433495f8a388208b05050f305b4"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "GET",
+      "operation_id": "get-manga-chapter-readmarkers-2",
+      "path": "/manga/read",
+      "response_bytes": 157,
+      "response_sha256": "12eae8c3f919873f6afc402dbdc751364863e62df90687ba1441af1389fd04a9"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 200,
+      "method": "GET",
+      "operation_id": "get-manga-random",
+      "path": "/manga/random",
+      "response_bytes": 916,
+      "response_sha256": "aaae592a8ba9e86a94ac98f3b9cb7cc9dd39cd4a755a0f62f64fd4293ac35a50"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-at-home-server-chapterId",
+      "path": "/at-home/server/{chapterId}",
+      "response_bytes": 138,
+      "response_sha256": "c0240c75e4ea366185f646d77315c6d2ba98c7eed9a0f8461a60a96280f2331b"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 200,
+      "method": "GET",
+      "operation_id": "get-manga-tag",
+      "path": "/manga/tag",
+      "response_bytes": 242,
+      "response_sha256": "7ffb9123a70ee9ce5d0fc979777a79eadecc3119f5ca72bc4ad47e805ea6a2f4"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-me",
+      "path": "/user/me",
+      "response_bytes": 173,
+      "response_sha256": "db5f15cb049c7cfb1e1603c80f4a612271ee3ed56ccc057cb826d5f22c55517b"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-follows-group",
+      "path": "/user/follows/group",
+      "response_bytes": 173,
+      "response_sha256": "7a22c950baf8ee6f4baa807b9c0d44e6de63357e3096c0ab08be741f5ee445e7"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-follows-group-id",
+      "path": "/user/follows/group/{id}",
+      "response_bytes": 173,
+      "response_sha256": "b3aecdfe5aea2963a196add4f76eb9b6f6d2d02a852682600f7f358ad2f3f61f"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-follows-user",
+      "path": "/user/follows/user",
+      "response_bytes": 173,
+      "response_sha256": "f7dc985b3cf74e318394961fff5b1c837db7c01bb30cf1b2d2d1fae400a1783b"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-follows-user-id",
+      "path": "/user/follows/user/{id}",
+      "response_bytes": 173,
+      "response_sha256": "abe66586a834ba38ebf600489a7a546974fc9e3c42312e79ecec5ccd13363569"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-follows-manga",
+      "path": "/user/follows/manga",
+      "response_bytes": 173,
+      "response_sha256": "a88081793c336275181547856c524883e5d81af13e3a37de84e911446d76d306"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-follows-manga-id",
+      "path": "/user/follows/manga/{id}",
+      "response_bytes": 173,
+      "response_sha256": "20c0a062415139c734f55d321db821aa373b04dc6e825b11008d2cf61eed7828"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-follows-list",
+      "path": "/user/follows/list",
+      "response_bytes": 173,
+      "response_sha256": "7f5666cbea0fa8184dea71abe16425f8dac4f17d9822e4c0b263cf2cb4d9d290"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-user-follows-list-id",
+      "path": "/user/follows/list/{id}",
+      "response_bytes": 173,
+      "response_sha256": "1541b4e6fbb300bbe6793114fa97932a7f668b5de547c5bb24843790ecb93132"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-manga-status",
+      "path": "/manga/status",
+      "response_bytes": 173,
+      "response_sha256": "08eedfaeb58d244943d7fb6900900f199bddf831bf7635f5eb186928f0e97cb2"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-manga-id-status",
+      "path": "/manga/{id}/status",
+      "response_bytes": 173,
+      "response_sha256": "d71307e082cc4116961ba3358a60b886cdd744eff386f570d052c68f96143870"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-manga-id-status",
+      "path": "/manga/{id}/status",
+      "response_bytes": 173,
+      "response_sha256": "6b0e32afd6d17827a6473fd777590536f69213291d46ec62535a7e77f988ba0d"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-manga-id-draft",
+      "path": "/manga/draft/{id}",
+      "response_bytes": 173,
+      "response_sha256": "a455e3e8b1836486a7664a694b611c00ef864324c6c548265d12c1042cee51c0"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "commit-manga-draft",
+      "path": "/manga/draft/{id}/commit",
+      "response_bytes": 173,
+      "response_sha256": "188b82c6f8ec21e8f009b7481c60840b88d75671dbf6391a27417d42e24d43af"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-manga-drafts",
+      "path": "/manga/draft",
+      "response_bytes": 173,
+      "response_sha256": "8a646928e55fa8a622a4e95f64a3f1169fbcfbfff8b0b9f7546804c6a4e77675"
+    },
+    {
+      "classification": "known_501_unimplemented",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-captcha-solve",
+      "path": "/captcha/solve",
+      "response_bytes": 159,
+      "response_sha256": "85047012f6d8cb75cf05fe4ef439fb7becef115d3439afd10c9f2284a5614877"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-report-reasons-by-category",
+      "path": "/report/reasons/{category}",
+      "response_bytes": 173,
+      "response_sha256": "e2a909c70550abd200f8634cf300d7449f889709a6fccfc68f65aa20630bc406"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-reports",
+      "path": "/report",
+      "response_bytes": 173,
+      "response_sha256": "4ec03ff933cc7d24e6339a4176385b1424535145b03179903481942381e2c689"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-report",
+      "path": "/report",
+      "response_bytes": 173,
+      "response_sha256": "f069afc6680a7156060f659ad253a447be710544f4381e6268c6e774aac78115"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-upload-session",
+      "path": "/upload",
+      "response_bytes": 173,
+      "response_sha256": "c798a83c00137d6ab637083743fb2da62d3dd3283c12b5816102aec97ae92abf"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "begin-upload-session",
+      "path": "/upload/begin",
+      "response_bytes": 173,
+      "response_sha256": "6ecaa29ef085f6491fb7d851c1107e6f0adff5ff979f0e6441c057310e318ba6"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "begin-edit-session",
+      "path": "/upload/begin/{chapterId}",
+      "response_bytes": 173,
+      "response_sha256": "6eb6628bb8478765af71a83aed809f966f205d76111d9a13c9bd6e29fb90f380"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 415,
+      "method": "POST",
+      "operation_id": "put-upload-session-file",
+      "path": "/upload/{uploadSessionId}",
+      "response_bytes": 161,
+      "response_sha256": "e0c46d87dd516c6b6568b67f68cbdc40b76b615b8d9e5e3bc1f1aedc1a1c4b41"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "DELETE",
+      "operation_id": "abandon-upload-session",
+      "path": "/upload/{uploadSessionId}",
+      "response_bytes": 163,
+      "response_sha256": "a06358b8e80dbe6771a1e3c42c6175e6c43742bb936b7f28c90f5d99694cd423"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "commit-upload-session",
+      "path": "/upload/{uploadSessionId}/commit",
+      "response_bytes": 173,
+      "response_sha256": "5884ef2ed6c363f64dbc2e79fc58767e04c4e33dab482b3f9af2fced3f50b585"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "DELETE",
+      "operation_id": "delete-uploaded-session-file",
+      "path": "/upload/{uploadSessionId}/{uploadSessionFileId}",
+      "response_bytes": 163,
+      "response_sha256": "9375d9e8b018b08bc6eaae94f18d1df3bbf8633a0ed93633686fe43fbeef06b0"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "DELETE",
+      "operation_id": "delete-uploaded-session-files",
+      "path": "/upload/{uploadSessionId}/batch",
+      "response_bytes": 173,
+      "response_sha256": "a2bb189d1c5490ae5e7f896aeeb0932086be33107144acf8602c591ed2ce92a5"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "upload-check-approval-required",
+      "path": "/upload/check-approval-required",
+      "response_bytes": 173,
+      "response_sha256": "5ccf9a291f5187d70ea421da693ceab59a8bc98434964107250b447150198510"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-manga-relation",
+      "path": "/manga/{mangaId}/relation",
+      "response_bytes": 138,
+      "response_sha256": "26bf3681f25ea4fc3f6328b311573f65f416121f32560596581ae5cc353547bf"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-manga-relation",
+      "path": "/manga/{mangaId}/relation",
+      "response_bytes": 173,
+      "response_sha256": "5766ed2e6cf4d468ba15562c76f5c192d3f84b4ef17ba9e1250dcba9914e0f55"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "DELETE",
+      "operation_id": "delete-manga-relation-id",
+      "path": "/manga/{mangaId}/relation/{id}",
+      "response_bytes": 173,
+      "response_sha256": "9d991f08b11d868e3fbc31484af3bb25e2ff995ec276314015e48f977387e6d6"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "GET",
+      "operation_id": "get-rating",
+      "path": "/rating",
+      "response_bytes": 147,
+      "response_sha256": "2c1ed346292620a2ab2d07ea07401351d182136b8d91907c8b7344831a6ec555"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-rating-manga-id",
+      "path": "/rating/{mangaId}",
+      "response_bytes": 173,
+      "response_sha256": "da67457a94839ed86ef98a44c418e5d826d01448bc9bc9772a038b5949d51386"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "DELETE",
+      "operation_id": "delete-rating-manga-id",
+      "path": "/rating/{mangaId}",
+      "response_bytes": 173,
+      "response_sha256": "8502a50875ef576f93db7035d360c6df41aafb4afa194a49eefe7646b160ccca"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-statistics-chapter-uuid",
+      "path": "/statistics/chapter/{uuid}",
+      "response_bytes": 138,
+      "response_sha256": "50ed282b5cae5e80a9cc949ab37951eccf65d77b919f3d71cf3ab6876c1bb194"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "GET",
+      "operation_id": "get-statistics-chapters",
+      "path": "/statistics/chapter",
+      "response_bytes": 161,
+      "response_sha256": "e882a2e653ed39692075ef11b5fdb30f0e2b488e3f98937bcc440fa48cc3735c"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-statistics-group-uuid",
+      "path": "/statistics/group/{uuid}",
+      "response_bytes": 138,
+      "response_sha256": "dc7443d53d2d328f8bfc6bfa6fe4731bfb40c76e641846b8de6b54d0a579697c"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "GET",
+      "operation_id": "get-statistics-groups",
+      "path": "/statistics/group",
+      "response_bytes": 159,
+      "response_sha256": "93dc14a9e03e4ad3ecc912503bbaa4776e3326a913d9cbe0eedc3cba9e1bce84"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 404,
+      "method": "GET",
+      "operation_id": "get-statistics-manga-uuid",
+      "path": "/statistics/manga/{uuid}",
+      "response_bytes": 138,
+      "response_sha256": "1eade43a50b1bf81090d05e0b0c18f054d8b4f9a437af337dc211ee4dff9b5e4"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 400,
+      "method": "GET",
+      "operation_id": "get-statistics-manga",
+      "path": "/statistics/manga",
+      "response_bytes": 159,
+      "response_sha256": "06ee3410db2966d313b1e30ec40c5eda20580f122e6d2620641a39f8228a435f"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-settings-template",
+      "path": "/settings/template",
+      "response_bytes": 173,
+      "response_sha256": "5e0b619a894c73e043acf92c0cddbf9368a3b60c0ed48dceb9c33c6f981f5725"
+    },
+    {
+      "classification": "explicit_501_operator_administration_boundary",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "post-settings-template",
+      "path": "/settings/template",
+      "response_bytes": 159,
+      "response_sha256": "44247890be1d42c4427959ff878eb3b61cf236c67b706bb4be64d096f86ecbd5"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-settings-template-version",
+      "path": "/settings/template/{version}",
+      "response_bytes": 173,
+      "response_sha256": "875dc112e51477045016a79e939c53907d7d7321ce7147354b993455ed2ef9ff"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-settings",
+      "path": "/settings",
+      "response_bytes": 173,
+      "response_sha256": "4261316ca1206e040d916f5d0810db926330232ee1c88b898421e4bcdf1d0729"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "POST",
+      "operation_id": "post-settings",
+      "path": "/settings",
+      "response_bytes": 173,
+      "response_sha256": "515470485baaf8093e538bf604fed605546bc8289761b52ede339ed1d0400773"
+    },
+    {
+      "classification": "source_routed_scoped_operation",
+      "http_status": 401,
+      "method": "GET",
+      "operation_id": "get-reading-history",
+      "path": "/user/history",
+      "response_bytes": 173,
+      "response_sha256": "f8d73bbca5216e19aecd1eb4091ddf22fc0bed0fb75c72c318cacb2ea19ac392"
+    },
+    {
+      "classification": "explicit_501_protocol_auth_exception",
+      "http_status": 501,
+      "method": "POST",
+      "operation_id": "forums-thread-create",
+      "path": "/forums/thread",
+      "response_bytes": 159,
+      "response_sha256": "91d2bb5cd798fa139a59e1f2b7aa4f7b1bef52216fe1ef0bc74092dbdc6ace39"
+    }
+  ],
+  "operation_count": 113,
+  "scope": "actual unauthenticated routing/auth/validation only; no successful mutation or full compatibility claim",
+  "source_baseline": "717d88936cd654529a197ca9bcabc9af47cab6e9"
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "approved-exact29-fixture-db-cleanup-v1",
+  "startedAtUtc": "2026-10-18T02:20:21.394475+00:00",
+  "manifestSha256": "978c85ec1d5fd65e9f7eb9ada93928e7c349959868df5949fb672adad57c858b",
+  "approvedCandidateCount": 29,
+  "approvedAllocatedBytes": 1661132800,
+  "protectedHashCount": 1251,
+  "sourcePinsVerified": 979,
+  "currentFrozenExecutableCount": 20,
+  "allPortsClosedBefore": true,
+  "allPgCtlStatus3Before": true,
+  "activeReferencesBefore": [],
+  "unverifiedProcessChecks": [],
+  "liveOriginalBirthsBefore": [],
+  "excluded": [
+    "All logs/evidence/receipts",
+    "All source/.git",
+    "All binaries/toolchains/CARGO_HOME/target artifacts",
+    "Both final frontend builds",
+    "Every path except these exact29data directories"
+  ],
+  "freeBeforeBytes": 4382334976,
+  "pass": true,
+  "protectedChanged": [],
+  "removedAllocatedBytes": 1661132800,
+  "freeAfterBytes": 6043467776,
+  "observedFreeDeltaBytes": 1661132800,
+  "endedAtUtc": "2026-10-18T02:20:23.018478+00:00",
+  "originalReceiptSHA256": "f5cc8973570ce00c6a1a101c5866222ac2498ded1f668651205721d0467126a7",
+  "retainedMaterial": "Source, Git history, all logs/evidence and binaries were retained. Database contents are absent."
+}

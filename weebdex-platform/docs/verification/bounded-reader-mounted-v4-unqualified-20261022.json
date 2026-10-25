@@ -1,0 +1,199 @@
+{
+  "artifacts": {
+    "fixture/mounted-result.json": {
+      "bytes": 9687,
+      "sha256": "aaf0c7ace4fb822bbf7a82465e7207590e884f3b00d10ed11726cd38428cb408"
+    },
+    "fixture/mounted-stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "mounted-association.json": {
+      "bytes": 1013,
+      "sha256": "db5201e618eb6bdb26a429ecb28f184ff97f2de1fe1440f23ebdfc3a5581f07f"
+    },
+    "mounted-owner/owner.json": {
+      "bytes": 257,
+      "sha256": "abc45a621b093ce395dd9ddc127768f4986267b81804bcd9a85ce828a8596f4e"
+    },
+    "mounted-resource-receipt.json": {
+      "bytes": 21320,
+      "sha256": "20228b0fca882f4019da540bd9b1ffffd46708c6399ff12a74cba6135b3be645"
+    },
+    "mounted.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "associations": {
+    "admissionSha256": "ed32f7ba7187ccfaf2f984afc9a21bae19d7766d80880c0cac4c7571b7eaed6e",
+    "driverSha256": "a124f5d798148ac56b669e4a225f16a18cca9a18ce502eb98e08d0407f996e7d",
+    "externalOwnerSha256": "8f3e00cb93e93403e6d0bd926f539b849fddbee0b26791eb9d2749cb092d8470",
+    "mapSha256": "13b9745a4f7965bc8c098218bfd3d92f517a51a04ffd2d68c519770fe434f781",
+    "serializationHook": "all-field compact JSON, bounded before owner receipt write"
+  },
+  "clientObservation": {
+    "actualSvelteMount": true,
+    "cancellations": 0,
+    "cases": [
+      {
+        "assertions": [
+          "actual saved page and completion flag",
+          "unmounted with requests and progress settled"
+        ],
+        "name": "complete progress",
+        "outcome": "passed"
+      },
+      {
+        "assertions": [
+          "actual saved page and completion flag",
+          "unmounted with requests and progress settled"
+        ],
+        "name": "partial remount progress",
+        "outcome": "passed"
+      },
+      {
+        "assertions": [
+          "actual disclosure requests the first bounded page",
+          "next page replaces old rows without losing loaded images",
+          "actual unmount and owned request/progress settlement"
+        ],
+        "name": "paged group disclosure",
+        "outcome": "passed"
+      },
+      {
+        "assertions": [
+          "full-set preferred edition remains selectable outside current page",
+          "next edition page replaces displayed rows",
+          "actual unmount and owned request/progress settlement"
+        ],
+        "name": "edition paging and independent winner",
+        "outcome": "passed"
+      },
+      {
+        "assertions": [
+          "actual title URL group override reaches the reader query",
+          "single eligible edition dispatches directly without chooser",
+          "actual unmount and owned request/progress settlement"
+        ],
+        "name": "single-edition title Start",
+        "outcome": "passed"
+      },
+      {
+        "assertions": [
+          "multiple editions do not navigate before choice",
+          "actual chooser revalidates and dispatches selected winner",
+          "actual unmount and owned request/progress settlement"
+        ],
+        "name": "multiple-edition title Start chooser",
+        "outcome": "passed"
+      },
+      {
+        "assertions": [
+          "completed alternate edition excludes its observed group",
+          "partial history yields an explicitly observed candidate only",
+          "inspection and explicit open use the same candidate",
+          "actual unmount and owned request/progress settlement"
+        ],
+        "name": "observed device Continue",
+        "outcome": "passed"
+      },
+      {
+        "assertions": [
+          "server identity mismatch visibly requires reload",
+          "no navigation and directly readable images remain",
+          "actual unmount and owned request/progress settlement"
+        ],
+        "name": "identity mismatch reload status",
+        "outcome": "passed"
+      }
+    ],
+    "fixturePassed": true,
+    "generatedCleanup": true,
+    "logicalActionsCompleted": 2,
+    "logicalActionsOffered": 2,
+    "logicalActionsStarted": 2,
+    "mediaFailures": 0,
+    "mountObservation": "completed actual mounted case",
+    "nodeDiagnostics": {
+      "accepted": {
+        "node-type-stripping": 1,
+        "node-vm-modules": 1
+      },
+      "failures": 0,
+      "listener_cleanup": true,
+      "provider_completed": 2,
+      "provider_scheduled": 2,
+      "setup_closed": true
+    },
+    "progressFailures": 0,
+    "progressSaveAttempts": 5,
+    "progressSavesCompleted": 5,
+    "rawNodeExit": 0,
+    "requestCount": 61,
+    "responseBytes": 38313,
+    "runtimeVersions": {
+      "fake-indexeddb": "6.2.4",
+      "jsdom": "27.0.1",
+      "svelte": "5.55.1",
+      "typescript": "5.9.3"
+    },
+    "semanticFailures": 0,
+    "semanticObservationOverflow": 0,
+    "semanticObservations": [],
+    "sourceUnchanged": true
+  },
+  "continuity": {
+    "checkedApplicationReadsObserved": true,
+    "inputAssociationUnchanged": true,
+    "withinOutputBounds": true
+  },
+  "date": "2026-10-22",
+  "diagnosis": "Retained evidence establishes initiating FileNotFoundError, not its exact call site. A concurrent generated-directory removal in the evidence sampler is a source-supported hypothesis. Another review lane owns the causal control. No retry or source relaxation was performed.",
+  "mainBaselineUnchanged": "f7c598cb57f9a2afbecc107c1d81bb4b30ac4102",
+  "outerOwnerObservation": {
+    "cleanOwner": false,
+    "driverExit": 1,
+    "elapsedSeconds": 3.795626590028405,
+    "exactFlushedTAPCaseOutcomes": false,
+    "forced": true,
+    "initiatingErrorType": "FileNotFoundError",
+    "outwardExceptionType": "RuntimeError",
+    "ownedBirthRecords": 2,
+    "ownedSurvivors": [],
+    "preCleanupOutcome": "owner-error",
+    "rawOwnerExit": -15,
+    "rawOwnerStatus": "failed",
+    "remainingOwned": 0,
+    "stdoutEOF": true,
+    "terminalObservedRecords": 0,
+    "trackingErrorTrace": [],
+    "trackingErrors": 0,
+    "unknownBirths": 0,
+    "verifiedStopped": true
+  },
+  "priorEvidence": "Every previous failed mounted and warning-diagnostic round remains preserved. The separate fourteen-control pass remains associated with a0d04b370c382e3d0b15cf1b6238cba2a12d8af1, not inherited by changed fixture source.",
+  "qualification": "UNQUALIFIED",
+  "reason": "The structured client completed all eight assertions with zero semantic errors, but the outer owner raised FileNotFoundError and forcibly stopped its coordinator. Clean unforced owner completion and the eight flushed TAP rows were not established.",
+  "scope": {
+    "actualCompilerAndMountedComponents": true,
+    "backendQualified": false,
+    "browserQualified": false,
+    "capacityQualified": false,
+    "catalogueMode": "public-retained-v1 synthetic fixture",
+    "deviceHistoryOnly": true,
+    "nativeAutomaticContinueQualified": false,
+    "pipeOnly": true,
+    "realCookieAuthorityQualified": false,
+    "strictOrFullBuildQualified": false,
+    "syntheticSeams": [
+      "backend selector/winner responses",
+      "router",
+      "geometry",
+      "image bytes and decode",
+      "keyboard"
+    ]
+  },
+  "sourceRevision": "29b9e84024d0955e3a607d2741b076cd3ed45216",
+  "version": 1
+}

@@ -28,6 +28,16 @@ pub fn string(value: &Value, key: &str, max: usize, required: bool) -> ApiResult
         _ => Err(ApiError::bad_request(format!("Invalid {key}"))),
     }
 }
+/// Preserve all three edit states: omitted, explicit clear, and a checked value.
+/// Callers must use the outer presence bit when writing nullable columns; SQL
+/// COALESCE alone would silently turn an explicit clear into an omitted edit.
+pub fn nullable_string(value: &Value, key: &str, max: usize) -> ApiResult<Option<Option<String>>> {
+    match value.get(key) {
+        None => Ok(None),
+        Some(Value::Null) => Ok(Some(None)),
+        Some(_) => string(value, key, max, false).map(Some),
+    }
+}
 pub fn id(value: &str) -> ApiResult<()> {
     if value.is_empty()
         || value.len() > 128
@@ -64,6 +74,41 @@ pub fn language(value: &str) -> ApiResult<()> {
         Err(ApiError::bad_request("Unsupported language code"))
     }
 }
+/// Transport validation is deliberately separate from the retained native enum.
+/// Public writes follow the pinned API syntax, not an invented locale registry.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum LanguageContract { Native, Public }
+impl LanguageContract {
+    pub(crate) fn validate(self, value: &str) -> ApiResult<()> {
+        match self { Self::Native => language(value), Self::Public => public_language(value) }
+    }
+    fn localized_key(self, value: &str) -> ApiResult<()> {
+        match self { Self::Native => language(value), Self::Public => localized_key(value) }
+    }
+}
+/// Exact ^[a-z]{2}(-[a-z]{2})?$; no trimming, case folding or native mapping.
+pub(crate) fn public_language(value: &str) -> ApiResult<()> {
+    let b = value.as_bytes();
+    if (b.len() == 2 && b.iter().all(u8::is_ascii_lowercase))
+        || (b.len() == 5 && b[2] == b'-'
+            && b[..2].iter().chain(&b[3..]).all(u8::is_ascii_lowercase)) {
+        Ok(())
+    } else { Err(ApiError::bad_request("Expected a lowercase two-letter language, optionally with a two-letter region")) }
+}
+/// Search has the distinct, broader ^[a-zA-Z\-]{2,5}$ contract.
+pub(crate) fn public_search_language(value: &str) -> ApiResult<()> {
+    if (2..=5).contains(&value.len()) && value.bytes().all(|b| b.is_ascii_alphabetic() || b == b'-') {
+        Ok(())
+    } else { Err(ApiError::bad_request("Invalid language search filter")) }
+}
+/// The pinned LocalizedString pattern is on VALUES, not dictionary keys.
+/// Preserve bounded opaque keys and ordinary text as an intentional extension;
+/// do not reinterpret that upstream inconsistency as a locale enum.
+pub(crate) fn localized_key(value: &str) -> ApiResult<()> {
+    if value.is_empty() || value.len() > 100 || value.contains('\0') {
+        Err(ApiError::bad_request("Invalid localized text key"))
+    } else { Ok(()) }
+}
 pub fn enum_value(
     value: &Value,
     key: &str,
@@ -95,6 +140,9 @@ pub fn version(value: &Value) -> ApiResult<i32> {
         .ok_or_else(|| ApiError::bad_request("A positive integer version is required"))
 }
 pub fn metadata(value: &Value, fields: &[&str]) -> ApiResult<Value> {
+    metadata_for(value, fields, LanguageContract::Native)
+}
+pub(crate) fn metadata_for(value: &Value, fields: &[&str], contract: LanguageContract) -> ApiResult<Value> {
     let mut out = Map::new();
     for key in fields {
         if let Some(v) = value.get(*key) {
@@ -110,7 +158,7 @@ pub fn metadata(value: &Value, fields: &[&str]) -> ApiResult<Value> {
                         return Err(ApiError::bad_request("Invalid metadata key"));
                     }
                     if *key == "alt_titles" {
-                        language(k)?;
+                        contract.localized_key(k)?;
                         let titles = v
                             .as_array()
                             .ok_or_else(|| ApiError::bad_request("Invalid alternate titles"))?;
@@ -134,7 +182,7 @@ pub fn metadata(value: &Value, fields: &[&str]) -> ApiResult<Value> {
                     return Err(ApiError::bad_request("Too many languages"));
                 }
                 for lang in langs {
-                    language(
+                    contract.validate(
                         lang.as_str()
                             .ok_or_else(|| ApiError::bad_request("Invalid language"))?,
                     )?;
@@ -159,4 +207,57 @@ pub fn new_id(_prefix: &str) -> String {
         .take(10)
         .map(char::from)
         .collect()
+}
+
+#[cfg(test)]
+mod nullable_tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn nullable_string_preserves_presence_and_existing_string_validation() {
+        assert_eq!(nullable_string(&json!({}), "field", 3).unwrap(), None);
+        assert_eq!(nullable_string(&json!({"field":null}), "field", 3).unwrap(), Some(None));
+        for (input, expected) in [("", ""), (" a ", "a"), ("猫犬", "猫犬")] {
+            assert_eq!(nullable_string(&json!({"field":input}), "field", 3).unwrap(), Some(Some(expected.into())));
+        }
+        for input in [json!(4), json!(true), json!([]), json!({}), json!("abcd"), json!("a\0")] {
+            assert!(nullable_string(&json!({"field":input}), "field", 3).is_err());
+        }
+        // This opt-in helper does not weaken the legacy non-null validator.
+        assert!(string(&json!({"field":null}), "field", 3, false).is_err());
+    }
+}
+
+#[cfg(test)]
+mod public_language_tests {
+    use super::*;
+    use serde_json::json;
+    #[test]
+    fn public_language_contracts_do_not_redefine_native_vocabulary() {
+        for value in ["ta", "en", "zz", "pt-br", "zh-hk", "aa-zz"] {
+            assert!(public_language(value).is_ok(), "{value}");
+        }
+        for value in ["tam", "und", "zh-hant", "en-US", "EN", "a", "abc", "en-", "-en", "en-us-x", " ta", "ta ", "éé", "en\n", "en\0"] {
+            assert!(public_language(value).is_err(), "{value:?}");
+        }
+        for value in ["TA", "tam", "und", "EN-us", "--", "a-b", "a----"] {
+            assert!(public_search_language(value).is_ok(), "{value}");
+        }
+        for value in ["a", "zh-hant", "1a", "e_n", " en", "éé", "en\0"] {
+            assert!(public_search_language(value).is_err(), "{value:?}");
+        }
+        assert!(language("tam").is_ok());
+        assert!(language("ta").is_err());
+        assert!(LanguageContract::Public.validate("ta").is_ok());
+        assert!(LanguageContract::Native.validate("ta").is_err());
+    }
+    #[test]
+    fn localized_public_keys_are_not_an_invented_language_enum() {
+        let payload = json!({"alt_titles":{"zh-Hant":["保留"],"opaque label":["Ordinary text"]}});
+        assert!(metadata_for(&payload, &["alt_titles"], LanguageContract::Public).is_ok());
+        assert!(metadata(&payload, &["alt_titles"]).is_err());
+        assert!(localized_key("").is_err());
+        assert!(localized_key("bad\0").is_err());
+    }
 }

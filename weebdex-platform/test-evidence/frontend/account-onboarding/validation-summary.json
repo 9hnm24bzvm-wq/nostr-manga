@@ -1,0 +1,50 @@
+{
+  "status": "source_build_and_finite_seams_passed_browser_pending",
+  "utc": "2026-10-15T03:00:21.484032+00:00",
+  "selected_finite_tests": {
+    "passed": 114,
+    "failed": 0,
+    "new_onboarding_tests": 46,
+    "evidence": "seams-summary.json"
+  },
+  "additional_native_settings_regressions": {
+    "passed": 21,
+    "failed": 0,
+    "overlap_with_selected_suite": true
+  },
+  "source_compile": {
+    "svelte_components": 106,
+    "scripts": 65,
+    "warnings": 8,
+    "failures": 0
+  },
+  "strict_semantic_check": {
+    "errors": 0,
+    "warnings": 15,
+    "canonical_frontend_files": 679,
+    "canonical_frontend_unchanged": true,
+    "evidence": "semantic/summary.json"
+  },
+  "build": {
+    "status": "passed",
+    "command_exit": 0,
+    "remaining_owned_members": [],
+    "changed_inputs": [],
+    "owned_leader_reaped": true,
+    "source_inputs_checked": 762,
+    "input_manifest_sha256": "55b2c104f4412d3835722f85ff8cca913a7bdd5a01eec65534307ea6b6de4668",
+    "terminal_owner_receipt": "build-owner.json",
+    "runtime_browser_tests_executed": false
+  },
+  "artifacts": {
+    "file_count": 426,
+    "total_bytes": 7062340,
+    "index_sha256": "518bde4f20a9152ceec9263a714a8c89b9ae827e6d6c15d14545de1b716c0b37",
+    "static_files_checked": 111,
+    "all_supplied_static_identical": true
+  },
+  "preserved_attachment_files": 676,
+  "preserved_attachment_identical": true,
+  "real_browser_acceptance": "pending; separate immutable QA stage handed off",
+  "new_security_or_runtime_dependencies": false
+}

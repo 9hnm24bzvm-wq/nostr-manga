@@ -1,0 +1,61 @@
+{
+  "baseline-progress": {
+    "command": [
+      "node",
+      "--test",
+      "/workspace/shared/nostr-manga-recovery-20261018/browser-readiness-seams-worktree/weebdex-platform/.build/browser-readiness-baseline-20261018/baseline-progress.mjs"
+    ],
+    "exit": 1,
+    "seconds": 0.183,
+    "rawBytes": 4482,
+    "rawSha256": "1924ff2d46ed5664c96908d768b4bc554e519c8880013f092f5ac218fcd6f656"
+  },
+  "baseline-wiring": {
+    "command": [
+      "node",
+      "--test",
+      "/workspace/shared/nostr-manga-recovery-20261018/browser-readiness-seams-worktree/weebdex-platform/.build/browser-readiness-baseline-20261018/baseline-wiring.mjs"
+    ],
+    "exit": 1,
+    "seconds": 0.36,
+    "rawBytes": 2939,
+    "rawSha256": "497c8fb4c483c25bf522f951f68758e6b249281b6aafc3dbd02d68c87fdd1976"
+  },
+  "initial-candidate": {
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "weebdex-platform/tests/ci/test_browser_exact_device_progress.mjs",
+      "weebdex-platform/tests/ci/test_browser_identity_key_controls.mjs",
+      "weebdex-platform/tests/ci/test_browser_device_continuity.mjs",
+      "weebdex-platform/tests/ci/test_browser_reader_continuation.mjs",
+      "weebdex-platform/tests/ci/test_browser_library_follow_diagnostics.mjs",
+      "weebdex-platform/tests/ci/test_browser_account_recovery.mjs",
+      "weebdex-platform/tests/ci/test_browser_select_controls.mjs"
+    ],
+    "exit": 0,
+    "seconds": 1.27,
+    "rawBytes": 5762,
+    "rawSha256": "b36e688fdba065a3151162d9adbb0f49c5c1141f2e22457933598a54098f1bf7"
+  },
+  "candidate": {
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "weebdex-platform/tests/ci/test_browser_exact_device_progress.mjs",
+      "weebdex-platform/tests/ci/test_browser_identity_key_controls.mjs",
+      "weebdex-platform/tests/ci/test_browser_device_continuity.mjs",
+      "weebdex-platform/tests/ci/test_browser_reader_continuation.mjs",
+      "weebdex-platform/tests/ci/test_browser_library_follow_diagnostics.mjs",
+      "weebdex-platform/tests/ci/test_browser_account_recovery.mjs",
+      "weebdex-platform/tests/ci/test_browser_select_controls.mjs"
+    ],
+    "exit": 0,
+    "seconds": 1.068,
+    "rawBytes": 6632,
+    "rawSha256": "f659f5a4c221763aaad08fe3199b0e78ea17485054c84a04c6fcee1d8da0f9c3",
+    "sourceCommit": "ed21d6421dff98553470cdd58d401d74877821c3"
+  }
+}

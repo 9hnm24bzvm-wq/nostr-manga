@@ -1,0 +1,97 @@
+{
+  "schema": "current-combined-protocol-matrix-plan-v1",
+  "utc": "2026-10-18T00:21:38.721420+00:00",
+  "integration_commit": "9e3d164d17c57f4d888ee3bafdbf05dbf7a2826d",
+  "integration_tree": "0a62a2575c83caa2ad287f7a5497897839168b97",
+  "backend_equivalent_to": "ec1b2160b8a37bd53acac7edcc5bbb0bac24ff0f",
+  "validation_worktree": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree",
+  "warm_target": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target",
+  "source_mutation_allowed": false,
+  "api_owner_lease_released": true,
+  "case_count": 18,
+  "targets": {
+    "upload_http": [
+      "persisted_upload_commit_reader_originals_derivatives_and_retries",
+      "persisted_upload_validation_file_removal_cancel_and_body_bounds",
+      "persisted_cover_upload_draft_privacy_list_update_variants_and_delete",
+      "signed_upload_pending_projection_is_truthful_owner_scoped_and_retry_stable",
+      "committed_signed_upload_becomes_readable_after_original_projection",
+      "atomic_page_replacement_expiry_reclamation_and_media_admission",
+      "restart_reconciliation_respects_journal_leases_references_and_proxy_streams"
+    ],
+    "public_uploads": [
+      "account_write_lock_allows_publication_fk_and_excludes_authority_changes",
+      "exact_nostr_upload_contracts_ownership_validation_and_original_commit",
+      "exact_nostr_page_replacement_preserves_identity_order_and_authority_fences"
+    ],
+    "protocol_bridge_http": [
+      "accepted_upload_rollback_recovers_source_media_covers_revocation_and_embedded_owner_lifecycle"
+    ],
+    "public_chapter_writes": [
+      "signed_chapter_metadata_claim_and_review_first_removal_preserve_authority"
+    ],
+    "public_manga_writes": [
+      "signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority"
+    ],
+    "public_relation_writes": [
+      "signed_relations_preserve_directional_identity_owner_versions_and_original_source"
+    ],
+    "public_relation_pages": [
+      "public_relation_pages_recover_all_4096_with_full_metadata_and_snapshot_guards"
+    ],
+    "public_editorial_drafts": [
+      "editorial_and_drafts_require_real_current_bound_authority_and_atomic_audit"
+    ],
+    "public_group_claims": [
+      "signed_group_claim_is_review_only_versioned_and_preserves_original_authority"
+    ],
+    "public_reports": [
+      "reports_use_genuine_bound_authority_private_scope_and_native_audit"
+    ]
+  },
+  "status": "paused_after_two_cases_for_status_successor_freeze_and_safe_headroom",
+  "free_bytes_at_plan": 4373909504,
+  "guard": {
+    "cargo_jobs": 1,
+    "cargo_incremental": 0,
+    "offline_locked": true,
+    "start_free_bytes": 4563402752,
+    "live_cleanup_reserve_bytes": 4429185024,
+    "fresh_postgres_guard_per_case": true,
+    "serial_runtime": true,
+    "retain_logs_source_and_executable_hashes_and_physical_cleanup_receipts": true,
+    "delete_databases": false
+  },
+  "api_current_results_reported": {
+    "lib_passed": 138,
+    "lib_ignored": 2,
+    "actual_route_probe": 113,
+    "seams_passed": [
+      "public_account_reads",
+      "public_catalogue_compatibility",
+      "public_catalogue_reads",
+      "public_statistics",
+      "public_list_follows"
+    ],
+    "seams_pending": [
+      "public_nostr_lists",
+      "library_http"
+    ]
+  },
+  "excluded_from_this_plan": [
+    "Licensed Ubunchu cache fixture; seven generated-image cases are explicit.",
+    "Historical compact-feed and other unchanged native API integration fixtures are not represented as current combined-run passes.",
+    "No duplicate independent entire matrix."
+  ],
+  "validation_source": "836ba3a19f3a7634896d899689ee10e4ff381947",
+  "completed_case_count": 2,
+  "remaining_case_count": 16,
+  "completed_cases": {
+    "public_chapter_writes": [
+      "signed_chapter_metadata_claim_and_review_first_removal_preserve_authority"
+    ],
+    "public_manga_writes": [
+      "signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority"
+    ]
+  }
+}

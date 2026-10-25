@@ -1,0 +1,1279 @@
+#!/usr/bin/env python3
+"""Disposable, supervised browser fixture. Never a production entrypoint.
+
+Runs one private PostgreSQL cluster, native Rust platform and reserved-address
+mail sink. No login password/token is generated or logged by this supervisor.
+The browser owns synthetic passwords; mail links are held only in sink memory.
+"""
+from __future__ import annotations
+import argparse, collections, ctypes, hashlib, io, json, os, re, shutil, signal, socket, subprocess, sys, tempfile, threading, time
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.client import HTTPConnection
+from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
+from urllib.request import build_opener, ProxyHandler, Request
+from urllib.error import HTTPError
+from PIL import Image, ImageDraw
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def resolve_pg_bin(environment, default):
+    """Select one explicit tool root, failing closed on an invalid override."""
+    if 'PLATFORM_TEST_PG_BIN' not in environment:
+        return default
+    value = environment['PLATFORM_TEST_PG_BIN']
+    if not isinstance(value, str) or not value or '\0' in value or not Path(value).is_absolute():
+        raise ValueError('PLATFORM_TEST_PG_BIN must be a nonempty absolute directory path')
+    return Path(value)
+
+
+PG_BIN = resolve_pg_bin(os.environ, ROOT.parent / 'manga-protocol-lab/vendor/pgsql/bin')
+NORMAL_PERMISSIONS = [
+    'self.library.read','self.user.update','self.preferences.update','client.create','self.client.update','self.client.delete',
+    'manga.create','author.create','scanlation_group.create','self.scanlation_group.update',
+    'chapter.create','self.chapter.update','self.chapter.remove','reply.create','self.reply.update',
+    'self.reply.remove','report.create',
+]
+STAFF_PERMISSIONS = NORMAL_PERMISSIONS + [
+    'author.update','author.delete','author.lock.update','scanlation_group.update','scanlation_group.delete',
+    'manga.update','manga.title.edit','manga.tag.edit','manga.author.edit','manga.artist.edit','manga.link.edit',
+    'manga.relation.edit','manga.state.update','manga.lock.update','manga.delete','manga.cover.edit',
+    'cover.delete','chapter.update','chapter.remove','chapter.delete','reply.update','reply.remove','reply.delete',
+    'report.update','report.delete','manga.remove','user.update','announcement.create','announcement.update','announcement.delete',
+]
+EMAIL = re.compile(r'^[A-Za-z0-9._+\-]{1,64}@example\.invalid$')
+OPENER = build_opener(ProxyHandler({}))
+IDS = {'manga':'SeedManga1','second_manga':'SeedManga2','group':'SeedGroup1','author':'SeedAuthr1',
+       'chapter':'SeedChapt1','next_chapter':'SeedChapt2','alternative_language_chapter':'SeedChapt3','cover':'SeedCover1','announcement':'SeedNews01',
+       'thread':'SeedThred1','seeder':'SeedStaff1'}
+SIGNED_PHASES={'signed-library','signed-profile','signed-social','signed-context','signed-source-controls','signed-namespace','signed-recipients','signed-restart'}
+PUBLIC_UPLOAD_PHASE='public-upload-recovery'
+PUBLIC_UPLOAD_CONTROLS={'upload-account','upload-snapshot'}
+UI_REGRESSION_CONTROLS={'ui-regressions-seed':120,'ui-regressions-readers':120,'ui-regressions-status':30,'ui-regressions-withdraw':30}
+PG_HOME_FAULT_CONTROLS={'pg-home-fault-begin','pg-home-fault-resume'}
+
+
+def free_port():
+    with socket.socket() as s:
+        s.bind(('127.0.0.1',0)); return s.getsockname()[1]
+
+
+def write_json(path, value):
+    # Mail admission and the main supervisor may publish receipts concurrently.
+    # Distinct private temporary files prevent one writer replacing another's.
+    temporary=None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w',dir=path.parent,prefix=path.name+'.',suffix='.new',delete=False)as output:
+            temporary=Path(output.name);output.write(json.dumps(value,indent=2)+'\n');output.flush();os.fsync(output.fileno())
+        temporary.replace(path)
+    finally:
+        if temporary and temporary.exists():temporary.unlink()
+
+
+def literal(value): return "'" + str(value).replace("'","''") + "'"
+
+
+def read_oversized_json_response(origin, data, observation, timeout=5):
+    """Observe a genuine early response on the original connection; never replay."""
+    parsed=urlsplit(origin)
+    if parsed.scheme!='http' or parsed.hostname!='127.0.0.1' or not parsed.port or origin!=f'http://127.0.0.1:{parsed.port}':raise ValueError('Exact owned loopback origin required')
+    if not isinstance(data,bytes) or len(data)!=1024*1024+1:raise ValueError('Exact oversized fixture body required')
+    if type(observation)is not dict or observation or isinstance(timeout,bool)or not isinstance(timeout,(int,float))or not 0<timeout<=5:raise ValueError('Bounded empty observation and deadline required')
+    observation.update(kind='same-connection-early-response',declared_body_bytes=len(data),completed_body_send_bytes=0,write_error_class=None,observed_status=None,response_body_complete=False)
+    deadline=time.monotonic()+timeout
+    connection=HTTPConnection('127.0.0.1',parsed.port,timeout=timeout)
+    response=None;owned_socket=None;failure=None
+    deadline_lock=threading.Lock();deadline_expired=threading.Event();deadline_socket=[None]
+    def interrupt():
+        deadline_expired.set()
+        with deadline_lock:current=deadline_socket[0]
+        if current is not None:
+            try:current.shutdown(socket.SHUT_RDWR)
+            except OSError:pass
+    watchdog=threading.Timer(max(0,deadline-time.monotonic()),interrupt)
+    watchdog.daemon=True
+    def budget(io=False):
+        remaining=deadline-time.monotonic()
+        if remaining<=0 or deadline_expired.is_set():raise TimeoutError('Oversized HTTP observation deadline exceeded')
+        if io and owned_socket is not None:owned_socket.settimeout(remaining)
+        return remaining
+    try:
+        watchdog.start()
+        connection.timeout=budget();connection.connect();owned_socket=connection.sock
+        with deadline_lock:deadline_socket[0]=owned_socket
+        budget()
+        connection.putrequest('POST','/api/manga')
+        connection.putheader('Origin',origin);connection.putheader('Content-Type','application/json')
+        connection.putheader('Content-Length',str(len(data)))
+        try:
+            budget(True);connection.endheaders();budget()
+            for offset in range(0,len(data),16384):
+                budget(True);chunk=data[offset:offset+16384];connection.send(chunk);observation['completed_body_send_bytes']+=len(chunk);budget()
+        except (BrokenPipeError,ConnectionResetError) as error:
+            # The peer can reject Content-Length before consuming the body.
+            # Retain the write failure, then read only this connection's response.
+            observation['write_error_class']=type(error).__name__
+        budget(True);response=connection.getresponse();budget()
+        observation['observed_status']=response.status
+        headers=response.getheaders()
+        lengths=[value for key,value in headers if key.lower()=='content-length']
+        if len(lengths)>1 or lengths and (not re.fullmatch(r'0|[1-9][0-9]{0,6}',lengths[0])or int(lengths[0])>1024*1024):raise RuntimeError('Oversized HTTP response framing rejected')
+        parts=[];total=0
+        while not response.isclosed():
+            budget(True);chunk=response.read1(min(65536,1024*1024+1-total));budget()
+            if not chunk:break
+            total+=len(chunk)
+            if total>1024*1024:raise RuntimeError('Oversized HTTP response budget exceeded')
+            parts.append(chunk)
+        budget()
+        if response.length is not None and response.length!=0 or lengths and int(lengths[0])!=total:raise RuntimeError('Incomplete oversized HTTP response')
+        observation['response_body_complete']=True
+        return response.status,b''.join(parts),dict((key.lower(),value)for key,value in headers)
+    except BaseException as error:
+        failure=error;raise
+    finally:
+        cleanup=[]
+        for resource in [response,connection]:
+            if resource is not None:
+                try:resource.close()
+                except BaseException as error:cleanup.append(type(error).__name__)
+        try:watchdog.cancel()
+        except BaseException as error:cleanup.append(type(error).__name__)
+        try:
+            if watchdog.ident is not None:watchdog.join(timeout=1)
+        except BaseException as error:cleanup.append(type(error).__name__)
+        observation['deadline_expired']=deadline_expired.is_set()or time.monotonic()>=deadline
+        observation['deadline_thread_settled']=not watchdog.is_alive()
+        if watchdog.is_alive():cleanup.append('deadline_thread_unsettled')
+        if failure is None and observation['deadline_expired']:cleanup.append('observation_deadline_expired')
+        if cleanup:
+            observation['response_body_complete']=False
+            if failure is None:raise RuntimeError('Owned HTTP cleanup failed: '+','.join(cleanup))
+            failure.add_note('Owned HTTP cleanup failed: '+','.join(cleanup))
+
+
+def public_upload_payload(action,payload):
+    if not isinstance(payload,dict):raise ValueError('Public upload fixture object required')
+    if action=='upload-account':
+        if set(payload)!={'pubkey'} or not isinstance(payload['pubkey'],str)or not re.fullmatch(r'[a-f0-9]{64}',payload['pubkey']):raise ValueError('Only the synthetic browser public key is allowed')
+    elif action=='upload-snapshot':
+        if set(payload)!={'session_id'} or not isinstance(payload['session_id'],str)or not re.fullmatch(r'[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}',payload['session_id']):raise ValueError('Exact owned public session UUID required')
+    else:raise ValueError('Unknown public upload fixture action')
+    return dict(payload)
+
+
+class Fixture:
+    def __init__(self,args):
+        self.args=args; self.run=Path(tempfile.mkdtemp(prefix='browser-final-',dir=ROOT/'test-runtime'))
+        self.run.chmod(0o700); self.stop=threading.Event(); self.lock=threading.Lock()
+        self.mail=collections.deque(maxlen=128); self.mail_count=0; self.provisions=0
+        ports=set()
+        def reserve():
+            while True:
+                port=free_port()
+                if port not in ports and port>1024 and port!=5432:ports.add(port);return port
+        self.pg_port=reserve(); self.http_port=reserve(); self.mail_port=reserve(); self.protocol_port=reserve();self.recipient_port=reserve()
+        self.origin=f'http://127.0.0.1:{self.http_port}'; self.mail_origin=f'http://127.0.0.1:{self.mail_port}'
+        self.protocol_origin=f'http://127.0.0.1:{self.protocol_port}'; self.protocol_lock=threading.Lock()
+        self.protocol_accounts=set();self.provision_counter=0;self.protocol_next_check=0;self.protocol_enabled=bool(args.protocol_provisioner)
+        self.recipient_enabled=args.second_protocol_recipient;self.recipient_origin=f'http://127.0.0.1:{self.recipient_port}'
+        self.ui_regression_controls=args.ui_regression_controls
+        self.public_upload_controls=args.public_upload_controls;self.public_upload_actions=0
+        self.pg_home_fault_controls=args.pg_home_fault_controls;self.pg_fault=None;self.browser_kind=None
+        self.maintenance=threading.Event();self.controls_completed=set();self.generation=0;self.lifecycle_ever_forced=False
+        self.ui_dir=self.run/'frontend-snapshot'
+        self.children={}; self.logs={}; self.sink=None; self.sink_thread=None
+        self.process_roots={};self.owned_identities={};self.process_actions=[];self.reaped_descendants=[];self.process_tracking_errors=[];self.process_ownership_lock=threading.RLock();self.sync_command_count=0
+        # This dedicated supervisor adopts only its own orphaned descendants.
+        # Original strfry commands deliberately use a different PGID while
+        # inheriting the owned session. A leader-only kill is insufficient.
+        libc=ctypes.CDLL(None,use_errno=True)
+        if libc.prctl(36,1,0,0,0)!=0:raise OSError(ctypes.get_errno(),'fixture child subreaper unavailable')
+        if not hasattr(os,'pidfd_open')or not hasattr(signal,'pidfd_send_signal'):raise RuntimeError('fixture identity-safe pidfd signalling unavailable')
+        self.started=time.time(); self.ready_at=None; self.warning_sent=False
+        self.browser=None; self.browser_deadline=None; self.browser_phase=None; self.browser_completed=set()
+        self.receipt={'fixture_only':True,'production':False,'credentials_generated_by_supervisor':False,
+                      'database':'weebdex_browser_test','run_directory':str(self.run),'started_unix':self.started,
+                      'postgres_bin_root':str(PG_BIN),
+                      'platform_origin':self.origin,'mail_origin':self.mail_origin,'ids':IDS,'children':{},'listener_lifecycle':[]}
+        write_json(self.run/'supervisor.json',self.receipt)
+        write_json(self.run/'fixture-owned.json',{'fixture_only':True,'database':'weebdex_browser_test','pg_port':self.pg_port,'public_upload_controls':self.public_upload_controls})
+    def environment(self):
+        # Explicit safe tool/runtime environment; no live account/provider secrets
+        # are inherited by PostgreSQL, Rust, provisioner or Chromium children.
+        allowed={'PATH','HOME','TMPDIR','TMP','TEMP','LANG','LC_ALL','LC_CTYPE','LD_LIBRARY_PATH','SSL_CERT_FILE','SSL_CERT_DIR'}
+        return {key:value for key,value in os.environ.items() if key in allowed}
+    def snapshot_ui(self):
+        source=Path(self.args.ui_dir)
+        if source.is_symlink()or not source.is_dir():raise RuntimeError('Unsafe frontend fixture artifact root')
+        source=source.resolve();manifest_path=Path(self.args.frontend_artifact_manifest)
+        if manifest_path.is_symlink()or not manifest_path.is_file()or manifest_path.stat().st_size>2*1024*1024:raise RuntimeError('Frontend manifest file bounds')
+        manifest_bytes=manifest_path.read_bytes();manifest_hash=hashlib.sha256(manifest_bytes).hexdigest()
+        if not self.args.frontend_artifact_manifest_sha256 or manifest_hash!=self.args.frontend_artifact_manifest_sha256:raise RuntimeError('Reviewed complete frontend manifest hash required')
+        manifest=json.loads(manifest_bytes);rows=manifest.get('files')
+        if not isinstance(rows,list)or not 1<=len(rows)<=10000:raise RuntimeError('Frontend manifest membership bounds')
+        expected={}
+        for row in rows:
+            name=row.get('path');size=row.get('bytes');digest=row.get('sha256')
+            if not isinstance(name,str)or not name or len(name)>2048 or '\\'in name or Path(name).is_absolute()or any(part in ['.','..']for part in name.split('/'))or name!=str(Path(name))or name in expected:raise RuntimeError('Unsafe or duplicate frontend manifest member')
+            if isinstance(size,bool)or not isinstance(size,int)or not 0<=size<=64*1024*1024 or not isinstance(digest,str)or not re.fullmatch(r'[0-9a-f]{64}',digest):raise RuntimeError('Frontend manifest member bounds')
+            expected[name]={'bytes':size,'sha256':digest}
+        if manifest.get('file_count')!=len(expected)or manifest.get('total_bytes')!=sum(row['bytes']for row in expected.values())or manifest['total_bytes']>64*1024*1024:raise RuntimeError('Frontend manifest summary mismatch')
+        self.frontend_expected=expected
+        count,total=self.verify_frontend(source)
+        index=source/'index.html';digest=hashlib.sha256(index.read_bytes()).hexdigest()
+        if not self.args.frontend_index_sha256 or digest!=self.args.frontend_index_sha256:raise RuntimeError('Frontend fixture index hash mismatch')
+        shutil.copytree(source,self.ui_dir,symlinks=True)
+        self.verify_frontend(self.ui_dir)
+        for directory,dirs,files in os.walk(self.ui_dir,topdown=False):
+            for name in files:(Path(directory)/name).chmod(0o400)
+            Path(directory).chmod(0o500)
+        self.receipt['frontend']={'source':str(source),'index_sha256':digest,'artifact_manifest_sha256':manifest_hash,'exact_membership_verified':True,'source_and_snapshot_byte_hashes_verified':True,'snapshot_files_and_dirs':count,'snapshot_bytes':total,'immutable_private_snapshot':True,'snapshot_read_only':True}
+    def verify_frontend(self,root):
+        if root.is_symlink()or not root.is_dir():raise RuntimeError('Unsafe frontend snapshot root')
+        count=0;total=0;actual={};directories=set()
+        expected_dirs={str(parent)for name in self.frontend_expected for parent in Path(name).parents if str(parent)!='.'}
+        for directory,dirs,files in os.walk(root,followlinks=False):
+            for name in dirs+files:
+                path=Path(directory)/name
+                if path.is_symlink() or not (path.is_dir() or path.is_file()):raise RuntimeError('Unsafe frontend fixture artifact')
+                count+=1
+                relative=str(path.relative_to(root))
+                if path.is_dir():directories.add(relative)
+                else:
+                    size=path.stat().st_size;total+=size
+                    if relative not in self.frontend_expected or size!=self.frontend_expected[relative]['bytes']:raise RuntimeError('Frontend artifact membership or length mismatch')
+                    actual[relative]=hashlib.sha256(path.read_bytes()).hexdigest()
+                if count>10000 or total>64*1024*1024:raise RuntimeError('Frontend fixture artifact budget')
+        if set(actual)!=set(self.frontend_expected)or directories!=expected_dirs or any(actual[name]!=row['sha256']for name,row in self.frontend_expected.items()):raise RuntimeError('Frontend artifact byte hashes or exact membership changed')
+        if 'index.html'not in actual or self.frontend_expected['index.html']['bytes']>2*1024*1024:raise RuntimeError('Frontend artifact index bounds')
+        return count,total
+    def provision_protocol(self,action,payload,timeout=30):
+        if not self.protocol_enabled:raise RuntimeError('Original fixture provisioner is disabled')
+        with self.protocol_lock:
+            if self.stop.is_set():raise RuntimeError('Fixture is draining; no new provisioner action')
+            self.provision_counter+=1;name=f'provisioner-{action}-{self.provision_counter}'
+            request=self.run/(name+'.json');write_json(request,dict(payload,root=str(self.run)))
+            env=self.provisioner_env(action)
+            process=self.spawn(name,[str(self.args.protocol_provisioner),action,str(request)],env)
+            forced=False
+            try:process.wait(timeout=timeout)
+            except subprocess.TimeoutExpired:
+                forced=True;self.signal_owned(process,signal.SIGTERM)
+                try:process.wait(timeout=5)
+                except subprocess.TimeoutExpired:self.force_stop(process)
+            forced=self.finish_owned_group(process)or forced
+            self.logs.pop(name).close()
+            self.update_child_receipt(name,{'returncode':process.returncode,'verified_stopped':process.poll()is not None and not self.process_members(process),'forced':forced})
+            write_json(self.run/'supervisor.json',self.receipt)
+            if forced or process.returncode:raise RuntimeError('Original fixture provisioner action failed: '+action)
+            log=self.run/(name+'.log')
+            if log.stat().st_size>65536:raise RuntimeError('Original provisioner receipt bound')
+            try:value=json.loads(log.read_text().splitlines()[-1])
+            except (ValueError,IndexError):raise RuntimeError('Original fixture receipt unavailable')
+            if value.get('fixture_only') is not True:raise RuntimeError('Original fixture receipt marker missing')
+            return value
+    def provisioner_env(self,action):
+        env=self.environment();database='weebdex_browser_recipient_test'if action.startswith('recipient-')else'weebdex_browser_test'
+        env['WEEBDEX_BROWSER_FIXTURE_DSN']=f'host=127.0.0.1 port={self.pg_port} dbname={database}'
+        return env
+    def public_upload(self,action,payload):
+        # Exact test-only targets are fixed in the provisioner. This supervisor
+        # receives a public key or public session UUID, never a browser secret.
+        if not self.public_upload_controls or not self.protocol_enabled or action not in PUBLIC_UPLOAD_CONTROLS:raise ValueError('Public upload fixture is not enabled')
+        payload=public_upload_payload(action,payload)
+        if self.browser and self.browser.poll()is None and self.browser_kind!=PUBLIC_UPLOAD_PHASE:raise ValueError('Only the reviewed public upload browser phase may use these controls')
+        if self.browser and self.browser.poll()is None and self.browser_deadline-time.monotonic()<30:raise ValueError('Public upload action cannot fit the active browser deadline')
+        if not self.ready_at or self.receipt['deadline_unix']-time.time()<30:raise ValueError('Public upload action cannot fit the remaining fixture lifetime')
+        with self.lock:
+            if self.public_upload_actions>=32:raise ValueError('Public upload fixture action budget reached')
+            self.public_upload_actions+=1
+        receipt=self.provision_protocol(action,payload,timeout=20)
+        if receipt.get('scenario')!='public-upload-v1':raise RuntimeError('Public upload fixture receipt marker missing')
+        if action=='upload-account':
+            with self.lock:
+                self.receipt['public_upload'].update(receipt)
+                write_json(self.run/'supervisor.json',self.receipt)
+        return receipt
+    def protocol_setup(self):
+        setup=self.provision_protocol('setup',{'ui_origin':self.origin,'protocol_origin':self.protocol_origin,
+                        'backend_binary':str((ROOT.parent/'manga-protocol-lab/vendor/strfry/strfry').resolve())},timeout=90)
+        config=json.loads((self.run/'platform.json').read_text())
+        config['protocol_publication']=json.loads((self.run/'protocol-runtime.json').read_text())
+        config['protocol_connect_origins']=[self.protocol_origin,self.protocol_origin.replace('http://','ws://',1)]
+        write_json(self.run/'platform.json',config)
+        self.receipt.update(protocol_origin=self.protocol_origin,relay_origin=setup['relay_origin'],service_key=setup['service_key'],operator_pubkey=setup['operator_pubkey'])
+        self.receipt['protocol_setup']=setup
+        self.receipt['protocol_recipients']=[{'origin':self.protocol_origin,'relay_origin':setup['relay_origin'],'service_key':setup['service_key']}]
+        self.receipt['fixture_control']={'fixture_only':True,'command_file':str(self.run/'fixture-control-command.json'),'results_dir':str(self.run/'control-results'),'allowed_actions':['source-revoke','source-restore','catalogue-rebuild','runtime-restart']+(['peer-policy']if self.recipient_enabled else[]),'listener_restart_requires_explicit_consent':True}
+        if self.ui_regression_controls:
+            self.receipt['fixture_control']['allowed_actions']+=list(UI_REGRESSION_CONTROLS)
+            self.receipt['fixture_control']['ui_regression_controls']={'fixture_only':True,'enabled':True,'seeded':False,'deadline_seconds':UI_REGRESSION_CONTROLS,'native_only':True,'arbitrary_targets_allowed':False}
+        if self.pg_home_fault_controls:
+            self.receipt['fixture_control']['allowed_actions']+=sorted(PG_HOME_FAULT_CONTROLS)
+            self.receipt['fixture_control']['pg_home_fault']={'fixture_only':True,'enabled':True,'outage_seconds':15,'independent_restart_watchdog':True,'allowed_browser_kind':'ui14-home-failures','maximum_faults':1}
+        if self.public_upload_controls:
+            self.receipt['fixture_control']['allowed_actions']+=sorted(PUBLIC_UPLOAD_CONTROLS)
+            self.receipt['public_upload']={'fixture_only':True,'enabled':True,'scenario':'public-upload-v1','account_endpoint':self.mail_origin+'/fixture/protocol/upload-account','snapshot_endpoint':self.mail_origin+'/fixture/protocol/upload-snapshot','maximum_sessions':2,'maximum_current_files':3,'maximum_original_bytes':512,'private_browser_key_received':False}
+        if self.recipient_enabled:
+            recipient=self.provision_protocol('recipient-setup',{'recipient_origin':self.recipient_origin},timeout=90)
+            config['protocol_connect_origins'] += [self.recipient_origin,recipient['relay_origin']]
+            # Original outbound destination policy otherwise correctly rejects
+            # plaintext/private hosts. Limit fixture exceptions to the two
+            # recorded services, rather than weakening its production defaults.
+            config['protocol_publication']['native_node']['discovery_private_overrides']=[self.recipient_origin]
+            write_json(self.run/'protocol-runtime.json',config['protocol_publication'])
+            recipient_node=json.loads((self.run/'recipient-node.json').read_text())
+            recipient_node['discovery_private_overrides']=[self.protocol_origin]
+            write_json(self.run/'recipient-node.json',recipient_node)
+            write_json(self.run/'platform.json',config)
+            self.receipt['protocol_recipients'].append({'origin':recipient['origin'],'relay_origin':recipient['relay_origin'],'service_key':recipient['service_key']})
+            self.receipt['recipient_setup']=recipient
+            self.receipt['peer_policy']=self.provision_protocol('peer-policy',{'allowed':True},timeout=30)
+    def prepare_protocol_images(self):
+        destination=self.run/'signed-seed-input';destination.mkdir()
+        if self.args.ubunchu_noncommercial:
+            manifest=json.loads((ROOT/'tests/fixtures/ubunchu-manifest.json').read_text())
+            source=ROOT/'.cache/fixtures/ubunchu'/manifest['revision'];rows=[]
+            for entry in manifest['files']:
+                path=source/entry['path'];body=path.read_bytes()
+                if len(body)!=entry['bytes'] or hashlib.sha256(body).hexdigest()!=entry['sha256']:raise RuntimeError('Ubunchu fixture hash mismatch')
+                target=destination/entry['path'];target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(body)
+                if entry['role']!='license_notice':rows.append(dict(entry,fixture_path=str(target)))
+            chapters=[{'chapter':number,'title':'Ubunchu! local noncommercial fixture chapter '+str(number),
+                       'pages':[row['fixture_path'] for row in rows if row['chapter']==number]}for number in (1,2)]
+            value={'title':'Ubunchu! original-backed local fixture','description':'Japanese original; disposable noncommercial local test. Original PNG unchanged; derivatives are locally resized/compressed.',
+                   'attribution':'Ubunchu! by Hiroshi Seo (Seotch); publisher ASCII MEDIA WORKS Inc. Source https://gitlab.com/ubunchu-translators/ubunchu revision '+manifest['revision']+' and https://seotch.wordpress.com/ubunchu/ . Supplied notices CC BY-NC3.0 https://creativecommons.org/licenses/by-nc/3.0/ and CC BY-NC2.1JP https://creativecommons.org/licenses/by-nc/2.1/jp/ . No endorsement implied.',
+                   'language':'ja','cover':next(row['fixture_path']for row in rows if row['chapter']==1 and row['role']=='story_page'),'chapters':chapters}
+            self.receipt['licensed_image_fixture']={'enabled':True,'manifest_sha256':hashlib.sha256((ROOT/'tests/fixtures/ubunchu-manifest.json').read_bytes()).hexdigest(),'images':len(rows),'image_outputs_and_screenshots_excluded_from_checkpoint':True,'source_modified':False}
+        else:
+            cover=destination/'cover.png';Image.new('RGB',(400,600),(70,40,110)).save(cover)
+            chapters=[]
+            for number in (1,2):
+                pages=[]
+                for page in (1,2,3):
+                    path=destination/f'chapter-{number}-page-{page}.png';image=Image.new('RGB',(600,3600 if number==1 and page==1 else 900),(number*45,page*45,80));ImageDraw.Draw(image).text((35,45),f'Synthetic canonical fixture {number}/{page}',fill='white');image.save(path);pages.append(str(path))
+                chapters.append({'chapter':number,'title':'Synthetic canonical fixture chapter '+str(number),'pages':pages})
+            value={'title':'Synthetic original-backed fixture','description':'Real signed1002/1001 publications with generated local PNG.','attribution':'Synthetic fixture creator; no third-party artwork.','language':'en','cover':str(cover),'chapters':chapters}
+        path=self.run/'protocol-seed-input.json';write_json(path,value)
+        return path
+    def protocol_seed(self):
+        path=self.prepare_protocol_images()
+        self.receipt['protocol_seed_accepted']=self.provision_protocol('seed',{'seed_input':str(path)},timeout=120)
+    def protocol_readiness(self,deadline=None):
+        def budget(seconds):
+            remaining=seconds if deadline is None else min(seconds,deadline-time.monotonic())
+            if remaining<=0:raise RuntimeError('Protocol recovery observation deadline exceeded')
+            return remaining
+        if time.monotonic()<self.protocol_next_check:return False
+        self.protocol_next_check=time.monotonic()+1
+        status=self.provision_protocol('status',{},timeout=budget(15))
+        self.receipt['protocol_seed']=status
+        if not status.get('fully_ready'):return False
+        # Read the real exported platform namespace/capabilities and require the
+        # backend's exact reviewed service target, rather than trusting fixture JSON.
+        with OPENER.open(self.origin+'/api/protocol/capabilities',timeout=budget(3))as response:http=response.status;capabilities=json.loads(response.read(65537))
+        if http!=200 or not capabilities.get('available') or capabilities.get('origin')!=self.protocol_origin or capabilities.get('service_key')!=self.receipt['service_key'] or capabilities.get('catalog_namespace')!=status['catalog_namespace']:return False
+        request={'resources':[{'kind':'manga','id':status['series']['native_id']}]+[{'kind':'chapter','id':row['native_id']}for row in status['chapters']]}
+        with OPENER.open(Request(self.origin+'/api/protocol/resources',data=json.dumps(request).encode(),headers={'Content-Type':'application/json','Origin':self.origin},method='POST'),timeout=budget(5))as response:actual=json.loads(response.read(65537))
+        expected={status['series']['event_id']}|{row['event_id']for row in status['chapters']}
+        if {row['event_id']for row in actual.get('data',[])}!=expected:return False
+        self.receipt['protocol_capabilities']=capabilities
+        return True
+    def spawn(self,name,command,env=None):
+        if name in self.children:
+            previous=self.children[name]
+            if previous.poll() is None:raise RuntimeError('Refusing to replace a live owned child')
+            old=self.logs.pop(name,None)
+            if old:old.close()
+            self.receipt['listener_lifecycle'].append(dict(self.receipt['children'][name],name=name,returncode=previous.returncode))
+        log=(self.run/f'{name}-generation-{self.generation}.log' if name in ['platform','recipient']else self.run/f'{name}.log').open('wb'); self.logs[name]=log
+        # Serialize Popen birth/registration against the adopted-child reaper.
+        # Even a child which exits immediately remains its Popen's wait owner.
+        with self.process_ownership_lock:
+            process=subprocess.Popen(command,cwd=ROOT,env=env or self.environment(),stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+            self.register_process(name,process)
+        write_json(self.run/'supervisor.json',self.receipt); return process
+    def register_process(self,name,process):
+        # Caller holds process_ownership_lock continuously from Popen creation.
+        self.children[name]=process
+        row=self.process_row(process.pid)
+        if not row or row['group']!=process.pid or row['session']!=process.pid:raise RuntimeError('Owned child session identity unavailable')
+        key=(row['pid'],row['start_ticks']);self.process_roots[process]=dict(row,name=name);self.owned_identities[key]=key
+        self.receipt['children'][name]={'pid':process.pid,'pgid':process.pid,'session':row['session'],'start_ticks':row['start_ticks'],'started_unix':time.time(),'forced':False,'ever_forced':False}
+    def update_child_receipt(self,name,value):
+        # Per-generation history is monotonic, even if final cleanup finds an
+        # already stopped child and performs no additional forced operation.
+        with self.process_ownership_lock:
+            previous=self.receipt['children'][name]
+            ever_forced=bool(previous.get('ever_forced')or previous.get('forced')or value.get('forced'))
+            previous.update(value);previous['forced']=ever_forced;previous['ever_forced']=ever_forced
+            self.lifecycle_ever_forced=self.lifecycle_ever_forced or ever_forced
+            return dict(previous)
+    def run_owned(self,command,*,input=None,text=False,env=None,timeout,cwd=None):
+        # A synchronous psql/initdb/probe/migrate command is still a registered
+        # direct child. Only its Popen may collect its exit status; orphan reaping
+        # cannot turn a genuine failure into Python's ECHILD fallback success.
+        with self.process_ownership_lock:
+            self.sync_command_count+=1;name=f'synchronous-{self.sync_command_count}'
+            process=subprocess.Popen(command,cwd=cwd or ROOT,env=env or self.environment(),stdin=subprocess.PIPE if input is not None else subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=text,start_new_session=True)
+            self.register_process(name,process)
+        forced=False
+        try:
+            try:stdout,stderr=process.communicate(input=input,timeout=timeout)
+            except subprocess.TimeoutExpired:
+                forced=True;self.signal_owned(process,signal.SIGTERM)
+                try:process.communicate(timeout=5)
+                except subprocess.TimeoutExpired:self.force_stop(process)
+                self.finish_owned_group(process)
+                raise RuntimeError('Owned synchronous fixture command exceeded its deadline')
+            forced=self.finish_owned_group(process)
+            if forced or self.process_members(process):raise RuntimeError('Owned synchronous fixture command left unresolved descendants')
+            if process.returncode is None:raise RuntimeError('Owned synchronous command return code is unconfirmed')
+            return subprocess.CompletedProcess(command,process.returncode,stdout,stderr)
+        finally:
+            self.update_child_receipt(name,{'returncode':process.returncode,'verified_stopped':process.poll()is not None and not self.process_members(process),'forced':forced})
+            for stream in [process.stdin,process.stdout,process.stderr]:
+                if stream and not stream.closed:stream.close()
+    def psql(self,sql,database='weebdex_browser_test'):
+        result=self.run_owned([str(PG_BIN/'psql'),'-X','-qAt','-v','ON_ERROR_STOP=1','-h','127.0.0.1','-p',str(self.pg_port),'-d',database],
+                              input=sql,text=True,env=self.environment(),timeout=15)
+        if result.returncode:
+            (self.run/'psql-error.log').write_text(result.stderr)
+            raise RuntimeError('Disposable SQL operation failed; private psql error log retained')
+        return result.stdout.strip()
+    def request(self,path):
+        with OPENER.open(self.origin+path,timeout=3) as response: return response.status,response.read(),dict(response.headers)
+    def wait(self,name,condition,seconds=30):
+        end=time.monotonic()+seconds
+        while time.monotonic()<end:
+            if self.stop.is_set():raise RuntimeError('Fixture stop requested during readiness')
+            if self.ready_at and time.time()>=self.receipt['deadline_unix']:raise RuntimeError('Bounded fixture deadline reached during control')
+            if any(self.children[key].poll() is not None for key in ['postgres','platform','recipient'] if key in self.children): raise RuntimeError('Owned core child exited during startup')
+            try:
+                if condition(): return
+            except (OSError,RuntimeError): pass
+            time.sleep(.1)
+        raise RuntimeError(f'{name} startup readiness deadline exceeded')
+    def start_pg(self):
+        init=self.run_owned([str(PG_BIN/'initdb'),'-D',str(self.run/'data'),'--auth-local=reject','--auth-host=trust','--no-locale','--encoding=UTF8'],
+                            env=self.environment(),timeout=30)
+        (self.run/'initdb.log').write_bytes(init.stdout+init.stderr)
+        if init.returncode: raise RuntimeError('Disposable initdb failed')
+        self.spawn('postgres',[str(PG_BIN/'postgres'),'-D',str(self.run/'data'),'-k','','-h','127.0.0.1','-p',str(self.pg_port),
+                  '-c','max_connections=32','-c','shared_buffers=16MB','-c','fsync=off','-c','full_page_writes=off'])
+        self.wait('postgres',lambda: self.run_owned([str(PG_BIN/'pg_isready'),'-h','127.0.0.1','-p',str(self.pg_port),'-d','postgres'],
+                  env=self.environment(),timeout=2).returncode==0)
+        self.psql('CREATE DATABASE weebdex_browser_test;',database='postgres')
+        if self.recipient_enabled:self.psql('CREATE DATABASE weebdex_browser_recipient_test;',database='postgres')
+    def config(self):
+        uploads=self.run/'uploads'; uploads.mkdir()
+        config={'production':False,'fixture_feed_diagnostics':True,'protocol_read_only':False,'bind':f'127.0.0.1:{self.http_port}',
+                'public_origin':self.origin,'ui_dir':str(self.ui_dir),'uploads_dir':str(uploads),
+                'database_connections':8,'database_plaintext_local':True,'maximum_requests':32,'registration_enabled':True,
+                'json_body_timeout_seconds':30,'upload_body_timeout_seconds':180,'shutdown_grace_seconds':210,
+                'auth_mail':{'endpoint':self.mail_origin+'/send','from':'fixture@example.invalid','allow_loopback_test_sink':True}}
+        write_json(self.run/'platform.json',config)
+        return config
+    def migrate(self):
+        env=self.environment(); env['PLATFORM_CONFIG']=str(self.run/'platform.json')
+        env['PLATFORM_DATABASE_URL']=f'host=127.0.0.1 port={self.pg_port} dbname=weebdex_browser_test'
+        # Compiler-produced immutable executable is reused. No Cargo invocation.
+        result=self.run_owned([str(self.args.binary),'migrate'],cwd=ROOT/'backend',env=env,timeout=60)
+        (self.run/'migrate.log').write_bytes(result.stdout+result.stderr)
+        if result.returncode: raise RuntimeError('Platform migration failed in disposable database')
+        self.platform_env=env
+    def image_object(self,image,extension):
+        out=io.BytesIO(); image.save(out,format={'png':'PNG','jpg':'JPEG','webp':'WEBP'}[extension],quality=70)
+        body=out.getvalue(); digest=hashlib.sha256(body).hexdigest(); key=hashlib.sha256(('fixture:'+digest).encode()).hexdigest()
+        path=self.run/'uploads/objects'/key[:2]/key; path.parent.mkdir(parents=True,exist_ok=True); path.write_bytes(body)
+        mime={'png':'image/png','jpg':'image/jpeg','webp':'image/webp'}[extension]
+        sql=f"INSERT INTO platform.media_objects(id,digest,storage_key,mime,extension,bytes,width,height) VALUES({literal(digest)},{literal(digest)},{literal(key)},{literal(mime)},{literal(extension)},{len(body)},{image.width},{image.height}) ON CONFLICT(id) DO NOTHING;"
+        return digest,sql
+    def seed(self):
+        # Explicit test provisioning establishes persisted native fixture rows,
+        # not production users or signed protocol authority. No session is seeded.
+        statements=['BEGIN;',f"INSERT INTO platform.users(id,username,email,password_hash,verified,roles,permissions) VALUES('SeedStaff1','FixtureSeeder','fixtureseeder@example.invalid','not-a-login-password-hash',TRUE,'[\"staff\"]',{literal(json.dumps(STAFF_PERMISSIONS))}::jsonb);"]
+        statements += ["INSERT INTO platform.catalog_tags(id,name,tag_group) VALUES('SeedGenre1','Fixture Adventure','genre'),('SeedTheme1','Fixture Mystery','theme');",
+                       "INSERT INTO platform.catalog_authors(id,owner_id,owner_name,name) VALUES('SeedAuthr1','SeedStaff1','FixtureSeeder','Fixture Creator');",
+                       "INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name,metadata) VALUES('SeedGroup1','SeedStaff1','FixtureSeeder','Fixture Scanlation Team','{\"description\":\"Synthetic local browser group.\"}');",
+                       "INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader,is_officer) VALUES('SeedGroup1','SeedStaff1','FixtureSeeder',TRUE,TRUE);"]
+        for identifier,title,status,year in [('SeedManga1','Fixture Adventure','ongoing',2026),('SeedManga2','Fixture Mystery','completed',2024)]:
+            metadata={'description':'Synthetic local integration story. Every image and account belongs to this disposable fixture.','alt_titles':{'ja':['試験物語']},'links':{}}
+            statements.append(f"INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,year,language,publication_status,content_rating,state,metadata,published_at) VALUES({literal(identifier)},'SeedStaff1','FixtureSeeder',{literal(title)},{year},'ja',{literal(status)},'safe','published',{literal(json.dumps(metadata,ensure_ascii=False))}::jsonb,clock_timestamp());")
+            statements.append(f"INSERT INTO platform.catalog_manga_creators(manga_id,author_id,role) VALUES({literal(identifier)},'SeedAuthr1','author');")
+            statements.append(f"INSERT INTO platform.catalog_manga_tags(manga_id,tag_id) VALUES({literal(identifier)},{literal('SeedGenre1' if identifier=='SeedManga1' else 'SeedTheme1')});")
+            thread='SeedThred1' if identifier=='SeedManga1' else 'SeedThred2'
+            statements.append(f"INSERT INTO platform.catalog_threads(id,entity_type,entity_id,author_id,author_name,subject) VALUES({literal(thread)},'manga',{literal(identifier)},'SeedStaff1','FixtureSeeder',{literal(title+' discussion')});")
+        for number,identifier in [(1,'SeedChapt1'),(2,'SeedChapt2'),(3,'SeedChapt3')]:
+            pages=[]; optimized=[]
+            for page in range(1,4):
+                image=Image.new('RGB',(600,3600 if number==1 and page==1 else 900),(20+number*35,30+page*35,90+number*25)); drawing=ImageDraw.Draw(image)
+                drawing.rectangle((28,28,572,872),outline='white',width=4)
+                drawing.text((55,65),f'Synthetic fixture / Chapter {number} / Page {page}',fill='white')
+                drawing.text((55,105),'Disposable local browser test; no upstream content',fill='white')
+                digest,sql=self.image_object(image,'png'); statements.append(sql)
+                name=f'SeedPg{number}{page:03d}.png'; assert len(name.split('.')[0])==10
+                pages.append({'name':name,'dimensions':[image.width,image.height]})
+                statements.append(f"INSERT INTO platform.chapter_pages(chapter_id,name,object_id,position) VALUES({literal(identifier)},{literal(name)},{literal(digest)},{page-1});")
+                fast=image.resize((300,image.height//2)); digest,sql=self.image_object(fast,'jpg'); statements.append(sql)
+                name=f'FastPg{number}{page:03d}.jpg'; assert len(name.split('.')[0])==10
+                optimized.append({'name':name,'dimensions':[fast.width,fast.height]})
+                statements.append(f"INSERT INTO platform.chapter_page_derivatives(chapter_id,name,object_id,position) VALUES({literal(identifier)},{literal(name)},{literal(digest)},{page-1});")
+            metadata={'node':self.origin,'data':pages,'data_optimized':optimized}
+            chapter_sql=f"INSERT INTO platform.catalog_chapters(id,manga_id,uploader_id,uploader_name,title,volume,chapter,language,metadata) VALUES({literal(identifier)},'SeedManga1','SeedStaff1','FixtureSeeder',{literal('Synthetic chapter '+str(1 if number==3 else number))},'1',{literal(str(1 if number==3 else number))},{literal('ja' if number==3 else 'en')},{literal(json.dumps(metadata))}::jsonb);"
+            # Chapter must exist before media join rows; all physical objects are
+            # staged only inside this disposable fixture, never original authority.
+            insert_at=len(statements)-12
+            statements.insert(insert_at,chapter_sql)
+            statements.append(f"INSERT INTO platform.catalog_chapter_groups(chapter_id,group_id) VALUES({literal(identifier)},'SeedGroup1');")
+            statements.append(f"INSERT INTO platform.catalog_threads(id,entity_type,entity_id,author_id,author_name,subject) VALUES({literal('SeedCThr'+str(number).zfill(2))},'chapter',{literal(identifier)},'SeedStaff1','FixtureSeeder','Fixture chapter discussion');")
+        cover=Image.new('RGB',(400,600),(80,40,120)); ImageDraw.Draw(cover).text((25,35),'Synthetic Fixture Cover',fill='white')
+        statements.append("INSERT INTO platform.catalog_covers(id,manga_id,uploader_id,uploader_name,ext,dimensions,is_main,language) VALUES('SeedCover1','SeedManga1','SeedStaff1','FixtureSeeder','png',ARRAY[400,600],TRUE,'ja');")
+        for variant,dimension,extension in [('original',400,'png'),('256',256,'webp'),('512',512,'webp')]:
+            width=min(dimension,cover.width)
+            image=cover if variant=='original' else cover.resize((width,int(width*1.5)))
+            digest,sql=self.image_object(image,extension);statements.append(sql)
+            statements.append(f"INSERT INTO platform.cover_media(cover_id,variant,object_id) VALUES('SeedCover1',{literal(variant)},{literal(digest)});")
+        statements += ["INSERT INTO platform.catalog_threads(id,entity_type,entity_id,author_id,author_name,subject) VALUES('SeedGThrd1','group','SeedGroup1','SeedStaff1','FixtureSeeder','Fixture group discussion');",
+                       "INSERT INTO platform.community_replies(thread_id,reply_number,author_id,body) VALUES('SeedThred1',1,'SeedStaff1','Synthetic fixture discussion starter.');",
+                       "UPDATE platform.catalog_threads SET next_reply_number=2 WHERE id='SeedThred1';",
+                       "INSERT INTO platform.announcements(id,author_id,title,body,pinned,published,published_at) VALUES('SeedNews01','SeedStaff1','Local integration announcement','This is a synthetic, persisted announcement in a disposable browser fixture.',TRUE,TRUE,clock_timestamp());",
+                       'COMMIT;']
+        sql='\n'.join(statements); (self.run/'fixture-seed.sql').write_text(sql)
+        self.psql(sql)
+        self.receipt['seed']={'native_only':True,'protocol_signed_publications':False,'pages':9,'chapters':3,'same_title_languages':['en','ja'],'tall_page_dimensions':[600,3600],'cover_variants':3,'real_image_bytes':True,'password_or_session_seeded':False}
+        write_json(self.run/'supervisor.json',self.receipt)
+    def start_sink(self):
+        fixture=self
+        class Handler(BaseHTTPRequestHandler):
+            protocol_version='HTTP/1.1'
+            def setup(self):
+                super().setup();self.connection.settimeout(5)
+            def log_message(self,*args): pass
+            def respond(self,status,value):
+                body=json.dumps(value).encode();self.send_response(status)
+                self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(body)))
+                self.send_header('Cache-Control','no-store');self.send_header('Access-Control-Allow-Origin',fixture.origin)
+                self.send_header('Access-Control-Allow-Headers','Content-Type');self.end_headers();self.wfile.write(body)
+            def do_OPTIONS(self): self.respond(200,{'fixture_only':True})
+            def do_GET(self):
+                url=urlsplit(self.path)
+                if url.path=='/healthz': return self.respond(200,{'fixture_only':True,'status':'ready'})
+                if url.path=='/fixture/state':
+                    with fixture.lock: data={'fixture_only':True,'mail_accepted':fixture.mail_count,'provisions':fixture.provisions,'ids':IDS,'protocol_enabled':fixture.protocol_enabled,'protocol_seed':fixture.receipt.get('protocol_seed')}
+                    return self.respond(200,data)
+                if url.path=='/mail/latest':
+                    q=parse_qs(url.query);to=q.get('to',[''])[0].lower();kind=q.get('kind',[''])[0]
+                    if not EMAIL.fullmatch(to) or kind not in ['verification','recovery']: return self.respond(400,{'error':'reserved synthetic target and kind required'})
+                    with fixture.lock: matches=[m for m in fixture.mail if m['to']==to and m['kind']==kind]
+                    if not matches: return self.respond(404,{'error':'no accepted fixture mail'})
+                    # Link is never printed/persisted in a supervisor receipt.
+                    return self.respond(200,{'fixture_only':True,'link':matches[-1]['link'],'kind':kind})
+                return self.respond(404,{'error':'unknown fixture endpoint'})
+            def do_POST(self):
+                if fixture.stop.is_set() or fixture.maintenance.is_set():return self.respond(503,{'error':'fixture is draining or intentionally rebuilding'})
+                try:
+                    length=int(self.headers.get('Content-Length','0'))
+                    if not 0<length<=65536: return self.respond(413,{'error':'fixture body bounds'})
+                    value=json.loads(self.rfile.read(length))
+                    if not isinstance(value,dict): raise ValueError()
+                except (ValueError,OSError): return self.respond(400,{'error':'invalid fixture JSON'})
+                origin=self.headers.get('Origin')
+                if origin is not None and origin!=fixture.origin: return self.respond(403,{'error':'fixture origin denied'})
+                if self.path=='/send':
+                    to=str(value.get('to','')).lower();subject=str(value.get('subject',''));text=str(value.get('text',''))
+                    if not EMAIL.fullmatch(to): return self.respond(403,{'error':'fixture delivery accepts example.invalid only'})
+                    links=re.findall(r'https?://[^\s]+',text)
+                    if len(links)!=1 or not links[0].startswith(fixture.origin+'/auth/self-service/'): return self.respond(400,{'error':'fixture link origin mismatch'})
+                    kind='verification' if '/verification?' in links[0] else 'recovery' if '/recovery?' in links[0] else ''
+                    if not kind: return self.respond(400,{'error':'unsupported fixture message'})
+                    with fixture.lock: fixture.mail.append({'to':to,'kind':kind,'link':links[0]});fixture.mail_count+=1
+                    return self.respond(202,{'accepted':True,'fixture_only':True})
+                if self.path in ['/fixture/protocol/account','/fixture/protocol/recipient-account']:
+                    if not fixture.protocol_enabled:return self.respond(503,{'error':'combined original fixture unavailable'})
+                    recipient=self.path.endswith('/recipient-account')
+                    if recipient and not fixture.recipient_enabled:return self.respond(404,{'error':'second original recipient is disabled'})
+                    if set(value)!={'pubkey','allowed'} or not re.fullmatch(r'[a-f0-9]{64}',str(value.get('pubkey',''))) or not isinstance(value.get('allowed'),bool):return self.respond(400,{'error':'explicit synthetic public key and admission decision required'})
+                    public=value['pubkey']
+                    with fixture.lock:
+                        if public not in fixture.protocol_accounts and len(fixture.protocol_accounts)>=16:return self.respond(429,{'error':'synthetic account admission fixture budget'})
+                        fixture.protocol_accounts.add(public)
+                    try:receipt=fixture.provision_protocol('recipient-account'if recipient else'account',{'pubkey':public,'allowed':value['allowed']},timeout=15)
+                    except RuntimeError:return self.respond(503,{'error':'original admission did not complete'})
+                    return self.respond(200,receipt)
+                if self.path in ['/fixture/protocol/upload-account','/fixture/protocol/upload-snapshot']:
+                    if not fixture.public_upload_controls:return self.respond(404,{'error':'public upload fixture controls are disabled'})
+                    action=self.path.rsplit('/',1)[-1]
+                    try:receipt=fixture.public_upload(action,value)
+                    except ValueError:return self.respond(400,{'error':'bounded explicit public upload fixture target required'})
+                    except RuntimeError:return self.respond(503,{'error':'public upload fixture action did not complete'})
+                    return self.respond(200,receipt)
+                if self.path=='/fixture/provision':
+                    if set(value)-{'email','profile','join_seed_group'}: return self.respond(400,{'error':'unsupported provisioning field'})
+                    email=str(value.get('email','')).lower();profile=value.get('profile','user');join=value.get('join_seed_group',False)
+                    if not EMAIL.fullmatch(email) or email=='fixtureseeder@example.invalid' or profile not in ['user','moderator','staff'] or not isinstance(join,bool): return self.respond(400,{'error':'reserved browser account/profile required'})
+                    permissions=NORMAL_PERMISSIONS if profile=='user' else STAFF_PERMISSIONS
+                    sql=f"BEGIN; UPDATE platform.users SET roles={literal(json.dumps([profile]))}::jsonb,permissions={literal(json.dumps(permissions))}::jsonb,version=version+1 WHERE lower(email)={literal(email)} AND NOT disabled;"
+                    if join: sql+=f" INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader,is_officer) SELECT 'SeedGroup1',id,username,TRUE,TRUE FROM platform.users WHERE lower(email)={literal(email)} ON CONFLICT(group_id,user_id) DO UPDATE SET is_leader=TRUE,is_officer=TRUE;"
+                    sql+=f" SELECT jsonb_build_object('id',id,'verified',verified,'profile',{literal(profile)}) FROM platform.users WHERE lower(email)={literal(email)}; COMMIT;"
+                    try: result=fixture.psql(sql)
+                    except RuntimeError: return self.respond(503,{'error':'disposable provision unavailable'})
+                    if not result: return self.respond(404,{'error':'register the synthetic browser account first'})
+                    try: result=json.loads(result.splitlines()[-1])
+                    except ValueError: return self.respond(503,{'error':'provision receipt unavailable'})
+                    with fixture.lock: fixture.provisions+=1
+                    return self.respond(200,{'fixture_only':True,'account':result,'password_or_verification_changed':False})
+                return self.respond(404,{'error':'unknown fixture endpoint'})
+        self.sink=ThreadingHTTPServer(('127.0.0.1',self.mail_port),Handler)
+        self.sink.daemon_threads=False;self.sink.block_on_close=True
+        self.sink_thread=threading.Thread(target=self.sink.serve_forever,daemon=True);self.sink_thread.start()
+    def start(self):
+        binary=Path(self.args.binary).resolve()
+        if not binary.is_file() or not os.access(binary,os.X_OK):raise RuntimeError('Reviewed platform executable unavailable')
+        digest=hashlib.sha256(binary.read_bytes()).hexdigest()
+        if self.args.expected_sha256 and digest!=self.args.expected_sha256:raise RuntimeError('Compiler binary hash mismatch')
+        self.args.binary=binary;self.receipt['binary']={'path':str(binary),'sha256':digest}
+        if self.protocol_enabled:
+            provisioner=Path(self.args.protocol_provisioner).resolve()
+            if not provisioner.is_file() or not os.access(provisioner,os.X_OK):raise RuntimeError('Reviewed original fixture provisioner executable unavailable')
+            digest=hashlib.sha256(provisioner.read_bytes()).hexdigest()
+            if not self.args.provisioner_sha256 or digest!=self.args.provisioner_sha256:raise RuntimeError('Compiler fixture provisioner hash mismatch')
+            self.args.protocol_provisioner=provisioner
+            self.receipt['protocol_provisioner']={'path':str(provisioner),'sha256':digest}
+        stages=[('immutable-ui',self.snapshot_ui),('postgres',self.start_pg),('configuration',self.config)]
+        if self.protocol_enabled:stages.append(('original-schema-and-authorities',self.protocol_setup))
+        stages += [('platform-migrations',self.migrate),('synthetic-native-seed',self.seed)]
+        if self.protocol_enabled:stages.append(('real-signed-source-seed',self.protocol_seed))
+        stages.append(('local-mail-sink',self.start_sink))
+        for stage,operation in stages:
+            self.receipt['stage']=stage;write_json(self.run/'supervisor.json',self.receipt);operation()
+        self.start_listeners()
+        status,body,headers=self.request('/api/manga/SeedManga1')
+        if status!=200 or json.loads(body)['title']!='Fixture Adventure':raise RuntimeError('Native catalogue seed unavailable')
+        status,body,headers=self.request('/data/SeedChapt1/SeedPg1001.png')
+        if status!=200 or not body.startswith(b'\x89PNG'):raise RuntimeError('Native image seed unavailable')
+        self.ready_at=time.time();self.receipt['ready_unix']=self.ready_at
+        self.receipt['deadline_unix']=self.ready_at+self.args.lifetime_seconds
+        self.receipt['status']='http_ready_pending_operational_checks';write_json(self.run/'supervisor.json',self.receipt)
+        print('FIXTURE_READY '+json.dumps({'run_directory':str(self.run),'platform_origin':self.origin,'mail_origin':self.mail_origin,'protocol_origin':self.receipt.get('protocol_origin'),'deadline_unix':self.receipt['deadline_unix'],'ids':IDS}),flush=True)
+    @staticmethod
+    def closed(port):
+        with socket.socket()as probe:
+            probe.settimeout(.5);return probe.connect_ex(('127.0.0.1',port))!=0
+    @staticmethod
+    def process_row(pid):
+        try:
+            fields=Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()
+            return {'pid':pid,'state':fields[0],'ppid':int(fields[1]),'group':int(fields[2]),'session':int(fields[3]),'start_ticks':int(fields[19])}
+        except (FileNotFoundError,ProcessLookupError):return None
+    @staticmethod
+    def process_identity(row):return {key:row[key]for key in ['pid','start_ticks','group','session']}
+    def owned_members(self,process=None):
+        rows={}
+        for entry in Path('/proc').iterdir():
+            if entry.name.isdigit():
+                row=self.process_row(int(entry.name))
+                if row:rows[row['pid']]=row
+        with self.process_ownership_lock:
+            roots={(row['pid'],row['start_ticks']):row for row in self.process_roots.values()}
+            target=None if process is None else (self.process_roots[process]['pid'],self.process_roots[process]['start_ticks'])
+            remembered=dict(self.owned_identities)
+        members=[]
+        for row in rows.values():
+            key=(row['pid'],row['start_ticks']);owner=remembered.get(key)
+            if owner==('adopted',0):owner=None # A concurrently spawned root can now identify it.
+            if key in roots:owner=key
+            if owner is None:
+                for root_key,root in roots.items():
+                    leader=rows.get(root['pid'])
+                    # PID reuse cannot adopt a later unrelated session. A still
+                    # inhabited leaderless session retains its kernel SID.
+                    if row['session']==root['session']and (leader is None or leader['start_ticks']==root['start_ticks']):owner=root_key;break
+            if owner is None:
+                ancestor=row;seen=set()
+                while ancestor and ancestor['pid']not in seen:
+                    seen.add(ancestor['pid']);ancestor_key=(ancestor['pid'],ancestor['start_ticks'])
+                    if ancestor_key in roots:owner=ancestor_key;break
+                    if ancestor_key in remembered:owner=remembered[ancestor_key];break
+                    if ancestor['ppid']==os.getpid():owner=('adopted',0);break
+                    ancestor=rows.get(ancestor['ppid'])
+            if owner is not None:
+                with self.process_ownership_lock:self.owned_identities[key]=owner
+                if target is None or owner==target:members.append(row)
+        return members
+    def reap_owned(self):
+        # Hold the same lock through selection and waitpid, so no newly created
+        # direct Popen can appear after the exclusion snapshot. Popen.poll uses
+        # its own wait lock and retains the actual status for communicate/wait.
+        with self.process_ownership_lock:
+            processes=list(self.process_roots);leaders={(row['pid'],row['start_ticks'])for row in self.process_roots.values()}
+            for process in processes:process.poll()
+            for row in self.owned_members():
+                if row['state']=='Z'and row['ppid']==os.getpid()and (row['pid'],row['start_ticks'])not in leaders:
+                    current=self.process_row(row['pid'])
+                    if current and self.process_identity(current)==self.process_identity(row):
+                        try:
+                            pid,status=os.waitpid(row['pid'],os.WNOHANG)
+                            if pid:self.reaped_descendants.append(dict(self.process_identity(row),wait_status=status))
+                        except ChildProcessError:pass
+    def signal_owned(self,process,signum,leader_only=False):
+        # Capture the full tree before signalling its leader. Changed-PGID and
+        # changed-session descendants retain an exact observed birth identity.
+        members=self.owned_members(process)
+        for row in members:
+            if row['state']=='Z'or (leader_only and row['pid']!=process.pid):continue
+            fd=None
+            try:
+                fd=os.pidfd_open(row['pid']);current=self.process_row(row['pid'])
+                if current and self.process_identity(current)==self.process_identity(row):
+                    signal.pidfd_send_signal(fd,signum)
+                    if len(self.process_actions)<4096:self.process_actions.append(dict(self.process_identity(row),signal=int(signum),pidfd=True))
+            except ProcessLookupError:pass
+            except OSError as error:
+                if len(self.process_tracking_errors)<256:self.process_tracking_errors.append(dict(self.process_identity(row),errno=error.errno,signal=int(signum)))
+            finally:
+                if fd is not None:os.close(fd)
+    def process_members(self,process):
+        self.reap_owned();members=self.owned_members(process)
+        if not members:
+            time.sleep(.02);self.reap_owned();members=self.owned_members(process)
+        return [self.process_identity(row)for row in members]
+    def finish_owned_group(self,process):
+        self.reap_owned();forced=bool(self.owned_members(process))
+        for signum,seconds in [(signal.SIGTERM,5),(signal.SIGKILL,5)]:
+            deadline=time.monotonic()+seconds
+            while time.monotonic()<deadline:
+                self.reap_owned()
+                if not self.process_members(process):return forced
+                self.signal_owned(process,signum);time.sleep(.05)
+        self.reap_owned();return forced
+    def force_stop(self,process):
+        self.signal_owned(process,signal.SIGKILL)
+        try:process.wait(timeout=5)
+        except subprocess.TimeoutExpired:pass # Final receipt must retain it.
+    def recipient_ready(self):
+        nonce=hashlib.sha256(b'fixture owned recipient readiness').hexdigest()
+        with OPENER.open(self.recipient_origin+'/identity?nonce='+nonce,timeout=3)as response:
+            value=json.loads(response.read(65537))
+            return response.status==200 and value.get('pubkey')==self.receipt['recipient_setup']['service_key'] and value.get('kind')==20005 and ['nonce',nonce]in value.get('tags',[])and ['endpoint',self.recipient_origin]in value.get('tags',[])
+    def start_listeners(self):
+        if self.stop.is_set():raise RuntimeError('Fixture stop requested before restart')
+        self.verify_frontend(self.ui_dir)
+        marker=self.run/'listeners-stopped.json'
+        if marker.exists():marker.unlink()
+        self.generation+=1
+        # Remove joined prior generations from readiness's live-child set.
+        for name in ['platform','recipient']:
+            old=self.children.get(name)
+            if old and old.poll() is not None:
+                log=self.logs.pop(name,None)
+                if log:log.close()
+                self.receipt['listener_lifecycle'].append(dict(self.receipt['children'][name],name=name,returncode=old.returncode))
+                del self.children[name]
+        deadline=time.monotonic()+90
+        self.spawn('platform',[str(self.args.binary),'serve'],self.platform_env)
+        if self.recipient_enabled:
+            path=self.run/f'recipient-serve-{self.generation}.json';write_json(path,{'root':str(self.run)})
+            self.spawn('recipient',[str(self.args.protocol_provisioner),'recipient-serve',str(path)],self.provisioner_env('recipient-serve'))
+        self.wait('platform',lambda:self.request('/readyz')[0]==200,seconds=min(60,max(1,deadline-time.monotonic())))
+        if self.recipient_enabled:self.wait('actual second recipient identity',self.recipient_ready,seconds=min(45,max(1,deadline-time.monotonic())))
+        if self.protocol_enabled:
+            self.protocol_next_check=0
+            self.wait('genuine original projection/import/mapping',self.protocol_readiness,seconds=max(1,deadline-time.monotonic()))
+    def stop_listeners(self):
+        outcomes={}
+        # Send both shutdown signals before joining either, so their drain bounds
+        # overlap and the fixture cannot claim success from an elapsed timeout.
+        for name in ['platform','recipient']:
+            child=self.children.get(name)
+            if child and child.poll() is None:self.signal_owned(child,signal.SIGTERM,leader_only=True)
+        deadline=time.monotonic()+220
+        for name in ['platform','recipient']:
+            child=self.children.get(name)
+            if not child:continue
+            try:child.wait(timeout=max(.1,deadline-time.monotonic()))
+            except subprocess.TimeoutExpired:raise RuntimeError('Owned listener drain incomplete: '+name)
+            group_deadline=min(deadline,time.monotonic()+5)
+            while self.process_members(child)and time.monotonic()<group_deadline:time.sleep(.05)
+            outcome={'pid':child.pid,'pgid':child.pid,'returncode':child.returncode,'verified_stopped':child.poll() is not None,'forced':False,'remaining_group_members':self.process_members(child)}
+            outcome=self.update_child_receipt(name,outcome);outcomes[name]=outcome
+            if child.returncode!=0 or outcome['remaining_group_members']:raise RuntimeError('Owned listener terminal drain failed: '+name)
+        ports=[self.http_port]+([self.protocol_port]if self.protocol_enabled else[])+([self.recipient_port]if self.recipient_enabled else[])
+        if not all(self.closed(port)for port in ports):raise RuntimeError('Joined fixture listener port remains open')
+        unassigned=[row for row in self.owned_members()if self.owned_identities[(row['pid'],row['start_ticks'])]==('adopted',0)]
+        if unassigned or self.process_tracking_errors:raise RuntimeError('Unconfirmed adopted fixture descendants prevent offline mutation')
+        write_json(self.run/'listeners-stopped.json',{'fixture_only':True,'verified_stopped':True,'ports_closed':True,'generation':self.generation,'processes':outcomes})
+        return outcomes
+    def read_http(self,url,method='GET',data=None,timeout=5):
+        request=Request(url,data=json.dumps(data).encode()if data is not None else None,headers={'Origin':self.origin,'Content-Type':'application/json'},method=method)
+        try:response=OPENER.open(request,timeout=timeout)
+        except HTTPError as error:response=error
+        with response:
+            body=response.read(1024*1024+1)
+            if len(body)>1024*1024:raise RuntimeError('Fixture control observation exceeded response budget')
+            return response.status,json.loads(body)if 'json'in response.headers.get('Content-Type','')else None
+    def revoked_source_observed(self,event):
+        state=self.provision_protocol('source-status',{'event_id':event},timeout=15)
+        if not state['removed_terminal'] or state['visible']:return False
+        source_status,_=self.read_http(self.protocol_origin+'/events/'+event)
+        seed=self.receipt['protocol_seed'];rows=[seed['series']]+seed['chapters']
+        kind='manga'if event==seed['series']['event_id']else'chapter'
+        row=next(row for row in rows if row['event_id']==event)
+        status,mapping=self.read_http(self.origin+'/api/protocol/resources','POST',{'resources':[{'kind':kind,'id':row['native_id']}]})
+        return source_status==404 and status==200 and not mapping.get('data')
+    def pg_fault_state(self):
+        path=self.pg_fault['state_path']
+        if not path.exists():return None
+        if path.is_symlink()or not path.is_file()or path.stat().st_size>65536:raise RuntimeError('Private PG watchdog receipt bounds')
+        value=json.loads(path.read_text())
+        if value.get('fixture_only')is not True or value.get('request_id')!=self.pg_fault['request_id']:raise RuntimeError('Private PG watchdog receipt identity mismatch')
+        return value
+    def wait_pg_fault(self,condition,seconds):
+        deadline=time.monotonic()+seconds
+        while time.monotonic()<deadline:
+            process=self.pg_fault['process']
+            value=self.pg_fault_state()
+            if value and condition(value):return value
+            if process.poll()is not None:raise RuntimeError('Owned PG restart watchdog exited before requested state')
+            time.sleep(.05)
+        raise RuntimeError('Owned PG restart watchdog deadline exceeded')
+    def install_pg_restart_owner(self):
+        original=self.children['postgres'];process=self.pg_fault['process']
+        if original.poll()is None or self.process_members(original)or process.poll()is not None:raise RuntimeError('Exact original PG must be joined before watchdog ownership handoff')
+        old=self.update_child_receipt('postgres',{'returncode':original.returncode,'verified_stopped':True,'forced':False,'planned_dependency_fault':True})
+        name='pg-fault-watchdog-'+self.pg_fault['request_id']
+        with self.process_ownership_lock:
+            self.receipt['listener_lifecycle'].append(dict(old,name='postgres'))
+            self.children.pop(name);replacement=self.receipt['children'].pop(name)
+            self.children['postgres']=process;self.receipt['children']['postgres']=dict(replacement,kind='owned_fixed_cluster_restart_watchdog')
+            self.process_roots[process]['name']='postgres';self.pg_fault['slot_installed']=True
+        write_json(self.run/f'pg-home-fault-{self.pg_fault["request_id"]}.start',{'fixture_only':True,'original_cluster_joined':True})
+    def begin_pg_home_fault(self,request_id):
+        if self.pg_fault is not None:raise ValueError('Only one bounded PG home fault is allowed per disposable fixture')
+        if not self.receipt['protocol_seed'].get('fully_ready'):raise ValueError('PG home fault requires the intact ready source fixture')
+        original=self.children['postgres'];record=self.process_roots[original]
+        if original.poll()is not None:raise RuntimeError('Original owned PG is not alive')
+        binary=(PG_BIN/'postgres').resolve();binary_hash=hashlib.sha256(binary.read_bytes()).hexdigest()
+        watchdog=ROOT/'tests/runtime/browser_pg_fault_watchdog.py'
+        request=self.run/f'pg-home-fault-{request_id}.json'
+        write_json(request,{'root':str(self.run),'request_id':request_id,'pg_identity':self.process_identity(record),'supervisor_identity':self.process_identity(self.process_row(os.getpid())),'postgres_binary_sha256':binary_hash})
+        name='pg-fault-watchdog-'+request_id
+        process=self.spawn(name,[sys.executable,str(watchdog),str(request)])
+        self.pg_fault={'request_id':request_id,'process':process,'state_path':self.run/f'pg-home-fault-{request_id}-state.json','resume_path':self.run/f'pg-home-fault-{request_id}.resume','slot_installed':False,'postgres_binary_sha256':binary_hash,'catalog_namespace':self.receipt['protocol_seed']['catalog_namespace']}
+        self.wait_pg_fault(lambda value:value.get('status')=='armed',5)
+        self.maintenance.set()
+        self.signal_owned(original,signal.SIGINT,leader_only=True)
+        try:original.wait(timeout=15)
+        except subprocess.TimeoutExpired:raise RuntimeError('Original PG planned fast stop did not complete')
+        until=time.monotonic()+5
+        while self.process_members(original)and time.monotonic()<until:time.sleep(.05)
+        if original.returncode!=0 or self.process_members(original)or not self.closed(self.pg_port):raise RuntimeError('Original PG cluster stop is unconfirmed')
+        # The watchdog now owns the actual replacement cluster through teardown.
+        # Keep it in the existing postgres lifecycle slot, not a detached server.
+        self.install_pg_restart_owner()
+        state=self.wait_pg_fault(lambda value:value.get('status')=='outage',5)
+        status,body=self.read_http(self.origin+'/api/chapter/updates?limit=1')
+        if status!=503 or not isinstance(body,dict)or body.get('code')!='unavailable':raise RuntimeError('Real native dependency503 was not observed')
+        public=dict(state,active=True,native503_observed={'path':'/api/chapter/updates?limit=1','status':status,'code':body['code']},watchdog_terminal=False)
+        self.receipt['pg_home_fault']=public;self.receipt['protocol_seed']['fully_ready']=False
+        return public
+    def resume_pg_home_fault(self,*,cleanup=False):
+        if not self.pg_fault:raise ValueError('No recorded PG fault may be resumed')
+        if not self.pg_fault['slot_installed']and self.children['postgres'].poll()is not None:
+            # A stop/handoff exception must still recover an already stopped PG.
+            # The armed watchdog can have restarted it independently by now.
+            self.install_pg_restart_owner()
+        if not self.pg_fault['slot_installed']:
+            # The cluster was never replaced; stop only the armed watchdog. The
+            # existing original PG remains owned by the normal final teardown.
+            process=self.pg_fault['process'];self.signal_owned(process,signal.SIGTERM,leader_only=True)
+            try:process.wait(timeout=5)
+            except subprocess.TimeoutExpired:self.force_stop(process)
+            if self.process_members(process):raise RuntimeError('Unactivated PG watchdog cleanup is unconfirmed')
+            preserved=self.children['postgres'].poll()is None and not self.closed(self.pg_port)
+            return {'fixture_only':True,'activated':False,'original_cluster_preserved':preserved}
+        recovery_deadline=time.monotonic()+60
+        write_json(self.pg_fault['resume_path'],{'fixture_only':True,'resume_requested':True})
+        state=self.wait_pg_fault(lambda value:value.get('status')=='ready',35)
+        if hashlib.sha256((PG_BIN/'postgres').read_bytes()).hexdigest()!=self.pg_fault['postgres_binary_sha256']or state.get('postgres_binary_sha256')!=self.pg_fault['postgres_binary_sha256']:raise RuntimeError('Replacement PG executable hash changed')
+        deadline=min(recovery_deadline,time.monotonic()+8)
+        while time.monotonic()<deadline:
+            try:
+                ready,_=self.read_http(self.origin+'/readyz',timeout=min(3,max(.1,deadline-time.monotonic())))
+                status,body=self.read_http(self.origin+'/api/chapter/updates?limit=1',timeout=min(3,max(.1,deadline-time.monotonic())))
+                if ready==200 and status==200 and isinstance(body,dict)and isinstance(body.get('data'),list):break
+            except OSError:pass
+            time.sleep(.1)
+        else:raise RuntimeError('Native readiness/read did not recover after real PG restart')
+        if not cleanup:
+            self.protocol_next_check=0
+            if not self.protocol_readiness(deadline=recovery_deadline)or self.receipt['protocol_seed']['catalog_namespace']!=self.pg_fault['catalog_namespace']:raise RuntimeError('Original protocol mappings/namespace did not recover unchanged')
+        if not cleanup:self.maintenance.clear()
+        public=dict(state,active=False,native_recovery={'readyz_status':ready,'read_status':status},watchdog_terminal=False,fixed_cluster_preserved=True)
+        self.receipt['pg_home_fault']=public;return public
+    def fixture_controls(self):
+        command=self.run/'fixture-control-command.json'
+        if not command.exists():return
+        request_id=None;accepted=False
+        try:
+            if command.is_symlink()or not command.is_file()or command.stat().st_size>4096:raise ValueError('private fixture control bounds')
+            value=json.loads(command.read_text());request_id=value['request_id'];action=value['action']
+            if set(value)-{'request_id','action','event_id','allowed','browser_phase','allow_listener_restart','scenario','pubkey','session_id'}:raise ValueError('unsupported private control field')
+            if not self.protocol_enabled or not re.fullmatch(r'[A-Za-z0-9_-]{1,48}',request_id)or request_id in self.controls_completed:raise ValueError('private control identity')
+            if action not in self.receipt['fixture_control']['allowed_actions']:raise ValueError('unknown private control action')
+            live=self.browser and self.browser.poll()is None
+            if live and value.get('browser_phase')!=self.browser_phase:raise ValueError('active owned browser phase acknowledgment required')
+            restarting=action in ['source-restore','catalogue-rebuild','runtime-restart']
+            if restarting and value.get('allow_listener_restart')is not True:raise ValueError('explicit listener restart acknowledgment required')
+            if restarting and live and self.browser_deadline-time.monotonic()<430:raise ValueError('restart controls require a bounded signed phase with sufficient drain/readiness time')
+            if restarting and self.receipt['deadline_unix']-time.time()<430:raise ValueError('fixture observation window cannot contain restart control')
+            payload={}
+            action_timeout=90
+            public_upload=action in PUBLIC_UPLOAD_CONTROLS
+            if public_upload:
+                field='pubkey'if action=='upload-account'else'session_id'
+                if set(value)-{'request_id','action','browser_phase',field}:raise ValueError('Only the named public upload control fields are allowed')
+                payload=public_upload_payload(action,{field:value.get(field)});action_timeout=20
+                if not self.public_upload_controls or not self.ready_at or self.receipt['deadline_unix']-time.time()<30:raise ValueError('Public upload control cannot fit the opted-in fixture lifetime')
+                if live and (self.browser_kind!=PUBLIC_UPLOAD_PHASE or self.browser_deadline-time.monotonic()<30):raise ValueError('Public upload control requires its bounded active browser phase')
+            elif 'pubkey'in value or 'session_id'in value:raise ValueError('Public upload targets are reserved for their opt-in controls')
+            pg_home_fault=action in PG_HOME_FAULT_CONTROLS
+            if self.pg_fault and self.receipt.get('pg_home_fault',{}).get('active')and action!='pg-home-fault-resume':raise ValueError('Resume the recorded PG dependency fault before another private control')
+            if pg_home_fault:
+                if not self.pg_home_fault_controls or set(value)-{'request_id','action','browser_phase'}:raise ValueError('Only the named owned PG home fault fields are allowed')
+                if action=='pg-home-fault-begin'and (not live or self.browser_kind!='ui14-home-failures'):raise ValueError('PG home fault requires its active reviewed browser phase')
+                if live and self.browser_deadline-time.monotonic()<80:raise ValueError('PG home fault cannot fit the active browser deadline')
+                if self.receipt['deadline_unix']-time.time()<80:raise ValueError('PG home fault cannot fit the fixture window')
+            ui_regression=action in UI_REGRESSION_CONTROLS
+            if ui_regression:
+                if not self.ui_regression_controls or set(value)-{'request_id','action','browser_phase','scenario'}:raise ValueError('named native UI regression control fields required')
+                action_timeout=UI_REGRESSION_CONTROLS[action]
+                if live and self.browser_deadline-time.monotonic()<action_timeout+20:raise ValueError('native UI regression control cannot fit the active browser deadline')
+                if self.receipt['deadline_unix']-time.time()<action_timeout+20:raise ValueError('native UI regression control cannot fit the fixture window')
+                if action=='ui-regressions-seed':
+                    if value.get('scenario')!='pagination':raise ValueError('explicit named pagination scenario required')
+                    payload={'scenario':'pagination','ui_origin':self.origin}
+                elif action=='ui-regressions-withdraw':
+                    if value.get('scenario')not in ['terminal','entity']:raise ValueError('only recorded terminal/entity regression withdrawal allowed')
+                    payload={'scenario':value['scenario']}
+                elif 'scenario'in value:raise ValueError('this named regression control has no scenario parameter')
+                if action!='ui-regressions-seed'and not self.receipt.get('ui_regressions'):raise ValueError('named pagination fixture must be seeded first')
+                if action=='ui-regressions-readers':payload={'ui_origin':self.origin}
+            elif 'scenario'in value:raise ValueError('scenario is reserved for named native UI regressions')
+            if action in ['source-revoke','source-restore']:
+                event=value.get('event_id');seed=self.receipt['protocol_seed']
+                if event not in {seed['series']['event_id']}|{row['event_id']for row in seed['chapters']}:raise ValueError('only recorded fixture source may be moderated')
+                payload={'event_id':event}
+            if action=='peer-policy':
+                if not isinstance(value.get('allowed'),bool):raise ValueError('explicit recorded peer policy required')
+                payload={'allowed':value['allowed']}
+            if action in ['source-revoke','runtime-restart','catalogue-rebuild']and not self.receipt['protocol_seed'].get('fully_ready'):raise ValueError('restore the intentionally revoked seed before another restart/rebuild/revocation')
+            (self.run/'control-commands').mkdir(exist_ok=True);(self.run/'control-results').mkdir(exist_ok=True)
+            command.replace(self.run/'control-commands'/(request_id+'.json'));accepted=True;self.controls_completed.add(request_id)
+            print('FIXTURE_CONTROL_STARTED '+json.dumps({'request_id':request_id,'action':action,'intentional_listener_restart':restarting}),flush=True)
+            result={'fixture_only':True,'request_id':request_id,'action':action,'success':False,'started_unix':time.time()}
+            self.receipt['status']='intentional_control_in_progress';write_json(self.run/'supervisor.json',self.receipt)
+            if restarting:
+                self.maintenance.set();result['listeners_stopped']=self.stop_listeners()
+            if action=='pg-home-fault-begin':operation=self.begin_pg_home_fault(request_id)
+            elif action=='pg-home-fault-resume':operation=self.resume_pg_home_fault()
+            elif action=='runtime-restart':operation={'fixture_only':True,'runtime_restart':True}
+            elif public_upload:operation=self.public_upload(action,payload)
+            else:operation=self.provision_protocol(action,payload,timeout=action_timeout)
+            result['operation']=operation
+            if pg_home_fault:result['pg_home_fault']=operation
+            if ui_regression:
+                descriptor=operation.get('ui_regressions')if action=='ui-regressions-withdraw'else operation
+                if not isinstance(descriptor,dict)or descriptor.get('fixture_only')is not True or descriptor.get('native_only')is not True or descriptor.get('scenario')!='ui-regressions-v1':raise RuntimeError('Named native UI regression receipt was not confirmed')
+                self.receipt['ui_regressions']=descriptor
+                self.receipt['fixture_control']['ui_regression_controls']['seeded']=True
+                result['ui_regressions']=descriptor
+            if action=='source-revoke':
+                self.wait('genuine source withdrawal and public mapping removal',lambda:self.revoked_source_observed(payload['event_id']),seconds=90)
+                self.receipt['protocol_seed']=self.provision_protocol('status',{},timeout=15)
+            if action=='catalogue-rebuild':
+                self.seed() # Native rows only; canonical source/account data survive.
+                with self.lock:self.mail.clear()
+                # Native regression rows are part of the rebuilt disposable
+                # schema; old persisted descriptors must never claim they exist.
+                self.receipt.pop('ui_regressions',None)
+                if self.ui_regression_controls:self.receipt['fixture_control']['ui_regression_controls']['seeded']=False
+                for name in ['ui-regressions.json','ui-regression-readers.json']:
+                    path=self.run/name
+                    if path.exists()or path.is_symlink():
+                        if path.is_symlink()or not path.is_file()or path.stat().st_size>65536:raise RuntimeError('Native regression descriptor changed during disposable rebuild')
+                        path.unlink() # Exact private cached receipt, not source data.
+            if restarting:
+                before=self.receipt['service_key'];self.start_listeners()
+                if self.receipt['service_key']!=before:raise RuntimeError('Fixture restart changed service identity')
+                if action=='catalogue-rebuild'and self.receipt['protocol_seed']['catalog_namespace']!=operation['catalog_namespace']:raise RuntimeError('Rebuilt genuine namespace mismatch')
+                self.maintenance.clear()
+            result.update(success=True,completed_unix=time.time(),protocol_seed=self.receipt['protocol_seed'],service_key=self.receipt['service_key'])
+            write_json(self.run/'control-results'/(request_id+'.json'),result)
+            self.receipt['status']='ready_with_intentional_pg_dependency_fault'if action=='pg-home-fault-begin'else('ready'if self.receipt['protocol_seed'].get('fully_ready')else'ready_with_intentionally_revoked_fixture_source');write_json(self.run/'supervisor.json',self.receipt)
+            print('FIXTURE_CONTROL_FINISHED '+json.dumps({'request_id':request_id,'action':action,'success':True}),flush=True)
+        except (ValueError,KeyError,TypeError) as error:
+            if accepted:
+                write_json(self.run/'control-results'/(request_id+'.json'),{'fixture_only':True,'request_id':request_id,'success':False,'error':type(error).__name__,'completed_unix':time.time(),'cleanup_required':True})
+                raise
+            if command.exists():command.replace(self.run/'fixture-control-command.rejected.json')
+            if isinstance(request_id,str)and re.fullmatch(r'[A-Za-z0-9_-]{1,48}',request_id)and request_id not in self.controls_completed:
+                (self.run/'control-results').mkdir(exist_ok=True);self.controls_completed.add(request_id)
+                write_json(self.run/'control-results'/(request_id+'.json'),{'fixture_only':True,'request_id':request_id,'success':False,'rejected':True,'error':type(error).__name__,'completed_unix':time.time()})
+            print('FIXTURE_CONTROL_REJECTED '+json.dumps({'request_id':request_id if isinstance(request_id,str)and re.fullmatch(r'[A-Za-z0-9_-]{1,48}',request_id)else None,'error':type(error).__name__}),flush=True)
+        except BaseException as error:
+            if accepted:
+                write_json(self.run/'control-results'/(request_id+'.json'),{'fixture_only':True,'request_id':request_id,'success':False,'error':type(error).__name__,'completed_unix':time.time(),'cleanup_required':True})
+            raise
+    def browser_commands(self):
+        if self.browser:
+            process=self.browser; forced=False
+            if process.poll() is None and time.monotonic()<self.browser_deadline: return
+            if process.poll() is None:
+                print('BROWSER_PHASE_STOP_NOTICE '+json.dumps({'phase':self.browser_phase,'reason':'owned phase deadline'}),flush=True)
+                forced=True;self.signal_owned(process,signal.SIGTERM)
+                try:process.wait(timeout=10)
+                except subprocess.TimeoutExpired:self.force_stop(process)
+            log=self.logs.pop('browser-'+self.browser_phase,None)
+            if log:log.close()
+            forced=self.finish_owned_group(process)or forced
+            value={'fixture_only':True,'phase':self.browser_phase,'pid':process.pid,'pgid':process.pid,'returncode':process.returncode,'verified_stopped':process.poll() is not None and not self.process_members(process),'forced':forced,'completed_unix':time.time()}
+            value=self.update_child_receipt('browser-'+self.browser_phase,value)
+            write_json(self.run/('browser-phase-'+self.browser_phase+'.json'),value)
+            print('BROWSER_PHASE_FINISHED '+json.dumps(value),flush=True)
+            self.browser_completed.add(self.browser_phase);self.browser=None
+            self.browser_kind=None
+            self.receipt.pop('active_browser_phase',None);self.receipt.pop('browser_phase_deadline_unix',None)
+            if not value['verified_stopped']:raise RuntimeError('Owned browser group terminal cleanup unconfirmed')
+        command=self.run/'browser-command.json'
+        if not command.exists():return
+        self.verify_frontend(self.ui_dir)
+        try:
+            assert command.is_file() and not command.is_symlink() and command.stat().st_size<=16384
+            value=json.loads(command.read_text());phase=value['phase'];argv=value['argv'];timeout=value['timeout_seconds']
+            assert re.fullmatch(r'[A-Za-z0-9_-]{1,48}',phase) and phase not in self.browser_completed
+            assert isinstance(argv,list) and 2<=len(argv)<=12 and all(isinstance(arg,str) and len(arg)<4096 for arg in argv)
+            assert Path(argv[0]).name in ['node','python3','python']
+            script=Path(argv[1]).resolve();assert script.is_file() and (script.is_relative_to(ROOT/'tests/ui') or script==ROOT/'scripts/browser-acceptance.mjs')
+            options=value.get('env',{});assert isinstance(options,dict) and set(options)<= {'BROWSER_PHASE','BROWSER_RUN_ID'}
+            if options.get('BROWSER_PHASE')==PUBLIC_UPLOAD_PHASE:assert self.public_upload_controls and script==ROOT/'scripts/browser-acceptance.mjs'
+            signed_control_phase=script==ROOT/'scripts/browser-acceptance.mjs'and options.get('BROWSER_PHASE')in SIGNED_PHASES|{PUBLIC_UPLOAD_PHASE}
+            assert isinstance(timeout,int) and 15<=timeout<=(600 if signed_control_phase else 300)
+            (self.run/'browser-commands').mkdir(exist_ok=True)
+            command.replace(self.run/'browser-commands'/f'{phase}.json')
+            env=self.environment();env['BROWSER_FIXTURE_JSON']=str(self.run/'supervisor.json')
+            env['BROWSER_FIXTURE']=str(self.run/'supervisor.json')
+            env['BROWSER_FIXTURE_ORIGIN']=self.origin;env['BROWSER_FIXTURE_MAIL_ORIGIN']=self.mail_origin
+            env['BROWSER_FIXTURE_FILE']=str(self.run/'supervisor.json')
+            for key,text in options.items():assert isinstance(text,str) and re.fullmatch(r'[A-Za-z0-9_-]{1,60}',text);env[key]=text
+            self.browser_phase=phase;self.browser_deadline=time.monotonic()+timeout
+            self.browser_kind=options.get('BROWSER_PHASE')
+            self.receipt['active_browser_phase']=phase;self.receipt['browser_phase_deadline_unix']=time.time()+timeout
+            self.browser=self.spawn('browser-'+phase,argv,env)
+            print('BROWSER_PHASE_STARTED '+json.dumps({'phase':phase,'pid':self.browser.pid,'deadline_seconds':timeout}),flush=True)
+        except (AssertionError,KeyError,ValueError,OSError):
+            if command.exists():command.rename(self.run/'browser-command.rejected.json')
+            print('BROWSER_COMMAND_REJECTED',flush=True)
+    def operational_checks(self):
+        from urllib.error import HTTPError
+        records=[]
+        def read(path,method='GET',headers=None,data=None):
+            request=Request(self.origin+path,data=data,headers=headers or {},method=method)
+            try:response=OPENER.open(request,timeout=5)
+            except HTTPError as error:response=error
+            with response:return response.status,response.read(),dict((key.lower(),value)for key,value in response.headers.items())
+        def check(name,path,expected,method='GET',headers=None,data=None,extra=None,early_response=False):
+            named={'name':name,'method':method,'path':path,'expected_status':expected,'request_body_bytes':len(data)if data is not None else 0}
+            self.receipt['stage']='operational-http';self.receipt['operational_check']=named
+            write_json(self.run/'supervisor.json',self.receipt)
+            transport={}if early_response else None
+            try:
+                if early_response:
+                    if path!='/api/manga' or method!='POST':raise ValueError('Early response probe target mismatch')
+                    status,body,h=read_oversized_json_response(self.origin,data,transport)
+                else:status,body,h=read(path,method,headers,data)
+            except BaseException as error:
+                try:write_json(self.run/'operational-failure.json',{'checks':records,'failed_check':named,'observed_status':transport.get('observed_status')if transport else None,'transport':transport,'transport_error_class':type(error).__name__,'binary':self.receipt['binary']})
+                except BaseException:pass # Preserve the primary transport failure.
+                raise
+            passed=status==expected and (extra(body,h) if extra else True)
+            records.append(dict(named,status=status,passed=passed,bytes=len(body),cache_control=h.get('cache-control'),content_type=h.get('content-type'),transport=transport))
+            if not passed:
+                write_json(self.run/'operational-failure.json',{'checks':records,'failed_check':name,'binary':self.receipt['binary']})
+                raise RuntimeError('Operational HTTP check failed: '+name+' status='+str(status))
+            return status,body,h
+        for path in ['/livez','/readyz','/healthz','/api/health']:check('probe '+path,path,200,extra=lambda body,h:h.get('cache-control')=='no-store')
+        index=(self.ui_dir/'index.html').read_bytes();index_hash=hashlib.sha256(index).hexdigest()
+        for path in ['/','/library','/auth/login','/auth/register','/auth/recovery','/auth/verification','/auth/error']:
+            check('client deep link '+path,path,200,headers={'Accept':'text/html'},extra=lambda body,h:hashlib.sha256(body).hexdigest()==index_hash and 'frame-ancestors' in h.get('content-security-policy',''))
+        for path in ['/api/nonexistent','/_app/nonexistent.js','/fonts/nonexistent','/templates/index.html','/data/Unknown000/Unknown001.png']:
+            check('reserved/missing '+path,path,404,headers={'Accept':'text/html'})
+        check('malformed media name','/data/Unknown000/unknown.png',400,headers={'Accept':'text/html'},extra=lambda body,h:h.get('cache-control')=='no-store'and 'application/json'in h.get('content-type','')and json.loads(body).get('code')=='invalid_request')
+        # /self-service/{kind} is explicitly POST-only; GET must remain405,
+        # while a supported GET flow route rejects an unknown kind with JSON404.
+        check('POST-only auth flow rejects GET','/auth/self-service/nonexistent',405,headers={'Accept':'text/html'},extra=lambda body,h:body==b''and h.get('cache-control')=='no-store')
+        check('unknown browser flow','/auth/self-service/nonexistent/browser',404,headers={'Accept':'text/html'},extra=lambda body,h:h.get('cache-control')=='no-store'and 'application/json'in h.get('content-type','')and isinstance(json.loads(body),dict))
+        check('cross-origin rejection','/api/manga',403,headers={'Origin':'https://attacker.example.invalid'})
+        check('null-origin rejection','/api/manga',403,headers={'Origin':'null'})
+        check('same-origin preflight','/api/manga',204,method='OPTIONS',headers={'Origin':self.origin,'Access-Control-Request-Method':'POST','Access-Control-Request-Headers':'Content-Type'},extra=lambda body,h:h.get('access-control-allow-origin')==self.origin and h.get('access-control-allow-credentials')=='true')
+        check('unsupported preflight','/api/manga',403,method='OPTIONS',headers={'Origin':self.origin,'Access-Control-Request-Method':'TRACE'})
+        check('bounded oversized JSON','/api/manga',413,method='POST',headers={'Origin':self.origin,'Content-Type':'application/json'},data=b'x'*(1024*1024+1),early_response=True)
+        path='/data/SeedChapt1/SeedPg1001.png'
+        status,full,h=check('real reader original',path,200,extra=lambda body,h:body.startswith(b'\x89PNG') and h.get('content-type')=='image/png')
+        check('reader single range',path,206,headers={'Range':'bytes=2-5'},extra=lambda body,h:body==full[2:6] and h.get('content-range')==f'bytes 2-5/{len(full)}' and h.get('content-length')=='4')
+        check('reader invalid range',path,416,headers={'Range':'bytes=999999-'},extra=lambda body,h:h.get('content-range')==f'bytes */{len(full)}')
+        check('reader head',path,200,method='HEAD',extra=lambda body,h:len(body)==0 and h.get('content-length')==str(len(full)))
+        check('reader conditional ETag',path,304,headers={'If-None-Match':h['etag']})
+        check('genuine optimized page','/data/SeedChapt1/FastPg1001.jpg',200,extra=lambda body,h:body.startswith(b'\xff\xd8') and h.get('content-type')=='image/jpeg')
+        for size in [256,512]:check(f'genuine cover WebP {size}',f'/covers/SeedManga1/SeedCover1.{size}.webp',200,extra=lambda body,h:body[:4]==b'RIFF' and body[8:12]==b'WEBP' and h.get('content-type')=='image/webp')
+        receipt={'scope':'Live isolated Rust native HTTP checks; combined mode additionally observes genuine original projection and importer mappings; excludes public deployment/browser behavior','fixture_only':True,'production':False,'binary':self.receipt['binary'],'frontend_index_sha256':index_hash,'protocol_fixture':self.receipt.get('protocol_seed'),'checks':records,'passed':len(records),'failed':0,'credentials_or_mail_tokens_recorded':False}
+        evidence=ROOT/'test-evidence/security';evidence.mkdir(parents=True,exist_ok=True)
+        write_json(evidence/'live-native-http.json',receipt)
+        self.receipt['status']='ready';write_json(self.run/'supervisor.json',self.receipt)
+        print('OPERATIONAL_HTTP_CHECKS '+json.dumps({'passed':len(records),'failed':0,'frontend_index_sha256':index_hash}),flush=True)
+    def monitor(self):
+        while not self.stop.wait(1):
+            if (self.run/'stop.request').exists(): break
+            if any(self.children[name].poll() is not None for name in ['postgres','platform','recipient']if name in self.children): raise RuntimeError('Owned fixture process exited unexpectedly')
+            self.browser_commands()
+            self.fixture_controls()
+            now=time.time()
+            if now>=self.receipt['deadline_unix']-300 and not self.warning_sent:
+                self.warning_sent=True;write_json(self.run/'deadline-notice.json',{'notice':'five minute fixture expiry warning','deadline_unix':self.receipt['deadline_unix']})
+                print('FIXTURE_DEADLINE_NOTICE '+json.dumps({'deadline_unix':self.receipt['deadline_unix']}),flush=True)
+            if now>=self.receipt['deadline_unix']:
+                if self.browser and self.browser.poll() is None:print('BROWSER_PHASE_STOP_NOTICE '+json.dumps({'phase':self.browser_phase,'reason':'warned fixture observation deadline'}),flush=True)
+                raise RuntimeError('Bounded fixture observation window ended after warning')
+            self.receipt['heartbeat_unix']=now;write_json(self.run/'supervisor.json',self.receipt)
+    def cleanup(self,error=None):
+        results={};self.stop.set()
+        for name,process in list(self.children.items()):
+            if not name.startswith('browser-'):continue
+            forced=False
+            if process.poll() is None:
+                print('BROWSER_PHASE_STOP_NOTICE '+json.dumps({'phase':name.removeprefix('browser-'),'reason':'supervisor cleanup'}),flush=True)
+                forced=True;self.signal_owned(process,signal.SIGTERM)
+                try:process.wait(timeout=15)
+                except subprocess.TimeoutExpired:self.force_stop(process)
+            forced=self.finish_owned_group(process)or forced
+            results[name]=self.update_child_receipt(name,{'pid':process.pid,'pgid':process.pid,'returncode':process.returncode,'verified_stopped':process.poll() is not None and not self.process_members(process),'forced':forced,'teardown_forced':forced})
+        if self.pg_fault:
+            try:self.resume_pg_home_fault(cleanup=True)
+            except BaseException as fault_error:self.process_tracking_errors.append({'kind':'pg_fault_recovery_unconfirmed','error':type(fault_error).__name__})
+        # Close the fixture-only mutation/mail surface before native drain.
+        if self.sink:
+            self.sink.shutdown();self.sink.server_close();self.sink_thread.join(timeout=5)
+        # Join any already admitted private provisioner call before enumerating
+        # children. New requests recheck stop under this same serial lock.
+        with self.protocol_lock:pass
+        for name,process in list(self.children.items()):
+            if name in ['platform','postgres','recipient'] or name.startswith('browser-'):continue
+            forced=False
+            if process.poll() is None:
+                forced=True
+                try:self.signal_owned(process,signal.SIGTERM)
+                except ProcessLookupError:pass
+                try:process.wait(timeout=5)
+                except subprocess.TimeoutExpired:self.force_stop(process)
+            forced=self.finish_owned_group(process)or forced
+            results[name]=self.update_child_receipt(name,{'pid':process.pid,'pgid':process.pid,'returncode':process.returncode,'verified_stopped':process.poll() is not None and not self.process_members(process),'forced':forced,'teardown_forced':forced})
+        # Browser must be stopped before the platform/mail/database are drained.
+        for name in ['platform','recipient']:
+            process=self.children.get(name)
+            if process and process.poll()is None:
+                try:self.signal_owned(process,signal.SIGTERM,leader_only=True)
+                except ProcessLookupError:pass
+        native_deadline=time.monotonic()+220
+        pg_drain_seconds=30 if self.pg_fault and self.pg_fault['slot_installed']else 15
+        for name,signum,timeout in [('platform',signal.SIGTERM,220),('recipient',signal.SIGTERM,220),('postgres',signal.SIGINT,pg_drain_seconds)]:
+            process=self.children.get(name)
+            if not process: continue
+            already_exited=process.poll() is not None;forced=False
+            if not already_exited:
+                try:self.signal_owned(process,signum,leader_only=True)
+                except ProcessLookupError:pass
+                try:process.wait(timeout=max(.1,native_deadline-time.monotonic())if name in ['platform','recipient']else timeout)
+                except subprocess.TimeoutExpired:
+                    forced=True;self.force_stop(process)
+            forced=self.finish_owned_group(process)or forced
+            results[name]=self.update_child_receipt(name,{'pid':process.pid,'pgid':process.pid,'returncode':process.returncode,'verified_stopped':process.poll() is not None and not self.process_members(process),'forced':forced,'teardown_forced':forced,'already_exited':already_exited,'remaining_group_members':self.process_members(process)})
+        # Include detached-session adopted children and historical generations.
+        # PID birth identity plus pidfd prevents signalling an unrelated reuse.
+        global_forced=self.finish_owned_group(None)
+        self.lifecycle_ever_forced=self.lifecycle_ever_forced or global_forced
+        remaining_owned=self.process_members(None)
+        pg_fault_terminal=None
+        if self.pg_fault and self.pg_fault['slot_installed']:
+            try:
+                pg_fault_terminal=self.pg_fault_state()
+                watchdog_returncode=self.pg_fault['process'].poll()
+                if pg_fault_terminal:pg_fault_terminal=dict(pg_fault_terminal,watchdog_returncode=watchdog_returncode)
+                # A stopped PG alone cannot erase an earlier watchdog failure.
+                # The registered Popen owns its genuine terminal exit status.
+                if not pg_fault_terminal or pg_fault_terminal.get('terminal')is not True or pg_fault_terminal.get('status')!='verified_stopped'or pg_fault_terminal.get('returncode')!=0 or pg_fault_terminal.get('forced')is not False or pg_fault_terminal.get('remaining_owned_processes')!=[]or 'error'not in pg_fault_terminal or pg_fault_terminal['error']is not None or watchdog_returncode!=0:raise RuntimeError('Actual PG and registered watchdog terminal provenance is not clean')
+            except BaseException as fault_error:self.process_tracking_errors.append({'kind':'pg_fault_terminal_unconfirmed','error':type(fault_error).__name__})
+        for log in self.logs.values():log.close()
+        # Runtime DB/password hashes/mail links remain private and excluded from
+        # source/checkpoint packages; only this non-sensitive receipt is evidence.
+        self.mail.clear()
+        removed_keys=[]
+        for directory in ['fixture-keys','recipient-keys']:
+            for name in ['operator.key','service.key']:
+                path=self.run/directory/name
+                if path.exists() or path.is_symlink():path.unlink();removed_keys.append(directory+'/'+name)
+        keys_absent=all(not (self.run/directory/name).exists()for directory in ['fixture-keys','recipient-keys']for name in ['operator.key','service.key'])
+        closed_ports={}
+        for label,port in [('platform',self.http_port),('mail',self.mail_port),('postgres',self.pg_port)]+([('original',self.protocol_port)]if self.protocol_enabled else [])+([('recipient',self.recipient_port)]if self.recipient_enabled else[]):
+            with socket.socket()as probe:
+                probe.settimeout(1);closed_ports[label]=probe.connect_ex(('127.0.0.1',port))!=0
+        verified_stopped=all(v['verified_stopped']for v in results.values())and all(closed_ports.values())and keys_absent and not remaining_owned and not self.process_tracking_errors
+        final_teardown_clean=verified_stopped and not global_forced and not any(value.get('teardown_forced')for value in results.values())and all(value.get('returncode')==0 for name,value in results.items()if name in ['platform','recipient'])
+        lifecycle_clean=final_teardown_clean and not self.lifecycle_ever_forced and error is None and all(value.get('returncode')==0 for name,value in self.receipt['children'].items()if name.startswith('browser-'))
+        receipt={'fixture_only':True,'status':'verified_stopped'if verified_stopped else'cleanup_unconfirmed',
+                 'processes':results,'mail_sink_stopped':not self.sink_thread or not self.sink_thread.is_alive(),
+                 'mail_links_persisted':False,'mail_accepted':self.mail_count,'provisions':self.provisions,
+                 'synthetic_server_key_files_removed':removed_keys,'synthetic_server_keys_absent':keys_absent,
+                 'browser_signer_secret_received':False,'protocol_enabled':self.protocol_enabled,'loopback_ports_closed':closed_ports,
+                 'final_teardown_clean':final_teardown_clean,'lifecycle_clean':lifecycle_clean,'lifecycle_ever_forced':self.lifecycle_ever_forced,
+                 'remaining_owned_processes':remaining_owned,'adopted_descendants_reaped':self.reaped_descendants,'identity_safe_signals':self.process_actions,'global_forced_cleanup':global_forced,'process_tracking_errors':self.process_tracking_errors,
+                 'pg_home_fault_terminal':pg_fault_terminal,
+                 'error':type(error).__name__ if error else None,'finished_unix':time.time()}
+        write_json(self.run/'cleanup.json',receipt)
+        self.receipt['status']=receipt['status'];write_json(self.run/'supervisor.json',self.receipt)
+        print('FIXTURE_CLEANUP '+json.dumps(receipt),flush=True)
+        return receipt
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--binary',type=Path,required=True);parser.add_argument('--expected-sha256');parser.add_argument('--lifetime-seconds',type=int,default=2700)
+    parser.add_argument('--ui-dir',type=Path,default=ROOT/'artifacts/frontend');parser.add_argument('--frontend-index-sha256')
+    parser.add_argument('--frontend-artifact-manifest',type=Path,default=ROOT/'test-evidence/frontend/artifact-manifest.json');parser.add_argument('--frontend-artifact-manifest-sha256')
+    parser.add_argument('--protocol-provisioner',type=Path);parser.add_argument('--provisioner-sha256')
+    parser.add_argument('--second-protocol-recipient',action='store_true',help='Own a second actual original node/database/store for bounded two-recipient browser journeys')
+    parser.add_argument('--ui-regression-controls',action='store_true',help='Enable private bounded named native pagination/reader regression controls; no bulk data is seeded automatically')
+    parser.add_argument('--public-upload-controls',action='store_true',help='Enable the bounded synthetic public signed upload actor/group fixture and exact owned-session observations')
+    parser.add_argument('--pg-home-fault-controls',action='store_true',help='Enable one named real fixed-cluster PG outage/restart for the reviewed homepage failure phase')
+    parser.add_argument('--ubunchu-noncommercial',action='store_true',help='Use licensed originals only for a genuinely noncommercial local fixture; exclude artwork/screenshots from uploads')
+    args=parser.parse_args()
+    if not 600<=args.lifetime_seconds<=3600:parser.error('fixture lifetime must be600..3600seconds')
+    if not args.frontend_artifact_manifest_sha256 or not args.frontend_index_sha256:parser.error('fixture requires exact complete frontend manifest and index hashes')
+    if args.ubunchu_noncommercial and not args.protocol_provisioner:parser.error('Ubunchu input requires combined real-protocol fixture')
+    if args.second_protocol_recipient and not args.protocol_provisioner:parser.error('second recipient requires combined real-protocol fixture')
+    if args.ui_regression_controls and not args.protocol_provisioner:parser.error('native UI regression controls require the reviewed disposable fixture provisioner')
+    if args.public_upload_controls and not args.protocol_provisioner:parser.error('public signed upload controls require the combined reviewed disposable fixture')
+    if args.public_upload_controls and args.ubunchu_noncommercial:parser.error('public signed upload controls require the synthetic image fixture')
+    if args.pg_home_fault_controls and not args.protocol_provisioner:parser.error('PG fault controls require the combined reviewed disposable fixture')
+    if args.protocol_provisioner and (not args.expected_sha256 or not args.provisioner_sha256 or not args.frontend_index_sha256):parser.error('combined fixture requires exact platform/provisioner/frontend hashes')
+    (ROOT/'test-runtime').mkdir(exist_ok=True)
+    fixture=Fixture(args)
+    for signum in [signal.SIGTERM,signal.SIGINT]:signal.signal(signum,lambda *_: fixture.stop.set())
+    error=None;cleanup_receipt=None
+    try:fixture.start();fixture.operational_checks();fixture.monitor()
+    except BaseException as exc:error=exc;print('FIXTURE_ERROR '+json.dumps({'type':type(exc).__name__,'message':str(exc)}),flush=True)
+    finally:cleanup_receipt=fixture.cleanup(error)
+    # A zero exit never hides unresolved cleanup, a forced lifecycle, or a
+    # failed owned browser phase. Consumers still must inspect the real receipt.
+    return 1 if error or cleanup_receipt.get('status')!='verified_stopped' or not cleanup_receipt.get('final_teardown_clean')or not cleanup_receipt.get('lifecycle_clean')else 0
+if __name__=='__main__':sys.exit(main())

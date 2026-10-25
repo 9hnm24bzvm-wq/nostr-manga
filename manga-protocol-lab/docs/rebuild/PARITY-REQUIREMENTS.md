@@ -15,7 +15,7 @@ Matching encrypted checkpoint12 was uploaded, downloaded, all1,487 members authe
 
 ## Source of commitments
 
-User message `Sentinel_d19ec80f0e148191abb42eed37b837ea` (2026-10-10 20:58:55 UTC) requires full parity and every discussed refactor goal. The preceding request to fix all six proposals and follow Matt Pocock codebase-design refers to assistant message `Sentinel_dac77d529b048191856c03a0e6dcf732` (2026-10-10 01:14:29 UTC), recovered through conversation search on 2026-10-10. The Oct8 baseline is available; the lost later source is not available for byte comparison. Historical test counts and unmapped letter-only answers do not prove current parity.
+User message `private-chat-reference-021-redacted` (2026-10-10 20:58:55 UTC) requires full parity and every discussed refactor goal. The preceding request to fix all six proposals and follow Matt Pocock codebase-design refers to assistant message `private-chat-reference-023-redacted` (2026-10-10 01:14:29 UTC), recovered through conversation search on 2026-10-10. The Oct8 baseline is available; the lost later source is not available for byte comparison. Historical test counts and unmapped letter-only answers do not prove current parity.
 
 ## Six specific promised fixes
 

@@ -1,0 +1,11 @@
+{
+  "cases": 2,
+  "command": "node --test weebdex-platform/tests/ci/test_serving_supervisor_paths.mjs",
+  "diffCheck": true,
+  "failed": 0,
+  "passed": 2,
+  "pythonSyntaxCompile": true,
+  "scope": "source wiring checks, separate from baseline full-suite counts and actual eight nginx methods",
+  "sourceCommit": "59c9c910b571fac5b97cbe78b2f01a694fadfa91",
+  "testSha256": "3c3b542a3c18d552a63a2bfb16ce04579e444079b0e0fae7041d6200894cdc56"
+}

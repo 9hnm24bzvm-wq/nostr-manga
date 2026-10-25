@@ -1,0 +1,41 @@
+{
+  "source_commit": "a424eb67586d36e269b3fc56c3cf20561e1c052d",
+  "screenshots": [
+    {
+      "file": "screenshots/desktop-chapter-expanded-discussion.png",
+      "sha256": "a2e0724deb185504688b0eb94b595124c0dc043758b1373be7aca153f44142ed",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/desktop-manage-arrival.png",
+      "sha256": "c9b9136e936bd754a0328b4e5afb4da64083e2034d1363e548f7a5b2f2ca98f5",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/desktop-manga-expanded-discussion.png",
+      "sha256": "f626448500cacb756c7be5c693588815d53c869f1a3acdf7d4a77b43c53211d7",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "file": "screenshots/mobile-chapter-expanded-discussion.png",
+      "sha256": "f95888a40182d0a12c7827a6819973a89dd3280d8a6987b65e676856bbdce09d",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/mobile-manage-arrival.png",
+      "sha256": "e634ceb1623cd9b3b27d2e21bfad474cdae3f3ee7383c833058c6f75844307da",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/mobile-manga-expanded-discussion.png",
+      "sha256": "bd0138d8d992353b585c11075ff5cff110be72a477cf2042af45603c92db2836",
+      "width": 390,
+      "height": 844
+    }
+  ]
+}

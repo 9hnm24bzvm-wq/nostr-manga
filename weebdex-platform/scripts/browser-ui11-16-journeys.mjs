@@ -7,6 +7,11 @@ import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { selectListboxTrigger, clickListboxOption, setListboxOptions } from "./browser-select-controls.mjs";
+import { observeCompactFeedResponse } from "./compact-feed-http-outcome.mjs";
+import { actorFollowPhase, actorFollowDiagnosticChecks, runActorFollowJourneys } from "./browser-actor-follow-journeys.mjs";
+import { runHeldAccountDenial } from "./browser-account-capacity.mjs";
+import { homeFailureDiagnosticChecks, retryDeniedHomeRead } from "./browser-home-controls.mjs";
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export const ui11To16JourneyPhases = Object.freeze([
@@ -14,11 +19,124 @@ export const ui11To16JourneyPhases = Object.freeze([
   "ui13-terminal-feed", "ui13-feed-authority", "ui14-entity-pagination",
   "ui14-account-failures", "ui14-home-failures", "ui15-chapter-filter",
   "ui15-reader-feedback", "ui15-reader-geometry", "ui15-16-empty-tabs",
-  "ui16-home-preferences", "ui16-search-cap"
+  "ui16-home-preferences", "ui16-search-cap", actorFollowPhase
 ]);
+
+// Closed diagnostic vocabulary. IDs encode reviewed controls only, never fixture
+// identities, paths, URLs, credentials, request bodies or exception text.
+const progressCases = Object.freeze(["timer-page1", "timer-page3", "lock-page1", "lock-page3"]);
+const progressChecks = Object.freeze([
+  "setup", "select-page", "no-prior-progress", "gate-captured",
+  "old-intent-cancelled", "page-retained", "durable-progress",
+  "reload-progress", "stable-revision"
+]);
+export const ui11To16DiagnosticChecks = Object.freeze({
+  ...homeFailureDiagnosticChecks,
+  ...actorFollowDiagnosticChecks,
+  "ui14-account-failures": Object.freeze(["prerequisite", "open", "account-mode", "durable-baseline", "trigger", "option", "pressure-captured", "capacity-attempt", "capacity-fixture", "capacity-connections", "capacity-saturated", "capacity-live", "capacity-ready", "pressure-released", "denial", "feedback", "no-replay", "capacity-cleanup", "durable-unchanged"].map(check => `account429-title-${check}`)),
+  "ui14-entity-pagination": Object.freeze([
+    "entity-seed-pagination", "entity-fixture",
+    ...["group", "author", "user"].flatMap(kind => ["desc", "asc"].flatMap(order => ["prerequisite", "open", "native-last-page", "page-one-control", "page-one-route", "native-first-page"].map(check => `entity-${kind}-${order}-${check}`))),
+    ...["withdrawal", "open", "empty-visible", "native-empty", "page-one-control", "native-first-page"].map(check => `entity-empty-${check}`)
+  ]),
+  "ui11-device-progress": Object.freeze([
+    "device-progress-signup-context",
+    ...progressCases.flatMap(control => progressChecks.map(check => `device-progress-${control}-${check}`))
+  ]),
+  "ui12-compact-feed": Object.freeze([
+    "compact-feed-seed-pagination", "compact-feed-spanish-preferences", "compact-feed-fixture-total",
+    "compact-feed-fixture-response-received", "compact-feed-fixture-http-200", "compact-feed-fixture-total-integer",
+    "compact-feed-fixture-total-at-least-seeded", "compact-feed-fixture-total-within-known-scenarios",
+    "compact-feed-open-updates", "compact-feed-third-page", "compact-feed-resume-visible",
+    "compact-feed-bounded-burst", "compact-feed-compact-geometry", "compact-feed-trimmed-cards",
+    "compact-feed-manual-terminal-page", "compact-feed-unique-sequential-pages",
+    "compact-feed-scenario-membership", "compact-feed-all-compact-chapters",
+    "compact-feed-terminal-idle", "compact-feed-resize-retains-entries", "compact-feed-back-restores-entries"
+  ])
+});
+
+// Optional diagnostics are used only by the compact phase. The observer still
+// counts transport lifetime until requestfinished/requestfailed, including when
+// a response body has already parsed. Diagnostic output never contains targets,
+// raw queries, bodies, fixture identities, exception text or credentials.
+export function observeUi11To16Requests(page, matcher, { compactDiagnostics = false } = {}) {
+  const rows = [], active = new Set(), pending = new Set(); let maximum = 0, requests = 0;
+  const requestLimit = 32, eventLimit = 256, records = [], retained = new WeakMap();
+  let sequence = 0, eventCount = 0, requestsTruncated = false, eventsTruncated = false, requestEventUnavailable = false;
+  const numericPage = value => Number.isSafeInteger(value) && value > 0 ? value : null;
+  const numericStatus = value => Number.isInteger(value) && value >= 100 && value <= 599 ? value : null;
+  const requestPage = value => {
+    try { const raw = new URL(value.url()).searchParams.get("page"); return /^[1-9][0-9]*$/.test(raw ?? "") ? numericPage(Number(raw)) : null; }
+    catch { return null; }
+  };
+  const recordEvent = (value, event) => {
+    if (!compactDiagnostics) return;
+    sequence++;
+    let record = retained.get(value);
+    if (event === "request") {
+      if (records.length >= requestLimit) { requestsTruncated = true; return; }
+      record = { id: requests, page: requestPage(value), response_page: null, status: null, timing: { startTime: null, responseEnd: null }, events: [] };
+      records.push(record); retained.set(value, record);
+    }
+    if (!record) { if (requests <= requestLimit) requestEventUnavailable = true; return; }
+    // Playwright uses -1 for timing values not yet available. Only these two
+    // finite numeric timing fields are admitted, never arbitrary API data.
+    let timing;
+    try { timing = value.timing(); } catch {}
+    for (const key of ["startTime", "responseEnd"]) {
+      if (typeof timing?.[key] === "number" && Number.isFinite(timing[key]) && timing[key] >= 0) record.timing[key] = timing[key];
+    }
+    if (eventCount >= eventLimit) { eventsTruncated = true; return record; }
+    eventCount++; record.events.push({ sequence, event, startTime: record.timing.startTime, responseEnd: record.timing.responseEnd });
+    return record;
+  };
+  const request = value => { if (matcher(value)) { requests++; active.add(value); maximum = Math.max(maximum, active.size); recordEvent(value, "request"); } };
+  const finished = value => { active.delete(value); if (compactDiagnostics && matcher(value)) recordEvent(value, "requestfinished"); };
+  const failed = value => { active.delete(value); if (compactDiagnostics && matcher(value)) recordEvent(value, "requestfailed"); };
+  const response = value => {
+    const source = value.request();
+    if (!matcher(source)) return;
+    const record = recordEvent(source, "response");
+    if (record) record.status = numericStatus(value.status());
+    const promise = (async () => {
+      const body = /json/.test(value.headers()["content-type"] ?? "") ? await value.json() : undefined;
+      rows.push({ status: value.status(), method: value.request().method(), pathname: new URL(value.url()).pathname, query: new URL(value.url()).search, body });
+      if (compactDiagnostics) {
+        const retainedRecord = retained.get(source);
+        if (retainedRecord) retainedRecord.response_page = numericPage(body?.page);
+        if (body !== undefined) recordEvent(source, "body-parsed");
+      }
+    })().catch(() => rows.push({ status: value.status(), body_unavailable: true })).finally(() => pending.delete(promise)); pending.add(promise);
+  };
+  page.on("request", request); page.on("requestfinished", finished); page.on("requestfailed", failed); page.on("response", response);
+  return {
+    rows, get maximum() { return maximum; }, get requests() { return requests; },
+    observation: () => compactDiagnostics ? {
+      maximum, request_count: requests,
+      pages: rows.filter(row => row.status === 200).slice(0, requestLimit).map(row => numericPage(row.body?.page)),
+      statuses: rows.slice(0, requestLimit).map(row => numericStatus(row.status)),
+      request_limit: requestLimit, event_limit: eventLimit,
+      requests: records.map(record => ({ ...record, timing: { ...record.timing }, events: record.events.map(event => ({ ...event })) })),
+      truncated: { requests: requestsTruncated, events: eventsTruncated, rows: rows.length > requestLimit },
+      unavailable: {
+        request_event: requestEventUnavailable,
+        request_page: records.some(record => record.page === null),
+        response_page: records.some(record => record.response_page === null),
+        status: records.some(record => record.status === null),
+        timing: records.some(record => record.timing.startTime === null || record.timing.responseEnd === null)
+      }
+    } : undefined,
+    settle: async () => { await Promise.all([...pending]); },
+    close: async () => { page.off("request", request); page.off("requestfinished", finished); page.off("requestfailed", failed); page.off("response", response); await Promise.all([...pending]); }
+  };
+}
 
 export async function runUi11To16Journeys(h) {
   const { phase, page, context, origin, fixture, step, insist, open, report, redactions } = h;
+  const check = (id, operation) => {
+    insist(typeof h.check === "function", "The reviewed fixed-check diagnostic recorder is required for this journey");
+    return h.check(id, operation);
+  };
   insist(ui11To16JourneyPhases.includes(phase), "Unknown UI11–16 journey phase");
   const started = Date.now(), marker = randomBytes(6).toString("hex"), ids = fixture.ids ?? {};
   let extras = fixture.ui_regressions;
@@ -57,9 +175,11 @@ export async function runUi11To16Journeys(h) {
   };
   const ensurePagination = async () => { if (!extras?.compact) await privateControl("ui-regressions-seed", { scenario: "pagination" }); };
   const ensureReaders = async () => { insist(extras?.compact, "The pagination seed/compact phase must finish before reader activation; two 120-second controls do not fit one ordinary phase"); if (!Array.isArray(extras?.readers) || !extras.readers.length || !extras.bilingual?.manga_id) await privateControl("ui-regressions-readers"); };
-  const api = async (route, options = {}) => {
+  const api = async (route, options = {}, observeOutcome) => {
     finite(); insist(route.startsWith("/api/") && !route.includes("://") && !route.startsWith("//"), "UI regression observation escaped the fixture API");
-    const response = await context.request.fetch(origin + route, { ...options, maxRedirects: 0, timeout: 12000, headers: { Origin: origin, ...(options.headers ?? {}) } });
+    const fetchResponse = () => context.request.fetch(origin + route, { ...options, maxRedirects: 0, timeout: 12000, headers: { Origin: origin, ...(options.headers ?? {}) } });
+    if (observeOutcome) return observeCompactFeedResponse(fetchResponse, observeOutcome);
+    const response = await fetchResponse();
     return { status: response.status(), body: /json/.test(response.headers()["content-type"] ?? "") ? await response.json() : undefined };
   };
   const sink = () => {
@@ -97,10 +217,114 @@ export async function runUi11To16Journeys(h) {
     await until(() => api("/api/auth/check"), value => value.status === 200 && value.body?.identity?.username === account.username, "Actual login did not restore the synthetic browser session");
     await open("/");
   };
-  const panel = () => page.locator("details[data-local-library-panel]");
-  const expand = async locator => { if (!await locator.evaluate(node => node.open)) await locator.locator(":scope > summary").click(); };
-  const ready = async () => { await expand(panel()); await panel().getByText(/Scope verification: verified\./).waitFor({ state: "visible" }); };
-  const mode = async selected => { await expand(panel()); const button = panel().getByRole("button", { name: `Use ${selected} library`, exact: true }); if (await button.isEnabled()) await button.click(); await panel().getByText(selected === "device" ? /Library source: this browser device\./ : /Library source: signed-in WeebDex account\./).waitFor({ state: "visible" }); };
+  const managementHref = "/settings/library";
+  const panel = () => page.locator("section[data-local-library-panel]");
+  const managementReady = async () => {
+    const current = new URL(page.url());
+    insist(current.pathname === managementHref && !current.hash, "Library management is not on its dedicated native Settings tab");
+    await panel().waitFor({ state: "visible" });
+    insist(await panel().count() === 1 && await page.locator("[data-protocol-identity-panel]").count() === 0, "The Library Settings tab mounted a missing, duplicate or unrelated management surface");
+    insist(await panel().locator("details").count() === 0, "Library Settings tools must use native dialogs rather than accordions");
+    const backup = panel().getByRole("button", { name: "Export device backup", exact: true });
+    await until(() => backup.isEnabled(), Boolean, "The current Library Settings source did not finish initialization");
+  };
+  const toolDialog = kind => page.getByRole("dialog").filter({ has: page.locator(`section[data-library-tool="${kind}"]`) });
+  const toolView = kind => toolDialog(kind).locator(`section[data-library-tool="${kind}"]`);
+  const openLibraryTool = async kind => {
+    const names = { lists: "Manage lists", sync: "Set up public sync", recovery: "Library recovery" };
+    insist(Object.hasOwn(names, kind), "Unknown native Library Settings tool");
+    await managementReady();
+    insist(await page.getByRole("dialog").count() === 0, "A different native Settings dialog is already open");
+    await panel().getByRole("button", { name: names[kind], exact: true }).click();
+    await toolDialog(kind).waitFor({ state: "visible" });
+    await toolView(kind).waitFor({ state: "visible" });
+    insist(await toolDialog(kind).count() === 1 && await page.getByRole("dialog").count() === 1, "The selected Library tool did not open one native dialog");
+    insist(await toolView(kind).locator("details").count() === 0, "The native Library tool still requires an accordion");
+    const sourceControls = { lists: "Create list", sync: "Choose destinations", recovery: "Verify current catalogue scope" };
+    await until(() => toolView(kind).getByRole("button", { name: sourceControls[kind], exact: true }).isEnabled(), Boolean, "The native Library tool did not finish its own source initialization");
+    return toolView(kind);
+  };
+  const closeLibraryTool = async (kind, settle = true) => {
+    await toolDialog(kind).getByRole("button", { name: "Close", exact: true }).click();
+    await toolDialog(kind).waitFor({ state: "hidden" });
+    if (settle) await managementReady();
+    else {
+      // The saved-list race deliberately keeps its real operation pending.
+      // Dismiss the modal without waiting for that held operation to settle.
+      const current = new URL(page.url());
+      insist(current.pathname === managementHref && !current.hash, "Dismissing the held Library tool changed the Settings route");
+      await panel().waitFor({ state: "visible" });
+    }
+  };
+  const noManagementPanel = async () => {
+    const management = page.locator("[data-local-library-panel]");
+    // SPA history can update the URL before Svelte has disposed the outgoing
+    // route. Join actual DOM disposal before releasing any held old callback;
+    // a persistent management surface still fails this bounded wait.
+    await management.waitFor({ state: "detached", timeout: 5000 });
+    insist(await management.count() === 0, "Library management leaked outside the dedicated settings route");
+  };
+  let managementVisit = 0;
+  // Management is a real settings destination. Reach it through the Library
+  // action (or the reader's settings action), then restore the exact route with
+  // browser Back. Never inject an anchor, import a store or reload the document.
+  const visitManagement = async () => {
+    const previous = page.url(), previousUrl = new URL(previous);
+    if (previousUrl.pathname === managementHref) {
+      await managementReady();
+      return async () => {};
+    }
+    await noManagementPanel();
+    const proof = marker + ":management:" + ++managementVisit;
+    await page.evaluate(value => { window.__ui1116ManagementRealm = value; }, proof);
+    let backSteps = 0;
+    if (previousUrl.pathname.startsWith("/chapter/")) {
+      await readerSettings();
+      const manage = page.getByRole("link", { name: "Manage library", exact: true });
+      insist(await manage.getAttribute("href") === managementHref, "Reader management action points outside the dedicated settings destination");
+      await manage.click();
+      backSteps++;
+    } else {
+      if (previousUrl.pathname !== "/library") {
+        await spaLink("/library");
+        backSteps++;
+      }
+      const manage = page.getByRole("link", { name: "Manage library", exact: true });
+      insist(await manage.getAttribute("href") === managementHref, "Library management action points outside the dedicated settings destination");
+      await manage.click();
+      backSteps++;
+    }
+    await page.waitForURL(url => url.pathname === managementHref && !url.hash);
+    await managementReady();
+    insist(await page.evaluate(() => window.__ui1116ManagementRealm) === proof, "Visible management navigation reloaded the document");
+    return async () => {
+      for (let index = 0; index < backSteps; index++) await page.goBack({ waitUntil: "domcontentloaded" });
+      await page.waitForURL(previous);
+      insist(await page.evaluate(() => window.__ui1116ManagementRealm) === proof, "Management Back navigation reloaded the document");
+      await noManagementPanel();
+      insist(await page.locator("[data-library-tool]").count() === 0, "A disposed Library Settings dialog survived Back navigation");
+    };
+  };
+  const inManagement = async operation => {
+    const restore = await visitManagement();
+    try { return await operation(); } finally { await restore(); }
+  };
+  const scopeStatus = async status => {
+    const recovery = await openLibraryTool("recovery");
+    try { await recovery.getByText(new RegExp(`Scope verification: ${status}\\.`)).waitFor({ state: "visible" }); }
+    finally { await closeLibraryTool("recovery"); }
+  };
+  const ready = async () => inManagement(() => scopeStatus("verified"));
+  const mode = async selected => inManagement(async () => {
+    const button = panel().getByRole("button", { name: `Use ${selected} library`, exact: true });
+    // A disabled button can also mean initial management work is in flight.
+    // Wait for the requested source or an actionable current-mode button.
+    const selectedText = selected === "device" ? /Library source: this browser device\./ : /Library source: signed-in WeebDex account\./;
+    await until(() => Promise.all([panel().getByText(selectedText).isVisible(), button.isEnabled()]), ([selectedNow, enabled]) => selectedNow || enabled, "The current management mode never became actionable");
+    if (!await panel().getByText(selectedText).isVisible()) await button.click();
+    await panel().getByText(selectedText).waitFor({ state: "visible" });
+    await managementReady();
+  });
   const realm = async () => page.evaluate(value => { window.__ui1116RealmProof = value; }, marker);
   const sameRealm = async () => insist(await page.evaluate(() => window.__ui1116RealmProof) === marker, "The regression navigated by document reload, hiding the SPA lifetime defect");
   const spaLink = async href => { await page.locator(`a[href="${href}"]`).first().click(); await page.waitForURL(url => url.pathname === new URL(href, origin).pathname); };
@@ -112,16 +336,9 @@ export async function runUi11To16Journeys(h) {
     const save = page.getByRole("button", { name: "Save", exact: true });
     if (await save.isEnabled()) { const response = account ? page.waitForResponse(value => new URL(value.url()).pathname === "/api/settings" && value.request().method() === "PUT") : undefined; await save.click(); if (response) insist((await response).status() === 200, "Actual account preference save was not acknowledged"); await page.getByText("Your changes have been saved.", { exact: true }).last().waitFor({ state: "visible" }); }
   };
-  const selectOptions = async (trigger, labels) => {
-    await trigger.click();
-    const filter = page.locator('[data-slot="command-input"]'); if (await filter.count()) await filter.fill("");
-    const current = page.locator('[data-slot="select-item"][aria-selected="true"]');
-    while (await current.count()) await current.first().click();
-    for (const label of labels) { if (await filter.count()) await filter.fill(label); await selectOption(label).click(); }
-    await page.keyboard.press("Escape");
-  };
-  const selectOption = label => page.locator('[data-slot="select-item"]').filter({ hasText: new RegExp("^\\s*" + label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*$") });
-  const chapterLanguagePreference = async label => { await open("/settings/preferences"); const section = page.locator("div.flex.flex-col").filter({ has: page.locator("strong", { hasText: "Chapter Language Filter" }) }).last(); await selectOptions(section.getByRole("combobox"), label ? [label] : []); await savePreferences(); };
+  const selectOptions = (trigger, labels) => setListboxOptions(page, trigger, labels);
+  const selectOption = label => clickListboxOption(page, label);
+  const chapterLanguagePreference = async label => { await open("/settings/preferences"); const section = page.locator("div.flex.flex-col").filter({ has: page.locator("strong", { hasText: "Chapter Language Filter" }) }).last(); await selectOptions(selectListboxTrigger(section), label ? [label] : []); await savePreferences(); };
   const deviceRows = () => page.evaluate(async currentOrigin => {
     const db = await new Promise((resolve, reject) => { const request = indexedDB.open("weebdex-device-library-v1:" + encodeURIComponent(currentOrigin), 1); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(Error("Read-only device observation failed")); });
     try { return await new Promise((resolve, reject) => { const tx = db.transaction("records", "readonly"), request = tx.objectStore("records").getAll(); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(Error("Read-only record observation failed")); }); } finally { db.close(); }
@@ -130,32 +347,36 @@ export async function runUi11To16Journeys(h) {
     const db = await new Promise((resolve, reject) => { const request = indexedDB.open("weebdex-device-library-v1:" + encodeURIComponent(currentOrigin), 1); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(Error("Read-only revision observation failed")); });
     try { return await new Promise((resolve, reject) => { const request = db.transaction("meta", "readonly").objectStore("meta").get("revision"); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(Error("Read-only revision observation failed")); }); } finally { db.close(); }
   }, origin);
-  const removeDeviceChapter = async id => {
+  const removeDeviceChapter = async id => inManagement(async () => {
     // Test setup uses the supplied, reviewed backup workflow. No direct IDB
     // mutation can make a missing progress repair look successful.
-    await expand(panel()); const received = page.waitForEvent("download"); await panel().getByRole("button", { name: "Export device backup", exact: true }).click(); const download = await received;
+    const received = page.waitForEvent("download"); await panel().getByRole("button", { name: "Export device backup", exact: true }).click(); const download = await received;
     const stream = await download.createReadStream(), chunks = []; for await (const chunk of stream) chunks.push(chunk);
     const backup = JSON.parse(Buffer.concat(chunks).toString("utf8")); insist(backup.format === "weebdex-device-library" && backup.scope.origin === origin, "Actual UI device backup belongs to another scope");
     backup.records = backup.records.filter(row => !(row.family === "chapters" && row.id === id));
     await panel().getByLabel("Preview device backup", { exact: false }).setInputFiles({ name: "synthetic-reviewed-device.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(backup)) });
-    await panel().getByRole("button", { name: "Replace with reviewed import", exact: true }).waitFor({ state: "visible" });
-    page.once("dialog", dialog => dialog.accept()); await panel().getByRole("button", { name: "Replace with reviewed import", exact: true }).click();
+    const review = page.getByRole("dialog", { name: "Review library import", exact: true });
+    await review.waitFor({ state: "visible" });
+    await review.getByRole("button", { name: "Replace with reviewed import", exact: true }).waitFor({ state: "visible" });
+    page.once("dialog", dialog => dialog.accept()); await review.getByRole("button", { name: "Replace with reviewed import", exact: true }).click();
+    await review.waitFor({ state: "hidden" });
     await until(deviceRows, rows => !rows.some(row => row.family === "chapters" && row.id === id), "Reviewed actual UI replacement did not remove the previous device progress prerequisite");
-  };
+    await managementReady();
+  });
 
   // Withhold exactly one real request before forwarding or after its real
   // response. No body/status is replaced. A browser cancellation is distinct
   // from absent server effects and is reported truthfully by the gate.
   const hold = async (pattern, match, before = false) => {
-    let resolve, admitted = false, captured = false, done = false, disposition = "pending", failure, abort = false, status;
+    let resolve, admitted = false, captured = false, done = false, disposition = "pending", failure, abort = false, status, heldStatus;
     const gate = new Promise(value => { resolve = value; });
     const intercept = async route => {
       if (!match(route.request()) || admitted) return route.continue();
       admitted = true;
       try {
         let response;
-        if (before) { captured = true; await gate; response = await route.fetch({ maxRedirects: 0 }); }
-        else { response = await route.fetch({ maxRedirects: 0 }); captured = true; await gate; }
+        if (before) { captured = true; await gate; response = await route.fetch({ maxRedirects: 0 }); heldStatus = response.status(); }
+        else { response = await route.fetch({ maxRedirects: 0 }); heldStatus = response.status(); captured = true; await gate; }
         status = response.status();
         if (abort) { await route.abort("failed"); disposition = "failed-delivery-after-real-response"; }
         else { await route.fulfill({ response }); disposition = "delivered"; }
@@ -163,36 +384,27 @@ export async function runUi11To16Journeys(h) {
       finally { done = true; }
     };
     await context.route(pattern, intercept);
-    return { wait: () => until(() => captured || failure, Boolean, "Actual UI request was not captured").then(() => insist(!failure, failure)), release: async () => { resolve(); await until(() => done || !admitted, Boolean, "Held native request did not drain"); }, fail: async () => { abort = true; resolve(); await until(() => done || !admitted, Boolean, "Native failed delivery did not drain"); }, close: async () => { resolve(); if (admitted) await until(() => done, Boolean, "Held request cleanup did not finish"); await context.unroute(pattern, intercept); }, get disposition() { return disposition; }, get nativeStatus() { return status; } };
+    return { wait: () => until(() => captured || failure, Boolean, "Actual UI request was not captured").then(() => insist(!failure, failure)), release: async () => { resolve(); await until(() => done || !admitted, Boolean, "Held native request did not drain"); }, fail: async () => { abort = true; resolve(); await until(() => done || !admitted, Boolean, "Native failed delivery did not drain"); }, close: async () => { resolve(); if (admitted) await until(() => done, Boolean, "Held request cleanup did not finish"); await context.unroute(pattern, intercept); }, get disposition() { return disposition; }, get nativeStatus() { return status; }, get heldNativeStatus() { return heldStatus; } };
   };
-  const observe = matcher => {
-    const rows = [], active = new Set(), pending = new Set(); let maximum = 0, requests = 0;
-    const request = value => { if (matcher(value)) { requests++; active.add(value); maximum = Math.max(maximum, active.size); } };
-    const finished = value => active.delete(value);
-    const response = value => {
-      if (!matcher(value.request())) return;
-      const promise = (async () => { const body = /json/.test(value.headers()["content-type"] ?? "") ? await value.json() : undefined; rows.push({ status: value.status(), method: value.request().method(), pathname: new URL(value.url()).pathname, query: new URL(value.url()).search, body }); })().catch(() => rows.push({ status: value.status(), body_unavailable: true })).finally(() => pending.delete(promise)); pending.add(promise);
-    };
-    page.on("request", request); page.on("requestfinished", finished); page.on("requestfailed", finished); page.on("response", response);
-    return { rows, get maximum() { return maximum; }, get requests() { return requests; }, settle: async () => { await Promise.all([...pending]); }, close: async () => { page.off("request", request); page.off("requestfinished", finished); page.off("requestfailed", finished); page.off("response", response); await Promise.all([...pending]); } };
-  };
+  const observe = (matcher, options) => observeUi11To16Requests(page, matcher, options);
   const requestPath = (request, pathname, method = "GET") => new URL(request.url()).origin === origin && new URL(request.url()).pathname === pathname && request.method() === method;
   const countPosts = pathname => observe(request => requestPath(request, pathname, "POST"));
-  const withCapacity = async operation => {
-    const url = new URL(origin); insist(fixture.fixture_only === true && url.protocol === "http:" && ["127.0.0.1", "localhost"].includes(url.hostname) && !!url.port && url.port !== "0", "Capacity fault requires the owned exact loopback disposable fixture");
+  const withCapacity = async (operation, probe = (_suffix, action) => action()) => {
+    await probe("capacity-fixture", async () => { const url = new URL(origin); insist(fixture.fixture_only === true && url.protocol === "http:" && ["127.0.0.1", "localhost"].includes(url.hostname) && !!url.port && url.port !== "0", "Capacity fault requires the owned exact loopback disposable fixture"); });
     const owned = [], sockets = new Set(); let released = false;
     const close = () => { if (released) return; released = true; for (const request of owned) request.destroy(); for (const socket of sockets) socket.destroy(); };
     // Start the watchdog before connecting, so even a partially connected set
     // cannot keep the actual middleware saturated while waiting for a browser.
     const watchdog = setTimeout(close, 9000);
     try {
-      await Promise.all(Array.from({ length: 32 }, () => new Promise((resolve, reject) => {
+      await probe("capacity-connections", () => Promise.all(Array.from({ length: 32 }, () => new Promise((resolve, reject) => {
         const request = http.request(origin + "/api/client", { method: "POST", headers: { Origin: origin, "Content-Type": "application/json", "Content-Length": "65536" }, agent: false }); owned.push(request);
         request.on("socket", socket => { sockets.add(socket); socket.once("close", () => sockets.delete(socket)); socket.once("connect", () => { request.write('{"name":"'); resolve(); }); }); request.on("error", () => { if (!released) reject(Error("Owned local capacity socket failed before saturation")); }); request.on("response", response => { response.resume(); if (!released) reject(Error("Incomplete native JSON did not retain its genuine admission permit")); }); request.setTimeout(10000, () => request.destroy());
-      })));
-      await until(() => api("/api/manga?limit=1"), value => value.status === 429 && value.body?.code === "capacity_busy", "Actual native request permits were not saturated", 3000);
+      }))));
+      await probe("capacity-saturated", () => until(() => api("/api/manga?limit=1"), value => value.status === 429 && value.body?.code === "capacity_busy", "Actual native request permits were not saturated", 3000));
+      await probe("capacity-live", async () => { insist(!released, "The bounded capacity watchdog expired before the denied gesture was released"); });
       return await operation();
-    } finally { clearTimeout(watchdog); close(); await until(() => sockets.size, count => count === 0, "Owned local capacity sockets did not reach their close events", 3000); }
+    } finally { clearTimeout(watchdog); close(); await probe("capacity-cleanup", () => until(() => sockets.size, count => count === 0, "Owned local capacity sockets did not reach their close events", 3000)); }
   };
 
   // Native platform fault gates, installed in this one real document only.
@@ -202,9 +414,9 @@ export async function runUi11To16Journeys(h) {
   const browserGate = async kind => {
     await page.evaluate(kind => {
       if (window.__ui1116Gate) throw Error("A native gate is already installed");
-      let release, admitted = false, pending, captured = false;
+      let release, admitted = false, pending, captured = false, released = false;
       const wait = new Promise(resolve => { release = resolve; });
-      const gate = { kind, get captured() { return captured; }, release() { release(); }, restore() {} }; window.__ui1116Gate = gate;
+      const gate = { kind, get captured() { return captured; }, get held() { return captured && !released; }, release() { released = true; release(); }, restore() {} }; window.__ui1116Gate = gate;
       if (kind === "snapshot") {
         const original = IDBObjectStore.prototype.get, descriptor = Object.getOwnPropertyDescriptor(IDBRequest.prototype, "onsuccess");
         IDBObjectStore.prototype.get = function(key) {
@@ -243,11 +455,11 @@ export async function runUi11To16Journeys(h) {
         }; gate.restore = () => { window.setTimeout = original; release(); delete window.__ui1116Gate; };
       } else throw Error("Unsupported native gate");
     }, kind);
-    return { wait: () => until(() => page.evaluate(() => window.__ui1116Gate?.captured), Boolean, "The actual browser storage/timer seam was not reached"), release: () => page.evaluate(() => window.__ui1116Gate?.release()), close: () => page.evaluate(() => window.__ui1116Gate?.restore()) };
+    return { wait: () => until(() => page.evaluate(() => window.__ui1116Gate?.captured), Boolean, "The actual browser storage/timer seam was not reached"), held: () => page.evaluate(() => window.__ui1116Gate?.held === true), release: () => page.evaluate(() => window.__ui1116Gate?.release()), close: () => page.evaluate(() => window.__ui1116Gate?.restore()) };
   };
   const readPage = async () => Number((await page.title()).match(/^Page (\d+):/)?.[1]);
-  const readerSelector = () => page.getByRole("combobox").filter({ hasText: /^\s*\d+(?:-\d+)?\s*\/\s*\d+\s*$/ });
-  const selectReaderPage = async (label, expected) => { const selector = readerSelector().first(); await selector.click(); await selectOption(label).click(); await until(readPage, value => value === expected, "Actual page selector chose a different raw page than its advertised option"); insist(new URL(page.url()).pathname.endsWith("/" + expected), "Reader URL does not agree with selected raw page"); };
+  const readerSelector = () => selectListboxTrigger(page).filter({ hasText: /^\s*\d+(?:-\d+)?\s*\/\s*\d+\s*$/ });
+  const selectReaderPage = async (label, expected) => { const selector = readerSelector().first(); await selector.click(); await selectOption(label); await until(readPage, value => value === expected, "Actual page selector chose a different raw page than its advertised option"); insist(new URL(page.url()).pathname.endsWith("/" + expected), "Reader URL does not agree with selected raw page"); };
   const readerSettings = async () => { if (!await page.getByRole("button", { name: "Paged", exact: true }).isVisible()) await page.locator('nav button:has(svg.lucide-settings)').first().click(); await page.getByRole("button", { name: "Paged", exact: true }).waitFor({ state: "visible" }); };
   const settings = async (direction = "Left-to-right", double = false) => { await readerSettings(); await page.getByRole("button", { name: "Paged", exact: true }).click(); await page.getByRole("button", { name: direction, exact: true }).click(); await page.getByRole("button", { name: double ? "Double" : "Single", exact: true }).click(); await page.getByRole("button", { name: "All", exact: true }).first().click(); };
   const closeReaderPanel = async () => { await page.locator('[data-sidebar="header"] button:has(svg.lucide-x)').click(); await page.getByRole("button", { name: "Paged", exact: true }).waitFor({ state: "hidden" }); };
@@ -267,75 +479,140 @@ export async function runUi11To16Journeys(h) {
   if (phase === "ui11-device-navigation") {
     let listName = "Delayed list " + marker, listHref;
     await step("UI11 list: actual creation and current saved-list link select the exact device list", async () => {
-      await signup(); await ready(); await mode("device");
-      const lists = panel().locator("details").filter({ has: page.locator("summary", { hasText: "Custom device lists" }) }); await expand(lists);
+      await signup(); await visitManagement(); await ready(); await mode("device");
+      let lists = await openLibraryTool("lists");
       await lists.getByLabel("List name", { exact: true }).fill(listName); await lists.getByRole("button", { name: "Create list", exact: true }).click();
       const link = lists.getByRole("link", { name: listName, exact: true }); await link.waitFor({ state: "visible" }); listHref = await link.getAttribute("href");
-      await mode("account"); await link.click(); await page.waitForURL(url => url.pathname === "/library" && url.searchParams.get("list") === new URL(listHref, origin).searchParams.get("list"));
-      await panel().getByText(/Library source: this browser device\./).waitFor({ state: "visible" });
-      return { real_ui_created_list: true, exact_list_route: true, selected_device: true };
+      await closeLibraryTool("lists"); await mode("account"); lists = await openLibraryTool("lists");
+      await lists.getByRole("link", { name: listName, exact: true }).click(); await page.waitForURL(url => url.pathname === "/library" && url.searchParams.get("list") === new URL(listHref, origin).searchParams.get("list"));
+      await noManagementPanel();
+      insist(await page.locator("[data-library-tool]").count() === 0, "Opening the saved device list retained its obsolete native Settings dialog");
+      await inManagement(() => panel().getByText(/Library source: this browser device\./).waitFor({ state: "visible" }));
+      return { real_ui_created_list: true, exact_list_route: true, selected_device: true, management_settings_only: true };
     });
-    for (const waitAt of ["snapshot", "mode-completion"]) for (const lifetime of ["navigate", "back-forward", "reader-disposal"]) await step(`UI11 list: delayed native ${waitAt} cannot override ${lifetime}`, async () => {
+    for (const waitAt of ["snapshot", "mode-completion"]) for (const lifetime of ["navigate", "back-forward", "reader-return"]) await step(`UI11 list: delayed native ${waitAt} cannot override manager disposal and ${lifetime}`, async () => {
       insist(listHref, "Actual saved-list prerequisite failed");
-      await open(lifetime === "reader-disposal" ? `/chapter/${ids.chapter}/1` : "/library"); await ready(); await realm();
-      const lists = panel().locator("details").filter({ has: page.locator("summary", { hasText: "Custom device lists" }) }); await expand(lists);
+      await open(lifetime === "reader-return" ? `/chapter/${ids.chapter}/1` : "/library"); await ready(); await realm();
+      const restore = await visitManagement();
+      const lists = await openLibraryTool("lists");
       const gate = await browserGate(waitAt);
+      let observation;
       try {
         await lists.getByRole("link", { name: listName, exact: true }).click(); await gate.wait();
-        if (lifetime === "reader-disposal") { await page.locator('[data-sidebar="header"] a[href="/"]').click(); await page.waitForURL(url => url.pathname === "/"); }
-        else await search();
+        if (lifetime === "reader-return") await restore();
+        else { await closeLibraryTool("lists", false); await search(); }
         if (lifetime === "back-forward") { await page.goBack({ waitUntil: "domcontentloaded" }); await page.goForward({ waitUntil: "domcontentloaded" }); }
-        const newer = page.url(); await gate.release();
+        const newer = page.url(); await noManagementPanel();
+        insist(await page.locator("[data-library-tool]").count() === 0, "The disposed list manager retained its native dialog on a newer route");
+        insist(await gate.held(), "The obsolete saved-list callback was released before the newer route became authoritative");
+        await gate.release();
         await stable(() => page.url() === newer, "The obsolete saved-list callback overwrote newer route/history"); await sameRealm();
-        return { gate: waitAt === "snapshot" ? "real IndexedDB readonly final acknowledgement" : "real committed mode transaction completion", exact_newer_route_retained: true, same_document: true, disposed_reader: lifetime === "reader-disposal", committed_preference_not_claimed_rolled_back: true };
+        observation = { gate: waitAt === "snapshot" ? "real IndexedDB readonly final acknowledgement" : "real committed mode transaction completion", exact_newer_route_retained: true, same_document: true, disposed_manager: true, reader_returned: lifetime === "reader-return", native_tool_dialog: true, lifecycle_evidence: lifetime === "reader-return" ? "route_back_disposal" : "dismissal_plus_navigation", committed_preference_not_claimed_rolled_back: true };
       } finally { await gate.close(); }
+      // A disposed task must not poison the next genuine user gesture. Reopen
+      // the current manager only after the original held-input proof is done.
+      await visitManagement(); await mode("account");
+      const reopened = await openLibraryTool("lists"), currentLink = reopened.getByRole("link", { name: listName, exact: true });
+      insist(await currentLink.getAttribute("href") === listHref, "The reopened manager lost the exact UI-created saved list");
+      await currentLink.click();
+      await page.waitForURL(url => url.pathname === "/library" && url.searchParams.get("list") === new URL(listHref, origin).searchParams.get("list"));
+      await noManagementPanel(); await sameRealm();
+      insist(await page.locator("[data-library-tool]").count() === 0, "A successful reopened saved-list gesture retained its obsolete dialog");
+      await inManagement(() => panel().getByText(/Library source: this browser device\./).waitFor({ state: "visible" }));
+      return { ...observation, reopened_saved_list_gestures: 1, reopened_exact_list_route: true, reopened_selected_device: true };
     });
   }
 
   if (phase === "ui11-device-progress") {
-    await step("UI11 progress: synthetic verified account and durable device context", async () => { await signup(); await ready(); await mode("device"); return { real_account: true, device_scope_verified: true }; });
-    for (const gateKind of ["timer", "lock"]) for (const targetPage of [1, 3]) await step(`UI11 progress: ${gateKind} device→account→device retains same page ${targetPage}`, async () => {
-      await open(`/title/${ids.manga}`); await ready(); await mode("account"); await removeDeviceChapter(ids.chapter);
-      const link = page.locator(`a[href="/chapter/${ids.chapter}"]`).first(); await link.click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`)); await settings();
-      if (targetPage !== 1) await selectReaderPage(String(targetPage), targetPage);
-      insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "Device progress already existed before the controlled reentry test");
-      const gate = await browserGate(gateKind);
+    await step("UI11 progress: synthetic verified account and durable device context", async () => {
+      await check("device-progress-signup-context", async () => { await signup(); await ready(); await mode("device"); });
+      return { real_account: true, device_scope_verified: true };
+    });
+    for (const gateKind of ["timer", "lock"]) for (const targetPage of [1, 3]) await step(`UI11 progress: ${gateKind} device→account→device through Settings retains page ${targetPage}`, async () => {
+      const prefix = `device-progress-${gateKind}-page${targetPage}`;
+      await check(prefix + "-setup", async () => {
+        await open(`/title/${ids.manga}`); await ready(); await mode("account"); await removeDeviceChapter(ids.chapter);
+        const entry = countPosts(`/api/user/history/manga/${ids.manga}`);
+        try {
+          const link = page.locator(`a[href="/chapter/${ids.chapter}"]`).first(); await link.click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`));
+          await until(() => entry.rows, rows => rows.some(row => row.status === 200 && row.body), "Initial account reader entry did not join its genuine200 acknowledgement before stale-intent observation");
+          const durable = await api(`/api/user/history/manga/${ids.manga}`); insist(durable.status === 200 && Object.hasOwn(durable.body[ids.manga] ?? {}, ids.chapter), "Initial legitimate account reader entry was not durable");
+          await entry.settle(); insist(entry.requests === 1, "Initial reader lifetime replayed automatic account history before the mode-change test");
+          await settings(); await realm();
+        } finally { await entry.close(); }
+      });
+      await check(prefix + "-select-page", async () => { if (targetPage !== 1) await selectReaderPage(String(targetPage), targetPage); });
+      await check(prefix + "-no-prior-progress", async () => { insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "Device progress already existed before the controlled reentry test"); });
+      const gate = await browserGate(gateKind), posts = countPosts(`/api/user/history/manga/${ids.manga}`);
+      let restoreReader;
       try {
-        await mode("device"); await gate.wait(); const retained = await readPage();
-        await mode("account"); await gate.release(); await page.waitForTimeout(100);
-        insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "The old device intent wrote after its actual mode authority was lost");
-        await mode("device"); insist(await readPage() === retained, "Mode selection changed the current reader page");
-        const row = await until(deviceRows, rows => rows.some(row => row.family === "chapters" && row.id === ids.chapter && row.page === retained && (retained !== 3 || row.completed)), "Reentered current device context failed to durably save the unchanged page");
-        const observed = row.find(row => row.family === "chapters" && row.id === ids.chapter);
-        await page.reload({ waitUntil: "domcontentloaded" }); await ready(); const durable = (await deviceRows()).find(row => row.family === "chapters" && row.id === ids.chapter);
-        insist(durable?.page === retained && (retained !== 3 || durable.completed), "Device page/completion did not survive reload");
-        await page.waitForTimeout(500); const revision = await deviceRevision(); await stable(async () => await deviceRevision() === revision, "Same-context refresh caused an endless durable progress-save loop");
-        return { actual_page: retained, completed: !!observed.completed, real_timer_or_lock_gate: gateKind, durable_after_reload: true };
-      } finally { await gate.close(); }
+        const retained = await check(prefix + "-gate-captured", async () => { await mode("device"); await gate.wait(); const current = await readPage(); insist(current === targetPage, "Settings mode selection failed to restore the exact current reader page"); await sameRealm(); return current; });
+        const cancelled = await check(prefix + "-old-intent-cancelled", async () => {
+          restoreReader = await visitManagement();
+          await mode("account");
+          // Leaving a device reader may legitimately flush its admitted page
+          // before the user can change mode. Remove that pre-switch timer-case
+          // record through the reviewed UI, then establish the actual baseline.
+          // A held lock already owns the queued write, so no cleanup can contend
+          // for that lock before its destination is invalidated and released.
+          if (gateKind === "timer") await removeDeviceChapter(ids.chapter);
+          insist(!(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter), "Reviewed account-mode baseline still contains prior device progress");
+          const revision = await deviceRevision();
+          insist(await gate.held(), "The old reader callback was released before the account-mode baseline was established");
+          insist(posts.requests === 0, "Management mode selection unexpectedly wrote account reader history");
+          await gate.release();
+          await stable(async () => !(await deviceRows()).some(row => row.family === "chapters" && row.id === ids.chapter) && await deviceRevision() === revision && posts.requests === 0, "The old reader lifetime wrote rows, revision or account history after losing its actual destination authority");
+          return { baseline_after_reviewed_backup_cleanup: gateKind === "timer", held_before_release: true, stale_rows: 0, stale_revision_writes: 0, stale_account_posts: 0, reader_reentry_not_yet_performed: true };
+        });
+        await check(prefix + "-page-retained", async () => { await mode("device"); await restoreReader(); await until(readPage, value => value === retained, "Settings return changed the current raw reader page"); await sameRealm(); });
+        const observed = await check(prefix + "-durable-progress", async () => {
+          const row = await until(deviceRows, rows => rows.some(row => row.family === "chapters" && row.id === ids.chapter && row.page === retained && (retained !== 3 || row.completed)), "Reentered current device context failed to durably save the unchanged page");
+          return row.find(row => row.family === "chapters" && row.id === ids.chapter);
+        });
+        await check(prefix + "-reload-progress", async () => {
+          await page.reload({ waitUntil: "domcontentloaded" }); await until(readPage, value => value === retained, "Reload lost the durable raw reader page"); const durable = (await deviceRows()).find(row => row.family === "chapters" && row.id === ids.chapter);
+          insist(durable?.page === retained && (retained !== 3 || durable.completed), "Device page/completion did not survive reload");
+        });
+        await check(prefix + "-stable-revision", async () => { await page.waitForTimeout(500); const revision = await deviceRevision(); await stable(async () => await deviceRevision() === revision, "Same-context refresh caused an endless durable progress-save loop"); });
+        return { actual_page: retained, completed: !!observed.completed, real_timer_or_lock_gate: gateKind, settings_mode_roundtrip_same_document: true, old_lifetime: cancelled, new_reader_lifetime_durable: true, durable_after_reload: true };
+      } finally { await gate.close(); await posts.close(); }
     });
   }
 
   if (phase === "ui12-compact-feed") await step("UI12 compact feed: native505 rows continue beyond200 and bounded burst has a real resume", async () => {
-    await ensurePagination();
-    const data = dependency("compact"); insist(data.total >= 501 && data.language === "es", "Compact fixture must contain over500 isolated Spanish chapters");
-    await chapterLanguagePreference("Spanish"); await page.setViewportSize({ width: 1440, height: 1800 });
-    const probe = await api("/api/chapter/feed?tlang=es&limit=100"); insist(probe.status === 200 && [data.total, data.total + (extras.bilingual?.manga_id ? 1 : 0)].includes(probe.body?.total), "Actual Spanish fixture has unrelated rows outside the recorded compact/bilingual scenarios"); const nativeTotal = probe.body.total;
-    const seen = observe(request => requestPath(request, "/api/chapter/feed"));
+    await check("compact-feed-seed-pagination", async () => { await ensurePagination(); const data = dependency("compact"); insist(data.total >= 501 && data.language === "es", "Compact fixture must contain over500 isolated Spanish chapters"); });
+    const data = dependency("compact");
+    await check("compact-feed-spanish-preferences", async () => { await chapterLanguagePreference("Spanish"); await page.setViewportSize({ width: 1440, height: 1800 }); });
+    const nativeTotal = await check("compact-feed-fixture-total", async () => {
+      const probe = await check("compact-feed-fixture-response-received", async () => api("/api/chapter/feed?tlang=es&limit=100", {}, (outcome, failure) => { report.compact_feed_http_outcome = outcome; report.compact_feed_database_failure = failure; h.save?.(); }));
+      await check("compact-feed-fixture-http-200", async () => { insist(probe.status === 200, "The actual Spanish fixture feed did not return HTTP200"); });
+      await check("compact-feed-fixture-total-integer", async () => { insist(Number.isSafeInteger(probe.body?.total), "The actual Spanish fixture feed did not return an integer total"); });
+      await check("compact-feed-fixture-total-at-least-seeded", async () => { insist(probe.body.total >= data.total, "The actual Spanish fixture feed contains fewer chapters than the recorded compact seed"); });
+      await check("compact-feed-fixture-total-within-known-scenarios", async () => { insist(probe.body.total <= data.total + (extras.bilingual?.manga_id ? 1 : 0), "The actual Spanish fixture feed contains chapters outside the recorded compact/bilingual scenarios"); });
+      insist(probe.status === 200 && [data.total, data.total + (extras.bilingual?.manga_id ? 1 : 0)].includes(probe.body?.total), "Actual Spanish fixture has unrelated rows outside the recorded compact/bilingual scenarios"); return probe.body.total;
+    });
+    const seen = observe(request => requestPath(request, "/api/chapter/feed"), { compactDiagnostics: true });
+    const saveObservation = () => { report.compact_feed_observation = seen.observation(); h.save?.(); };
     try {
-      await open("/updates"); await until(() => seen.rows, rows => rows.some(row => row.body?.page >= 3 && row.status === 200), "Compact updates never requested page3 while cards remained trimmed");
-      const more = page.getByRole("button", { name: "Load more updates", exact: true }); await more.waitFor({ state: "visible" });
-      await seen.settle(); const admitted = seen.rows.filter(row => row.status === 200); insist(admitted.length === 5 && admitted.every((row, index) => row.body.page === index + 1), "Automatic compact burst did not stop after its finite four continuation reads");
-      const rect = await page.locator("section footer").last().boundingBox(); insist(rect && rect.y <= 3600, "Compact footer did not stay inside the genuine expanded loading geometry");
-      insist(await page.getByRole("button", { name: "Show Less", exact: true }).count() === 0, "Test expanded cards instead of exercising compact continuation");
-      await more.click(); await until(() => seen.rows, rows => rows.some(row => row.body?.page === Math.ceil(nativeTotal / 100)), "Explicit real Load more did not reach the remaining compact page"); await seen.settle();
-      const pages = seen.rows.filter(row => row.status === 200).map(row => row.body.page); insist(new Set(pages).size === pages.length && seen.maximum === 1, "Compact continuation issued duplicate or parallel native page reads");
-      insist(seen.rows.every(row => row.status === 200 && row.body.total === nativeTotal && row.body.data.every(chapter => [data.manga_id, extras.bilingual?.manga_id].includes(chapter.relationships.manga.id))), "Feed was not the actual recorded compact/bilingual backend scenario");
-      const compactIds = new Set(seen.rows.flatMap(row => row.body.data.filter(chapter => chapter.relationships.manga.id === data.manga_id).map(chapter => chapter.id))); insist(compactIds.size === data.total, "The505 genuine compact chapters did not all become reachable");
-      await stable(async () => seen.rows.length === pages.length, "True compact exhaustion continued to request pages");
-      await page.setViewportSize({ width: 1200, height: 800 }); insist(!await bodyHas("No results found"), "Acknowledged compact entries disappeared after resize");
-      await realm(); await search(); await page.goBack({ waitUntil: "domcontentloaded" }); await sameRealm(); insist(!await bodyHas("No results found"), "Back lost acknowledged public compact results");
+      await check("compact-feed-open-updates", async () => { await open("/updates"); });
+      await check("compact-feed-third-page", async () => { await until(() => seen.rows, rows => rows.some(row => row.body?.page >= 3 && row.status === 200), "Compact updates never requested page3 while cards remained trimmed"); });
+      const more = page.getByRole("button", { name: "Load more updates", exact: true });
+      await check("compact-feed-resume-visible", async () => { await more.waitFor({ state: "visible" }); });
+      await check("compact-feed-bounded-burst", async () => { await seen.settle(); const admitted = seen.rows.filter(row => row.status === 200); insist(admitted.length === 5 && admitted.every((row, index) => row.body.page === index + 1), "Automatic compact burst did not stop after its finite four continuation reads"); });
+      await check("compact-feed-compact-geometry", async () => { const rect = await page.locator("section footer").last().boundingBox(); insist(rect && rect.y <= 3600, "Compact footer did not stay inside the genuine expanded loading geometry"); });
+      await check("compact-feed-trimmed-cards", async () => { insist(await page.getByRole("button", { name: "Show Less", exact: true }).count() === 0, "Test expanded cards instead of exercising compact continuation"); });
+      await check("compact-feed-manual-terminal-page", async () => { await more.click(); await until(() => seen.rows, rows => rows.some(row => row.body?.page === Math.ceil(nativeTotal / 100)), "Explicit real Load more did not reach the remaining compact page"); await seen.settle(); });
+      const pages = seen.rows.filter(row => row.status === 200).map(row => row.body.page);
+      saveObservation();
+      await check("compact-feed-unique-sequential-pages", async () => { insist(new Set(pages).size === pages.length && seen.maximum === 1, "Compact continuation issued duplicate or parallel native page reads"); });
+      await check("compact-feed-scenario-membership", async () => { insist(seen.rows.every(row => row.status === 200 && row.body.total === nativeTotal && row.body.data.every(chapter => [data.manga_id, extras.bilingual?.manga_id].includes(chapter.relationships.manga.id))), "Feed was not the actual recorded compact/bilingual backend scenario"); });
+      const compactIds = new Set(seen.rows.flatMap(row => row.body.data.filter(chapter => chapter.relationships.manga.id === data.manga_id).map(chapter => chapter.id)));
+      await check("compact-feed-all-compact-chapters", async () => { insist(compactIds.size === data.total, "The505 genuine compact chapters did not all become reachable"); });
+      await check("compact-feed-terminal-idle", async () => { await stable(async () => seen.rows.length === pages.length, "True compact exhaustion continued to request pages"); });
+      await check("compact-feed-resize-retains-entries", async () => { await page.setViewportSize({ width: 1200, height: 800 }); insist(!await bodyHas("No results found"), "Acknowledged compact entries disappeared after resize"); });
+      await check("compact-feed-back-restores-entries", async () => { await realm(); await search(); await page.goBack({ waitUntil: "domcontentloaded" }); await sameRealm(); insist(!await bodyHas("No results found"), "Back lost acknowledged public compact results"); });
       return { native_total: nativeTotal, recorded_compact_title_rows: compactIds.size, pages, maximum_parallel_reads: seen.maximum, cards_remained_trimmed: true, genuine_manual_resume: true, coherent_back_restore: true };
-    } finally { await seen.close(); }
+    } finally { try { await seen.close(); } finally { saveObservation(); } }
   });
 
   if (phase === "ui13-terminal-feed") {
@@ -368,29 +645,63 @@ export async function runUi11To16Journeys(h) {
       // feed is reached through document navigation only for this startup case.
       const held = await hold(origin + "/api/chapter/feed*", request => requestPath(request, "/api/chapter/feed"));
       const scope = await hold(origin + "/api/protocol/capabilities", request => requestPath(request, "/api/protocol/capabilities"));
-      try { await open(`/updates?initial=${marker}-${readiness}`); await Promise.all([held.wait(), scope.wait()]); await expand(panel()); await panel().getByText(/Scope verification: pending\./).waitFor({ state: "visible" }); if (readiness === "offline") await scope.fail(); else await scope.release(); await panel().getByText(new RegExp(`Scope verification: ${readiness}\\.`)).waitFor({ state: "visible" }); await held.release(); await until(() => page.locator('section a[href^="/chapter/"]').count(), async count => count > 0 || await bodyHas("No results found") || await page.getByRole("button", { name: "Retry feed", exact: true }).isVisible(), "Public updates remained an orphaned spinner after unrelated local initialization"); insist(await page.locator('section a[href^="/chapter/"]').count() > 0 || await bodyHas("No results found") || await page.getByRole("button", { name: "Retry feed", exact: true }).isVisible(), "Public read never reached results, genuine empty or actionable error"); return { actual_pending_observed: true, actual_pending_settlement: readiness, held_native_response: held.disposition, usable_terminal_state: true }; }
+      try {
+        await open(`/updates?initial=${marker}-${readiness}`); await Promise.all([held.wait(), scope.wait()]); await realm(); await noManagementPanel();
+        // The still-held genuine capability acknowledgement is the pending
+        // initialization seam. Do not leave this mounted feed to inspect its
+        // status in Settings before its current public read has settled.
+        insist(scope.heldNativeStatus === 200, "Pending initialization did not hold a genuine successful catalogue capability read");
+        if (readiness === "offline") await scope.fail(); else await scope.release();
+        await held.release();
+        const terminal = async () => await page.locator('section a[href^="/chapter/"]').count() > 0 || await bodyHas("No results found") || await page.getByRole("button", { name: "Retry feed", exact: true }).isVisible();
+        await until(terminal, Boolean, "Public updates remained an orphaned spinner after unrelated local initialization");
+        insist(await terminal(), "Public read never reached results, genuine empty or actionable error");
+        await sameRealm();
+        await inManagement(() => scopeStatus(readiness));
+        await sameRealm(); await until(terminal, Boolean, "Returning from management lost the current usable public terminal state");
+        return { actual_pending_scope_acknowledgement_held: true, actual_pending_settlement: readiness, feed_settled_before_management_navigation: true, held_native_response: held.disposition, usable_terminal_state: true, same_document: true };
+      }
       finally { await held.close(); await scope.close(); }
     });
     await step("UI13 private feed: old account rows cannot attach after selecting device library", async () => {
       await signup(); await ready(); await mode("account");
       const follow = await api(`/api/user/follows/manga/${ids.manga}`, { method: "POST", data: { status: "reading", notification: true } }); insist(follow.status === 204, "Native account-follow prerequisite failed");
       const held = await hold(origin + "/api/user/follows/chapter/feed*", request => requestPath(request, "/api/user/follows/chapter/feed"));
-      try { await open("/library/updates"); await held.wait(); await ready(); await mode("device"); await held.release(); await page.getByText("No results found", { exact: true }).waitFor({ state: "visible" }); insist(await page.locator(`section a[href^="/chapter/${ids.chapter}"]`).count() === 0, "Obsolete private account rows attached to the empty device feed"); return { actual_account_read_held: true, actual_device_selection: true, obsolete_rows_absent: true, current_device_empty_settled: true }; } finally { await held.close(); }
+      try { await open("/library/updates"); await held.wait(); await realm(); await ready(); await mode("device"); await held.release(); await page.getByText("No results found", { exact: true }).waitFor({ state: "visible" }); insist(await page.locator(`section a[href^="/chapter/${ids.chapter}"]`).count() === 0, "Obsolete private account rows attached to the empty device feed"); await noManagementPanel(); await sameRealm(); return { actual_account_read_held: true, actual_device_selection: true, obsolete_rows_absent: true, current_device_empty_settled: true, settings_mode_roundtrip_same_document: true }; } finally { await held.close(); }
     });
   }
 
   if (phase === "ui14-entity-pagination") {
-    await ensurePagination();
-    const data = dependency("entity");
+    await check("entity-seed-pagination", ensurePagination);
+    const data = await check("entity-fixture", async () => dependency("entity"));
     for (const [kind, id] of [["group", data.group_id], ["author", data.author_id], ["user", data.user_id]]) for (const order of ["desc", "asc"]) await step(`UI14 ${kind} Uploads: genuine last page retains links back in ${order} order`, async () => {
-      insist(typeof id === "string" && data.total === 101, "Isolated101-row entity fixture is required");
+      const probe = (suffix, operation) => check(`entity-${kind}-${order}-${suffix}`, operation);
+      await probe("prerequisite", async () => { insist(typeof id === "string" && data.total === 101, "Isolated101-row entity fixture is required"); });
       const route = `/${kind}/${id}/uploads?page=2${order === "asc" ? "&order=asc" : ""}`, seen = observe(request => requestPath(request, "/api/chapter"));
-      try { await open(route); await until(() => seen.rows, rows => rows.some(row => row.status === 200 && row.body?.page === 2 && row.body?.total === data.total && row.body?.data?.length === 1), "Entity last-page UI did not receive its real one-row native page"); const back = page.locator("footer").getByRole("link", { name: "1", exact: true }); await back.waitFor({ state: "visible" }); await back.click(); await page.waitForURL(url => url.pathname === `/${kind}/${id}/uploads` && !url.searchParams.has("page")); await until(() => seen.rows, rows => rows.some(row => row.body?.page === 1 && row.body?.data?.length === 100), "Existing entity paginator did not return to the real first page"); return { native_total: data.total, deep_link_page: 2, native_last_page_rows: 1, existing_page1_link_worked: true, order }; } finally { await seen.close(); }
+      try {
+        await probe("open", () => open(route));
+        await probe("native-last-page", () => until(() => seen.rows, rows => rows.some(row => row.status === 200 && row.body?.page === 2 && row.body?.total === data.total && row.body?.data?.length === 1), "Entity last-page UI did not receive its real one-row native page"));
+        // Bits UI gives the retained anchor aria-label="Page 1"; its visible
+        // numeral alone is not the accessible name. Keep the footer/link scope.
+        const back = page.locator("footer").getByRole("link", { name: "Page 1", exact: true });
+        await probe("page-one-control", async () => { await back.waitFor({ state: "visible" }); await back.click(); });
+        await probe("page-one-route", () => page.waitForURL(url => url.pathname === `/${kind}/${id}/uploads` && !url.searchParams.has("page")));
+        await probe("native-first-page", () => until(() => seen.rows, rows => rows.some(row => row.body?.page === 1 && row.body?.data?.length === 100), "Existing entity paginator did not return to the real first page"));
+        return { native_total: data.total, deep_link_page: 2, native_last_page_rows: 1, existing_page1_link_worked: true, order };
+      } finally { await seen.close(); }
     });
     await step("UI14 entity high empty page: real count shrink retains recovery to page1", async () => {
-      const removed = await privateControl("ui-regressions-withdraw", { scenario: "entity" }); insist(removed.ui_regressions?.entity?.current_total === 100 || removed.operation?.ui_regressions?.entity?.current_total === 100, "Named production entity withdrawal did not verify its genuine100-row state");
+      const probe = (suffix, operation) => check("entity-empty-" + suffix, operation);
+      await probe("withdrawal", async () => { const removed = await privateControl("ui-regressions-withdraw", { scenario: "entity" }); insist(removed.ui_regressions?.entity?.current_total === 100 || removed.operation?.ui_regressions?.entity?.current_total === 100, "Named production entity withdrawal did not verify its genuine100-row state"); });
       const seen = observe(request => requestPath(request, "/api/chapter"));
-      try { await open(`/group/${data.group_id}/uploads?page=2`); await page.getByText("No results found", { exact: true }).waitFor({ state: "visible" }); await seen.settle(); insist(seen.rows.some(row => row.status === 200 && row.body?.page === 2 && row.body?.total === 100 && row.body?.data?.length === 0), "Empty high-page evidence lacked actual count-shrunk200"); await page.locator("footer").getByRole("link", { name: "1", exact: true }).click(); await until(() => seen.rows, rows => rows.some(row => row.body?.page === 1 && row.body?.data?.length === 100), "Count-shrunk entity paginator lost the existing earlier-page recovery"); return { real101_to100_shrink: true, empty_high_page: true, page1_recovery: true }; } finally { await seen.close(); }
+      try {
+        await probe("open", () => open(`/group/${data.group_id}/uploads?page=2`));
+        await probe("empty-visible", () => page.getByText("No results found", { exact: true }).waitFor({ state: "visible" }));
+        await probe("native-empty", async () => { await seen.settle(); insist(seen.rows.some(row => row.status === 200 && row.body?.page === 2 && row.body?.total === 100 && row.body?.data?.length === 0), "Empty high-page evidence lacked actual count-shrunk200"); });
+        await probe("page-one-control", () => page.locator("footer").getByRole("link", { name: "Page 1", exact: true }).click());
+        await probe("native-first-page", () => until(() => seen.rows, rows => rows.some(row => row.body?.page === 1 && row.body?.data?.length === 100), "Count-shrunk entity paginator lost the existing earlier-page recovery"));
+        return { real101_to100_shrink: true, empty_high_page: true, page1_recovery: true };
+      } finally { await seen.close(); }
     });
   }
 
@@ -400,52 +711,70 @@ export async function runUi11To16Journeys(h) {
     try {
       for (const status of [403, 429, 401]) for (const gesture of phase === "ui15-reader-feedback" ? ["reader-entry"] : ["chapter-read", "card-follow", "title-unfollow"]) await step(`UI${gesture === "reader-entry" ? "15" : "14"} ${gesture}: genuine${status} gives owned feedback without replay`, async () => {
         if (status === 401) { const auth = await api("/api/auth/check"); if (auth.status !== 200) await login(); await ready(); await mode("account"); }
+        const probe = (suffix, operation) => phase === "ui14-account-failures" && status === 429 && gesture === "title-unfollow" ? check("account429-title-" + suffix, operation) : operation();
         const historyPath = `/api/user/history/manga/${ids.manga}`, followPath = `/api/user/follows/manga/${ids.manga}`, endpoint = gesture === "chapter-read" || gesture === "reader-entry" ? historyPath : followPath;
-        if (gesture === "title-unfollow") { const prepared = await api(followPath, { method: "POST", data: { status: "reading", notification: true } }); insist(prepared.status === 204, "Actual account follow prerequisite failed"); }
+        if (gesture === "title-unfollow") await probe("prerequisite", async () => { const prepared = await api(followPath, { method: "POST", data: { status: "reading", notification: true } }); insist(prepared.status === 204, "Actual account follow prerequisite failed"); });
         if (gesture === "card-follow") { const removed = await api(followPath, { method: "DELETE" }); insist(removed.status === 204, "Actual cleared follow prerequisite failed"); }
         const title = (await api(`/api/manga/${ids.manga}`)).body?.title;
-        await open(gesture === "card-follow" ? `/search?title=${encodeURIComponent(title)}` : `/title/${ids.manga}`); await ready(); await mode("account");
-        const before = await api(historyPath); const followBefore = await api("/api/user/follows/manga?limit=100");
+        await probe("open", () => open(gesture === "card-follow" ? `/search?title=${encodeURIComponent(title)}` : `/title/${ids.manga}`));
+        await probe("account-mode", async () => { await ready(); await mode("account"); });
+        const [before, followBefore] = await probe("durable-baseline", async () => [await api(historyPath), await api("/api/user/follows/manga?limit=100")]);
         const posts = observe(request => new URL(request.url()).pathname === endpoint && request.method() !== "GET");
-        const action = async () => {
+        const gestureAction = async () => {
           if (status === 401) await context.clearCookies();
           if (gesture === "reader-entry") { await page.locator(`a[href="/chapter/${ids.chapter}"]`).first().click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`)); }
           else if (gesture === "chapter-read") await page.locator("article").filter({ has: page.locator(`a[href="/chapter/${ids.chapter}"]`) }).getByRole("button", { name: "Mark as unread", exact: true }).click();
-          else if (gesture === "title-unfollow") { await page.getByRole("combobox", { name: "Reading", exact: true }).click(); await page.getByRole("option", { name: "None", exact: true }).click(); }
+          else if (gesture === "title-unfollow") { await probe("trigger", () => selectListboxTrigger(page).filter({ hasText: /^\s*Reading\s*$/ }).click()); await probe("option", () => clickListboxOption(page, "None")); }
           else { const card = page.locator("article").filter({ has: page.locator(`a[href^="/title/${ids.manga}"]`) }).first(); await card.hover(); await card.locator("button").filter({ has: page.locator("svg.lucide-plus") }).first().click(); }
-          await until(() => posts.rows, rows => rows.some(row => row.status === status), `The actual ${gesture} request did not reach its genuine${status} backend denial`);
-          const title = gesture === "reader-entry" ? "History save failed" : gesture === "chapter-read" ? "Read history update failed" : "Library update failed";
-          await page.getByText(title, { exact: true }).last().waitFor({ state: "visible" }); await page.getByText(status === 401 ? /account session expired/ : status === 429 ? /request was rate limited/ : /does not have permission/).last().waitFor({ state: "visible" });
-          await stable(async () => posts.requests === 1, "Rejected native mutation automatically replayed"); await posts.settle(); insist(posts.requests === 1 && posts.rows.length === 1, "A single gesture issued repeated native writes");
         };
+        const denial = async () => {
+          await probe("denial", () => until(() => posts.rows, rows => rows.some(row => row.status === status), `The actual ${gesture} request did not reach its genuine${status} backend denial`));
+          const title = gesture === "reader-entry" ? "History save failed" : gesture === "chapter-read" ? "Read history update failed" : "Library update failed";
+          await probe("feedback", async () => { await page.getByText(title, { exact: true }).last().waitFor({ state: "visible" }); await page.getByText(status === 401 ? /account session expired/ : status === 429 ? /request was rate limited/ : /does not have permission/).last().waitFor({ state: "visible" }); });
+          await probe("no-replay", async () => { await stable(async () => posts.requests === 1, "Rejected native mutation automatically replayed"); await posts.settle(); insist(posts.requests === 1 && posts.rows.length === 1, "A single gesture issued repeated native writes"); });
+        };
+        const action = async () => { await gestureAction(); await denial(); };
         try {
           if (status === 403) await withBearer(endpoint, client.key, action);
           else if (status === 429) {
             // Let the real public chapter route load before saturating. Hold
             // only its actual admitted history/follow write before forwarding.
-            const pressure = await hold(origin + endpoint + "*", request => new URL(request.url()).pathname === endpoint && request.method() !== "GET", true);
-            try { const attempt = action(); attempt.catch(() => {}); await pressure.wait(); await withCapacity(async () => { await pressure.release(); await attempt; }); }
-            finally { await pressure.close(); }
+            const pattern = origin + endpoint + "*", match = request => new URL(request.url()).pathname === endpoint && request.method() !== "GET";
+            if (phase === "ui14-account-failures" && gesture === "title-unfollow") {
+              await runHeldAccountDenial({ hold, pattern, match, gesture: gestureAction, capacity: withCapacity, denial, check: probe });
+            } else {
+              const pressure = await hold(pattern, match, true);
+              try { const attempt = action(); attempt.catch(() => {}); await pressure.wait(); await withCapacity(async () => { await pressure.release(); await attempt; }); }
+              finally { await pressure.close(); }
+            }
           } else await action();
         }
         finally { await posts.close(); }
         if (status === 401) await login();
-        const after = await api(historyPath), followAfter = await api("/api/user/follows/manga?limit=100");
-        insist(before.status === 200 && after.status === 200 && JSON.stringify(before.body) === JSON.stringify(after.body), "A rejected mutation changed genuine durable account history");
-        insist(followBefore.status === 200 && followAfter.status === 200 && JSON.stringify(followBefore.body) === JSON.stringify(followAfter.body), "A rejected mutation changed genuine durable follows");
+        await probe("durable-unchanged", async () => {
+          const after = await api(historyPath), followAfter = await api("/api/user/follows/manga?limit=100");
+          insist(before.status === 200 && after.status === 200 && JSON.stringify(before.body) === JSON.stringify(after.body), "A rejected mutation changed genuine durable account history");
+          insist(followBefore.status === 200 && followAfter.status === 200 && JSON.stringify(followBefore.body) === JSON.stringify(followAfter.body), "A rejected mutation changed genuine durable follows");
+        });
         return { genuine_status: status, native_denial: status === 403 ? "actual owner readonly bearer lacks mutation permission" : status === 429 ? "bounded owned sockets exhausted actual native request permits" : "real cookie withdrawn with cached UI Session retained", actual_write_count: 1, feedback_visible: true, durable_state_unchanged: true };
       });
       if (phase === "ui15-reader-feedback") {
-        await step("UI15 automatic account history: actual200 acknowledgement is durable once across reader rerenders", async () => {
+        await step("UI15 automatic account history: actual200 acknowledgement is durable once per reader lifetime", async () => {
           const endpoint = `/api/user/history/manga/${ids.manga}`; const cleared = await api(endpoint, { method: "POST", data: { unread_ids: [ids.chapter] } }); insist(cleared.status === 200, "Genuine account-history clear prerequisite failed");
           await open(`/title/${ids.manga}`); await ready(); await mode("account"); const posts = countPosts(endpoint);
           try {
             await page.locator(`a[href="/chapter/${ids.chapter}"]`).first().click(); await page.waitForURL(url => url.pathname.startsWith(`/chapter/${ids.chapter}`));
             await until(() => posts.rows, rows => rows.some(row => row.status === 200 && row.body), "Actual reader-entry history did not receive its required200 acknowledgement");
             const durable = await api(endpoint); insist(durable.status === 200 && Object.hasOwn(durable.body[ids.manga] ?? {}, ids.chapter), "Acknowledged reader entry did not persist actual account history");
-            await settings(); await selectReaderPage("2", 2); await expand(panel()); const download = page.waitForEvent("download"); await panel().getByRole("button", { name: "Export device backup", exact: true }).click(); await download;
-            await stable(async () => posts.requests === 1, "Harmless reader/page/local refresh replayed the successful account-history mutation");
-            return { native_acknowledgement200: true, durable_account_history: true, same_authority_posts: posts.requests, actual_page_and_local_refresh: true };
+            await settings(); await selectReaderPage("2", 2); await realm();
+            await stable(async () => posts.requests === 1, "Harmless mounted reader/page refresh replayed the successful account-history mutation");
+            const restore = await visitManagement();
+            const download = page.waitForEvent("download"); await panel().getByRole("button", { name: "Export device backup", exact: true }).click(); await download;
+            await stable(async () => posts.requests === 1, "Settings backup refresh replayed a disposed reader's account-history mutation");
+            await restore(); await until(readPage, value => value === 2, "Management return lost the exact account reader page"); await sameRealm();
+            await until(() => posts.rows, rows => rows.filter(row => row.status === 200 && row.body).length === 2, "Restored reader lifetime did not receive exactly one new genuine account-history acknowledgement");
+            await stable(async () => posts.requests === 2, "The restored reader replayed its account-history entry mutation");
+            return { native_acknowledgement200: true, durable_account_history: true, first_reader_posts: 1, settings_backup_posts: 0, restored_reader_posts: 1, total_posts: posts.requests, same_page_and_document_restored: true, actual_page_and_local_refresh: true };
           } finally { await posts.close(); }
         });
         for (const abandoned of [false, true]) await step(`UI15 automatic account history: real committed200 with lost delivery ${abandoned ? "after reader disposal" : "reports uncertainty"}`, async () => {
@@ -485,25 +814,37 @@ export async function runUi11To16Journeys(h) {
       } finally { await held.close(); await seen.close(); }
     });
     await step("UI14 public home Grid: the owned real PostgreSQL outage gives503 and recovery Retry gives200", async () => {
+      const probe = (suffix, operation) => check("home-pg-" + suffix, operation);
       const capability = fixture.fixture_control?.pg_home_fault;
-      insist(capability?.fixture_only === true && capability.enabled === true && capability.outage_seconds === 15 && capability.independent_restart_watchdog === true && capability.allowed_browser_kind === phase, "UNIMPLEMENTED FIXTURE DEPENDENCY: reviewed opt-in genuine home503 control is required");
+      await probe("capability", async () => { insist(capability?.fixture_only === true && capability.enabled === true && capability.outage_seconds === 15 && capability.independent_restart_watchdog === true && capability.allowed_browser_kind === phase, "UNIMPLEMENTED FIXTURE DEPENDENCY: reviewed opt-in genuine home503 control is required"); });
       const held = await hold(origin + "/api/chapter/updates*", request => requestPath(request, "/api/chapter/updates"), true), seen = observe(request => requestPath(request, "/api/chapter/updates"));
       let active = false, restored;
       try {
         // Healthy document/auth/catalogue initialization happens before the
         // deliberate outage. Only the real mounted update read is withheld.
-        await open(`/?ui14_pg_fault=${marker}`); await held.wait();
-        const receipt = await privateControl("pg-home-fault-begin"), fault = receipt.pg_home_fault ?? receipt.operation;
+        await probe("open", () => open(`/?ui14_pg_fault=${marker}`)); await probe("held", () => held.wait());
+        const receipt = await probe("begin", () => privateControl("pg-home-fault-begin")), fault = receipt.pg_home_fault ?? receipt.operation;
         active = true;
-        insist(fault?.fixture_only === true && fault.status === "outage" && fault.active === true && fault.independent_restart_watchdog === true && fault.restart_deadline_unix * 1000 > Date.now() && fault.native503_observed?.status === 503 && fault.native503_observed?.code === "unavailable", "The real fixed-cluster fault receipt did not prove its current native503 outage");
-        await held.release(); await page.getByText("Updates unavailable", { exact: true }).last().waitFor({ state: "visible" }); await seen.settle();
-        insist(seen.rows.length === 3 && seen.rows.every(row => row.status === 503 && row.body?.code === "unavailable"), "Mounted home Grid did not receive its three real final dependency503 reads");
-        insist(!await bodyHas("No updates found"), "Real home dependency503 became a successful empty catalogue");
-        const resume = await privateControl("pg-home-fault-resume"); restored = resume.pg_home_fault ?? resume.operation; active = false;
-        insist(restored?.fixture_only === true && restored.status === "ready" && restored.active === false && restored.fixed_cluster_preserved === true && restored.postgres_binary_sha256 === fault.postgres_binary_sha256 && JSON.stringify(restored.cluster_config_hashes) === JSON.stringify(fault.cluster_config_hashes) && restored.native_recovery?.readyz_status === 200 && restored.native_recovery?.read_status === 200, "Real PostgreSQL recovery did not preserve its exact original cluster/executable/config and native readiness");
-        const boundary = seen.rows.length, section = page.locator("section").filter({ has: page.getByRole("heading", { name: "Latest Updates", exact: true }) }); await section.getByRole("button", { name: "Retry updates", exact: true }).click();
-        await until(() => seen.rows.slice(boundary), rows => rows.some(row => row.status === 200 && Array.isArray(row.body?.data)), "Actual home Retry did not recover after the real fixed-cluster restart");
-        return { genuine_dependency503: true, native_503_attempts: 3, fixed_outage_seconds: 15, independent_restart_watchdog: true, original_cluster_and_config_preserved: true, real_readyz_and_read200: true, visible_retry200: true, watchdog_terminal_cleanup_required_by_supervisor: true };
+        await probe("outage", async () => { insist(fault?.fixture_only === true && fault.status === "outage" && fault.active === true && fault.independent_restart_watchdog === true && fault.restart_deadline_unix * 1000 > Date.now() && fault.native503_observed?.status === 503 && fault.native503_observed?.code === "unavailable", "The real fixed-cluster fault receipt did not prove its current native503 outage"); });
+        await probe("first-failure", async () => {
+          await held.release(); await page.getByText("Updates unavailable", { exact: true }).last().waitFor({ state: "visible" }); await seen.settle();
+          insist(seen.rows.length === 1 && seen.rows[0].status === 503 && seen.rows[0].body?.code === "unavailable", "The initial mounted home read did not settle its single genuine dependency503");
+        });
+        const section = page.locator("section").filter({ has: page.getByRole("heading", { name: "Latest Updates", exact: true }) });
+        // The real HTTP wrapper settles503 once. Exercise two explicit visible
+        // safe-read retries; do not mislabel these as automatic503 retries.
+        await probe("retry-second", () => retryDeniedHomeRead(section, seen, until, insist));
+        await probe("retry-third", () => retryDeniedHomeRead(section, seen, until, insist));
+        await probe("three-denials", async () => {
+          insist(seen.rows.length === 3 && seen.rows.every(row => row.status === 503 && row.body?.code === "unavailable"), "Mounted home Grid did not receive its three real final dependency503 reads");
+          await stable(async () => seen.requests === 3, "Home dependency503 reads replayed without an explicit Retry gesture");
+        });
+        await probe("no-false-empty", async () => { insist(!await bodyHas("No updates found"), "Real home dependency503 became a successful empty catalogue"); });
+        const resume = await probe("resume", () => privateControl("pg-home-fault-resume")); restored = resume.pg_home_fault ?? resume.operation; active = false;
+        await probe("restored", async () => { insist(restored?.fixture_only === true && restored.status === "ready" && restored.active === false && restored.fixed_cluster_preserved === true && restored.postgres_binary_sha256 === fault.postgres_binary_sha256 && JSON.stringify(restored.cluster_config_hashes) === JSON.stringify(fault.cluster_config_hashes) && restored.native_recovery?.readyz_status === 200 && restored.native_recovery?.read_status === 200, "Real PostgreSQL recovery did not preserve its exact original cluster/executable/config and native readiness"); });
+        const boundary = seen.rows.length; await probe("recovery-retry", () => section.getByRole("button", { name: "Retry updates", exact: true }).click());
+        await probe("recovery-read", () => until(() => seen.rows.slice(boundary), rows => rows.some(row => row.status === 200 && Array.isArray(row.body?.data)), "Actual home Retry did not recover after the real fixed-cluster restart"));
+        return { genuine_dependency503: true, native_503_attempts: 3, explicit_denied_retry_gestures: 2, automatic_503_retries: 0, fixed_outage_seconds: 15, independent_restart_watchdog: true, original_cluster_and_config_preserved: true, real_readyz_and_read200: true, visible_retry200: true, watchdog_terminal_cleanup_required_by_supervisor: true };
       } finally {
         try { if (active) { const receipt = await privateControl("pg-home-fault-resume"); restored = receipt.pg_home_fault ?? receipt.operation; insist(restored?.active === false && restored.native_recovery?.read_status === 200, "The real PG fault did not reach its required finally recovery"); } }
         finally { await held.close(); await seen.close(); }
@@ -515,25 +856,32 @@ export async function runUi11To16Journeys(h) {
       try { await context.clearCookies(); await spaLink("/"); await sameRealm(); const section = page.locator("section").filter({ has: page.getByRole("heading", { name: "My Updates", exact: true }) }); await section.getByText(/Catalogue request failed: HTTP 401/).waitFor({ state: "visible" }); await section.getByRole("button", { name: "Retry updates", exact: true }).waitFor({ state: "visible" }); await seen.settle(); insist(seen.rows.some(row => row.status === 401), "My Updates failure did not come from the genuine expired-cookie backend"); return { genuine_private401: true, permanent_skeleton_absent: true, current_retry_visible: true, same_document: true }; } finally { await seen.close(); }
     });
     await step("UI14 private My Updates: real restricted recovery cookie gives403 to a cached normal-account widget", async () => {
+      const probe = (suffix, operation) => check("home-private403-" + suffix, operation);
       // Obtain the capability using the real visible request form and genuine
-      // one-time mail. Redeem through this browser's request context with no
-      // redirect, so the retained SPA still owns its cached normal Session. The
-      // server-issued cookie is not edited or fabricated, and no password reset
-      // or broader account capability is performed.
-      await login(); await page.getByRole("link", { name: "Logout", exact: true }).first().click();
-      await until(() => api("/api/auth/check"), value => value.status === 401, "Actual logout did not retire normal account authority before requesting recovery");
-      await open("/auth/recovery"); await page.locator('input[name="email"]').fill(account.email); await page.getByRole("button", { name: "Send Recovery Link", exact: true }).click();
-      const mail = await until(async () => { const value = await context.request.get(sink() + `/mail/latest?to=${encodeURIComponent(account.email)}&kind=recovery`, { maxRedirects: 0 }); return value.ok() ? value.json() : undefined; }, value => value?.fixture_only === true && typeof value.link === "string", "Real recovery mail was not delivered to the synthetic fixture recipient");
-      const link = new URL(mail.link); insist(link.origin === origin && link.pathname === "/auth/self-service/recovery" && !!link.searchParams.get("token"), "Actual recovery link escaped its exact native redemption endpoint"); remember(link.href); for (const [, token] of link.searchParams) remember(token);
-      await login(); await ready(); await mode("account"); await open("/search"); await realm();
-      const redeemed = await context.request.get(link.href, { maxRedirects: 0, timeout: 12000 }); insist(redeemed.status() === 303 && new URL(redeemed.headers().location, origin).pathname === "/auth/recovery", "Actual one-time recovery redemption did not install its restricted server credential");
-      const capability = await api("/api/auth/check"); insist(capability.status === 200 && capability.body?.session_purpose === "recovery" && capability.body.identity === undefined && capability.body.follows === undefined && capability.body.preferences === undefined && !capability.body.roles?.length && !capability.body.permissions?.length, "Real recovery cookie acquired normal private account capability");
-      insist((await api("/api/user/follows/chapter/updates?limit=1")).status === 403, "Actual restricted recovery principal was not denied native private updates");
+      // one-time mail, retaining the cached normal Session in this document.
+      await probe("login", login);
+      await probe("logout", async () => {
+        await page.getByRole("link", { name: "Logout", exact: true }).first().click();
+        await until(() => api("/api/auth/check"), value => value.status === 401, "Actual logout did not retire normal account authority before requesting recovery");
+      });
+      await probe("request-form", async () => { await open("/auth/recovery"); await page.locator('input[name="email"]').fill(account.email); await page.getByRole("button", { name: "Send Recovery Link", exact: true }).click(); });
+      const mail = await probe("mail", () => until(async () => { const value = await context.request.get(sink() + `/mail/latest?to=${encodeURIComponent(account.email)}&kind=recovery`, { maxRedirects: 0 }); return value.ok() ? value.json() : undefined; }, value => value?.fixture_only === true && typeof value.link === "string", "Real recovery mail was not delivered to the synthetic fixture recipient"));
+      const link = await probe("link", async () => {
+        const link = new URL(mail.link); insist(link.origin === origin && link.pathname === "/auth/self-service/recovery" && !!link.searchParams.get("token"), "Actual recovery link escaped its exact native redemption endpoint"); remember(link.href); for (const [, token] of link.searchParams) remember(token); return link;
+      });
+      await probe("cached-session", async () => { await login(); await ready(); await mode("account"); await open("/search"); await realm(); });
+      await probe("redemption", async () => { const redeemed = await context.request.get(link.href, { maxRedirects: 0, timeout: 12000 }); insist(redeemed.status() === 303 && new URL(redeemed.headers().location, origin).pathname === "/auth/recovery", "Actual one-time recovery redemption did not install its restricted server credential"); });
+      await probe("restricted-auth", async () => { const capability = await api("/api/auth/check"); insist(capability.status === 200 && capability.body?.session_purpose === "recovery" && capability.body.identity === undefined && capability.body.follows === undefined && capability.body.preferences === undefined && !capability.body.roles?.length && !capability.body.permissions?.length, "Real recovery cookie acquired normal private account capability"); });
+      await probe("native-denial", async () => { insist((await api("/api/user/follows/chapter/updates?limit=1")).status === 403, "Actual restricted recovery principal was not denied native private updates"); });
       const seen = observe(request => requestPath(request, "/api/user/follows/chapter/updates"));
       try {
-        await spaLink("/"); await sameRealm(); const section = page.locator("section").filter({ has: page.getByRole("heading", { name: "My Updates", exact: true }) }); await section.getByText(/Catalogue request failed: HTTP 403/).waitFor({ state: "visible" }); const retry = section.getByRole("button", { name: "Retry updates", exact: true }); await retry.waitFor({ state: "visible" });
-        await until(() => seen.rows, rows => rows.length === 1 && rows[0].status === 403, "Cached normal-account widget did not receive its real current restricted-cookie403"); await stable(async () => seen.requests === 1, "Private403 read was automatically replayed or stayed in a skeleton loop");
-        await retry.click(); await until(() => seen.rows, rows => rows.length === 2 && rows.every(row => row.status === 403), "Visible private Retry did not perform a new genuine currently denied safe read");
+        await probe("widget-open", async () => { await spaLink("/"); await sameRealm(); });
+        const section = page.locator("section").filter({ has: page.getByRole("heading", { name: "My Updates", exact: true }) });
+        const retry = section.getByRole("button", { name: "Retry updates", exact: true });
+        await probe("feedback", async () => { await section.getByText(/Catalogue request failed: HTTP 403/).waitFor({ state: "visible" }); await retry.waitFor({ state: "visible" }); });
+        await probe("single-read", async () => { await until(() => seen.rows, rows => rows.length === 1 && rows[0].status === 403, "Cached normal-account widget did not receive its real current restricted-cookie403"); await stable(async () => seen.requests === 1, "Private403 read was automatically replayed or stayed in a skeleton loop"); });
+        await probe("retry", () => retry.click());
+        await probe("repeated-denial", () => until(() => seen.rows, rows => rows.length === 2 && rows.every(row => row.status === 403), "Visible private Retry did not perform a new genuine currently denied safe read"));
         return { genuine_one_time_recovery_redemption303: true, actual_restricted_capability_without_identity: true, native_private403: true, retained_normal_ui_session: true, real_widget403: true, explicit_retry403: true, permanent_skeleton_absent: true, same_document: true };
       } finally { await seen.close(); await context.clearCookies(); }
     });
@@ -543,7 +891,7 @@ export async function runUi11To16Journeys(h) {
     await ensureReaders();
     const data = dependency("bilingual"); await open(`/title/${data.manga_id}?tlang=en`); await realm();
     const form = page.locator("form").filter({ has: page.getByRole("button", { name: "Apply", exact: true }) });
-    const trigger = () => form.getByRole("combobox").first();
+    const trigger = () => selectListboxTrigger(form).first();
     const applied = async (code, label, chapter) => { await page.waitForURL(url => url.searchParams.getAll("tlang").join(",") === code); await trigger().filter({ hasText: label }).waitFor({ state: "visible" }); insist(!await form.getByRole("button", { name: "Apply", exact: true }).isEnabled(), "Apply baseline did not match the actual current applied query"); await page.locator(`a[href="/chapter/${chapter}"]`).first().waitFor({ state: "visible" }); };
     await applied("en", "English", data.english_chapter_id);
     await selectOptions(trigger(), ["Spanish"]); insist(await form.getByRole("button", { name: "Apply", exact: true }).isEnabled(), "Changed Spanish language could not be applied"); await form.getByRole("button", { name: "Apply", exact: true }).click(); await applied("es", "Spanish", data.spanish_chapter_id);
@@ -615,7 +963,7 @@ export async function runUi11To16Journeys(h) {
       // plus the acknowledged analytics events above, never invented counters.
       insist(typeof data.tag_id === "string" && data.tagged_title_id === data.language_title_id && data.language === "es", "UNIMPLEMENTED FIXTURE DEPENDENCY: the real tagged Spanish preference title is required");
       await page.getByRole("link", { name: "Settings", exact: true }).first().click(); await page.getByRole("link", { name: "Preferences", exact: true }).click();
-      const languages = page.locator("div.flex.flex-col").filter({ has: page.locator("strong", { hasText: "Original Language Filter" }) }).last(); await selectOptions(languages.getByRole("combobox"), ["Spanish"]); await savePreferences(); const languageBoundary = seen.rows.length;
+      const languages = page.locator("div.flex.flex-col").filter({ has: page.locator("strong", { hasText: "Original Language Filter" }) }).last(); await selectOptions(selectListboxTrigger(languages), ["Spanish"]); await savePreferences(); const languageBoundary = seen.rows.length;
       await spaLink("/"); await until(() => seen.rows.slice(languageBoundary), rows => rows.filter(row => row.status === 200 && new URLSearchParams(row.query).getAll("lang").join(",") === "es").length >= 2, "Both home widgets did not issue their actual acknowledged Spanish-language query");
       insist(await home.locator(`a[href^="/title/${data.language_title_id}"]`).count() >= 2, "The real Spanish target is absent from one of the two current home widgets");
       await page.getByRole("link", { name: "Settings", exact: true }).first().click(); await page.getByRole("link", { name: "Preferences", exact: true }).click(); await checked(`#tag-${data.tag_id}`, true); await savePreferences(); const tagBoundary = seen.rows.length;
@@ -625,7 +973,7 @@ export async function runUi11To16Journeys(h) {
       // A real older Most Read response is already acknowledged at the backend
       // when settings change. Releasing its delivery after a new current read
       // must not restore the formerly enabled adult cards into this SPA.
-      await page.getByRole("link", { name: "Settings", exact: true }).first().click(); await page.getByRole("link", { name: "Preferences", exact: true }).click(); await selectOptions(languages.getByRole("combobox"), []); await checked(`#tag-${data.tag_id}`, false); await checked("#erotic", true); await checked("#hentai", true); await savePreferences();
+      await page.getByRole("link", { name: "Settings", exact: true }).first().click(); await page.getByRole("link", { name: "Preferences", exact: true }).click(); await selectOptions(selectListboxTrigger(languages), []); await checked(`#tag-${data.tag_id}`, false); await checked("#erotic", true); await checked("#hentai", true); await savePreferences();
       const older = await hold(origin + "/api/manga/top*", request => requestPath(request, "/api/manga/top"));
       try {
         await spaLink("/"); await older.wait();
@@ -642,10 +990,11 @@ export async function runUi11To16Journeys(h) {
     await ensurePagination();
     const data = dependency("search"); insist(data.total >= 10000 && typeof data.query === "string", "A genuine10000-title bounded metadata scenario is required");
     for (const size of [28, 42, 56, 70, 84, 98]) await step(`UI16 Search cap: native10000 total has an ordinary terminal page link at limit${size}`, async () => {
-      await open("/settings/preferences"); await page.getByRole("combobox", { name: /Items Per Page:/ }).click(); await page.getByRole("option", { name: String(size), exact: true }).click(); await savePreferences();
+      await open("/settings/preferences"); await selectListboxTrigger(page).filter({ hasText: /Items Per Page:/ }).click(); await clickListboxOption(page, String(size)); await savePreferences();
       const seen = observe(request => requestPath(request, "/api/manga"));
       try { await open(`/search?title=${encodeURIComponent(data.query)}`); await until(() => seen.rows, rows => rows.some(row => row.status === 200 && row.body?.total === data.total && row.body?.limit === size), "Actual public search did not acknowledge its genuine capped-fixture total and selected page size"); const last = Math.ceil(Math.min(data.total, 10000) / size); const link = page.getByRole("link", { name: String(last), exact: true }).first(); await link.waitFor({ state: "visible" }); await realm(); await link.click(); await page.waitForURL(url => Number(url.searchParams.get("page")) === last); await until(() => seen.rows, rows => rows.some(row => row.body?.page === last && row.body?.limit === size && row.body?.data?.length > 0), "Visible terminal link did not reach its real last partial/native page"); const receipt = seen.rows.findLast(row => row.body?.page === last); const expected = Math.min(size, data.total - (last - 1) * size); insist(receipt.body.data.length === expected, "Actual last-page row count differs from the native uncapped catalogue contract"); await page.goBack({ waitUntil: "domcontentloaded" }); await page.goForward({ waitUntil: "domcontentloaded" }); await sameRealm(); await link.waitFor({ state: "visible" }); return { genuine_total: data.total, selected_limit: size, ordinary_last_link: last, native_last_rows: receipt.body.data.length, last_and_current_agree: true, back_forward_same_document: true }; } finally { await seen.close(); }
     });
   }
+  if (phase === actorFollowPhase) await runActorFollowJourneys({ phase, page, origin, ids, api, step, check, insist, open, signup, hold, requestPath, until, stable, realm, sameRealm, report });
   finite();
 }

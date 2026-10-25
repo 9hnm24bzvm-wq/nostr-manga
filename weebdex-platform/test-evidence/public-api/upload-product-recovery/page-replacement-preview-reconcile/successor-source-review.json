@@ -1,0 +1,46 @@
+{
+  "schema": "independent-replacement-preview-reconcile-source-review-v1",
+  "reviewed_at_utc": "2026-10-17T06:33:44.490514+00:00",
+  "decision": "clear_one_exact_56_case_source_data_fake_suite",
+  "parent_commit": "a9886def384bbd08bd25cfeaaa336c24a72bb78e",
+  "source_sha256": {
+    "platform-integrations/public-api/upload-anchors.json": "72ae63f73c7cb2940e8e4048b385de7720de3fe5bb9bab26a0810c9f46577455",
+    "tests/ci/test_public_upload_overlay_recovery.mjs": "ee707d85187bb5b6871ca8a4af1b3c2ca530ca1e8bb672293a9815cbc1f98c5a",
+    "tests/ci/test_public_upload_replacement_preview_recovery.mjs": "7f29de29ebfd1df7ed10851045b72a5033b53ca21e0f11a8c24d716eab9843e6",
+    "tests/ci/test_public_upload_provenance_recovery.mjs": "8a4905df4bb6aba5ee35dc85ed398f2155c9b04a18749eb06611b9330efcf98b",
+    "tests/ci/test_public_upload_build_recovery.mjs": "f2605441c3a5ba851aa2cba4a02befa3fdd78787fcf1c56e2a40d72171439ee5",
+    "platform-integrations/public-api/upload-preview.ts": "4c03295c0e666b7b3520d73dd8ddfa5d79d4eb45aef627040a196e22cffb33d8",
+    "platform-integrations/public-api/upload-overlays.mjs": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
+    "scripts/composed-upload-provenance.mjs": "1bd941913fd4f4d80784057ea7d531d73b9fb60e1a3abdce2e4b324971b09e00"
+  },
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "tests/ci/test_public_upload_overlay_recovery.mjs",
+    "tests/ci/test_public_upload_replacement_preview_recovery.mjs",
+    "tests/ci/test_public_upload_provenance_recovery.mjs",
+    "tests/ci/test_public_upload_build_recovery.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform",
+  "reviewed_behavior": [
+    "Only the actual Pages adoption output changes: confirmed same hash/size with no thumbnail receives a new keyed card object, disposing its previously fenced/errored lease and permitting a fresh signed-preview lease.",
+    "An existing thumbnail retains the exact keyed card/lease. Changed-hash adoption still updates the current card and preserves its hash-keyed lease transition.",
+    "Exact owner/session/file/target checks still precede all adoption; real confirmed session flags remain acknowledged. No proof or mutation fence is relaxed.",
+    "Original old-source 1-fail/1-pass counterexample is retained separately."
+  ],
+  "scope": {
+    "overlay_cases": 38,
+    "genuine_lease_fake_cases": 2,
+    "provenance_cases": 12,
+    "build_source_association_cases": 4,
+    "total": 56,
+    "source_runtime_delta": "One anchor body plus its complete output digest."
+  },
+  "limits": [
+    "Explicit fake component lifetime, URL/Blob and transport inputs; no Svelte/browser/decoder runtime evidence.",
+    "No application/DB/socket/build/compiler process from this test allowlist.",
+    "All backend, adapter, media lease helper and held original browser inputs remain outside this correction.",
+    "Fresh successor strict/build qualification is still required."
+  ]
+}

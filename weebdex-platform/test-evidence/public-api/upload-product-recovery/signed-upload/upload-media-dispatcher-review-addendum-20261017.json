@@ -1,0 +1,22 @@
+{
+  "schema": "recovered-upload-media-review-addendum-v1",
+  "reviewed_at_utc": "2026-10-17T03:43:54.607742+00:00",
+  "prior_review_sha256": "a057f20fef1383c98ff142dc5d281a2900ffcbbf1027c480bc4e22eec0d3bbd9",
+  "verdict": "source_clear_with_exact_owner_finite_log_verified",
+  "pins": {
+    "platform-integrations/public-api/upload-multipart.ts": "836066dbc4759de39b8c7144fed9c348949f8bbcec7da7d7cf8e7e980943d84a",
+    "platform-integrations/public-api/upload-preview.ts": "4c03295c0e666b7b3520d73dd8ddfa5d79d4eb45aef627040a196e22cffb33d8",
+    "tests/ci/test_public_upload_media_recovery.mjs": "3e4066bbf65de5e3212a24ba14cac06dd6df3287be29ab3c07b9bf974241bb8f"
+  },
+  "log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-media-finite-final.log",
+    "sha256": "8279a8fbda4ee604ec733552ec6c6910a39d1ee29d612cf2f520d2af26ef94bb",
+    "tests": 28,
+    "passed": 28,
+    "failed": 0
+  },
+  "delta": "Private URL registry stores a release callback for cleanup-only revokeUploadPreviewUrl. Exactly two additional finite cases cover unknown/borrowed/released URLs and cross-lease/stale URL targeting.",
+  "limitation": "Dispatcher releases one URL only. Component removal/unmount must still dispose the lease to invalidate pending load. Actual hash/auth/decode remains the injected loader obligation; no browser/remote proof is claimed.",
+  "reviewer_reran_tests": false,
+  "reviewer_check_correction": "First read-only receipt check expected TAP # summary prefixes; actual unchanged log uses Node spec reporter \u2139 prefixes. Corrected only this assertion after inspecting the exact log; no source/test/log was changed or rerun."
+}

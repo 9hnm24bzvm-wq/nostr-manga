@@ -1,0 +1,24 @@
+✔ fresh blank begin does not invent a save new (3.840676ms)
+✔ fresh blank begin does not invent a save edit (2.322913ms)
+✔ retained-language state seam for cancel remains dirty and saves (1.617323ms)
+✔ retained-language state seam for add-another remains dirty and saves (0.817079ms)
+✔ server baseline does not acknowledge differing local metadata false (0.677549ms)
+✔ server baseline does not acknowledge differing local metadata true (1.510382ms)
+✔ newer local edit remains dirty after held save false (0.842457ms)
+✔ newer local edit remains dirty after held save true (1.543061ms)
+✔ original save refusal preserves dirty baseline/version 409/false (1.368298ms)
+✔ original save refusal preserves dirty baseline/version 409/true (1.191062ms)
+✔ original save refusal preserves dirty baseline/version 503/false (0.9447ms)
+✔ original save refusal preserves dirty baseline/version 503/true (1.065121ms)
+✔ empty language keeps edits without invalid staging write false (1.014325ms)
+✔ empty language keeps edits without invalid staging write true (0.896548ms)
+✔ late save cannot acknowledge a retired context dispose (0.747534ms)
+✔ late save cannot acknowledge a retired context different-session (0.601885ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 112.540878

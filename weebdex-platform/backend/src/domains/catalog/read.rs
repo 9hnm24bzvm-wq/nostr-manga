@@ -1,4 +1,6 @@
 use super::{
+    feed_diagnostics::FeedError,
+    feed_projection::{CHAPTER_PARENT_LOOKUP, chapter_page_projection},
     query::{QueryParams, Sql, chapter_filters, manga_filters, window_seconds},
     repository::CatalogRepository,
     validation as v,
@@ -156,6 +158,11 @@ async fn manga_feed(
     Ok(Json(data))
 }
 fn ranking(q: &QueryParams, sql: &mut Sql, kind: &str, id: &str) -> ApiResult<String> {
+    ranking_at(q, sql, kind, id, "clock_timestamp()")
+}
+/// Shared persisted ranking expression. Every SQL identifier/clock is supplied
+/// by a trusted internal caller; request values remain bound parameters.
+pub(crate) fn ranking_at(q: &QueryParams, sql: &mut Sql, kind: &str, id: &str, clock: &str) -> ApiResult<String> {
     let rank = q.first("rank").unwrap_or("read");
     if kind == "manga" && matches!(rank, "follow" | "follows") {
         return Ok("COALESCE(s.follows,0)".to_owned());
@@ -166,7 +173,7 @@ fn ranking(q: &QueryParams, sql: &mut Sql, kind: &str, id: &str) -> ApiResult<St
     if let Some(seconds) = window_seconds(q)? {
         let p = sql.bind(seconds);
         Ok(format!(
-            "(SELECT count(*) FROM platform.catalog_view_events ve WHERE ve.entity_type='{kind}' AND ve.entity_id={id} AND ve.viewed_at>=clock_timestamp()-({p}::bigint * interval '1 second'))"
+            "(SELECT count(*) FROM platform.catalog_view_events ve WHERE ve.entity_type='{kind}' AND ve.entity_id={id} AND ve.viewed_at>={clock}-({p}::bigint * interval '1 second') AND ve.viewed_at<={clock})"
         ))
     } else {
         Ok("COALESCE(s.views,0)".to_owned())
@@ -413,32 +420,32 @@ pub async fn chapter_get(
 pub async fn chapter_search(
     State(state): State<AppState>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     chapter_feed(state, raw, None, true, false, false).await
 }
 pub async fn chapter_latest(
     State(state): State<AppState>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     chapter_feed(state, raw, None, true, false, false).await
 }
 pub async fn chapter_updates(
     State(state): State<AppState>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     chapter_feed(state, raw, None, false, false, true).await
 }
 pub async fn chapter_top(
     State(state): State<AppState>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     chapter_feed(state, raw, None, true, true, false).await
 }
 pub async fn chapter_list(
     State(state): State<AppState>,
     Path(id): Path<String>,
     RawQuery(raw): RawQuery,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     CatalogRepository::new(state.db.clone())
         .get_manga(&id)
         .await?;
@@ -451,9 +458,10 @@ async fn chapter_feed(
     mapped: bool,
     top: bool,
     updates: bool,
-) -> ApiResult<Json<Value>> {
+) -> Result<Json<Value>, FeedError> {
     let q = QueryParams::parse(raw)?;
     let is_manga_list = manga.is_some();
+    let chapter_parent = manga.clone();
     let mut sql = Sql::default();
     sql.conditions
         .push("c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published'".to_owned());
@@ -472,7 +480,7 @@ async fn chapter_feed(
     let sort = if top {
         ranking(&q, &mut sql, "chapter", "c.id")?
     } else {
-        match q.first("sort").unwrap_or(if is_manga_list{"chapter"}else{"publishedAt"}){"publishedAt"=>"c.published_at".to_owned(),"createdAt"=>"c.created_at".to_owned(),"updatedAt"=>"c.updated_at".to_owned(),"chapter"=>"CASE WHEN c.chapter ~ '^[0-9]' THEN substring(c.chapter FROM '^[0-9]+(?:[.][0-9]+)?')::numeric END".to_owned(),"volume"=>"CASE WHEN c.volume ~ '^[0-9]' THEN substring(c.volume FROM '^[0-9]+(?:[.][0-9]+)?')::numeric END".to_owned(),"views"=>"COALESCE(s.views,0)".to_owned(),_=>return Err(ApiError::bad_request("Invalid chapter sort"))}
+        match q.first("sort").unwrap_or(if is_manga_list{"chapter"}else{"publishedAt"}){"publishedAt"=>"c.published_at".to_owned(),"createdAt"=>"c.created_at".to_owned(),"updatedAt"=>"c.updated_at".to_owned(),"chapter"=>"CASE WHEN c.chapter ~ '^[0-9]' THEN substring(c.chapter FROM '^[0-9]+(?:[.][0-9]+)?')::numeric END".to_owned(),"volume"=>"CASE WHEN c.volume ~ '^[0-9]' THEN substring(c.volume FROM '^[0-9]+(?:[.][0-9]+)?')::numeric END".to_owned(),"views"=>"COALESCE(s.views,0)".to_owned(),_=>return Err(ApiError::bad_request("Invalid chapter sort").into())}
     };
     let sort_text = match q.first("sort").unwrap_or(if is_manga_list {
         "chapter"
@@ -495,26 +503,28 @@ async fn chapter_feed(
     } else {
         ""
     };
-    let map = if mapped {
-        ",'map',jsonb_build_object('manga',COALESCE((SELECT jsonb_object_agg(manga_id,platform.catalog_manga_json(manga_id)) FROM(SELECT DISTINCT manga_id FROM selected)ids),'{}'::jsonb))"
-    } else {
-        ""
-    };
+    let projection = chapter_page_projection(order, q.limit, q.page, mapped);
     let query = format!(
-        "WITH matched AS(SELECT {unique} c.id,c.manga_id,{sort} AS sort_value,{sort_text} AS sort_text FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id LEFT JOIN platform.catalog_chapter_counters s ON s.chapter_id=c.id WHERE {} {match_order}),selected AS(SELECT * FROM matched ORDER BY sort_value {order} NULLS LAST,sort_text {order},id LIMIT {limit} OFFSET {offset}) SELECT jsonb_build_object('total',(SELECT count(*) FROM matched),'limit',{},'page',{},'data',COALESCE((SELECT jsonb_agg(platform.catalog_chapter_json(id) || jsonb_build_object('_sort_value',sort_value,'_sort_text',sort_text) ORDER BY sort_value {order} NULLS LAST,sort_text {order},id) FROM selected),'[]'::jsonb){map})",
+        "WITH matched AS(SELECT {unique} c.id,c.manga_id,{sort} AS sort_value,{sort_text} AS sort_text FROM platform.catalog_chapters c {CHAPTER_PARENT_LOOKUP} LEFT JOIN platform.catalog_chapter_counters s ON s.chapter_id=c.id WHERE {} {match_order}),selected AS MATERIALIZED(SELECT * FROM matched ORDER BY sort_value {order} NULLS LAST,sort_text {order},id LIMIT {limit} OFFSET {offset}){projection}",
         sql.predicate(),
-        q.limit,
-        q.page
     );
-    Ok(Json(
-        state
-            .db
-            .client()
-            .await?
-            .query_one(&query, &sql.params())
-            .await?
-            .get(0),
-    ))
+    // Bind only this title route. The namespace, rows, total, parent visibility
+    // and nested DTOs are read in ONE PostgreSQL statement snapshot. idProfile
+    // identifies the ID representation, not a fixed ordering of this dynamic feed.
+    let bound_query = chapter_parent.and_then(|parent| {
+        let service_key = crate::protocol::adapters::chapter_page_service_key(&state)?;
+        let parent = sql.bind(parent);
+        let service_key = sql.bind(service_key);
+        Some(format!("SELECT page.value || CASE WHEN identity.namespace IS NOT NULL AND EXISTS(SELECT 1 FROM platform.catalog_manga m WHERE m.id={parent} AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id)) THEN jsonb_build_object('chapterPage',jsonb_build_object('version',1,'mangaId',{parent}::text,'idProfile','native-id-v1','catalogIdentity',jsonb_build_object('catalogNamespace',identity.namespace,'serviceKey',{service_key}::text),'consistency','response-snapshot-v1')) ELSE '{{}}'::jsonb END FROM ({query}) AS page(value) CROSS JOIN (SELECT (SELECT namespace::text FROM platform.catalogue_namespace WHERE singleton) AS namespace) identity"))
+    });
+    let client = state.db.pool().get().await
+        .map_err(|error| FeedError::pool(error, state.config.fixture_feed_diagnostics))?;
+    let params = sql.params();
+    // Missing optional namespace/configuration omits the envelope. SQL failures
+    // are ordinary feed failures, never retried as an unbound second query.
+    let row = client.query_one(bound_query.as_deref().unwrap_or(&query), &params).await
+        .map_err(|error| FeedError::query(error, state.config.fixture_feed_diagnostics))?;
+    Ok(Json(row.get(0)))
 }
 pub async fn chapter_aggregate(
     State(state): State<AppState>,

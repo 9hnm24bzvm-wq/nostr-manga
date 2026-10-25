@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "scope": "prospective-public-signed-features-integrated-successor-v1",
+  "browser_executed": false,
+  "hosted_executed": false,
+  "historical_workflow_association": "workflow-test-successor.json",
+  "historical_workflow_association_sha256": "626b4ccf0d12131ca0227011c539caa1ae6974c0c71d67c5ffa5d7ff3c5a6a22",
+  "prior_pinset_sha256": "07a8f07ff187cd49a8ec93a33309021021b9e8e70ccc139b7e4fab47a81bb790",
+  "current_pinset": "source-pins.json",
+  "current_pinset_sha256": "2352adb503f6ccbe4b1c4ea6b192b77e2aba3e17d5610dabd516a342a74f7cce",
+  "reviewed_integration_commit": "55a55d6578d991285caaef1eff362ad2f9fc6f1c",
+  "changes": [
+    {
+      "prior": {
+        "path": "weebdex-platform/docs/verification/public-signed-feature-qualification.md",
+        "bytes": 7158,
+        "sha256": "7c11546620705a1ea2af01b044851f2c8abbef34faad70b9b946af07e6f92fd5"
+      },
+      "current": {
+        "path": "weebdex-platform/docs/verification/public-signed-feature-qualification.md",
+        "bytes": 7622,
+        "sha256": "c04566557382a107dd0d69042b46352f9f2e11a7470bda9a5ed0f1442ff34d83"
+      },
+      "reviewed_source_commit": "cd65baab2998d67f1e16b45fca1f3a935e6d42eb",
+      "reason": "Reviewed signer-bound personal report inspection/account fencing and prospective observation coverage."
+    },
+    {
+      "prior": null,
+      "current": {
+        "path": "weebdex-platform/platform-integrations/frontend-reconstruction/reports/signed/+page.svelte",
+        "bytes": 132,
+        "sha256": "ebb0c0df170583955082b0db30edbebcada7add77b6a973ee1dc4fc124be0c2f"
+      },
+      "reviewed_source_commit": "cd65baab2998d67f1e16b45fca1f3a935e6d42eb",
+      "reason": "Reviewed signer-bound personal report inspection/account fencing and prospective observation coverage."
+    },
+    {
+      "prior": {
+        "path": "weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte",
+        "bytes": 8451,
+        "sha256": "77245d8bf59c4b6288a3a3a4097326782a245eb368134d81c610a8e085923f5c"
+      },
+      "current": {
+        "path": "weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte",
+        "bytes": 10090,
+        "sha256": "b368c2419b3eb1babe92bc3c13d274265249cf7c2200f63fb43415467689d328"
+      },
+      "reviewed_source_commit": "4ed6a7458f60def1b1a0a8ef83ccaa98257cc31d",
+      "reason": "Reviewed per-field/chapter affordances and persisted exact-scope uncertainty/replay fences; nullable receipt boundaries retained."
+    },
+    {
+      "prior": {
+        "path": "weebdex-platform/platform-integrations/public-api/PublicReportForm.svelte",
+        "bytes": 5690,
+        "sha256": "672913341c2fb96e8dddb5634aea2ea84060fae6db664876213cd5b606eadf0c"
+      },
+      "current": {
+        "path": "weebdex-platform/platform-integrations/public-api/PublicReportForm.svelte",
+        "bytes": 6101,
+        "sha256": "c56ae9dc6ebeaa6196574d119974dc2e9dd77d6cff8c03805f56fbd346580e10"
+      },
+      "reviewed_source_commit": "cd65baab2998d67f1e16b45fca1f3a935e6d42eb",
+      "reason": "Reviewed signer-bound personal report inspection/account fencing and prospective observation coverage."
+    },
+    {
+      "prior": null,
+      "current": {
+        "path": "weebdex-platform/platform-integrations/public-api/PublicReportInspection.svelte",
+        "bytes": 6391,
+        "sha256": "65077cdb4c90d8a06320ba801f477c015d277bf65344c0363765d40cbd05469d"
+      },
+      "reviewed_source_commit": "cd65baab2998d67f1e16b45fca1f3a935e6d42eb",
+      "reason": "Reviewed signer-bound personal report inspection/account fencing and prospective observation coverage."
+    },
+    {
+      "prior": null,
+      "current": {
+        "path": "weebdex-platform/platform-integrations/public-api/report-inspection.ts",
+        "bytes": 7046,
+        "sha256": "8548e94e5ab1f807fabd746bc37a5ee01bc2ee3040a72696b23dc9d6ec8babcf"
+      },
+      "reviewed_source_commit": "85ddd9ecdb89bf74ed191a9aaac64d7410a34c22",
+      "reason": "Reviewed signer-bound personal report inspection/account fencing and prospective observation coverage."
+    },
+    {
+      "prior": {
+        "path": "weebdex-platform/scripts/public-signed-feature-browser.mjs",
+        "bytes": 21269,
+        "sha256": "49eae318cceabf002c8eb7e208d7111bba17996623553f396f6748d5191485aa"
+      },
+      "current": {
+        "path": "weebdex-platform/scripts/public-signed-feature-browser.mjs",
+        "bytes": 22743,
+        "sha256": "d28bd88588dbba33c0855f15e92cf9d6ed573935d2e442362a8c7b7514f86ff0"
+      },
+      "reviewed_source_commit": "85ddd9ecdb89bf74ed191a9aaac64d7410a34c22",
+      "reason": "Reviewed signer-bound personal report inspection/account fencing and prospective observation coverage."
+    },
+    {
+      "prior": {
+        "path": "weebdex-platform/scripts/public-signed-feature-observer.mjs",
+        "bytes": 6730,
+        "sha256": "59b76d6e5a9d15ed4131075bc67c21472583662de56fa5b257a27275490a91a6"
+      },
+      "current": {
+        "path": "weebdex-platform/scripts/public-signed-feature-observer.mjs",
+        "bytes": 7271,
+        "sha256": "666edc9872a129581525dda3d1ef29564dbbaf69b07ab416640f21a2f60be874"
+      },
+      "reviewed_source_commit": "cd65baab2998d67f1e16b45fca1f3a935e6d42eb",
+      "reason": "Reviewed signer-bound personal report inspection/account fencing and prospective observation coverage."
+    },
+    {
+      "prior": {
+        "path": "weebdex-platform/tests/ci/test_signed_feature_browser.mjs",
+        "bytes": 12786,
+        "sha256": "60d61f99e73cd97ccf29f34a770874e8e5b09cac47fa826946cad77735967e49"
+      },
+      "current": {
+        "path": "weebdex-platform/tests/ci/test_signed_feature_browser.mjs",
+        "bytes": 13826,
+        "sha256": "101822145aba20cf1f219b3c35152acba8147fb614f50b37409e0275eb9fead0"
+      },
+      "reviewed_source_commit": "cd65baab2998d67f1e16b45fca1f3a935e6d42eb",
+      "reason": "Reviewed signer-bound personal report inspection/account fencing and prospective observation coverage."
+    },
+    {
+      "prior": null,
+      "current": {
+        "path": "weebdex-platform/tests/ci/test_signed_report_inspection.mjs",
+        "bytes": 11700,
+        "sha256": "d5f238ce5845fa1a682b79505a23cc3f3a4013591c2ab55bf1de49308f5091de"
+      },
+      "reviewed_source_commit": "85ddd9ecdb89bf74ed191a9aaac64d7410a34c22",
+      "reason": "Reviewed signer-bound personal report inspection/account fencing and prospective observation coverage."
+    }
+  ]
+}

@@ -19,7 +19,7 @@ pub fn router() -> Router<AppState> {
         .route("/protocol/capabilities", get(capabilities))
         .route("/protocol/resources", post(resources))
 }
-fn configured_service(state: &AppState) -> (Option<String>, Option<String>, bool) {
+pub(crate) fn configured_service(state: &AppState) -> (Option<String>, Option<String>, bool) {
     let Some(config) = state.config.protocol_publication.as_ref() else {
         return (None, None, false);
     };
@@ -34,6 +34,15 @@ fn configured_service(state: &AppState) -> (Option<String>, Option<String>, bool
     let configured =
         origin.is_some() && key.is_some() && node.get("backend").is_some_and(|v| !v.is_null());
     (origin, key, configured)
+}
+// Optional public chapter-page provenance. Absent service configuration is a
+// valid native-only null key; configured-but-invalid identity omits provenance.
+// Never change feed availability merely to manufacture a trusted badge witness.
+pub(crate) fn chapter_page_service_key(state: &AppState) -> Option<Option<String>> {
+    let (_, key, _) = configured_service(state);
+    let configured = state.config.protocol_publication.as_ref()
+        .and_then(|config| config.native_node.as_ref()).is_some();
+    if configured && key.is_none() { None } else { Some(key) }
 }
 async fn capabilities(State(state): State<AppState>) -> ApiResult<Json<Value>> {
     let (origin, key, configured) = configured_service(&state);
@@ -69,7 +78,7 @@ async fn capabilities(State(state): State<AppState>) -> ApiResult<Json<Value>> {
         .is_some_and(|origin| origin == &state.config.public_origin);
     let browser_transport_allowed = configured && (same_origin || cors);
     Ok(Json(
-        json!({"catalog_namespace":namespace,"schema_ready":state.protocol.is_ready(),"origin":origin,"service_key":key,"configured":configured,"browser_transport_allowed":browser_transport_allowed,"available":browser_transport_allowed&&state.protocol.is_ready()&&state.runtime.is_ready()&&!state.runtime.is_draining(),"external_signer_required":true,"account_admission_required":true,"native_account_is_signer":false,"connect_origins":connections,"paths":{"libraries":"/libraries","library_batches":"/library/batches","library_read":"/library/read","library_objects":"/library/objects","library_blobs":"/library/blobs/{hash}","library_staging":"/library/staging/{hash}","account_metadata":"/account-metadata","account_heads":"/accounts/{key}/metadata/{kind}","social":"/social","account_deletions":"/account-deletions","service_announcement":"/service/announcement"}}),
+        json!({"catalog_namespace":namespace,"schema_ready":state.protocol.is_ready(),"origin":origin,"service_key":key,"configured":configured,"browser_transport_allowed":browser_transport_allowed,"available":browser_transport_allowed&&state.protocol.is_ready()&&state.runtime.is_ready()&&!state.runtime.is_draining(),"external_signer_required":false,"supported_signer_modes":["local-session","nip07"],"account_admission_required":true,"native_account_is_signer":false,"connect_origins":connections,"paths":{"libraries":"/libraries","library_batches":"/library/batches","library_read":"/library/read","library_objects":"/library/objects","library_blobs":"/library/blobs/{hash}","library_staging":"/library/staging/{hash}","account_metadata":"/account-metadata","account_heads":"/accounts/{key}/metadata/{kind}","social":"/social","account_deletions":"/account-deletions","service_announcement":"/service/announcement"}}),
     ))
 }
 

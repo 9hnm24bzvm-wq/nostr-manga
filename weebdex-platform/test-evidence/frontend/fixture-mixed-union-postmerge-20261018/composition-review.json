@@ -1,0 +1,41 @@
+{
+  "status": "source-conflict-clear",
+  "base": "f1d54c027402829ca76fd3cf2f228a92ceef973a",
+  "originalToComposed": {
+    "manga-protocol-lab/bench/library-node/test_mixed.py": {
+      "reviewedOriginal": "810e8439efe484c9ee79a8de01966d71751b7b92",
+      "sha256": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db",
+      "bytes": 12591,
+      "exact": true
+    },
+    "manga-protocol-lab/bench/library-node/mixed.py": {
+      "reviewedOriginal": "b7316fd9556ac2768fe61b71522d847f8d0b6e9f",
+      "sha256": "a55afd995e9b5505ef8e0be2a96dd9c4809abd09a2ccf444b2e19cfde71b590b",
+      "bytes": 56146,
+      "exact": true
+    },
+    "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py": {
+      "reviewedOriginal": "b269bf2e8aa45c921c33e6cd9ada5d60592f2e0a",
+      "sha256": "3e4128e30e9f1b891d6f053e14ba50ad2fc9db4795331ae3aaa7b9d91e7c0b69",
+      "bytes": 13628,
+      "exact": true
+    },
+    "manga-protocol-lab/bench/library-node/fixtures/mixed-210s-bounded-plan-v1.json": {
+      "reviewedOriginal": "b269bf2e8aa45c921c33e6cd9ada5d60592f2e0a",
+      "sha256": "50303533772c9454f367109b3267a6671828524f2387d8853198c3bff26e034f",
+      "bytes": 2566,
+      "exact": true
+    },
+    "manga-protocol-lab/server/tests/fixtures/real-images/met-57682.jpg": {
+      "reviewedOriginal": "b269bf2e8aa45c921c33e6cd9ada5d60592f2e0a",
+      "sha256": "3ac595477a047f9fa78166a88fd2a8a0306d3d6698fca655e430b5c4e1b4603a",
+      "bytes": 1227747,
+      "exact": true
+    }
+  },
+  "understoodConflict": "test_mixed.py equals final reviewed810 bytes, preserving authentic/synthetic/MIXED_JPEG_SOURCE assertions and accounting/HTTP status refinements",
+  "uniqueModules": 5,
+  "expectedMethods": 46,
+  "deduplicatedModule": "test_mixed",
+  "actualHistoricalReceiptsModified": false
+}

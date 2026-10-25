@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "baselineExecutionSource": "15030c51a622d5303ff645c57e9665a8884aaf7d",
+  "baselineViteSource": "34042537b23df594a0c7923773ea4f00c6e47b9c",
+  "currentPreSummaryCommit": "8c3feb4ccc3571869d0f14f766cfaa2ff53b18e1",
+  "unchangedProductInputs": 922,
+  "baselineExecutionInputs": 1242,
+  "unchangedExistingExecutionInputs": 1241,
+  "changedExistingExecutionInputs": [
+    {
+      "path": "manga-protocol-lab/scripts/bootstrap.sh",
+      "qualifiedSha256": "a4d56b91647d443223c4ddd2bf8682aa16811532bed55b34a6c8c141dbe1b384",
+      "currentSha256": "c1ddc8252d85f183abd55b4732e0b15fd019bc83b3f82a284b0244aa58d46ba0"
+    }
+  ],
+  "addedFiniteTest": {
+    "path": "weebdex-platform/tests/ci/test_nginx_bootstrap_pin.mjs",
+    "sha256": "421e8279795071869e2ef5fc402dfef6b2fe476c645a08e77ad9e821f7031648",
+    "passedCases": 6,
+    "evidence": "../deployment/nginx-bootstrap-security-20261018/review-correction.json"
+  },
+  "boundary": "Frontend product/build and backend/protocol runtime code are unchanged; bootstrap source and its new finite test have separate six-case evidence. No current full repository suite, bootstrap installation, nginx parser or live proxy qualification is inherited."
+}

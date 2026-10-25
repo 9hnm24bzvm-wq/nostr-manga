@@ -1,0 +1,71 @@
+{
+  "modules": [
+    {
+      "path": "manga-protocol-lab/tests/test_aliases_cli.py",
+      "sha256": "21e0b10293740f4db3eb85517b23f56bfcbae0e223e91a738525fe58616abcde",
+      "expectedUnittestMethods": 1,
+      "controlledLoopbackWitnessOnly": true,
+      "requiresActualDatabase": false,
+      "requiresHttpService": false,
+      "requiresExternalNetwork": false,
+      "usesSyntheticPsqlExecutable": false,
+      "maximumReviewMarkers": null
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_backup_cli.py",
+      "sha256": "c863a167897ccf8238e702b2d0a97fde982b6035c9a2c8c5efdb112eb652487e",
+      "expectedUnittestMethods": 5,
+      "controlledLoopbackWitnessOnly": false,
+      "requiresActualDatabase": false,
+      "requiresHttpService": false,
+      "requiresExternalNetwork": false,
+      "usesSyntheticPsqlExecutable": true,
+      "maximumReviewMarkers": null
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_cbor_profile.py",
+      "sha256": "69a6da49df22a7e5f306160895d7498dcc51dc81c55c0130b83fa372b1d00276",
+      "expectedUnittestMethods": 12,
+      "controlledLoopbackWitnessOnly": false,
+      "requiresActualDatabase": false,
+      "requiresHttpService": false,
+      "requiresExternalNetwork": false,
+      "usesSyntheticPsqlExecutable": false,
+      "maximumReviewMarkers": null
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_library_input_cli.py",
+      "sha256": "3a0369690a2ace895337b23a36ecabf4f3e702ae30e5c9be8417b5d3dd2674c6",
+      "expectedUnittestMethods": 3,
+      "controlledLoopbackWitnessOnly": true,
+      "requiresActualDatabase": false,
+      "requiresHttpService": false,
+      "requiresExternalNetwork": false,
+      "usesSyntheticPsqlExecutable": false,
+      "maximumReviewMarkers": null
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_mangadex_cli.py",
+      "sha256": "7adb48f37efcb739118a0d12c728e08c33459d4c03592d24f7339f7f303367be",
+      "expectedUnittestMethods": 9,
+      "controlledLoopbackWitnessOnly": false,
+      "requiresActualDatabase": false,
+      "requiresHttpService": false,
+      "requiresExternalNetwork": false,
+      "usesSyntheticPsqlExecutable": false,
+      "maximumReviewMarkers": 16000
+    },
+    {
+      "path": "manga-protocol-lab/tests/test_migration_plan_cli.py",
+      "sha256": "d4392ea2e3668cda50687a49c4c7003f998a0b82d950f32cf3299a498ebdfcac",
+      "expectedUnittestMethods": 8,
+      "controlledLoopbackWitnessOnly": true,
+      "requiresActualDatabase": false,
+      "requiresHttpService": false,
+      "requiresExternalNetwork": false,
+      "usesSyntheticPsqlExecutable": false,
+      "maximumReviewMarkers": null
+    }
+  ],
+  "scope": "38finite CLI/codec methods only; no bench,nginx,actualDB or external network;2local plan-race subprocesses max"
+}

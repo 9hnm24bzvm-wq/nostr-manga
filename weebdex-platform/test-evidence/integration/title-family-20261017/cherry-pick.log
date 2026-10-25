@@ -1,0 +1,326 @@
+
+SOURCE 2a79d3c2d76a186f5a71268aae0bee21d2696ee7
+[recovery/compose-title-family-20261017 84d567e] Retain owned projection identity across ordering fixtures
+ Date: Sat Oct 17 13:53:04 2026 -0400
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+SOURCE af83aeb7472c9ed60a8d99b616e51ae3564b8238
+[recovery/compose-title-family-20261017 e59a551] Require projector restart coverage in ordering regression
+ Date: Sat Oct 17 13:53:43 2026 -0400
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+SOURCE 94e121a054f83c20370eddbe09b83fb32c74271e
+[recovery/compose-title-family-20261017 9efa048] Record combined pipeline and chapter runtime qualification
+ Date: Sat Oct 17 13:55:59 2026 -0400
+ 2 files changed, 571 insertions(+)
+ create mode 100644 weebdex-platform/test-evidence/final/integrated-pipeline-20261017/result.json
+ create mode 100644 weebdex-platform/test-evidence/final/integrated-pipeline-20261017/source-manifest.json
+
+SOURCE 0efe0a862578689d9df546bd26def7317d4f3182
+Auto-merging weebdex-platform/backend/src/public_api/catalogue_dto.rs
+Auto-merging weebdex-platform/backend/src/public_api/mod.rs
+Auto-merging weebdex-platform/backend/src/public_api/routes.rs
+[recovery/compose-title-family-20261017 26d3320] feat(api): share signed title draft and original review core
+ Date: Sat Oct 17 14:10:50 2026 -0400
+ 10 files changed, 563 insertions(+), 44 deletions(-)
+ create mode 100644 weebdex-platform/backend/src/public_api/manga_writes.rs
+ create mode 100644 weebdex-platform/backend/tests/public_manga_writes.rs
+ create mode 100644 weebdex-platform/docs/signed-title-writes.md
+
+SOURCE 4e08e9bbb224dda699f3b306db6ca56756712e3d
+Auto-merging weebdex-platform/backend/src/public_api/routes.rs
+[recovery/compose-title-family-20261017 c27d452] test(api): keep unsupported-method seam on inventory-owned route
+ Date: Sat Oct 17 14:11:32 2026 -0400
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+SOURCE 76f9b0cedaa728ce5ad8a6b8caefdb2e613cd6f4
+[recovery/compose-title-family-20261017 9060e84] fix(api): disclose imported title annotation provenance
+ Date: Sat Oct 17 14:14:23 2026 -0400
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
+SOURCE 17dba0827c8e87a815c8bdc88b47008f3bb0eea3
+Auto-merging weebdex-platform/backend/src/public_api/catalogue_dto.rs
+[recovery/compose-title-family-20261017 3f84f76] fix(api): scope provenance without overstating local metadata
+ Date: Sat Oct 17 14:15:16 2026 -0400
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+SOURCE 674b93cde88abf7f9d2c9c0355f5330cf8bb343f
+[recovery/compose-title-family-20261017 31b8101] test(api): qualify signed titles against real original pipeline
+ Date: Sat Oct 17 14:19:28 2026 -0400
+ 2 files changed, 694 insertions(+)
+ create mode 100644 weebdex-platform/test-evidence/public-api/title-writes/result.json
+ create mode 100644 weebdex-platform/test-evidence/public-api/title-writes/source-manifest.json
+
+SOURCE 42424932f62c9c4a3becaa9d68d79fee31c39426
+Auto-merging weebdex-platform/platform-integrations/public-api/anchors.json
+CONFLICT (content): Merge conflict in weebdex-platform/platform-integrations/public-api/anchors.json
+Auto-merging weebdex-platform/platform-integrations/public-api/source-hashes.json
+Auto-merging weebdex-platform/scripts/reconstruct-public-api-anchors.mjs
+CONFLICT (content): Merge conflict in weebdex-platform/scripts/reconstruct-public-api-anchors.mjs
+Auto-merging weebdex-platform/tests/ci/public-api-recovery.test.mjs
+CONFLICT (content): Merge conflict in weebdex-platform/tests/ci/public-api-recovery.test.mjs
+error: could not apply 4242493... Add scoped signed public title metadata and review controls
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+
+SOURCE 6d7063ebf72b29833157ac7db4597b2e4bcdc1c7
+[recovery/compose-title-family-20261017 a9df19b] Bind retained detail statistics to exact target or proven alias
+ Date: Sat Oct 17 14:02:11 2026 -0400
+ 8 files changed, 368 insertions(+), 1 deletion(-)
+ create mode 100644 weebdex-platform/docs/verification/detail-statistics-target-20261017.md
+ create mode 100644 weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/after.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/before.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/result.json
+ create mode 100644 weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/strict-final.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/detail-statistics-target-20261017/strict-initial.log
+
+SOURCE 98a8a8c66df7f4d2033c37d495c90edc31976820
+[recovery/compose-title-family-20261017 38aad8a] Retain public group memberships and fence unsupported claims
+ Date: Sat Oct 17 14:04:41 2026 -0400
+ 17 files changed, 12295 insertions(+), 8 deletions(-)
+ create mode 100644 weebdex-platform/docs/verification/public-group-membership-20261017.md
+ create mode 100644 weebdex-platform/platform-integrations/public-api/group-presentation.ts
+ create mode 100644 weebdex-platform/test-evidence/frontend/public-group-membership-20261017/before.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/public-group-membership-20261017/finite.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/public-group-membership-20261017/integration-source-manifest.json
+ create mode 100644 weebdex-platform/test-evidence/frontend/public-group-membership-20261017/provenance.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/public-group-membership-20261017/result.json
+ create mode 100644 weebdex-platform/test-evidence/frontend/public-group-membership-20261017/strict.log
+
+SOURCE 481857bf021a67080249b9d47b43c9cad6948d6d
+[recovery/compose-title-family-20261017 61ab496] Audit visible UUID controls and correct stale call classification
+ Date: Sat Oct 17 14:07:07 2026 -0400
+ 6 files changed, 1103 insertions(+), 2 deletions(-)
+ create mode 100644 weebdex-platform/docs/verification/visible-controls-audit-20261017.md
+ create mode 100644 weebdex-platform/test-evidence/frontend/visible-control-audit-20261017/inventory.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/visible-control-audit-20261017/original-call-inventory.json
+ create mode 100644 weebdex-platform/tests/ci/test_public_api_call_inventory.mjs
+
+SOURCE c56bb6c4fe0a4086c2a6d434f17552b8432ab319
+[recovery/compose-title-family-20261017 9fa8ca3] Distinguish original draft statuses from composed receipt callbacks
+ Date: Sat Oct 17 14:09:22 2026 -0400
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+SOURCE 42424932f62c9c4a3becaa9d68d79fee31c39426
+[recovery/compose-title-family-20261017 1df9cf3] Add scoped signed public title metadata and review controls
+ Date: Sat Oct 17 14:21:48 2026 -0400
+ 28 files changed, 1397 insertions(+), 4 deletions(-)
+ create mode 100644 weebdex-platform/docs/verification/signed-title-metadata-frontend-20261017.md
+ create mode 100644 weebdex-platform/platform-integrations/public-api/PublicCreateGate.svelte
+ create mode 100644 weebdex-platform/platform-integrations/public-api/PublicTitleEditor.svelte
+ create mode 100644 weebdex-platform/platform-integrations/public-api/PublicTitleShell.svelte
+ create mode 100644 weebdex-platform/platform-integrations/public-api/title-client.ts
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/api-manifest-initial.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/default-canonical-source-hashes.json.gz
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/default-summary.json.gz
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/direct-import-not-qualification.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/enabled-canonical-source-hashes.json.gz
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/enabled-summary.json.gz
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/finite-final.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/finite-initial.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/initial-strict-diagnostics.json
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/initial-title-client.ts.gz
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/integration-source-manifest.json.gz
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/result.json
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/source-pins.json
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/strict-default-final.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/strict-enabled-final.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/strict-initial.log
+ create mode 100644 weebdex-platform/test-evidence/frontend/signed-title-metadata-20261017/strict-intermediate.log
+ create mode 100644 weebdex-platform/tests/ci/test_public_title_commands.mjs
+
+SOURCE 449a30983c8db118d27906d8f0b027851a9aa354
+Auto-merging weebdex-platform/docs/verification/signed-title-metadata-frontend-20261017.md
+CONFLICT (content): Merge conflict in weebdex-platform/docs/verification/signed-title-metadata-frontend-20261017.md
+error: could not apply 449a309... Keep accepted title publication read-only until visible projection
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+
+SOURCE ed3a2448b8c9017a030135b66bd3585c8f5233b4
+Auto-merging weebdex-platform/backend/src/public_api/mod.rs
+Auto-merging weebdex-platform/backend/src/public_api/routes.rs
+[recovery/compose-title-family-20261017 fab52a1] Add signed original-only public cover operations over native authority
+ Date: Sat Oct 17 14:30:33 2026 -0400
+ 9 files changed, 230 insertions(+), 17 deletions(-)
+ create mode 100644 weebdex-platform/backend/src/public_api/cover_writes.rs
+ create mode 100644 weebdex-platform/docs/verification/public-signed-cover-writes.md
+
+SOURCE 710a92395956dd519e3a946ddaaf07eb1c8a23ca
+[recovery/compose-title-family-20261017 34791a6] Bind cover writes to signed account intent and version implicit main changes
+ Date: Sat Oct 17 14:49:41 2026 -0400
+ 6 files changed, 141 insertions(+), 49 deletions(-)
+
+SOURCE a7a0186b7d7d2df1766574509ea7eec30f3e28a6
+[recovery/compose-title-family-20261017 53d0fb5] Add exact signed original cover controls to public title editor
+ Date: Sat Oct 17 14:49:41 2026 -0400
+ 6 files changed, 1319 insertions(+), 13 deletions(-)
+ create mode 100644 weebdex-platform/platform-integrations/public-api/PublicCoverEditor.svelte
+ create mode 100644 weebdex-platform/platform-integrations/public-api/cover-client.ts
+ create mode 100644 weebdex-platform/platform-integrations/public-api/cover-multipart.ts
+ create mode 100644 weebdex-platform/tests/ci/test_public_cover_commands.mjs
+
+SOURCE 656da377be61f03a96a630bbba4b877878acaf40
+[recovery/compose-title-family-20261017 27f5c1c] Record independently reviewed signed cover runtime and production build evidence
+ Date: Sat Oct 17 14:53:51 2026 -0400
+ 21 files changed, 25353 insertions(+)
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/diagnostics.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/finite.log
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/independent-review-result.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/independent-runtime.log
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/owned-cleanup.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/owned-http.log
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/artifact-files.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build-integration.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/build.log
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/driver.py
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/integration-source-manifest.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/owned.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/result.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/source-before.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/result.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/rust.log
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/strict-default-diagnostics.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/strict-default.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/strict-enabled-diagnostics.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/strict-enabled.json
+ create mode 100644 weebdex-platform/test-evidence/public-signed-covers-20261017/summary.json
+
+SOURCE 5c1b23197ded9d41c00b3fad7dd46d0c8ab3e49c
+[recovery/compose-title-family-20261017 ca33e87] Add scoped title lock and removal review controls with intent fences
+ Date: Sat Oct 17 15:03:52 2026 -0400
+ 5 files changed, 114 insertions(+), 14 deletions(-)
+ create mode 100644 weebdex-platform/platform-integrations/public-api/PublicTitleDisposition.svelte
+
+SOURCE 47424fe56c238bf32742fa5d139424c08914932b
+Auto-merging weebdex-platform/backend/src/domains/mod.rs
+CONFLICT (content): Merge conflict in weebdex-platform/backend/src/domains/mod.rs
+Auto-merging weebdex-platform/backend/src/public_api/mod.rs
+Auto-merging weebdex-platform/backend/src/public_api/routes.rs
+error: could not apply 47424fe... Implement versioned title locks and durable owner removal review
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+
+SOURCE 6f62f892c6523fd5d5533ae4677369e0b2ea85df
+[recovery/compose-title-family-20261017 62b43f3] Freeze captured title account identity for disposition commands
+ Date: Sat Oct 17 15:08:51 2026 -0400
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+SOURCE 1c3242ac483e9aaa2da85ea1d57b80e03d4e2a10
+[recovery/compose-title-family-20261017 a50adb8] Record finite title disposition evidence and explicit disk qualification hold
+ Date: Sat Oct 17 15:09:56 2026 -0400
+ 3 files changed, 213 insertions(+)
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/finite.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/result.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/svelte-parse.json
+
+SOURCE 0efefa5ff903100b0a4091e07e9047eb6cbf962e
+[recovery/compose-title-family-20261017 d7f3929] Bind title removal effect to the signed review or approval intent
+ Date: Sat Oct 17 16:02:45 2026 -0400
+ 5 files changed, 43 insertions(+), 22 deletions(-)
+
+SOURCE 80ac1b2cfea5a52697e04f51ca1421c9fb965cc2
+Auto-merging weebdex-platform/platform-integrations/public-api/types.ts
+CONFLICT (content): Merge conflict in weebdex-platform/platform-integrations/public-api/types.ts
+error: could not apply 80ac1b2... Represent actual creator relationships in public catalogue types
+hint: After resolving the conflicts, mark them with
+hint: "git add/rm <pathspec>", then run
+hint: "git cherry-pick --continue".
+hint: You can instead skip this commit with "git cherry-pick --skip".
+hint: To abort and get back to the state before "git cherry-pick",
+hint: run "git cherry-pick --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+
+SOURCE 0815c11cdd7856e5a5dab01142820a5556247302
+[recovery/compose-title-family-20261017 9b33c6a] Keep compact-feed reference aligned with cached parent withdrawal authority
+ Date: Sat Oct 17 16:15:23 2026 -0400
+ 1 file changed, 24 insertions(+), 4 deletions(-)
+
+SOURCE 82c76ea61e04f6ba5bc60acac8dbcb1ccac71ecc
+[recovery/compose-title-family-20261017 693d3d2] Record owned and independent title disposition qualification with honest residual gate
+ Date: Sat Oct 17 16:16:51 2026 -0400
+ 50 files changed, 57054 insertions(+), 5 deletions(-)
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/commands.md
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-initial-failure-cleanup.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-initial-failure.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-initial-failure.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/finite-combined-final.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/finite-title-final.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/independent-review/cleanup.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/independent-review/result.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/independent-review/runtime.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/independent-review/source-before.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/owned-http-cleanup.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/owned-http-executable.sha256
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/owned-http.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/qualification-final.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/runtime-source-pins.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/rust-final.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/rust-pre-effect.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default-final.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/cached-toolchain.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/canonical-source-hashes.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/diagnostics.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/production-module-graph.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/projection-manifest.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/service-worker-tsc-receipt.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/service-worker-tsc.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/source-map-validation.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/summary.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/svelte-check-receipt.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/svelte-check.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/svelte-kit-sync-receipt.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-default/svelte-kit-sync.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled-final.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled-initial-failure.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled-initial-failure/diagnostics.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled-initial-failure/summary.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled-initial-failure/svelte-check.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/cached-toolchain.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/canonical-source-hashes.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/diagnostics.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/production-module-graph.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/projection-manifest.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/service-worker-tsc-receipt.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/service-worker-tsc.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/source-map-validation.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/summary.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/svelte-check-receipt.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/svelte-check.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/svelte-kit-sync-receipt.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/strict-enabled/svelte-kit-sync.log
+
+SOURCE f7bdac07163fd43b04b797223b5aecf0ad6413a7
+[recovery/compose-title-family-20261017 46050d9] Record independent authority review of held compact-feed reference correction
+ Date: Sat Oct 17 16:21:33 2026 -0400
+ 2 files changed, 15 insertions(+), 4 deletions(-)
+
+SOURCE 938a659e41e7f32a21a7083989733bfdbb53b5bb
+[recovery/compose-title-family-20261017 c6c1e7a] Qualify corrected native compact-feed visibility reference after approved space recovery
+ Date: Sat Oct 17 18:15:41 2026 -0400
+ 8 files changed, 883 insertions(+), 9 deletions(-)
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-qualified-cleanup.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-qualified-compile.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-qualified-executable.sha256
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-qualified-runtime.log
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-qualified.json
+ create mode 100644 weebdex-platform/test-evidence/title-disposition-20261017/compact-feed-source-pins.json
+
+SOURCE a15ae9c570d0b4674080ba69ce7bbe1bc533c9bf
+[recovery/compose-title-family-20261017 6710328] Keep cover edit and moderator removal controls independent of title metadata grants
+ Date: Sat Oct 17 18:18:56 2026 -0400
+ 4 files changed, 183 insertions(+), 6 deletions(-)

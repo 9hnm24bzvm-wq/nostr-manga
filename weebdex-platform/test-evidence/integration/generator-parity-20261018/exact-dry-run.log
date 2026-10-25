@@ -1,0 +1,3 @@
+{"sourceOnly":true,"writesIntercepted":true,"results":[{"path":"weebdex-platform/platform-integrations/public-api/source-hashes.json","matched":true,"entries":49},{"path":"weebdex-platform/platform-integrations/public-api/anchors.json","matched":true,"entries":84}]}
+(node:22) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

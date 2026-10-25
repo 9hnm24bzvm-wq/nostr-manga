@@ -1,0 +1,49 @@
+{
+  "schema": "upload-integration02-before-test-failure-review-v1",
+  "verdict": "owner_observation_failed_before_probe_and_test",
+  "reviewed_at_utc": "2026-10-17T05:15:23.725913+00:00",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-backend-integration-02/receipt.json",
+      "sha256": "cf1968cb9df528f4fb7f5dc0e98cde7fd93f320a7e9bbb10ca351bc487c7eda3"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-backend-integration-02/run.log",
+      "sha256": "a3eabcead1e7d806ad5228ed078c37d4c471332557187a726c825d9c20c3e75a"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-0b92a9xe/cleanup.json",
+      "sha256": "4c285316faf8b79bdfdd3f87cdbdfd869731de577d58b793063f9c0b4dc6ad4e"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-backend-integration02-independent-plan-review-20261017.json",
+      "sha256": "63f73c25e7e7a6fc8e77e06cbdc6079b95bad0cae1c7f75b74c2fdc8ed01d58b"
+    }
+  ],
+  "outcome": {
+    "application_test_started": false,
+    "application_test_pass": false,
+    "probe_file_absent": true,
+    "guard_returncode": 143,
+    "guard_test_returncode": null,
+    "error_class": "PermissionError",
+    "error_target": "/proc/31/fd"
+  },
+  "physical": {
+    "observed_births": 19,
+    "captured_births": 10,
+    "saved_births_absent_at_owner_terminal": true,
+    "postgres_cleanup": "verified_stopped",
+    "postgres_returncode": 0,
+    "forced": false,
+    "guard_port_closed": true,
+    "outer_exact_pg_and_axum_correlation": "unavailable because probe/test never started",
+    "outer_all_listener_refusal": null
+  },
+  "current_source_pins_verified": 308,
+  "limits": [
+    "No new HTTP application result; previous HTTP503 remains historical and corrected seam03 remains a separate pass.",
+    "Original still-live unreadable descriptor failure was not accepted as terminal. A bounded retry observation successor requires separate review.",
+    "Raw fixture remains retained."
+  ]
+}

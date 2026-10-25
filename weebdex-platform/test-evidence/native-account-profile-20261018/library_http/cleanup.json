@@ -1,0 +1,112 @@
+{
+  "postgres_cleanup": "verified_stopped",
+  "exit": 0,
+  "forced": false,
+  "closed_port": true,
+  "remaining_owned_processes": [],
+  "cleanup_errors": [],
+  "error": null,
+  "test_timeout_seconds": 180,
+  "captured_births": [
+    {
+      "pid": 196,
+      "start_ticks": 8497226,
+      "group": 196,
+      "session": 196
+    },
+    {
+      "pid": 205,
+      "start_ticks": 8497238,
+      "group": 196,
+      "session": 196
+    },
+    {
+      "pid": 206,
+      "start_ticks": 8497239,
+      "group": 196,
+      "session": 196
+    },
+    {
+      "pid": 207,
+      "start_ticks": 8497246,
+      "group": 196,
+      "session": 196
+    },
+    {
+      "pid": 209,
+      "start_ticks": 8497287,
+      "group": 209,
+      "session": 209
+    },
+    {
+      "pid": 210,
+      "start_ticks": 8497288,
+      "group": 210,
+      "session": 210
+    },
+    {
+      "pid": 211,
+      "start_ticks": 8497288,
+      "group": 211,
+      "session": 211
+    },
+    {
+      "pid": 213,
+      "start_ticks": 8497288,
+      "group": 213,
+      "session": 213
+    },
+    {
+      "pid": 214,
+      "start_ticks": 8497288,
+      "group": 214,
+      "session": 214
+    },
+    {
+      "pid": 215,
+      "start_ticks": 8497288,
+      "group": 215,
+      "session": 215
+    },
+    {
+      "pid": 216,
+      "start_ticks": 8497292,
+      "group": 216,
+      "session": 216
+    },
+    {
+      "pid": 218,
+      "start_ticks": 8497294,
+      "group": 218,
+      "session": 218
+    },
+    {
+      "pid": 220,
+      "start_ticks": 8497298,
+      "group": 220,
+      "session": 220
+    },
+    {
+      "pid": 222,
+      "start_ticks": 8497298,
+      "group": 222,
+      "session": 222
+    },
+    {
+      "pid": 223,
+      "start_ticks": 8497344,
+      "group": 223,
+      "session": 223
+    }
+  ],
+  "unconfirmed_births": [],
+  "unconfirmed_child_pids": [],
+  "test_returncode": 0,
+  "postgres_returncode": 0,
+  "startup_timeout_seconds": 10,
+  "cleanup_phase_seconds": [
+    15,
+    5,
+    5
+  ]
+}

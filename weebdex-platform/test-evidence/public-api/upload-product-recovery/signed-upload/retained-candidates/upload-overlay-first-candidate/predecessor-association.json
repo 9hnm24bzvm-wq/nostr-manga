@@ -1,0 +1,8 @@
+{
+  "schema": "recovered-overlay-candidate-association-v1",
+  "scope": "21-case predecessor, not final 24-case successor",
+  "anchors_sha256": "46a3dc64e150ddbd633c72682c7a363aef9f50a2322e14e5ca2abcf39e6f237a",
+  "anchors_recovery": "re-derived from exact current patch data by removing the three later source deltas; independently matched previously recorded SHA256 before saving",
+  "test_sha256": "b7bba81d5aab32e7386244a75a4a762f8f0ef3c93cdd72de6f7745ee7a34ed99",
+  "log_sha256": "2f2ff8ef9a4d2e67a83e488ff052c878f66271807297b1b2d824fcfd63987967"
+}

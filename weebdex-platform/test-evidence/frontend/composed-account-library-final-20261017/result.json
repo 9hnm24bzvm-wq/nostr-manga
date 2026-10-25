@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "baseIntegration": "a4817ce2d1017cb3828e8095704b935ae4ed996f",
+  "qualifiedSource": "5fec8044aa5ee2e3c009a61f84ddb7484726d586",
+  "sourceSuccessors": [
+    {
+      "commit": "c569ae4ac5a9675f1477fa3deeed5824ec21e954",
+      "subject": "Pin exact account-intent additions in composed registry regression"
+    },
+    {
+      "commit": "6139f5d50a86691a71bb39ac91b19c3a49aabb3f",
+      "subject": "Retain exact reviewed group-claim exception in composition test"
+    },
+    {
+      "commit": "5971ea4a0459bf1819577a1adc7f490cfa267874",
+      "subject": "Resolve verified Lucide icons from external production components"
+    },
+    {
+      "commit": "beb80207b5ec03658055fee578ccc9ca55286688",
+      "subject": "Bind staged Lucide runtime alias to its published strict declarations"
+    },
+    {
+      "commit": "c68b41a77888a8dba97beb34203df1765682d962",
+      "subject": "Mirror exact reviewed package alias in strict graph and evidence"
+    },
+    {
+      "commit": "f49460c7892cf0908491a4f662aa830ff8e68658",
+      "subject": "Match only the root Lucide export in staged build alias"
+    },
+    {
+      "commit": "5fec8044aa5ee2e3c009a61f84ddb7484726d586",
+      "subject": "Verify exact Lucide root and canonical icon package exports"
+    }
+  ],
+  "runtimeAliasEquivalences": {
+    "5971ea4": "c3945444eba7a2656f9ed9287eee6293d9d50bc4",
+    "f49460c": "e426015abebfd58e396811d5ecc1d44201f023e4"
+  },
+  "finiteFiles": 45,
+  "finiteCases": 627,
+  "finitePasses": 627,
+  "finiteFailures": 0,
+  "strict": {
+    "default": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "enabled": {
+      "errors": 0,
+      "warnings": 12
+    }
+  },
+  "canonicalFrontendFilesUnchanged": 679,
+  "allComponentOverlayBackendBytesMatchBase": true,
+  "sourcePinsFiles": 1036,
+  "productPinsFiles": 912,
+  "productPinsFileSha256": "7edafca3f60f752eaefafea59f1faff8f19737a2fba585724ad2b726f1a7e0cf",
+  "allFourDependencyRootsUnchanged": true,
+  "retainedReadOnlyGuardReceipts": 191,
+  "retainedProtectedWriteAttempts": 0,
+  "configurationSha256": "03a34343251e65b83fdc71388fcd2fabb1395d17f411182e0e56b766c8308160",
+  "strictCheckerSha256": "7506ca7ad2be35dcebd08e7a03a16263f91d57d6868047b71a39762d9040f94e",
+  "boundary": "Finite stand-ins, real compiled Svelte under pinned JSDOM, and actual production IndexedDB adapter under pinned fake-indexeddb. Neither native-browser storage/crash acceptance nor production parity is claimed. Actual Vite and HTTP/DB receipts are separately owned and associated through matching source hashes."
+}

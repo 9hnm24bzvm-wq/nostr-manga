@@ -1,0 +1,331 @@
+{
+  "schema": 1,
+  "status": "local-checks-passed-native-and-browser-unrun",
+  "validated_source_commit": "026f5630c9212f1e9896c4e4279b02c7f2d9e9ea",
+  "validated_source_tree": "18eded7b24a7ba8d534251b69fbb21642712835c",
+  "public_base": "e1ea103f2d8c0d8091eb63acf11f240c1e350591",
+  "completed_utc": "2026-10-14T16:06:18.093647+00:00",
+  "source_snapshot_sha256": "aa21028dea7b2b521bcc4a3c75d723824f8da0cdb295f88e87ebbc5ad3e20366",
+  "source_snapshot_files": 1058,
+  "local_checks": {
+    "node_suites": 28,
+    "top_level_node_tests": 381,
+    "python_ci_tests": 53,
+    "rust_library_tests": 72,
+    "rust_library_failed": 0,
+    "rust_library_ignored": 0,
+    "rust_all_targets_check_passed": true,
+    "all_exit_zero": true,
+    "attachment_files_verified_identical": 676,
+    "suite_receipts": [
+      {
+        "suite": "test_actor_follow_readiness",
+        "exit_code": 0,
+        "top_level_node_tests": 52,
+        "stdout_sha256": "d759cd820959ca4815449a653f5e7ccf255fcee625b73c4919c3fec711a7b4c2",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_account_recovery",
+        "exit_code": 0,
+        "top_level_node_tests": 6,
+        "stdout_sha256": "1d464438204eedadcbee87b218a3e4f4ca1ed6e92c70d4ddb5b34dfe0aabac3f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_action_events",
+        "exit_code": 0,
+        "top_level_node_tests": 28,
+        "stdout_sha256": "c1a54bf149350e1b9823354f989e86bfdd2612f101d611d50d9e93ad35c24e2f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_actor_follow_controls",
+        "exit_code": 0,
+        "top_level_node_tests": 14,
+        "stdout_sha256": "1bc2716060d906eefe25eb40b2692b0d74fa581daa5802a8489174e61ce27a8e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_actor_follow_journeys",
+        "exit_code": 0,
+        "top_level_node_tests": 25,
+        "stdout_sha256": "9137dccf4c1787948c4425ea41cf073da3cec73fe4b7f6aae06b9784a099f117",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_compact_fixture_diagnostics",
+        "exit_code": 0,
+        "top_level_node_tests": 1,
+        "stdout_sha256": "5853c96d430ce739713055bdd984d87b6ab848c9b4c8aa7e6bd3403e750e197c",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_deny_proxy",
+        "exit_code": 0,
+        "top_level_node_tests": 1,
+        "stdout_sha256": "0d15f91bfb9ae7e9ada6b91ef0b3e4f7ac98eb49a16e8da6634f003dc17e7f47",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_diagnostic_helpers",
+        "exit_code": 0,
+        "top_level_node_tests": 1,
+        "stdout_sha256": "c8c6c70b9c1865f8a176306e39e22d203162d8b1a257da1b46ffd12cfda7c6b3",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_library_diagnostics",
+        "exit_code": 0,
+        "top_level_node_tests": 1,
+        "stdout_sha256": "e9871fd753faa0ea38faa90840a23aa76784c4578aa0256b6ad2d8a090898975",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_library_follow_diagnostics",
+        "exit_code": 0,
+        "top_level_node_tests": 6,
+        "stdout_sha256": "0fb5c3f2755311543d08ff2c2459d336949b9990a5313aec7de070eb54dfaa8f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_ordinary_library_source_seams",
+        "exit_code": 0,
+        "top_level_node_tests": 7,
+        "stdout_sha256": "8ee8f1da6a5b7ec86319b5bb20384cd19fbd1ea59c649c33893278dc13d806e9",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_ordinary_selector_contracts",
+        "exit_code": 0,
+        "top_level_node_tests": 3,
+        "stdout_sha256": "b44b6218599f3a1b723a32ee389d07043aa9ae0fbdeb9e0359c9e6e370201a26",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_reader_account_diagnostics",
+        "exit_code": 0,
+        "top_level_node_tests": 64,
+        "stdout_sha256": "21594eac1017b03ae9a5d06b1130b46404b8057ba619b5338300b299dfb6371c",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_reader_home_diagnostics",
+        "exit_code": 0,
+        "top_level_node_tests": 39,
+        "stdout_sha256": "47f30d2c3db91883471777e3e8386da11ab12b0067fe775d94f64dfd71414275",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_select_controls",
+        "exit_code": 0,
+        "top_level_node_tests": 1,
+        "stdout_sha256": "f58dfccc222b22edebf2661547bcfb09d0c5b02ca0e8e53fc0f86eb7329e5138",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_signed_downstream_diagnostics",
+        "exit_code": 0,
+        "top_level_node_tests": 3,
+        "stdout_sha256": "a5952298f061ded37253356d66af536ecf433b8b5a274c114e25f575061a7de0",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_signed_event_envelope",
+        "exit_code": 0,
+        "top_level_node_tests": 5,
+        "stdout_sha256": "a1c1d28207c97e23e58276e567a380aa452fc25c3a250392b0e19a436f9cf47e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_signed_native_select_controls",
+        "exit_code": 0,
+        "top_level_node_tests": 3,
+        "stdout_sha256": "48f9c22ac9f38fb61a29b48ce91b89aba1bc3ecf58e9e2d064604f5ab4eb9674",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_signed_select_controls",
+        "exit_code": 0,
+        "top_level_node_tests": 4,
+        "stdout_sha256": "8d14ea09dbdf07708c7dea086a8b3981116d9b0b1c19bcba7d93fcca5f223856",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_signed_signer_setup",
+        "exit_code": 0,
+        "top_level_node_tests": 9,
+        "stdout_sha256": "dc931d6fbca01f7bc3cd94719439a3019b13d9441a09b63a374edb7476e5e33d",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_title_select_controls",
+        "exit_code": 0,
+        "top_level_node_tests": 5,
+        "stdout_sha256": "32795a0dce5e100969ed3915a049a1fbf1ee9dc3e57a2c56ae069524a6de4184",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_ui10_recovery_diagnostics",
+        "exit_code": 0,
+        "top_level_node_tests": 18,
+        "stdout_sha256": "e4fa96dddc73f683478c004423764c628e651551c8c7f5917101c456df9c7fe6",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_browser_upload_diagnostics",
+        "exit_code": 0,
+        "top_level_node_tests": 3,
+        "stdout_sha256": "ee11ed9434fe8e90fc114620c85374cdd1b4ccd30a7382894a77202568f7a55b",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_frontend_bootstrap",
+        "exit_code": 0,
+        "top_level_node_tests": 1,
+        "stdout_sha256": "dfd1577bb018a680f364d0fb58ab5f4fef6e2388eeddb13339c99e9705e19215",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_frontend_semantic_contracts",
+        "exit_code": 0,
+        "top_level_node_tests": 1,
+        "stdout_sha256": "e600e8d4e7647b80079c558c2b346fb4e6f43f47f9b6959eb7fd3804d341aea8",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_recovery_successor_contract",
+        "exit_code": 0,
+        "top_level_node_tests": 42,
+        "stdout_sha256": "d937323e8c9fbb995ebd8c468fd908ffb36f85975a479c8785135b73229e65b0",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_runner_lifecycle",
+        "exit_code": 0,
+        "top_level_node_tests": 1,
+        "stdout_sha256": "25803533b0d6a31c311456bb8c65e2d0357c90ac2eab0a7de95342e1b65d9bfb",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "test_upload_file_admission",
+        "exit_code": 0,
+        "top_level_node_tests": 37,
+        "stdout_sha256": "0d88da8c0c12236965381873744bb2243b2fce9e0ce19db19307ce5bb12761d9",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "python-ci",
+        "exit_code": 0,
+        "top_level_node_tests": null,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "45d6395a070070380c1d69dbc0e9d4978e845ff28ae65c53fa3fd00cbe438ee3"
+      },
+      {
+        "suite": "canonical-parity",
+        "exit_code": 0,
+        "top_level_node_tests": null,
+        "stdout_sha256": "f222f2b3bb57e3aab334e503970a172cef004bd7703e4af619f1475a74135583",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "suite": "rust-library",
+        "exit_code": 0,
+        "stdout_sha256": "ba6141f1fd6e5eb97181dd1a7e739d0f9b7ff0c6cbd60929fdbc75fc4b84d9e4",
+        "stderr_sha256": "0077ba27bd587ece84863b2e03cc25ed09dc95f30116a95445c417da54651690"
+      },
+      {
+        "suite": "rust-all-targets",
+        "exit_code": 0,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "a50850820355d26e1c5e3453b4ecbc2e2c4cb251b81c47cabb3332ef3866e07f"
+      }
+    ]
+  },
+  "strict_composed_projection": {
+    "errors": 0,
+    "warnings": 15,
+    "canonical_files_unchanged": 679,
+    "transformed_targets": 110,
+    "validated_source_maps": 592,
+    "artifact_validator_passed_twice": true,
+    "negative_controls_rejected": 10,
+    "cache_inventory_entries": 42805,
+    "before_inventory_sha256": "ec4004a06952251dc5453f0c496916ac4103680bc7cbf53207f859d26f2fe96f",
+    "after_inventory_sha256": "ec4004a06952251dc5453f0c496916ac4103680bc7cbf53207f859d26f2fe96f",
+    "cache_byte_and_metadata_changes": [],
+    "protected_write_attempts": 0,
+    "checker_sha256": "ad526c8bc80d8792c0bc81e61ee4533717e27e95c5fe0a02a0e7d1e0db064bc6",
+    "guard_sha256": "6fe2a5f0756d661a3455e569e01d96247413a61cf00263fdccc8c932554b77dd",
+    "stage_receipts": [
+      {
+        "label": "strict-check",
+        "exit_code": 0,
+        "stdout_sha256": "e9f8469dcc1bce894dfdd4770ba4a39fb01c6c09dbbf1cd046736f8685aaa471",
+        "stderr_sha256": "d74072b6b5d5f4b6a164a7af3ff177ec6527bdfcf5808c1db60004e433f7987d"
+      },
+      {
+        "label": "artifact-validator",
+        "exit_code": 0,
+        "stdout_sha256": "a3b3a8a429dd04eef7ad7cccd3cac7ea66854f45dec181c3ac3b05b12e290591",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "label": "negative-controls",
+        "exit_code": 0,
+        "stdout_sha256": "130f8dbfaa62e51ca88b0671483951c1b2f145188fb5dcd2683e255ce0963c48",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "label": "artifact-validator-final",
+        "exit_code": 0,
+        "stdout_sha256": "a3b3a8a429dd04eef7ad7cccd3cac7ea66854f45dec181c3ac3b05b12e290591",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "upcoming_scope": {
+    "native_feed_postgresql_regression": "unrun-required-before-browser",
+    "native_result_gate": "closed-not-run-failed-passed; pass requires terminal zero exit, owned and PostgreSQL cleanup, exact finite native measurement",
+    "required_unique_browser_phases": 39,
+    "fresh_fixture_batches": 11,
+    "planned_browser_executions": 51,
+    "diagnostic_inventories": {
+      "actor_follow": 71,
+      "reader_transition": 37,
+      "home_failures": 28,
+      "account429": 13,
+      "compact_feed": 21,
+      "upload": 29
+    },
+    "browser_executed": false,
+    "full_suite_passed": false,
+    "pixel_parity_established": false
+  },
+  "prior_browser": {
+    "run_id": 38584846100,
+    "run_url": "https://github.com/9hnm24bzvm-wq/nostr-manga/actions/runs/38584846100",
+    "unique_passed": 10,
+    "unique_failed": 10,
+    "unique_pending": 19,
+    "actual_executions": 31,
+    "full_suite_passed": false,
+    "preserved_directory": "test-evidence/frontend/hosted-browser-38584846100"
+  },
+  "qualification": [
+    "The first integrated strict generation at330dcd2 had four Upload possibly-undefined errors; reviewed captured-session correction18874940 and fresh manifest resolve them. Only the final026f563 generation is claimed passing.",
+    "Local source/control seams contain explicit browser/store/DOM stand-ins; genuine native PostgreSQL and browser acceptance remain unrun.",
+    "Compact batching preserves83 historical migrations, carries exact unchanged PR28 migration86 prerequisite and new87 only; full PR28 runtime attestation and restricted-role execute grant remain later integration gates.",
+    "Native timing and speedup are not measured locally; prior query-canceled category alone does not uniquely establish statement-timeout root cause.",
+    "Strict15 warnings and existing Rust unusedgif helper warning remain.",
+    "Read-only Node cache guard plus byte/metadata inventories is not OS syscall enforcement."
+  ],
+  "exclusions": {
+    "raw_logs": true,
+    "signed_download_urls": true,
+    "credentials_or_private_keys": true,
+    "runtime_databases": true,
+    "application_database_browser_or_hosted_services_started": false,
+    "dependencies_installed": false
+  }
+}

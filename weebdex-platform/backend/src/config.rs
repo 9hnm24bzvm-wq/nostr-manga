@@ -17,6 +17,8 @@ pub struct Config {
     pub trusted_proxy_hops: usize,
     /// Explicit production gate; local fixtures must leave this disabled.
     pub production: bool,
+    /// Closed feed failure headers for disposable fixtures only; rejected in production.
+    pub fixture_feed_diagnostics: bool,
     /// An explicitly limited protocol reader does not need a publisher signer.
     pub protocol_read_only: bool,
     pub json_body_timeout_seconds: u64,
@@ -42,6 +44,11 @@ pub struct Config {
     pub session_lifetime_seconds: u64,
     pub registration_enabled: bool,
     pub uploads_dir: PathBuf,
+    /// Protective instance scheduling limits, not upstream MangaDex limits.
+    pub scheduled_upload_maximum: u32,
+    pub scheduled_upload_bytes: i64,
+    pub scheduled_upload_horizon_seconds: u32,
+    pub scheduled_upload_retry_seconds: u32,
     pub auth_mail: Option<crate::domains::auth::MailConfig>,
 }
 
@@ -52,6 +59,7 @@ impl Default for Config {
             trusted_proxy_peers: Vec::new(),
             trusted_proxy_hops: 1,
             production: false,
+            fixture_feed_diagnostics: false,
             protocol_read_only: false,
             json_body_timeout_seconds: 30,
             upload_body_timeout_seconds: 180,
@@ -74,6 +82,10 @@ impl Default for Config {
             session_lifetime_seconds: 7 * 24 * 60 * 60,
             registration_enabled: false,
             uploads_dir: "runtime/uploads".into(),
+            scheduled_upload_maximum: 32,
+            scheduled_upload_bytes: 500 * 1024 * 1024,
+            scheduled_upload_horizon_seconds: 30 * 24 * 60 * 60,
+            scheduled_upload_retry_seconds: 24 * 60 * 60,
             auth_mail: None,
         }
     }
@@ -282,6 +294,15 @@ impl Config {
     }
 
     pub fn validate(&self) -> Result<()> {
+        ensure!((1..=1000).contains(&self.scheduled_upload_maximum)
+            && (1..=536870912000_i64).contains(&self.scheduled_upload_bytes)
+            && (1..=31536000).contains(&self.scheduled_upload_horizon_seconds)
+            && (1..=86400).contains(&self.scheduled_upload_retry_seconds),
+            "Invalid scheduled upload limits");
+        ensure!(
+            !self.production || !self.fixture_feed_diagnostics,
+            "fixture feed diagnostics are forbidden in production"
+        );
         ensure!(
             self.trusted_proxy_peers.len() <= 32 && (1..=8).contains(&self.trusted_proxy_hops),
             "trusted proxy address/hop bounds"
@@ -635,6 +656,13 @@ fn validate_origin(text: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn scheduling_retry_limit_is_protective_and_defaults_to_one_day() {
+        assert_eq!(Config::default().scheduled_upload_retry_seconds,86400);
+        for seconds in [1,2,86400] {assert!(Config{scheduled_upload_retry_seconds:seconds,..Config::default()}.validate().is_ok());}
+        for seconds in [0,86401,u32::MAX] {assert!(Config{scheduled_upload_retry_seconds:seconds,..Config::default()}.validate().is_err());}
+    }
+
 
     fn runtime_fixture() -> (tempfile::TempDir, Config) {
         let root = tempfile::tempdir().unwrap();
@@ -660,6 +688,22 @@ mod tests {
         });
         (root, config)
     }
+    #[test]
+    fn fixture_feed_diagnostics_are_opt_in_and_forbidden_in_production() {
+        let mut config: Config = serde_json::from_str("{}").unwrap();
+        assert!(!config.fixture_feed_diagnostics);
+        config.fixture_feed_diagnostics = true;
+        assert!(config.validate().is_ok());
+        config.production = true;
+        assert!(
+            config
+                .validate()
+                .unwrap_err()
+                .to_string()
+                .contains("fixture feed diagnostics are forbidden in production")
+        );
+    }
+
     #[test]
     fn standalone_publication_backend_is_rejected_even_in_development() {
         let (_root, mut config) = runtime_fixture();

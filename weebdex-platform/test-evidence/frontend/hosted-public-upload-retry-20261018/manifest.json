@@ -1,0 +1,38 @@
+{
+  "README.md": {
+    "bytes": 1885,
+    "sha256": "5a671a34b99076c454d47919f90cc1f7d8c69c697b22dc05548137307ee2cb46"
+  },
+  "artifact-provenance.json": {
+    "bytes": 598,
+    "sha256": "4acdcfde874a1dc8dd12e936917b41c4e6b4da5352a4c15ae3c9c8d2e68a266a"
+  },
+  "ci-source-pins.json": {
+    "bytes": 1128,
+    "sha256": "787b87b284d324f313ce3d5af66563c8cd6dd588649fea7ec500a0eda3a1c19b"
+  },
+  "job-steps.json": {
+    "bytes": 1934,
+    "sha256": "25e656b9fd4e7db475280ea198409dc8d0ead0bf1e43c715de4b29561d460419"
+  },
+  "phases.json": {
+    "bytes": 1778,
+    "sha256": "501ad32de5e12288547656bb4b4feaf41a1e4a0661f28897304b3c04c2ff52f4"
+  },
+  "preparation.json": {
+    "bytes": 1359,
+    "sha256": "dc362172848c5ae912e99ac46dc0628201d117e9f9c75b6314743b423bc95eb5"
+  },
+  "raw-log-provenance.json": {
+    "bytes": 391,
+    "sha256": "499b6454db9b67496734cfd15b4f38babb0bba86cfb614f1b48895de4d1ccbc3"
+  },
+  "run.json": {
+    "bytes": 2141,
+    "sha256": "d1fe10488aaf0118da9cbff8431ed368ce0814f1f38e4d0d75c076430e42c11d"
+  },
+  "summary.json": {
+    "bytes": 1205,
+    "sha256": "ae384d8957d467173b49bc2c9eda72a3c6af27c89754d0731e8762a1abb8cd94"
+  }
+}

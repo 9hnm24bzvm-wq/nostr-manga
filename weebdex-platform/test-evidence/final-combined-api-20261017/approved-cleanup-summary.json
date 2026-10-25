@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-18T01:22:20Z",
+  "manifest_sha256": "c1648ba2115bd9d98a01f8dcfb59cf6784d3ac9570e470caa91b0926237a6d11",
+  "removed_count": 10,
+  "removed_allocated_bytes": 620138496,
+  "free_bytes_before": 4373790720,
+  "free_bytes_after": 4993929216,
+  "retained_log_evidence_count": 52,
+  "retained_log_evidence_hashes_unchanged": true,
+  "compiled_source_input_count": 903,
+  "compiled_source_inputs_unchanged": true,
+  "protected_current_binaries_unchanged": true,
+  "additional_paths_removed": []
+}

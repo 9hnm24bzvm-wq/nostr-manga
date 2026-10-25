@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "source-associated-browser-unrun",
+  "historical_commit": "9079c3bf02ef49c5d94fdcaf1d696bdb61416cd1",
+  "historical_plan_sha256": "e82b475739a1db651cec5897fbdd330381d11621ff520df6a3cd5105cf3607ba",
+  "current_commit": "f593787141469cc8d6da057545eb11a53fb7271b",
+  "current_runtime_sha256": {
+    "scripts/browser-actor-follow-journeys.mjs": "09769fce22695bcad7da2b76b2c5fc23ff4c98b32e593267b60166eec1da93aa",
+    "scripts/browser-actor-follow-controls.mjs": "07e4b21bbaee22e3bcd190425acc428c9e043dd8dad52461c25db320531ce3c9",
+    "scripts/browser-actor-follow-observations.mjs": "eca6ab0df6af2539c8338e7b0bbf5da515025eaeb4978a4da9298ef04427aa10",
+    "scripts/browser-ui11-16-journeys.mjs": "e626139a94836a1f42ab9e05d68b49a191b712e6c6027a227a11a2a547dffd16",
+    "scripts/ci/run-hosted-browser.py": "a904994f8ab19164174dc62f17df48ed926de0567603340f080b39415e00c0a6",
+    "scripts/ci/journey-diagnostics.py": "942c5789182d89d8b9ebf0915766d782afaf005c255439d940ed06fa81116b74",
+    "scripts/ci/validate-ci-evidence.py": "9fc684992fe02ca39ef2435c4c7b041ec279994004be158c7898c7501a68ce1a",
+    "../.github/workflows/hosted-browser-e2e.yml": "df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27"
+  },
+  "scope": "Historical plan and its sixteen hashes remain immutable at their original snapshot. Current runtime files are associated separately; finite source checks establish no browser acceptance.",
+  "current_source_overrides": {
+    "../.github/workflows/hosted-browser-e2e.yml": "c6a0dc38a7be5026dbd3c7a5f2ec4c04a752f1d2"
+  },
+  "initial_current_workflow_sha256": "ed6059d4b40742a1cf0e210a7f3d02b5a447a9f4feb324410e5838e94587e2ff",
+  "workflow_override_reason": "Reviewed3-line finite deployment-proxy check insertion; all prior workflow bytes, triggers and actor-follow scope are unchanged.",
+  "historical_source_fixture": {
+    "path": "fixtures/browser-actor-follow-historical-source.json.gz",
+    "bytes": 131692,
+    "sha256": "e9b26938a27beebc727debb4a2b576a9b733339f19c558fc42b16efc8dc0b2af",
+    "maximum_uncompressed_bytes": 4194304,
+    "recorded_uncompressed_bytes": 440954
+  }
+}

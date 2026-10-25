@@ -1,0 +1,170 @@
+{
+  "status": "passed-finite-transport-seams-only",
+  "source_base": "5752ad70c4f63ea27eab7b8e28f40c287991e609",
+  "source_hashes_unchanged": true,
+  "utc": "2026-10-18T17:27:58.333437+00:00",
+  "tests": 19,
+  "skipped": 0,
+  "elapsed_s": 0.339436,
+  "python": "3.12.14",
+  "aiohttp": "3.14.4",
+  "command": "PYTHONDONTWRITEBYTECODE=1 timeout 30s python3 weebdex-platform/scripts/ci/qualify-integrated-load-budget.py --output weebdex-platform/test-evidence/ci/integrated-load-budget-url-bound-20261018",
+  "source_sha256": {
+    "weebdex-platform/scripts/integrated_load_budget.py": "dcac9a84fb44aae9d05215e3e5c6e1945931b1bac6cc06efef3a45b402e32d0f",
+    "weebdex-platform/tests/ci/test_integrated_load_budget.py": "013a2e9a8c0106d6a3aa939aa6d58f5938ed80e41de4bc878225f4c85d113f0d",
+    "weebdex-platform/scripts/ci/qualify-integrated-load-budget.py": "8ff6eac8201e30ecb5571268249d044b7a980b95df8a63e646895e17952c0db2",
+    "weebdex-platform/docs/integrated-load-transport-budget.md": "428aa8530d2bd71d72f5658c824c51119e6766cddeab72e4732b220094f64bda",
+    "weebdex-platform/docs/mixed-load-readiness-20261018.md": "3df4b196df6e449a061182d52adb9adb6a06f46de1e214a4cd819dbc5262458f"
+  },
+  "evidence_sha256": {
+    "seams.log": "4a4711bc77c8537187abf03005e6aa2b47147d1a0cdef23db88305bfd043eca3"
+  },
+  "server_observed_http_requests": 31,
+  "server_received_request_body_bytes": 107,
+  "controlled_cases": {
+    "test_integrated_load_budget.TransportBudgetSeams.test_byte_boundaries_and_head_count_actual_payload_not_content_length": {
+      "server_observed_http_requests": 5,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 4,
+        "HEAD": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_cancel_mid_body_releases_credits_closes_socket_and_joins_task": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_concurrent_response_credits_are_shared_across_lanes": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_connector_refusal_is_one_charged_attempt_with_unknown_response_bytes": {
+      "server_observed_http_requests": 0,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {}
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_delayed_chunked_overflow_refuses_without_consuming_extra_byte": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_disconnected_get_and_put_are_not_retried_inside_aiohttp": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 6,
+      "observed_methods": {
+        "GET": 1,
+        "PUT": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_exact_chunked_limit_accepts_delayed_eof_without_lookahead": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_explicit_retry_spends_a_new_attempt_and_exhaustion_never_sends": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_gzip_counts_encoded_bytes_and_verification_failure_keeps_all_costs": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_inflight_refusal_and_absolute_deadline_are_shared_across_lanes": {
+      "server_observed_http_requests": 3,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 3
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_invalid_destinations_headers_lanes_and_bounds_never_spend_an_attempt": {
+      "server_observed_http_requests": 0,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {}
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_late_verification_cannot_turn_a_stalled_loop_into_completion": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_local_progress_is_unmeasured_and_cannot_be_a_network_lane": {
+      "server_observed_http_requests": 0,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {}
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_no_length_and_truncated_length_never_invent_complete_body": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_redirects_never_forward_authority_body_or_consume_an_extra_attempt": {
+      "server_observed_http_requests": 4,
+      "server_received_request_body_bytes": 64,
+      "observed_methods": {
+        "PUT": 4
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_shared_last_request_slot_and_status_body_accounting": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_signed_ascii_request_target_and_serialized_body_are_not_requoted": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 34,
+      "observed_methods": {
+        "POST": 1
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_timeout_and_context_exit_own_outstanding_request_cleanup": {
+      "server_observed_http_requests": 2,
+      "server_received_request_body_bytes": 0,
+      "observed_methods": {
+        "GET": 2
+      }
+    },
+    "test_integrated_load_budget.TransportBudgetSeams.test_upload_reservation_is_shared_and_failed_attempts_are_not_refunded": {
+      "server_observed_http_requests": 1,
+      "server_received_request_body_bytes": 3,
+      "observed_methods": {
+        "POST": 1
+      }
+    }
+  },
+  "observation_adapter": "EvidenceResult.addSuccess in the hashed runner",
+  "application_load_executed": false,
+  "browser_executed": false,
+  "postgres_executed": false,
+  "external_network_executed": false,
+  "install_executed": false,
+  "capacity_qualified": false,
+  "notes": [
+    "Only finite ephemeral numeric-loopback raw HTTP fixtures were started.",
+    "Connection refusal spends an attempt without reaching an HTTP fixture.",
+    "Consumed encoded-body credit and parser-prefetched bytes are separate; no NIC/OS-buffer cap is claimed.",
+    "Device progress stays unmeasured, zero HTTP, and is never replaced by a backend load lane.",
+    "Only installed aiohttp version qualified; original pinned-version compatibility remains unverified.",
+    "No scenario scheduler, application load, browser/IndexedDB measurement or production capacity result."
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "utc": "2026-10-17T18:03:46.824258+00:00",
+  "prior_commit": "60999e66f0b76e2af4a79d22a027bdf55f027bd9",
+  "scope": "Trusted exact public Manga sort metadata and identical canonical-UUID server tie-breaking for cross-batch device-library ordering.",
+  "checks": [
+    {
+      "name": "library_unit",
+      "result": "test result: ok. 118 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 2.12s",
+      "output_sha256": "523833c579791475e0bdbb229041ec70efa873ee2f977f2d6f6e230c387e21fa"
+    },
+    {
+      "name": "compatibility_sort_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.62s",
+      "output_sha256": "f874f0c1a70f0afabbf3368d21ef9fcbb25cc75c90956913890c73298a2ef4e1"
+    },
+    {
+      "name": "catalogue_regression_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.85s",
+      "output_sha256": "38c9b2b3a764ab354be40ea5e5d4d98fa209a82623ef185496b8dd4b9d7c8e74"
+    },
+    {
+      "name": "private_account_regression_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.82s",
+      "output_sha256": "d858fa6a81a2d79f4aa7891bd3a1b1b8baff50678c14c71ca2706e872568dbb3"
+    }
+  ],
+  "postgres_fixture_cleanup": [
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    }
+  ],
+  "source_sha256": {
+    "weebdex-platform/backend/src/public_api/catalogue.rs": "f833505efee09cf1c2e05d6d5fc04f91116e76f19cdbde9ba898a73f972c4b8f",
+    "weebdex-platform/backend/src/public_api/catalogue_dto.rs": "df460b335ba6f5ffbd1c19aa8350ac8023041c63a59161e7aa75811866d28a33",
+    "weebdex-platform/backend/tests/public_catalogue_compatibility.rs": "67a72a8d93b79abb1c2d45826045b0ab68041cb993e8beab8070dd884fd0fd40",
+    "weebdex-platform/docs/mangadex-exact-manga-sort-keys.md": "aa7236e0d35d51d50d4433eceaa649aab1d83035b236100ae6cacc3b702376f9"
+  },
+  "test_binary_sha256": {
+    "public_catalogue_compatibility-7bc8ad9b6a8d2d77": "5dc5e92de4fca11a3f1aead3ef1567bbb015f8c9d0afd129321333db2b2b0506",
+    "public_catalogue_reads-99a3bf88daacfe81": "9e4dcaa311c265db9b0c21efb81942c35eaae7d504dcec3f583e54d0a16ea6d4",
+    "public_account_reads-55dde832bbd6c52c": "7f2fa203f90df6aa442362110e1ba8a55c8c0df8fb9e1a88f11d5ee6a149d781"
+  },
+  "covered_seams": [
+    "Exact BIGINT above JavaScript safe integer range",
+    "Exact high-precision signed NUMERIC text, with bounded nonfinite/oversized failures",
+    "Six-digit UTC microsecond timestamps and null keys",
+    "Actual eligible chapter maximum excluding revoked source",
+    "Trusted SQL keys ignore publisher metadata spoofing",
+    "C-byte Unicode title sort and canonical UUID ascending ties across offset pages",
+    "Existing private follows/history/settings and catalogue DTO regressions"
+  ],
+  "limits": [
+    "Independent hydration requests can observe different database snapshots as catalogue changes.",
+    "Draft/private editorial Manga DTOs may omit the comparison extension.",
+    "No query-dependent relevance key, full API compatibility, browser acceptance, load or production-readiness claim.",
+    "Existing compiler warnings remain; rustfmt is unavailable; git diff --check passes.",
+    "No migrations, dependencies, credential access, remote push or publication."
+  ]
+}

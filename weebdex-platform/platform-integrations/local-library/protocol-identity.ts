@@ -1,15 +1,32 @@
 // Public original account/social transport. Password accounts never sign here.
-import { PUBLIC_API_URL } from '$env/static/public';
+import { PUBLIC_API_URL, PUBLIC_MANGADEX_CATALOGUE } from '$env/static/public';
+import {publicResourceMappings} from '../public-api/resource-mappings';
+import {publicUuid} from '../public-api/validation';
+import {sameScope} from './device-store';
 import { request, transaction } from './protocol/indexeddb.js';
 import { stores, currentDeviceSnapshot } from './library';
 import { capabilities, assertAllowedRelay, selectedSigner, type Relay, type SourceMapping } from './publication';
 import { origin, proveService, bytesResponse, signExact, signedRequest, verifyEvent, now } from './protocol/nostr.js';
+import { isPublicActionReceipt } from './protocol-receipt';
 export type SignedEvent = { id: string; pubkey: string; kind: number; created_at: number; tags: string[][]; content: string; sig: string };
 export type PublicReview = { relay: Relay; owner: string; generation: number; kind: number; content: string; tags: string[][]; purpose: string; source?: SourceMapping; parent?: SignedEvent };
-export async function sourceResource(kind: 'manga' | 'chapter', id: string): Promise<SourceMapping> {
-  if (!/^[A-Za-z0-9]{10}$/.test(id)) throw Error('Choose a native catalogue resource from this instance');
-  const scope = (await currentDeviceSnapshot()).scope, policy = await capabilities();
+export async function sourceResource(kind: 'manga' | 'chapter', id: string, assertContext: () => void = () => {}): Promise<SourceMapping> {
+  assertContext();
+  if (PUBLIC_MANGADEX_CATALOGUE === '1') id = publicUuid(id);
+  else if (!/^[A-Za-z0-9]{10}$/.test(id)) throw Error('Choose a native catalogue resource from this instance');
+  const scope = (await currentDeviceSnapshot()).scope; assertContext();
+  const policy = await capabilities(); assertContext();
   if (!scope.catalogNamespace || scope.catalogNamespace !== policy.catalog_namespace || (scope.serviceKey && scope.serviceKey !== policy.service_key)) throw Error('Catalogue scope changed. Review the instance before using this native ID.');
+  if (PUBLIC_MANGADEX_CATALOGUE === '1') {
+    if (typeof policy.origin !== 'string' || typeof policy.service_key !== 'string' || !/^[0-9a-f]{64}$/.test(policy.service_key)) throw Error('This instance has no verified signed-source service.');
+    const result = await publicResourceMappings({publicOrigin:scope.origin,sourceOrigin:policy.origin,serviceKey:policy.service_key,catalogNamespace:scope.catalogNamespace},[{kind,id}],assertContext);
+    assertContext();
+    const current = (await currentDeviceSnapshot()).scope; assertContext();
+    if (!sameScope(scope,current)) throw Error('Catalogue scope changed while resolving this source. Review it again.');
+    const source = result.mappings.find(row=>row.kind===kind&&row.id===id);
+    if (!source || result.unresolved.length) throw Error('This resource has no visible signed source. Use the instance community if available.');
+    return source;
+  }
   const response = await fetch(PUBLIC_API_URL.replace(/\/$/, '') + '/protocol/resources', { method: 'POST', credentials: 'omit', cache: 'no-store', redirect: 'error', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resources: [{ kind, id }] }), signal: AbortSignal.timeout(30000) });
   if (!response.ok) throw Error(`Source mapping failed: HTTP ${response.status}`);
   const result = await response.json();
@@ -101,7 +118,7 @@ export async function sendReviewed(review: PublicReview, publicConsent: boolean,
   assertAllowedRelay(review.relay.origin, policy); await proveService(review.relay.origin, review.relay.serviceKey);
   assertContext();
   if (review.source) {
-    const current = await sourceResource(review.source.kind, review.source.id);
+    const current = await sourceResource(review.source.kind, review.source.id, assertContext);
     assertContext();
     if (current.event_id !== review.source.event_id || current.publisher !== review.source.publisher || current.source_kind !== review.source.source_kind) throw Error('Source mapping changed since review');
     const root = await publicJson(review.relay, `/events/${current.event_id}`, 16384);
@@ -117,7 +134,10 @@ export async function sendReviewed(review: PublicReview, publicConsent: boolean,
     if (timestamp > now() + 60) throw Error('Metadata publication clock is ahead. Wait before signing.');
   }
   assertContext();
-  const event = await signExact(identity.signer, identity.owner, { kind: review.kind, created_at: timestamp, tags: review.tags, content: review.content });
+  // signExact invokes the external signer on a deferred turn. Check the view at
+  // that actual invocation, but retain a returned exact signed intent below.
+  const actionSigner = { signEvent: async (template: unknown) => { assertContext(); return identity.signer.signEvent(template); } };
+  const event = await signExact(actionSigner, identity.owner, { kind: review.kind, created_at: timestamp, tags: review.tags, content: review.content });
   identity.check();
   const path = review.kind === 5 ? '/account-deletions' : [0, 3, 10002].includes(review.kind) ? '/account-metadata' : '/social';
   const record = await rememberPublicAction({ event, relay: review.relay, path, purpose: review.purpose, state: 'prepared', message: 'Signed and saved locally; not sent yet', cancelled: false, createdAt: Date.now() });
@@ -192,13 +212,18 @@ export async function deliverPublicAction(id: string, assertContext: () => void 
     const active = async () => { const current = (await publicActionRecords()).find(row => row.event.id === id); identity.check(); assertContext(); if (!current || current.cancelled) throw Error('Further sending cancelled; an already sent request cannot be recalled'); };
     await active(); await updatePublicAction(id, { state: 'sending', message: 'Delivering this exact saved signed action' });
     try {
-      const receipt = await signedRequest(record.relay, identity.signer, identity.owner, record.path, 'POST', record.event, 65536, active);
-      if (receipt.data.id !== id || ![200, 202, 409].includes(receipt.status)) {
+      // A fresh HTTP proof is disposable; closing its view must prevent another
+      // extension prompt or transport after a pending proof returns. The saved
+      // original action and final IDB/beforeSend cancellation check stay intact.
+      const proofSigner = { signEvent: async (template: unknown) => { assertContext(); const signed = await identity.signer.signEvent(template); assertContext(); return signed; } };
+      const receipt = await signedRequest(record.relay, proofSigner, identity.owner, record.path, 'POST', record.event, 65536, active);
+      const accepted = isPublicActionReceipt(receipt.data) ? receipt.data : undefined;
+      if (!accepted || accepted.id !== id || ![200, 202, 409].includes(receipt.status)) {
         if ([400, 401, 403, 404, 422].includes(receipt.status)) { await updatePublicAction(id, { state: 'refused', message: `Original service refused this exact action: HTTP ${receipt.status}`, receipt }); throw Error(`Original service refused this action: HTTP ${receipt.status}`); }
         throw Error(`A reliable matching event receipt was not received: HTTP ${receipt.status}`);
       }
-      if (receipt.status === 409 && receipt.data.superseded !== true) throw Error('Unexpected publication conflict');
-      await updatePublicAction(id, { state: receipt.status === 409 ? 'superseded' : 'accepted', message: receipt.status === 409 ? 'Superseded by a newer signed public event' : receipt.data.projected ? 'Accepted and projected' : 'Accepted; projection/withdrawal may still be pending', receipt });
+      if (receipt.status === 409 && accepted.superseded !== true) throw Error('Unexpected publication conflict');
+      await updatePublicAction(id, { state: receipt.status === 409 ? 'superseded' : 'accepted', message: receipt.status === 409 ? 'Superseded by a newer signed public event' : accepted.projected === true ? 'Accepted and projected' : 'Accepted; projection/withdrawal may still be pending', receipt });
       return { event: record.event, receipt };
     } catch (error) {
       record = (await publicActionRecords()).find(row => row.event.id === id)!;

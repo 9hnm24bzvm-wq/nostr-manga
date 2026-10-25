@@ -1,9 +1,14 @@
 mod derivatives;
+pub(crate) mod entity_mutations;
+mod feed_diagnostics;
+mod feed_projection;
 pub mod languages;
-mod mutations;
+pub(crate) mod mutations;
 mod protocol_bridge;
 pub mod query;
 mod read;
+pub(crate) mod reader_order;
+pub(crate) mod reader_selector;
 pub mod repository;
 pub mod validation;
 use crate::state::AppState;
@@ -12,6 +17,7 @@ use axum::{
     routing::{get, post},
 };
 pub use repository::{CatalogPage, CatalogRepository, ChapterPublication, CoverPublication};
+pub(crate) use read::ranking_at;
 
 pub fn router() -> Router<AppState> {
     Router::new()
@@ -47,6 +53,7 @@ pub fn router() -> Router<AppState> {
         )
         .route("/manga/{id}/chapters", get(read::chapter_list))
         .route("/manga/{id}/aggregate", get(read::chapter_aggregate))
+        .route("/manga/{id}/reader", get(reader_selector::native))
         .route("/manga/{id}/covers", get(read::cover_list))
         .route("/manga/{id}/lock", post(mutations::manga_lock))
         .route("/manga/{id}/unlock", post(mutations::manga_unlock))

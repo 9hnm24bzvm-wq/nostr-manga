@@ -1,0 +1,62 @@
+{
+  "schema": "independent-source-review-v1",
+  "decision": "Source-clear for compile-only and four named pure Rust cases through the sole runtime owner; actual HTTP run requires a separate bounded plan",
+  "sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/backend/src/domains/uploads/sessions.rs",
+      "sha256": "5e55e9287ed4edcf3d20c8f2c5073ce8f59a0f8c3e55f468adb8268550ddc483",
+      "bytes": 72520
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/backend/src/public_api/upload_extensions.rs",
+      "sha256": "e4c199e90d47ccd25966b586f9f5ee7b7b124c6d769a2b3f76938b27fbc9f87f",
+      "bytes": 19565
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/backend/src/public_api/uploads.rs",
+      "sha256": "b7e5edcd1b194084cd4c3522b476a596d4192bcca5d5be01a27f69805e577585",
+      "bytes": 26184
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/backend/src/router.rs",
+      "sha256": "be9ad36c15c4c2ed7b3b09b62d8ee053fabd3971dc322ef7375dc872240e0101",
+      "bytes": 27551
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/backend/tests/public_uploads.rs",
+      "sha256": "c5dc225b21401a8b8c8c43c9df8af0a3c42c897e1bf26f3e0969bffc3126fa64",
+      "bytes": 54244
+    }
+  ],
+  "unchanged_references": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/backend/src/public_api/auth.rs",
+      "sha256": "af140bc5bc0038af8c2436a82e4d3be9a85ca9f4cb3e3e8c32889a3e70facdf9",
+      "bytes": 12445
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/backend/src/public_api/uploads_body.rs",
+      "sha256": "ece106c0d1a4afc781236060d9109b5efc2897ad11861415d446baa5e142ab5a",
+      "bytes": 4956
+    }
+  ],
+  "findings": [
+    "Signed raw body receipt is reused; expectedVersion is exactly one canonical positive i32 plain first field followed by one file and EOF. No cookie or unsigned version header supplies authority.",
+    "The decoded request reacquires current capability, explicit native binding, grant and exact session/file selectors in the mutation transaction; the shared core retains owner, expiry, prepared-command and version fences.",
+    "Public replacement requires exact version even for unchanged bytes; the native identical-retry policy is explicitly retained.",
+    "Stable file identity/position and session order are retained; changed object/derivatives, actual persisted version and byte budget share the same transaction. Public response mapping completes before commit.",
+    "Outer exact public route receives bounded image budget and private no-store policy; public file mapping exposes actual DB-backed facts and aliases."
+  ],
+  "pure_cases": [
+    "public_replacement_always_fences_version_and_native_identical_retry_is_preserved",
+    "expected_version_accepts_only_canonical_positive_i32",
+    "expected_version_is_a_bounded_plain_first_part",
+    "signed_replacement_body_budget_and_private_cache_select_exact_public_path"
+  ],
+  "integration_specification": "exact_nostr_page_replacement_preserves_identity_order_and_authority_fences",
+  "limits": [
+    "Ignored HTTP test is unexecuted source, not passing evidence.",
+    "Revocation tests change grants/binding/admission before requests; after-decode reacquisition is source-supported, not a concurrent runtime observation.",
+    "The larger deterministic PNG and aggregate-budget references belong only to the disposable fixture. No publication is performed by the new replacement scenario."
+  ]
+}

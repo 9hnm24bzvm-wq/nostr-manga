@@ -1,0 +1,7 @@
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{"status":"passed","errors":0,"warnings":15,"integration_files":104,"canonical_files":679,"canonical_unchanged":true,"evidence":".build/final-discovered-strict-0-20261018-0313/evidence"}
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{"status":"passed","errors":0,"warnings":12,"integration_files":134,"canonical_files":679,"canonical_unchanged":true,"evidence":".build/final-discovered-strict-1-20261018-0313/evidence"}
+{"command": ["bash", "-c", "cd weebdex-platform && bash test-evidence/frontend/final-discovered-ci-20261018/run-strict.sh"], "cwd": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017", "exitCode": 0, "stopReason": null, "elapsedSeconds": 39.235, "minimumFreeBytes": 4650389504, "minimumAvailableMemoryBytes": 6674149376, "ownedSurvivors": [], "status": "passed"}

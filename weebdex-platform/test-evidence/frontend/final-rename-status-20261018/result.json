@@ -1,0 +1,37 @@
+{
+  "status": "passed",
+  "testedSource": "8a1a54f6fe592116511a3328e33baad74b31cd6d",
+  "testedTree": "ef288e6fb2cf5e4a9a1e6b2da8e533a3690101f5",
+  "finite": {
+    "files": 49,
+    "tests": 683,
+    "passed": 683,
+    "failed": 0,
+    "skipped": 0
+  },
+  "strict": {
+    "gate0": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "gate1": {
+      "errors": 0,
+      "warnings": 12
+    }
+  },
+  "sourceFiles": 1044,
+  "productSourceFiles": 916,
+  "canonicalFiles": 679,
+  "sourcePinsPreserved": true,
+  "dependencyRootsPreserved": 4,
+  "protectedWriteAttempts": 0,
+  "cacheGuardReceipts": 148,
+  "productionManifestSha256": "106fca6bb2ca34985447bc5e63cf6cdc520c1dd38a3f4221ea12a008adee2e70",
+  "initialFailure": {
+    "source": "717d88936cd654529a197ca9bcabc9af47cab6e9",
+    "strict0Errors": 2,
+    "detail": "Rename optional-chain equality did not prove the review existed. Explicit existence guard4e50ad84 fixes both diagnostics; absent-view-ID compiled DOM regression passes.",
+    "retained": true
+  },
+  "limitation": "Actual compiled Svelte/JSDOM and fake-indexeddb execute production adapters with documented transport/leaf boundaries. No Vite, native-browser or real backend HTTP result is included in this receipt."
+}

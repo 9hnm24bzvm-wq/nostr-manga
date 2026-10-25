@@ -1,0 +1,15 @@
+{
+  "files": {
+    "test_aliases_cli": 1,
+    "test_backup_cli": 5,
+    "test_cbor_profile": 12,
+    "test_library_input_cli": 3,
+    "test_mangadex_cli": 9,
+    "test_migration_plan_cli": 8
+  },
+  "testsRun": 38,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "status": "passed"
+}

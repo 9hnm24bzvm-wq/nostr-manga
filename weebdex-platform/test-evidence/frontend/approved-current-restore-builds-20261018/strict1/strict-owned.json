@@ -1,0 +1,56 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/scripts/check-composed-frontend.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform",
+  "deadline_seconds": 600,
+  "elapsed_seconds": 19.616,
+  "exit_code": 0,
+  "stop_reason": null,
+  "minimum_free_bytes": 27377844224,
+  "minimum_available_memory_bytes": 7323705344,
+  "maximum_owned_rss_bytes": 1849122816,
+  "peak_new_dependency_allocated_bytes": 0,
+  "floor_bytes": 4294967296,
+  "cleanup_reserve_bytes": 134217728,
+  "dependency_growth_cap_bytes": 4294967296,
+  "owned_process_births": [
+    {
+      "pid": 6,
+      "start_time": 3674774
+    },
+    {
+      "pid": 15,
+      "start_time": 3674842
+    },
+    {
+      "pid": 26,
+      "start_time": 3675112
+    },
+    {
+      "pid": 34,
+      "start_time": 3675175
+    },
+    {
+      "pid": 42,
+      "start_time": 3675925
+    },
+    {
+      "pid": 53,
+      "start_time": 3676622
+    },
+    {
+      "pid": 65,
+      "start_time": 3676647
+    }
+  ],
+  "cleanup_signals": [],
+  "surviving_owned_processes": [],
+  "cleanup_verified": true,
+  "census_errors": 0,
+  "guard_internal_failure": false,
+  "cleanup_reserve_seconds": 12,
+  "leader_registered_before_exec": true,
+  "identity": "exact birth recheck plus pidfd-owned session and sampled descendants"
+}

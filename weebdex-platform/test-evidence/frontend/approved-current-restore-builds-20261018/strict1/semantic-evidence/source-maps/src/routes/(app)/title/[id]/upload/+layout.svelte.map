@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "sources": [
+    "../../../../../../../../production-composed/src/routes/(app)/title/[id]/upload/+layout.svelte"
+  ],
+  "sourcesContent": [
+    "<script>\r\n\tconst { children } = $props();\r\n</script>\r\n\r\n{@render children?.()}\r\n"
+  ],
+  "names": [],
+  "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACR,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACT;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;",
+  "file": "../../../../../../../../project/src/routes/(app)/title/[id]/upload/+layout.svelte"
+}

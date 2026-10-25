@@ -1,0 +1,39 @@
+{
+  "scope": "Actual pre-fix synthetic reader navigation audit and composed-source validation; post-fix browser pending",
+  "fixture_only": true,
+  "pre_fix_blank_page_urls": [
+    {
+      "value": "abc",
+      "visible_images": 0
+    },
+    {
+      "value": "NaN",
+      "visible_images": 0
+    }
+  ],
+  "pre_fix_end_card": {
+    "last_page_control_left_image_count": 0
+  },
+  "working_behaviors": [
+    "query and hash retention",
+    "0 and999 page clamp",
+    "LTR and RTL keyboard/tap",
+    "honest failed-image Retry recovery",
+    "long-strip geometry resize/progress",
+    "Report overlay blocks reader keyboard"
+  ],
+  "source_compiler": {
+    "status": "passed",
+    "components": 108,
+    "scripts": 64
+  },
+  "strict_semantic": {
+    "status": "passed",
+    "errors": 0,
+    "warnings": 15,
+    "canonical_unchanged": true
+  },
+  "all_focused_tests_passed": 14,
+  "exact_reader_markup_exceptions": 27,
+  "post_fix_browser_verified": false
+}

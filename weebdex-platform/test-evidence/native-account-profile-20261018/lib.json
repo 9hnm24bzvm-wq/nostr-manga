@@ -1,0 +1,23 @@
+{
+  "suite": "lib",
+  "utc": "2026-10-18T02:46:00Z",
+  "source_baseline": "c0e82cb1032a972bc1234166518dcd979fe4868d",
+  "command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/weebdex_platform-4adb5f241d38c865",
+    "--test-threads=1",
+    "--nocapture"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 2.2526603229925968,
+  "minimum_free_bytes": 5083348992,
+  "free_bytes_after": 5083344896,
+  "interrupted_at_disk_floor": false,
+  "binary_path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/weebdex_platform-4adb5f241d38c865",
+  "binary_sha256": "c6a13274aab78f4f8b053a4cef8f2e91810fe3a24d7f119a77dd4551af9b69f6",
+  "output_sha256": "7ce80405c9e5343ca8abeb079da2cbf409fb5dd2d1d1a7913d753c3cc2116056",
+  "result": [
+    "test result: ok. 141 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 2.02s"
+  ],
+  "fixture": null,
+  "cleanup": null
+}

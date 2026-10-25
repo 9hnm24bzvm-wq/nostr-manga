@@ -1,0 +1,1173 @@
+{
+  "source": "f593787141469cc8d6da057545eb11a53fb7271b",
+  "directory": "weebdex-platform/tests/ci",
+  "method": "Every immediate file matching test_*.mjs,*.test.mjs,*.spec.mjs,test_*.py; helper/probe/fixture modules separately classified",
+  "testFiles": [
+    {
+      "path": "weebdex-platform/tests/ci/device-id-migration-recovery.test.mjs",
+      "sha256": "8415b35f049ffb47f8800cc756caa3e5268d85ba2a75b0bb899de1e391b6930c",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_MIGRATION_TEST_NOBLE",
+        "WEEBDEX_MIGRATION_TEST_NODE_MODULES"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-api-recovery.test.mjs",
+      "sha256": "f00e9249af04a580d38320e972cd58fc595189e6313dec38b63e05ba47a2c834",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-canonical-ui-generation.test.mjs",
+      "sha256": "3feeaa68964fee7258b917f861cc80ea0ab007399f34e0a3edbb9d181249ba6d",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-device-projection.test.mjs",
+      "sha256": "ee8b639ed36eafddc19703cddc69227961b25742f254527154741ebb6beecdf3",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-device-write-v2-idb.test.mjs",
+      "sha256": "60d2804cc8080debf04b4008f6f4db020be6f2befdf0bbb08714c89714bf085c",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_MIGRATION_TEST_NOBLE",
+        "WEEBDEX_MIGRATION_TEST_NODE_MODULES"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-device-write-v2.test.mjs",
+      "sha256": "6d42b4f45d7e24b1d2d21ed28d98b688e14c40f9df0172af65d766874927d204",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-job-completion.test.mjs",
+      "sha256": "0e231a6a8a59c037b9611b225c3fd51a1a7db53e9571c49df0d3bf077d988530",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-library-relay-support.test.mjs",
+      "sha256": "7dc9dd93dd07b70994a1793e11ead8b64acbd3bd6d5c9ff75e81b4d2132fb153",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-protocol-scope.test.mjs",
+      "sha256": "cafc6dc6e337b02da60c4f6180260bf375f1f31277322be434f0eddd50735f56",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-resource-mappings.test.mjs",
+      "sha256": "6a036921a342005fef8e2e7abb7fdc922178818215cfbd0923e63e8876d1c18b",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/public-uuid-publication.test.mjs",
+      "sha256": "012afa2e7172fb873e3a3317d994ca875d48b6a045801e08398a71873138eba6",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_blocklists_client.mjs",
+      "sha256": "8a42b18a4ca03075daa35cffc40b5f049580f07ae8cd078f866afc1543e8143b",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_blocklists_dom.mjs",
+      "sha256": "e36e9ef552027d453c3235d341522db8aba490177cf5ac8fa41da8c5f206c7c7",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_collection_dom.mjs",
+      "sha256": "2d8f92acbd7196953170371f8f24b4dbf6b3edc2e9ce2e63cc011e0cb00e9e92",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_follow_client.mjs",
+      "sha256": "020f7708a6156785fe388d1dab4763b5be98de0862c2347e0ecba648c5b1556a",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_follow_ui.mjs",
+      "sha256": "73f57a85cc3230c1af0e7c925aebbc94fb82b2a6df8bdfae33fc476a6379d9e3",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_following_reader.mjs",
+      "sha256": "8af819c3a0d8257130941b561cfd2f8ba3f19355695f7de29c949e4d37666fc8",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_following_ui.mjs",
+      "sha256": "4f5aa41193e6fba1b28e5cf5d90fa8fc4ffd42484286c5ef82d69d69dd772b06",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_onboarding_seams.mjs",
+      "sha256": "8fa8103d44ef65e8515927910aff6da4e520484b4226a17f999b9f41a8115ede",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_ONBOARDING_SOURCE_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_profile_client.mjs",
+      "sha256": "414637bcdf3ef8b39aadb6319f782d195813a0a0e3307ae8bfeb1ba9e3b824ef",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_profile_dom.mjs",
+      "sha256": "ceabe0c52c66301b3d36efc6cd383b4989602e62ce5aac30638877b0a49acd38",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_reading_status_client.mjs",
+      "sha256": "602a2d3f7df09e4c14b90fd34becf8ab1546cc4a5c2c6ca94d141363dfc3f811",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_reading_status_dom.mjs",
+      "sha256": "84c65ac995f25dbee57e9c69579b122d1e83546195066e5e66e78015ca12ad97",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_settings_client.mjs",
+      "sha256": "3eae4bc17e3100e2c3ef64ca1bdd4d55c4050b8ea7224a63069722f03b0f381a",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_NATIVE_SETTINGS_SCHEMA"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_settings_ui.mjs",
+      "sha256": "a21d255e55c3ff1a93343bd625f747cb5c5b7689fd04fc5e8357db54a3bf29c3",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_title_composition.mjs",
+      "sha256": "77c96ddf59d8967c50d8ed2938e561a889970fc885371d5b01833ab15c595b41",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "PUBLIC_MANGADEX_CATALOGUE"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_actor_follow_readiness.mjs",
+      "sha256": "15153d4bef544155ace3b8edf505c13c75ed962401b589fd08de227db8d8e760",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_auth_fixture_guard_recovery.py",
+      "sha256": "6aba040535e2e1fae354aa8ddb7095ddfe51c3d564f2a3000c7d1fda2eaa227c",
+      "kind": "python-unittest-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_account_recovery.mjs",
+      "sha256": "858a8a54f3fe64d8bd1ae86b796c7dc8e7dee24ed7a176b851fcf7391ebd5467",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_action_events.mjs",
+      "sha256": "1423963fc1dc66f7a9172d286cf6b9b2a5903bb7a29f8abd779d8d2ea70831c5",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_actor_follow_controls.mjs",
+      "sha256": "a56ff50ad2a493fa1e9a800788fafd4097252d9374711a5dabde0dbc3105927b",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_PLAYWRIGHT_CORE_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_actor_follow_hold.mjs",
+      "sha256": "368b90f501ebda925d4d584b7cdc83b5383156a673ad8f4c0313688ec2fa4e25",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs",
+      "sha256": "9cdda412d339adc381c0c08d5d7a3e79e75a00f98c65cea2e44ed1ac66ddeda9",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_compact_fixture_diagnostics.mjs",
+      "sha256": "fbba61c44728093d75d6911773b26c4e3cd5694e6bb37591348bad64b24a0f6c",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_compact_observer_diagnostics.mjs",
+      "sha256": "4d7e1ba954a79f8ed506c74f3bbe03c2e74b624a338a81c07194482a933b5c87",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_deny_proxy.mjs",
+      "sha256": "03f9249f9b7068d372f6517238a77a90d0ed29e8c5caf7b3105b0c1639abd8b9",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_diagnostic_helpers.mjs",
+      "sha256": "a6edc73a819e7cd9268ffa3a93b61f90ba60d30c45fe2c9473cde9eb4e785bb1",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_editorial_diagnostics.mjs",
+      "sha256": "7c6ba14ccaf906ca60a9c5e188d57a7943796a89711e45e9f2e30d45e7c7a2b1",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_fixture_early_response_recovery.py",
+      "sha256": "9735d4cd43df0ccf33a71a764c6dd34ecff2293e52e89b5cb2d8e8c2a5d88069",
+      "kind": "python-unittest-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_fixture_pg_root_recovery.py",
+      "sha256": "37ef788a7de85777a23cc6e931016ea3cc2368648de78735848a6d40b6658c22",
+      "kind": "python-unittest-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_identity_setup_security.mjs",
+      "sha256": "327f2e430922d5b4716ecdf80645b7105b1967e5424b3dba32e72bf12638450d",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_IDENTITY_SETUP_SOURCE"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_library_diagnostics.mjs",
+      "sha256": "8f9259c535f0012d8201dc9ab78964b3a5185923c545684fbe8f9c935b422d44",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_library_follow_diagnostics.mjs",
+      "sha256": "264321df786164d2bf5c79b1e2a210c7224a388145b6de568f28076d528f8940",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_library_relocation.mjs",
+      "sha256": "0e267aa811b4ecb5b3a9d890c7bc01bddb1384f3dff54ce8af08c9e747db8bdf",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_local_signing_integration.mjs",
+      "sha256": "5f006368eaa7bef4a2bd4743ed53ceb2dd67870a8ec13757b9f624d2e7c0febc",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_local_signing_key.mjs",
+      "sha256": "b993f408b772086bba04a53c554757446d1e6ce4a25e37fef629313b30a274fb",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_management_dom_settlement.mjs",
+      "sha256": "0548f1481fecfee327e2b4dbc84241c20522e22cd5d10f1f892b38e011a508d6",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_ordinary_library_source_seams.mjs",
+      "sha256": "2dcec6f561caff34a707e445e3fb64f4e5522c02450eec958dd1dc7099673316",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_PLAYWRIGHT_CORE_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_ordinary_selector_contracts.mjs",
+      "sha256": "b169f7005bd2b2bca9be0e1aac5fc2458f17f42ab53a50543e6fda784ec76d07",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_reader_account_diagnostics.mjs",
+      "sha256": "2cabb4f32b5a4de9a799d0ec9948e6951b1bfcd28a77134da3ddb7b876a6bce2",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_reader_entity_capacity.mjs",
+      "sha256": "f5f8f3f1292da8a8f3dac6c4719d1f0362b155a0a7b0e436aa478f11fb15ca20",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_reader_home_diagnostics.mjs",
+      "sha256": "f838befeadb27c5b6542bc84837d2092f89f0918b99f3af1a3347919c3739579",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_select_controls.mjs",
+      "sha256": "57d693912b6a680c912eca5aee9ecc5305fecbaa4936d760ee79664d0ef3aa07",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_SELECT_SOURCE_NODE_MODULES"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_conversation_observer.mjs",
+      "sha256": "d0b3752f57c1b269c155a36cc561f1f498e606cffc51766699aa72b4d23fba74",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_downstream_diagnostics.mjs",
+      "sha256": "66dcaaf70df713eafa722117ca3e52d37931fe40df6019ee2b099d0bad601e99",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_event_envelope.mjs",
+      "sha256": "ba2d46b0bfbde2ad22399dd2158523bc98dda555900b4b8d852d268aeee2abf0",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_native_select_controls.mjs",
+      "sha256": "0a5c27eb798621553511014930e66ead52b52cc5cc6e0698793443ebf1fd4d5f",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_publication_clone.mjs",
+      "sha256": "2c8d51e6b83dd892fd20e74f89634cee56faf18a276ac4645d9ba8b5cdb88ea7",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_publication_outcomes.mjs",
+      "sha256": "d82e1a7998b800932501e6e05833472e46c8ebc56698c4a751b38c534f8a55d4",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_select_controls.mjs",
+      "sha256": "68f15e95176e184c6afba9461a112ed8edccca61de0399c4138b9dc36099c133",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs",
+      "sha256": "a68d4467e86513e8528c0bb103efcaedca2053049be98da2abd52e3c4ba9a0f7",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_SETTINGS_SOURCE_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_title_select_controls.mjs",
+      "sha256": "4a23313332bc1b0f2b22d21c24a83ebe0f72a2bd1532955d9616a4466657ee3c",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_ui10_recovery_diagnostics.mjs",
+      "sha256": "a6af78f9dc772025473657fe96db92b40c52e246a1ba414cf3a03126354c4b08",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_upload_diagnostics.mjs",
+      "sha256": "1628d348c9efbd1eba3d9c1bbd372e20303d95116ee6dbe35f2a6edb91ada03b",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_upload_numbered_mode.mjs",
+      "sha256": "af8d6c186a984854779218c945f7165eac5ba70b3fd01b5db0ce7f3818066070",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_composed_production_aliases.mjs",
+      "sha256": "c756eecac79f30c2f58b6a72097584e13e9e9164b6453210f65fcfc9468e4c74",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_composed_semantic_projection.mjs",
+      "sha256": "f40dc1d039c3f1b2ac3284eca45dd7f584e7d6c79a905816c9a346c849a67ade",
+      "kind": "semantic-artifact-consumer",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "deferred until fresh strict artifacts; explicit generation argument required"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_continue_reading_last_completed.mjs",
+      "sha256": "0b547f78aeaac38e091f3b3f7ffd60daaf034f342700e0c8b83bf1a2aa0aa8fe",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+      "sha256": "8f377f873e747a05e4175b2be0856ed6541782ccff0b083ecdef6ee18b68d101",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_device_list_rename_dom.mjs",
+      "sha256": "2af7cc317ec9ad6e208eb9b21a4203c05b8e1c163acb7f070d150fb0941cad0e",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_device_list_rename_idb.mjs",
+      "sha256": "68475247d724f9cb53713c762c2e02e952e3f9023ee631bbfebe5776d7859ccd",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_enrollment_policy.mjs",
+      "sha256": "eec8686711434c8d70534debfe601759edd72058091fd107cde26e1bff500e47",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_followed_lists_pagination.mjs",
+      "sha256": "09c01ce568b3cfb5ea65becda093fccce563ee16b41e6de057390e8eb904c3fc",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_frontend_bootstrap.mjs",
+      "sha256": "ed456ae89a8ab90f5739bded5afd51d044fdb3602988c92d966fe63d2591439b",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_frontend_semantic_contracts.mjs",
+      "sha256": "a2204755385ae4151d04c419b2cbb0b92f52110d4d752c98a16589a4ed324a24",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_hosted_browser.py",
+      "sha256": "f90749db354035557400c0af9f57d8c0a2e3a977b1bfc09d7cccc692d0efeb86",
+      "kind": "python-unittest-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs",
+      "sha256": "79fa03c44906bcf74e444bcf83e3254093839ffa55521c8d0e30601a84ad5a02",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_instance_rating_summary.mjs",
+      "sha256": "d3f503ad4af4797958e53bbdb94ad8dfc12c3e89e592ab27fca582f144af81ad",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_journey_diagnostics.py",
+      "sha256": "897506786584b684931dba67b022672818bc17200a46e7736e7b930d591367ef",
+      "kind": "python-unittest-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_library_identity_route_ownership.mjs",
+      "sha256": "d16db224323ea6f9b848e6fa2d94dc699d41f9ee26b06432566cd6b8d334456b",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_library_management_lifetime.mjs",
+      "sha256": "a3875d81401479213293720e8f70f50c0d559174a95e43242e11e20172c814bd",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_lucide_declaration_alias.mjs",
+      "sha256": "00f0671a16d83749b8b91c2bcb5a9b635bf87c7237a417c23993a2b85fbffcea",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_feed_diagnostics.py",
+      "sha256": "786c71228692f93efad49cb330e19ebcde15b658e24cdeac5e425f729134fe2a",
+      "kind": "python-unittest-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_settings_utility_sources.mjs",
+      "sha256": "d9e9d419e03a1e7a5fc3c6e493d6e51a73fde0f5a21c16a36ede596ef65fddaa",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_personal_rating_client.mjs",
+      "sha256": "dff14714bfa8b01f40ac532f85410d2296fd59065591dc3d38013f7957eb1ba3",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_personal_rating_ui.mjs",
+      "sha256": "38ed8392ae6f747e0d4b3b74384397ba587ef11b4d7b6a81075668f332a35627",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_popularity_analytics_callers.mjs",
+      "sha256": "e8209b73ddd8e19763ad1e5f783481b45bd5e5d6ba83a2931f78ed8012bd3ed5",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_popularity_dom.mjs",
+      "sha256": "1eec848d2b4f66464de05c26e6cfe9984a428993a705d28fbc39d0a92c72ec46",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_action_dialog_lifetime.mjs",
+      "sha256": "370b37234cf22c561beade9a14312320422c23199ade6bcff5019ff9a6cab671",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_api_call_inventory.mjs",
+      "sha256": "f572ad7a5bc5dada02948fcfd5cb0c42851708d6e990e7b8e290fe64fa861bb7",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_chapter_removal_dom.mjs",
+      "sha256": "ab5ecdedca31d87991cf51cb88abe63e47beba55f5939ac156fe16555e1fd040",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_cover_commands.mjs",
+      "sha256": "757364f5d6e1e88e2c4b3d8dc29f5625e7900bccd09fc10a6ffba8cb4559c4da",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_device_publication_fence.mjs",
+      "sha256": "61f5a69c70771ccac452115fc8eef29ed41e550ba70ee5f8ac3eb7b014079f9a",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_editorial_commands.mjs",
+      "sha256": "4f194c72a21283f5712aefa408f89ea78c40fc92a0e157770ffc26dff20e6a28",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_import_mappings.mjs",
+      "sha256": "a9a6456225ed514467414d1fc1b4ad6354e993594dd7e9e595af007df51eb1f1",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_library_catalogue.mjs",
+      "sha256": "14cb3ed3f9b74cd8e46dda25cf7726680da423ad68c3c98652a53ccaf7148cbc",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_list_clients.mjs",
+      "sha256": "dcdd6fdd45d53b446659377f38e0415d4e119eb7449d546955c2a9cb1ce4216b",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_list_ui.mjs",
+      "sha256": "621998120be96e6e4a2bd1a3c733f69f52307af3b46462357ba3076c691637b3",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_popularity.mjs",
+      "sha256": "52298ea4865ea9c8a63a3c577a2fe9d9aec48ca885d69eb79f4c10b6608301dc",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_popularity_probe.mjs",
+      "sha256": "7db339a3a8254a14b75e71ecb280a25a68035a41b2be4e92a42e1572a2a5958f",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_rating_build_seam.mjs",
+      "sha256": "40a679849ebdb969ac4e87d0bccc4749fa53a9595a379cb032f6271010f7de9c",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [
+        "PUBLIC_MANGADEX_CATALOGUE"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_relation_commands.mjs",
+      "sha256": "5daa6e3a217a68cffec57b04004bdc01b6d209fe30b49d611a15fd3e18adfdf4",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_relation_pages.mjs",
+      "sha256": "8b525bb759cc8f84d6b948075f7a10b8153cd4c22a091a933f290033b9ddb303",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_relation_probe.mjs",
+      "sha256": "c88ac28744c6d91384260a470fcb0fd68ceef3bec4a8b06716c7ea10cedc3d22",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_social_source_mapping.mjs",
+      "sha256": "862bdf07d3ebf169b94e481301cafdb6b3774f2390a20e1071962e562fd42f83",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_title_commands.mjs",
+      "sha256": "07998112594d6b8b257f167c764d094388f629987b522a6d88baecea15509f6d",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_title_edit_route_dom.mjs",
+      "sha256": "56bdd83e466c290ecb74005d91df7f3010c918df56938754986f2ea3daf63ec4",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_adapter_recovery.mjs",
+      "sha256": "5cb5207b74413d092957ff1471f37e2cc285b8ef695b492a196ccce697108a5f",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_build_recovery.mjs",
+      "sha256": "f2605441c3a5ba851aa2cba4a02befa3fdd78787fcf1c56e2a40d72171439ee5",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "PUBLIC_MANGADEX_CATALOGUE"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_hosted_profile.py",
+      "sha256": "e80ea2ad19ee9277be3b5f35efff8eee37f3f2d83e68dafea5550975bc7117df",
+      "kind": "python-unittest-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_media_recovery.mjs",
+      "sha256": "b80f1c6394b6ce4aef04de28fbbd5fc17a67a81bbd0182ae30629ac6d23dbccc",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_observer_boundaries.mjs",
+      "sha256": "7dfbcf78ecb99c15464d17ce254fd0b0206519fc2de2c55bf67cdb13db739858",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_overlay_recovery.mjs",
+      "sha256": "7258d1ec105b04c67cf456d895cb1da220187dc6fe7b6fc543e62daacbc0a929",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "PUBLIC_MANGADEX_CATALOGUE"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_provenance_recovery.mjs",
+      "sha256": "8a4905df4bb6aba5ee35dc85ed398f2155c9b04a18749eb06611b9330efcf98b",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_recovery_controls.mjs",
+      "sha256": "d38117926a071bf0e79aebd85439609527fd6bd97fe26f5aff5d855d167ed059",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_recovery_journey.mjs",
+      "sha256": "d08419e00bf99ffb0d70bc61cab15f97c7eed90d1b205e3ef3610a9c4b44aa45",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_replacement_preview_recovery.mjs",
+      "sha256": "7f29de29ebfd1df7ed10851045b72a5033b53ca21e0f11a8c24d716eab9843e6",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_replacement_wire_recovery.mjs",
+      "sha256": "7a1787a62cdd7b99a10b193c72c2cf2c395531bb6fe3235c2cf8020385271cba",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_request_recovery.mjs",
+      "sha256": "404d716f6b6527da9ab15636c75e8ed4de09a3cce5e894601c0f204a2b911558",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reader_accessible_controls.mjs",
+      "sha256": "8b7d05ab9e02672937e3b07431e2ceda51792498e64a99d63663a9810081ca84",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reader_modified_shortcuts.mjs",
+      "sha256": "ba49e115d984e6b8d98e6006954c8fefe50b8df4ad655902ca38f0fd4f41100b",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reader_navigation_edges.mjs",
+      "sha256": "43ab84d858d6467b4594cb884396fa3f0dbdf205b3bbc767b959a64ebf7424cf",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_recovery_successor_contract.mjs",
+      "sha256": "57dac38a58a1792a123f4f5fda7ff2f471d058860525729b5652c2c649d5fcb3",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_runner_diagnostics.py",
+      "sha256": "d22d226f5afad25440a2fe0859fa07e3b0684bb7dac34511167322bca10572b5",
+      "kind": "python-unittest-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_runner_lifecycle.mjs",
+      "sha256": "a78310be5a18909cb2202983ecb05cf31059428d0217d90528cd9888305f971f",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_semantic_validation_fail_closed.mjs",
+      "sha256": "71bc8d9f844a83a05fc54ab9c41ca29f0c43b3340d54abe414a97b327e92c3d4",
+      "kind": "semantic-artifact-consumer",
+      "previous56Manifest": false,
+      "requiredEnvironment": [],
+      "classification": "deferred until fresh strict artifacts; explicit generation argument required"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_upload_begin_autosave_recovery.mjs",
+      "sha256": "51913a1025a6f961fb909791a236bb95d351602dfd3a59af58363b8a8d95edbf",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "UPLOAD_AUTOSAVE_USE_RECOVERED_BASE"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_upload_file_admission.mjs",
+      "sha256": "7bcdb6da53288c47c6722c04565f79f4ad7adab38f8727d2867b19337e0cad15",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_upload_reactive_candidates.mjs",
+      "sha256": "173f888a230da0acab5385ba70624a5166d791d62cb210958dce2dd581cc5b53",
+      "kind": "node-finite",
+      "previous56Manifest": false,
+      "requiredEnvironment": [
+        "WEEBDEX_BROWSER_DOM_NODE_MODULES",
+        "WEEBDEX_FRONTEND_ROOT"
+      ],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_user_directory.mjs",
+      "sha256": "cd01584ecf3c19ec34f4a65fc626bee19ef35efd884e0569b5c28fbba72eab31",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_user_directory_ui.mjs",
+      "sha256": "791f5109f02efc2c847b829e36040a8f26808488808b056b1f6dba5b4b054b1f",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_user_upload_sort_navigation.mjs",
+      "sha256": "361ba4a13745964f6ace097da7644c17475e51f30cf501d8ebbb0d8fc637f901",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_uuid_library_orchestration.mjs",
+      "sha256": "0c248dd3709a09d453cf0cf2ee3779aa8768c39d51d19954ed464d26b1978918",
+      "kind": "node-finite",
+      "previous56Manifest": true,
+      "requiredEnvironment": [],
+      "classification": "execute existing-dependency finite group; browser-named files remain source/controller/DOM stand-ins"
+    }
+  ],
+  "nodeCount": 125,
+  "pythonCount": 8,
+  "priorNodeCount": 56,
+  "additionalNodeCount": 69,
+  "finiteNodeCount": 123,
+  "deferredArtifactValidators": 2,
+  "excludedLiveBrowserTestFiles": [],
+  "helperModules": [
+    "account-profile-fixture.mjs",
+    "account-reading-status-fixture.mjs",
+    "device-list-rename-fixture.mjs",
+    "library-management-fixture.mjs",
+    "popularity-fixture.mjs",
+    "title-edit-route-fixture.mjs"
+  ],
+  "ownedServiceProbes": [
+    "probe_public_popularity.mjs",
+    "probe_public_relation_pages.mjs"
+  ],
+  "probeBoundary": "Not standalone unit tests; these have separate actual-owned-API receipts and are not relabelled as fresh backend runs."
+}

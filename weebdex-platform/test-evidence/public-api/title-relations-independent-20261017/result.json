@@ -1,0 +1,49 @@
+{
+  "schema": "independent-private-relations-qualification-v1",
+  "sourceCommit": "aa6b4a702e3552f37360fd89af958b17efe37876",
+  "sourceFiles": 1254,
+  "sourcePinSha256": "ad985a86e274d17911b7a9b06237a5bace6f2692c8411d9df67ea06e020e9d9e",
+  "sourceChanged": [],
+  "executableSha256": "b5123ffb198ac37357c2fa62dfd25812d1e18c10d1e83af42b970322b11bca55",
+  "executableUnchanged": true,
+  "tests": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "filtered_out": 1,
+    "seconds": 53.34
+  },
+  "all133ActualSuccessfulPrivatePageReads": {
+    "count": 133,
+    "maxBytes": 1034457,
+    "maxElapsedMs": 464
+  },
+  "rawLogSha256": "5516b2ebe5f857117267067c4956c511aa92a5f79973b74bdf518f9c9954028e",
+  "cleanupSha256": "91741621980322948fee7ac3bc533addb1f54253983fc06ecd5f976610b1ea88",
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 0,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": []
+  },
+  "minimumFreeBytes": 6101434368,
+  "diskGuardSignalled": false,
+  "pass": true,
+  "browserExecuted": false,
+  "integratedSourceQualification": false,
+  "review": {
+    "typedAccountIntentEveryPage": true,
+    "ownerVersionAndOrderedVisibilitySnapshot": true,
+    "completeByteBoundedPrefixWithTruthfulOffset": true,
+    "crossPageEdgeAndTargetContinuity": true,
+    "capturedResourceProofDeepCopied": true,
+    "unknownMutationFencePreservedAcrossPages": true,
+    "sharedSingleEdgeMutationReceiptPreserves0082NativeShape": true,
+    "outerPrivateHeaderClassificationExactTypedReadOnly": true
+  },
+  "scope": "One genuine PostgreSQL/NIP-98/original-listener ignored Rust lifecycle case, including4096 relations,64large legal metadata rows/full page crawl, capacity remove/refill, same-count visibility drift, actor rebind, rollback/native parity and original source immutability. The133 page requests are observations inside that one test, not133 separate feature tests. Isolatedaa6 source only; later integrated source still requires association/qualification."
+}

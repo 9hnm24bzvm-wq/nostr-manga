@@ -1,0 +1,53 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-c",
+    "import subprocess,sys,time; subprocess.Popen([sys.executable,\"-c\",'import signal,time; signal.signal(signal.SIGTERM,signal.SIG_IGN); time.sleep(20)']); time.sleep(20)"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/.build/frontend-current-restore",
+  "deadline_seconds": 20,
+  "elapsed_seconds": 0.826,
+  "exit_code": -15,
+  "stop_reason": "guard-internal-failure",
+  "minimum_free_bytes": 29600198656,
+  "minimum_available_memory_bytes": 9188401152,
+  "maximum_owned_rss_bytes": 15859712,
+  "peak_new_dependency_allocated_bytes": 0,
+  "floor_bytes": 4294967296,
+  "cleanup_reserve_bytes": 134217728,
+  "dependency_growth_cap_bytes": 4294967296,
+  "owned_process_births": [
+    {
+      "pid": 7,
+      "start_time": 3616636
+    },
+    {
+      "pid": 8,
+      "start_time": 3616640
+    }
+  ],
+  "cleanup_signals": [
+    {
+      "pid": 7,
+      "birth": 3616636,
+      "signal": "SIGTERM"
+    },
+    {
+      "pid": 8,
+      "birth": 3616640,
+      "signal": "SIGTERM"
+    },
+    {
+      "pid": 8,
+      "birth": 3616640,
+      "signal": "SIGKILL"
+    }
+  ],
+  "surviving_owned_processes": [],
+  "cleanup_verified": true,
+  "census_errors": 0,
+  "guard_internal_failure": true,
+  "cleanup_reserve_seconds": 12,
+  "leader_registered_before_exec": true,
+  "identity": "exact birth recheck plus pidfd-owned session and sampled descendants"
+}

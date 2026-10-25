@@ -1,0 +1,43 @@
+{
+  "schema": "independent-source-review-v1",
+  "decision": "Source-clear for one exact combined finite invocation",
+  "sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-multipart.ts",
+      "sha256": "460b130db0e71ff98b85662129060e4a85c8ee9e502f161b9cd33873ffd6c7c0",
+      "bytes": 5322
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-preview.ts",
+      "sha256": "4c03295c0e666b7b3520d73dd8ddfa5d79d4eb45aef627040a196e22cffb33d8",
+      "bytes": 8537
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts",
+      "sha256": "19c8d31f14f1b6e62d62c0d6fec36f55248a6cead73df3058eea591282e5d87e",
+      "bytes": 14646
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/tests/ci/test_public_upload_media_recovery.mjs",
+      "sha256": "b80f1c6394b6ce4aef04de28fbbd5fc17a67a81bbd0182ae30629ac6d23dbccc",
+      "bytes": 25818
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/tests/ci/test_public_upload_replacement_wire_recovery.mjs",
+      "sha256": "7a1787a62cdd7b99a10b193c72c2cf2c395531bb6fe3235c2cf8020385271cba",
+      "bytes": 4723
+    }
+  ],
+  "command": "node --experimental-vm-modules --test tests/ci/test_public_upload_media_recovery.mjs tests/ci/test_public_upload_replacement_wire_recovery.mjs",
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform",
+  "findings": [
+    "Replacement version is validated before file reading, then serialized as one canonical plain first field followed by one file. Original attach wire format is preserved.",
+    "fileBytes references the exact copied file slice of the outgoing body; bounded name/MIME/magic/size/boundary checks are retained.",
+    "Wire seam loads only the actual serializer and transport, replacing signer, codec primitives and fetch with explicit finite VM fakes. It requires the experimental VM flag.",
+    "Media tests import only the two dependency-free actual helpers and built-ins; new cases check signed version bytes and invalid versions plus same-file new-hash lease release/late Blob disposal."
+  ],
+  "limits": [
+    "No real signature verification, network, browser, image decoder, database or publication qualification.",
+    "Adapter uncertainty corrections remain under separate review; this command does not import upload-client.ts."
+  ]
+}

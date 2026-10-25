@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "files": {
+    "README.md": {
+      "bytes": 1415,
+      "sha256": "23977c83919140fa01bd5e13bc7ff26305e2373fd669516c94d87290f653ec23"
+    },
+    "raw-log-manifest.json": {
+      "bytes": 247,
+      "sha256": "c0199d565bcf3ef17528e322409f97ca7c6c56fed56dadcc41f7654b688aebd4"
+    },
+    "result.json": {
+      "bytes": 1174,
+      "sha256": "91e0fbf43024ab2c15b2652c82f53fd83983c5685f3755cc8636f2f4452e5d88"
+    },
+    "selected-owned.json": {
+      "bytes": 551,
+      "sha256": "36e9f625ad0bd31d41ca492e669a8612a8265324ad29dd5f0a2cf850e0cb0e92"
+    },
+    "selected.log.gz": {
+      "bytes": 2945,
+      "sha256": "8b5308319617f493beae5d8aa3c99a3df24d652485d6ef2c44dd548e74387119"
+    },
+    "source-pins-after.json": {
+      "bytes": 4038,
+      "sha256": "92e64e01fa04fdca465fd94c27fe8c915b5f5b44e3f4aff2f7a4dc3644896f62"
+    },
+    "source-pins-before.json": {
+      "bytes": 4038,
+      "sha256": "92e64e01fa04fdca465fd94c27fe8c915b5f5b44e3f4aff2f7a4dc3644896f62"
+    }
+  },
+  "excludesSelf": true
+}

@@ -1,0 +1,14 @@
+{
+  "continuity-route-red.log.gz": {
+    "expandedBytes": 1558,
+    "expandedSha256": "4ecd5393fa25e9500512512d95137cf304ef16268a08db35d6ef59d0b7f8b059"
+  },
+  "identity-red.log.gz": {
+    "expandedBytes": 3407,
+    "expandedSha256": "0be21bced6999c1a284f391ed29f21a2ac030c13a58c4471523fa6b2488d68f3"
+  },
+  "candidate.log.gz": {
+    "expandedBytes": 6910,
+    "expandedSha256": "adf50e1e907c4e6314633ef48e860225abce53de91cf166c93959a684bf25c47"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "native_and_public_gates": [
+    {
+      "gate": "0",
+      "transformed_sources": 119,
+      "all_retained_markup_verified": true,
+      "manifest_sha256": "516daf70dee4931e59ca2a816e393722cf6f3b263f5daf922da3f87f764127d9"
+    },
+    {
+      "gate": "1",
+      "transformed_sources": 148,
+      "all_retained_markup_verified": true,
+      "manifest_sha256": "debb2d21e5e5e2c8cb430de7468d37a6e23c8466f019bec4e6fe7100a95bd9f3"
+    }
+  ],
+  "limits": [
+    "Pure source composition and retained markup only; no build/browser/network/runtime."
+  ]
+}

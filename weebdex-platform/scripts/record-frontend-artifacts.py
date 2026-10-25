@@ -60,6 +60,7 @@ manifest = {"ui_directory": "artifacts/frontend", "file_count": len(files), "tot
             "approved_feed_pagination_exceptions": len(integration.get("approved_feed_pagination_exceptions", [])),
             "approved_widget_error_exceptions": len(integration.get("approved_widget_error_exceptions", [])),
             "approved_reader_selector_exceptions": len(integration.get("approved_reader_selector_exceptions", [])),
+            "approved_reader_control_exceptions": len(integration.get("approved_reader_control_exceptions", [])),
             "approved_recommendation_exceptions": len(integration.get("approved_recommendation_exceptions", [])),
             "approved_search_pagination_exceptions": len(integration.get("approved_search_pagination_exceptions", [])),
             "approved_cover_read_exceptions": len(integration.get("approved_cover_read_exceptions", [])),

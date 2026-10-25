@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "baseline_commit": "cf76c09c1156da1db2a9b860eeb1eb99da3d85be",
+  "baseline_run": 38493778645,
+  "observed_failures": {
+    "ui11-device-progress": {
+      "outer_step_indices": [
+        2,
+        4
+      ],
+      "scope": "Timer and lock page3 cases failed; page1 cases passed. Inner failing assertion is unavailable in the existing sanitized projection."
+    },
+    "ui12-compact-feed": {
+      "outer_step_indices": [
+        0
+      ],
+      "scope": "The sole compact journey step failed. Inner failing assertion is unavailable in the existing sanitized projection."
+    }
+  },
+  "source_findings": [
+    "The base fixture creates exactly three original and three optimized pages for SeedChapt1.",
+    "The composed progress source already admits device reentry using selection epoch and computes completion for raw page index2 of3.",
+    "No specific application defect is established from the existing sanitized failed-step indices. No application behavior or fixture has been changed."
+  ],
+  "change_scope": "Fixed diagnostic checkpoint IDs around existing controls/assertions. The recorder integration is a separate coordinated change.",
+  "diagnostic_check_counts": {
+    "ui11-device-progress": 37,
+    "ui12-compact-feed": 16
+  },
+  "assertion_preservation": {
+    "original_insist_calls": 14,
+    "ordered_normalized_calls_identical": true,
+    "all_existing_outer_steps_retained": true,
+    "timeouts_unchanged": true
+  },
+  "checks": [
+    {
+      "command": "node tests/ci/test_browser_library_diagnostics.mjs",
+      "status": "passed",
+      "cases": 56,
+      "boundary": "Actual outer journey checkpoint wiring and exception cleanup; checkpoint actions and browser APIs are explicit stand-ins."
+    },
+    {
+      "command": "node --experimental-vm-modules tests/ci/test_frontend_semantic_contracts.mjs",
+      "status": "passed",
+      "cases": 132,
+      "boundary": "Actual composed source and helper seams with explicit browser/UI stand-ins."
+    },
+    {
+      "command": "node --experimental-vm-modules tests/ci/test_frontend_bootstrap.mjs",
+      "status": "passed",
+      "entrypoints": 5,
+      "boundary": "Actual module graph with external package/browser stand-ins."
+    },
+    {
+      "command": "python scripts/verify-frontend-parity.py",
+      "status": "passed",
+      "original_files": 676
+    },
+    {
+      "command": "node --check scripts/browser-ui11-16-journeys.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed"
+    }
+  ],
+  "source_sha256": {
+    "scripts/browser-ui11-16-journeys.mjs": "fbc3b1543c6542ec71ecdb8dc438b746330e9a6bf857ba961f2cbfcef5e23a61",
+    "tests/ci/test_browser_library_diagnostics.mjs": "5b4da19ecfba476712c1fad054b16d2856dc22091fff6dde645c3337d2552cda"
+  },
+  "real_browser_rerun": "Required after independent review and shared recorder integration.",
+  "browser_started": false,
+  "services_started": false,
+  "databases_started": false,
+  "network_requests_made": false,
+  "public_writes_made": false,
+  "not_claimed": [
+    "Application repair",
+    "Real browser acceptance",
+    "Rendered pixel parity",
+    "Production readiness"
+  ]
+}

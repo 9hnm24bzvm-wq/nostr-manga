@@ -1,0 +1,32 @@
+(node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✖ confirmed same-hash card without a thumbnail starts a fresh keyed preview lease after explicit reconciliation (3.150138ms)
+✔ confirmed same-hash card with its valid preview preserves the keyed card and owned URL (1.039583ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 146.372456
+
+✖ failing tests:
+
+test at ../../replacement-preview-recovery-repro/confirmed-preview-lease.test.mjs:58:1
+✖ confirmed same-hash card without a thumbnail starts a fresh keyed preview lease after explicit reconciliation (3.150138ms)
+  AssertionError [ERR_ASSERTION]: A confirmed no-thumbnail card needs a fresh lease instead of retaining its failed same-key lease
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/replacement-preview-recovery-repro/confirmed-preview-lease.test.mjs:60:72)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

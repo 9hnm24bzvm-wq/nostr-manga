@@ -1,0 +1,30 @@
+{
+  "schema": "fixture-operational-completion-independent-pure-result-v1",
+  "verdict": "passed_28_ast_only_fake_io_and_publication_cases",
+  "reviewed_at_utc": "2026-10-17T05:37:17.700457+00:00",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/fixture-operational-completion-independent-source-review-20261017.json",
+      "sha256": "c228e74f331d451521bdf548f6ff443223d88f33a2c45543fe5d738db8ca7851"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/fixture-operational-completion-pure-first-20261017.log",
+      "sha256": "0be2fa5f4cffdda8e4a822bc06b7fd4bb2db0de9b824619615ab5a542e566006"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/runtime/browser_fixture.py",
+      "sha256": "b51600aa499ef8d5330482e05b444aa5ca868aaa6c3ad6c7cfd155d6b1052551"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_browser_fixture_early_response_recovery.py",
+      "sha256": "9735d4cd43df0ccf33a71a764c6dd34ecff2293e52e89b5cb2d8e8c2a5d88069"
+    }
+  ],
+  "association": "Exact pre-execution source/test pins unchanged. Direct first-run log retains 28 tests OK; no logging-only rerun.",
+  "limits": [
+    "Original 25-case precursor remains separately retained.",
+    "No actual request, timer thread, fixture, database or browser execution occurred in this finite suite.",
+    "Original browser01 failure cause remains unproven.",
+    "Actual startup completion is separately gated by current run, saved receipt hash and actual response before browser submission."
+  ]
+}

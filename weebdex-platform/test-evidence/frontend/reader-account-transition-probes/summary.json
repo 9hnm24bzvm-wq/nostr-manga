@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "baseline_commit": "01a593b7d167add9a4c8e7936d4e86abd10fcf21",
+  "baseline_tree": "0103a59fdbbab71750ddbda27b3ac9b58843ccbb",
+  "verified_hosted_run": 38554048951,
+  "reader_classification": "Proven focused-control shortcut conflict in harness; full reader product outcome remains unverified.",
+  "account_classification": "Genuine429 title-unfollow failure remains unresolved; finite checkpoints only; no account product repair.",
+  "new_checkpoint_counts": {
+    "ui10-reader-transition": 28,
+    "ui14-account-failures": 13
+  },
+  "original_step_call_expressions_unchanged": {
+    "ui10": 25,
+    "ui11_to_16": 26
+  },
+  "assertion_wait_preservation": {
+    "browser-ui10-journeys.mjs": {
+      "insist": {
+        "original_calls": 79,
+        "candidate_calls": 80,
+        "original_ordered_normalized_identical": true
+      },
+      "until": {
+        "original_calls": 16,
+        "candidate_calls": 16,
+        "original_ordered_normalized_identical": true
+      },
+      "stable": {
+        "original_calls": 0,
+        "candidate_calls": 0,
+        "original_ordered_normalized_identical": true
+      }
+    },
+    "browser-ui11-16-journeys.mjs": {
+      "insist": {
+        "original_calls": 106,
+        "candidate_calls": 106,
+        "original_ordered_normalized_identical": true
+      },
+      "until": {
+        "original_calls": 43,
+        "candidate_calls": 43,
+        "original_ordered_normalized_identical": true
+      },
+      "stable": {
+        "original_calls": 10,
+        "candidate_calls": 10,
+        "original_ordered_normalized_identical": true
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "focused_reader_account_seams",
+      "passed": true,
+      "tests": 55
+    },
+    {
+      "name": "seven_relevant_node_suites",
+      "passed": true,
+      "top_level_tests": 85,
+      "exact_lock_dependency_suite_included": true
+    },
+    {
+      "name": "ci_python_projection_and_gate_seams",
+      "passed": true,
+      "tests": 42
+    },
+    {
+      "name": "existing_composed_frontend_semantic_seams",
+      "passed": true,
+      "cases": 132
+    },
+    {
+      "name": "canonical_attachment_source_parity",
+      "passed": true,
+      "files": 676
+    },
+    {
+      "name": "node_syntax_and_git_diff_check",
+      "passed": true
+    }
+  ],
+  "local_browser_attempt": {
+    "page_opened": false,
+    "terminal": "local_socket_denied",
+    "retried": false,
+    "browser_acceptance_established": false
+  },
+  "canonical_frontend_changed": false,
+  "shared_select_helper_changed": false,
+  "compact_feed_changed": false,
+  "product_behavior_changed": false,
+  "original_assertions_or_timeouts_weakened": false,
+  "hosted_workflow_started": false,
+  "external_publication": false,
+  "real_browser_acceptance": "Requires fresh hosted run after independent review.",
+  "source_sha256": {
+    "scripts/browser-ui10-journeys.mjs": "4681f2dcc515cde29bc60b6e90fe1b914bc4b90716b9af87d4149f66feed804f",
+    "scripts/browser-ui11-16-journeys.mjs": "730d2abd73f9090d2e21c094e639bdca276aeed6fd3b7e7a1200350488e26342",
+    "scripts/browser-reader-controls.mjs": "a8db07fe7836df2febc56a141f35256dc294bc1aaa1a39f15b9b4257e6c73505",
+    "scripts/browser-account-capacity.mjs": "94d6e4a98b7022dce8abf1731c06ed15986493fb06dfefbd38701731fc3b722b",
+    "scripts/ci/journey-diagnostics.py": "28da2ee7e98ece3213987174ecc56333292626cf8ab3a7a04eb080abd3893a06",
+    "tests/ci/test_browser_reader_account_diagnostics.mjs": "c97842eecaba550d62c09c993d8938bedce540931685e067ce9126248b692407",
+    "tests/ci/test_browser_library_diagnostics.mjs": "ae5c7c2c1a980b462caf9f961b5eab4b8e9b8f7775bee71e80ac957278898c39",
+    "tests/ci/test_browser_ui10_recovery_diagnostics.mjs": "07994795ea60c767483211aa635fdc6d0db871121007f5314a35b4d2a297ea0c",
+    "docs/reader-account-transition-probes.md": "f48a60d18f488671281088a0471f7b1a9517738eaebc30aee140ed2ebedc5d6f"
+  }
+}

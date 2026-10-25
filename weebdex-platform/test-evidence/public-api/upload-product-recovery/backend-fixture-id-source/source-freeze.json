@@ -1,0 +1,233 @@
+{
+  "schema": "recovered-upload-backend-id-lock-target-source-v1",
+  "parent_commit": "1c715c79f43d978e01cc2deb86f524d5c83559d4",
+  "source_files": [
+    {
+      "path": "backend/src/public_api/auth.rs",
+      "bytes": 12445,
+      "sha256": "af140bc5bc0038af8c2436a82e4d3be9a85ca9f4cb3e3e8c32889a3e70facdf9"
+    },
+    {
+      "path": "backend/src/public_api/uploads.rs",
+      "bytes": 26173,
+      "sha256": "048d4710f620db1435104bf8b391a08a133053a6f39445499a13f3bc3d5c699b"
+    },
+    {
+      "path": "backend/tests/public_uploads.rs",
+      "bytes": 36844,
+      "sha256": "c34b6ba0b670ca8b782ace7fc5457422d5ff4bccb7ec349b640412dcdeb4f22d"
+    },
+    {
+      "path": "docs/verification/public-upload-fixture-id-and-lock-diagnosis.md",
+      "bytes": 5849,
+      "sha256": "40039687403ad21f4972dbd5e869918c44fe1ee323e308b13f2eeda1f3645455"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile03-failed.log",
+      "bytes": 15701,
+      "sha256": "5880a60d7bdab9e12c6acc36552a76a8b72843f3221d689b3d53657eb99cf054"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile03-public_uploads.rs.retained",
+      "bytes": 36539,
+      "sha256": "3b1571d719d019ea065ea4ad1003f89c70a75f36fe94abb2b01a1faceb035251"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile03-receipt.json",
+      "bytes": 79172,
+      "sha256": "d3b484873c63ca7d52ba066c3dfbb4afb66a9983fbc463e1629328e51c382cfd"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile03-unicode-correction-review.json",
+      "bytes": 2478,
+      "sha256": "b693d3336978f661dbd089ec80070742c263e6e50f983adce49112239ed7fb31"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile04-passed.log",
+      "bytes": 13278,
+      "sha256": "043051efe95625952f1a7b6d6c18451175015f08dffb55ea6fe89c358b24f7b9"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile04-pure-independent-result.json",
+      "bytes": 1677,
+      "sha256": "c475eb5b45349c076b04b441beecd2a6e33f0dc51fe4453947900fb846ee5387"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile04-receipt.json",
+      "bytes": 79311,
+      "sha256": "825acfe0a5bf5b1573850df773fc8398f6bbb22fc6296981d38a624195c8f165"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile05-passed.log",
+      "bytes": 25339,
+      "sha256": "1d94e9f3c6ec4c0474c3ad60b82a40cd78dd2636d1a1e0f90ffbf84f049ce1e3"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile05-pure-independent-result.json",
+      "bytes": 2965,
+      "sha256": "0c4abf7d0cdb46b4a92779769832d6f3f15058e205262723d05636b927b19ee4"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/compile05-receipt.json",
+      "bytes": 79572,
+      "sha256": "2b2594f77bd2e64f8f10313f60115cb81491b29446b5a79a6ee6fcda870118b1"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/failed-public_uploads.rs.retained",
+      "bytes": 31722,
+      "sha256": "b42d3dfafc50675953b0d6c4f4e9fea046ce95be6b325f8c9b00b0a9636f36ed"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/fixture-id-pure-passed.log",
+      "bytes": 177,
+      "sha256": "2d20d8b1298eb8117d52337e39204499a860495064b54f95c4ea23be5b0ed600"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/fixture-id-pure-receipt.json",
+      "bytes": 697,
+      "sha256": "3d8ad2d148d615b208358e16e5aa31c8e56e190d58af3c7e16db8c92f49a5a46"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/integration01-failed.log",
+      "bytes": 875,
+      "sha256": "0df8e047b1c3d8071b6b38c8be79b52679ed5031a62e97ec06eb0a3af2145068"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/integration01-independent-result.json",
+      "bytes": 1809,
+      "sha256": "1303711c809bd6acebf80ab2d3c80da1ae9b13502d40170a1cb532c0b321ed86"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/integration01-pg-error-classes.json",
+      "bytes": 436,
+      "sha256": "75305b1dfc0676930a8599261bc477acd709eb4beec627dd8295dcaafe6ec4d3"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/integration01-receipt.json",
+      "bytes": 7000,
+      "sha256": "a613e84d02fcff40de4940bb74c653484d59bd0f2ca43da9784a5aae0a453433"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-seam01-independent-result.json",
+      "bytes": 1731,
+      "sha256": "70592a0f8a0c30c256bfba9f72b808763dab43038c37df22064b0a752edffa34"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-seam01-no-test-receipt.json",
+      "bytes": 7454,
+      "sha256": "010749ee3d5662523274fd98ba5644b4244f7a65ed49267851806d759a2aea21"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-seam01-no-test.log",
+      "bytes": 12,
+      "sha256": "a3eabcead1e7d806ad5228ed078c37d4c471332557187a726c825d9c20c3e75a"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-seam02-counterexample-receipt.json",
+      "bytes": 10897,
+      "sha256": "4707df764eba745747a290ba592128a3aa84f203fe09755de4e378ef6fc2d5d8"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-seam02-counterexample.log",
+      "bytes": 1219,
+      "sha256": "1cd6cf76c62809505a1baeffa17baaed087fc1c5ea265ccc8cdfc1588a3b27b3"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-seam02-independent-result.json",
+      "bytes": 3747,
+      "sha256": "5c9cb9e28fc00a875262c87fd7c26fbadba9e7da0c0b7e2cc459516768cbec57"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-seam03-independent-result.json",
+      "bytes": 3154,
+      "sha256": "0e49646df64a725e870e5e4543e2c2a15f99481372d02d252a7dfe7dfefe52c2"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-seam03-passed-receipt.json",
+      "bytes": 10386,
+      "sha256": "f461431059310517a9a83f00bef07471f7da4be1d33458f7cc4b1443e0d406ce"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-seam03-passed.log",
+      "bytes": 196,
+      "sha256": "ffaaff8f5979019e71f1ba23a83d6784f3326d123bd1451e060a4b0854c60e5e"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-target-independent-source-review.json",
+      "bytes": 4393,
+      "sha256": "fe57480d2c6ca4d8837f87985c6314c0892ae3028aaa9739d481db1c393b2f51"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-target-pure-case-1.log",
+      "bytes": 226,
+      "sha256": "7af1ae89ced1dff68e717890366f4b1dc3982b718a5343bc9eff36ce5af08178"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-target-pure-case-2.log",
+      "bytes": 220,
+      "sha256": "0587c1d03bf5794e2c4b779f253dde5c6c05b410909151096154405975b6a4ba"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-target-pure-case-3.log",
+      "bytes": 177,
+      "sha256": "2d20d8b1298eb8117d52337e39204499a860495064b54f95c4ea23be5b0ed600"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/lock-target-pure-receipt.json",
+      "bytes": 1858,
+      "sha256": "d013c92110e02b89c4e268f221d6af3a678709b544b62e96857c49c474244c0f"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/pre-lock-auth.rs.retained",
+      "bytes": 12280,
+      "sha256": "b8a053ac097515df7dd014854318a31411060ea34f027211faf38e50a782d9a7"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/pre-lock-public_uploads.rs.retained",
+      "bytes": 36519,
+      "sha256": "653b11ee9f4f433cea5dc01909bed025e2cbde17c9eb72466685164fb03f50e9"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/pre-lock-seam-independent-source-review.json",
+      "bytes": 5582,
+      "sha256": "b41a4d1b3116c9973c045966498c7ec1c21c3873a5e25b4e154a2d782c9d4805"
+    }
+  ],
+  "scope": [
+    "Use ten-byte synthetic catalogue fixture constants with native/schema-bound checks; production schema unchanged.",
+    "Use NO KEY UPDATE for the exact bound user while retaining original capability recheck, binding SHARE, policy and transaction lifetime.",
+    "Bind pending ID-only manga receipt relation to the actual locked chapter/parent and persisted preferred UUID; missing/disagreeing presentation remains unavailable and SQL errors propagate."
+  ],
+  "retained_failures": {
+    "integration01": "Actual503 at initial manga-command catalogue ID constraint; no later committed/event/original assertions executed.",
+    "compile03": "Malformed Unicode escape prevented test compilation; exact failed source/log preserved.",
+    "seam01": "Outer zombie-fd observation failed before test; no lock result.",
+    "seam02": "Actual expected101 and SQLSTATE55P03 at publication FK KEY SHARE under old FOR UPDATE; six refusal probes and owner rollback executed first."
+  },
+  "qualification": {
+    "compile04": "Passed old-lock corrected-Unicode source; exact fixture-ID pure case1/1.",
+    "compile05": "Passed current three Rust sources with all308 captured source/lock pins unchanged.",
+    "current_pure": {
+      "pass": 3,
+      "fail": 0,
+      "scope": "Two pending target pure cases and one fixture identifier case; no DB."
+    },
+    "current_db_seam": {
+      "pass": 1,
+      "fail": 0,
+      "scope": "Actual schema FK compatibility, six authority/write exclusions and final rollback/state reads; PG/Axum births and ports closed."
+    }
+  },
+  "limits": [
+    "Full signed public HTTP integration retry remains pending; no successful original commit/browser result is inferred.",
+    "The initial integration constraint error is separate from the subsequently reproduced account-lock conflict.",
+    "Frontend source/artifact is unchanged; application/provisioner binary requalification must bind these changed backend bytes before browser use.",
+    "No production migration constraint was weakened; longer legacy catalogue IDs are not qualified for original publication.",
+    "No actual202, existing-page replacement success, public chapter editing or full40 qualification is claimed.",
+    "Retained evidence excludes raw databases, runtime config, private keys, credentials and raw PostgreSQL logs."
+  ],
+  "closed_path_count": 39,
+  "next_exact_test": "exact_nostr_upload_contracts_ownership_validation_and_original_commit"
+}

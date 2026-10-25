@@ -1,0 +1,111 @@
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✖ native reader prefers the current group identity over an earlier edition with the same name (2.34464ms)
+✖ native current group ID is stable when an edition carries a different group display name (0.279463ms)
+✔ native group-name fallback remains when either legacy metadata side has no ID (0.258763ms)
+✔ native no-group ties retain original edition ordering and actual language metadata (0.68914ms)
+✖ public reader prefers the current group identity over an earlier edition with the same name (0.492699ms)
+✖ public current group ID is stable when an edition carries a different group display name (0.174799ms)
+✔ public group-name fallback remains when either legacy metadata side has no ID (0.123012ms)
+✔ public no-group ties retain original edition ordering and actual language metadata (0.130022ms)
+✔ canonical reader context is unchanged (0.279573ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 5
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 187.624011
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/test_reader_group_identity.mjs:24:3
+✖ native reader prefers the current group identity over an earlier edition with the same name (2.34464ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unrelated'
+  - 'same'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-group-identity-worktree/weebdex-platform/tests/ci/test_reader_group_identity.mjs:27:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unrelated',
+    expected: 'same',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_group_identity.mjs:29:3
+✖ native current group ID is stable when an edition carries a different group display name (0.279463ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unrelated'
+  - 'same'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-group-identity-worktree/weebdex-platform/tests/ci/test_reader_group_identity.mjs:31:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unrelated',
+    expected: 'same',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_group_identity.mjs:24:3
+✖ public reader prefers the current group identity over an earlier edition with the same name (0.492699ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unrelated'
+  - 'same'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-group-identity-worktree/weebdex-platform/tests/ci/test_reader_group_identity.mjs:27:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unrelated',
+    expected: 'same',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_reader_group_identity.mjs:29:3
+✖ public current group ID is stable when an edition carries a different group display name (0.174799ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unrelated'
+  - 'same'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/reader-group-identity-worktree/weebdex-platform/tests/ci/test_reader_group_identity.mjs:31:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unrelated',
+    expected: 'same',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

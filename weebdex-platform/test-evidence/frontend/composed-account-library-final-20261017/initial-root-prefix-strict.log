@@ -1,0 +1,14 @@
+▲ [WARNING] Cannot find base config file "./.svelte-kit/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:12:
+      2 │   "extends": "./.svelte-kit/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+file:///workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/scripts/check-composed-frontend.mjs:217
+if (unresolvedGraphEdges.length) throw Error(`Projection graph has ${unresolvedGraphEdges.length} unresolved source edges: ${JSON.stringify(unresolvedGraphEdges)}`);
+                                       ^
+
+Error: Projection graph has 4 unresolved source edges: [{"importer":"src/lib/components/ui/dropdown-menu/dropdown-menu-checkbox-item.svelte","specifier":"@lucide/svelte/icons/check","target":"node_modules/@lucide/svelte/dist/lucide-svelte.js/icons/check","resolver":"unresolved-production-alias-or-relative"},{"importer":"src/lib/components/ui/dropdown-menu/dropdown-menu-checkbox-item.svelte","specifier":"@lucide/svelte/icons/minus","target":"node_modules/@lucide/svelte/dist/lucide-svelte.js/icons/minus","resolver":"unresolved-production-alias-or-relative"},{"importer":"src/lib/components/ui/dropdown-menu/dropdown-menu-radio-item.svelte","specifier":"@lucide/svelte/icons/circle","target":"node_modules/@lucide/svelte/dist/lucide-svelte.js/icons/circle","resolver":"unresolved-production-alias-or-relative"},{"importer":"src/lib/components/ui/dropdown-menu/dropdown-menu-sub-trigger.svelte","specifier":"@lucide/svelte/icons/chevron-right","target":"node_modules/@lucide/svelte/dist/lucide-svelte.js/icons/chevron-right","resolver":"unresolved-production-alias-or-relative"}]
+    at file:///workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/scripts/check-composed-frontend.mjs:217:40
+
+Node.js v24.19.0

@@ -1,0 +1,61 @@
+{
+  "recordsManifest": [
+    {
+      "file": "cache-audit/strict-physical/117.json",
+      "sha256": "4ebf1e76b2d456ada78c7087034d5f1cc25c4687f14a996282a478de00612492",
+      "pid": 117,
+      "roots": 7,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/strict-physical/130.json",
+      "sha256": "b252c2123a02cc6d8732fd6392597d84be368ff68ff64799cbb98e6947438c4d",
+      "pid": 130,
+      "roots": 7,
+      "checkedMutations": 7876
+    },
+    {
+      "file": "cache-audit/strict-physical/150.json",
+      "sha256": "d1d204382e4d7797e2faeef37030ec76625be9d6dd8d83e6738e79de10addb96",
+      "pid": 150,
+      "roots": 7,
+      "checkedMutations": 141
+    },
+    {
+      "file": "cache-audit/strict-physical/158.json",
+      "sha256": "bc7d225e08f0b525091aa446f584eb40f64b61507bc3f9434078f23f004635cc",
+      "pid": 158,
+      "roots": 7,
+      "checkedMutations": 347
+    },
+    {
+      "file": "cache-audit/strict-physical/196.json",
+      "sha256": "434cbfc7ac2f44efe7ebf9bfbaf8061e0412b11efe9140ca3139920d0a3ffda2",
+      "pid": 196,
+      "roots": 7,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/strict-physical/51.json",
+      "sha256": "38be02ee27877a23ac3f03b7c602c8ecba36b8056f9e7b6ba7d2f43b83bedae1",
+      "pid": 51,
+      "roots": 7,
+      "checkedMutations": 7672
+    },
+    {
+      "file": "cache-audit/strict-physical/74.json",
+      "sha256": "b69c818bb5652953018e16898c2e9bdee22e7f1b927e7c97598c839505726f72",
+      "pid": 74,
+      "roots": 7,
+      "checkedMutations": 141
+    },
+    {
+      "file": "cache-audit/strict-physical/82.json",
+      "sha256": "c8e202a6059e16428e2e4f7d7ef6235cc26409fe9487f13ee2ea73e598e4a2b2",
+      "pid": 82,
+      "roots": 7,
+      "checkedMutations": 350
+    }
+  ],
+  "protectedWriteAttempts": 0
+}

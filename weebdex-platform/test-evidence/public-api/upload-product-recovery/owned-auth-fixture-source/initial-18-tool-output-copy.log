@@ -1,0 +1,28 @@
+test_clean_fast_shutdown_only_signals_owned_leader (__main__.GuardTests.test_clean_fast_shutdown_only_signals_owned_leader) ... ok
+test_closed_port_requires_refusal_not_timeout_or_success (__main__.GuardTests.test_closed_port_requires_refusal_not_timeout_or_success) ... ok
+test_escalation_keeps_forced_truth_and_exact_individual_targets (__main__.GuardTests.test_escalation_keeps_forced_truth_and_exact_individual_targets) ... ok
+test_exact_postmaster_birth_and_loopback_inode_are_required (__main__.GuardTests.test_exact_postmaster_birth_and_loopback_inode_are_required) ... ok
+test_members_need_exact_lineage_or_owned_adoption (__main__.GuardTests.test_members_need_exact_lineage_or_owned_adoption) ... ok
+test_mocked_cancel_racing_successful_wait_cannot_become_success (__main__.GuardTests.test_mocked_cancel_racing_successful_wait_cannot_become_success) ... interrupted
+ok
+test_mocked_capture_exception_keeps_child_registered_and_cleanup_unconfirmed (__main__.GuardTests.test_mocked_capture_exception_keeps_child_registered_and_cleanup_unconfirmed) ... PermissionError: synthetic procfs capture denial
+ok
+test_mocked_final_observation_exception_still_attempts_cleanup_and_writes_receipt (__main__.GuardTests.test_mocked_final_observation_exception_still_attempts_cleanup_and_writes_receipt) ... ok
+test_mocked_foreign_listener_never_reaches_createdb_or_tests (__main__.GuardTests.test_mocked_foreign_listener_never_reaches_createdb_or_tests) ... RuntimeError: owned postgres startup deadline
+ok
+test_mocked_missing_birth_capture_cannot_claim_cleanup (__main__.GuardTests.test_mocked_missing_birth_capture_cannot_claim_cleanup) ... RuntimeError: owned child birth/session unavailable
+ok
+test_mocked_open_port_prevents_verified_cleanup (__main__.GuardTests.test_mocked_open_port_prevents_verified_cleanup) ... ok
+test_mocked_orchestration_retains_original_exit_when_cleanup_forced (__main__.GuardTests.test_mocked_orchestration_retains_original_exit_when_cleanup_forced) ... ok
+test_mocked_test_timeout_keeps_original_deadline_result (__main__.GuardTests.test_mocked_test_timeout_keeps_original_deadline_result) ... owned command deadline
+ok
+test_owned_zombie_descendant_is_reaped_without_real_waitpid (__main__.GuardTests.test_owned_zombie_descendant_is_reaped_without_real_waitpid) ... ok
+test_pidfd_rechecks_birth_after_open_and_never_signals_reuse (__main__.GuardTests.test_pidfd_rechecks_birth_after_open_and_never_signals_reuse) ... ok
+test_signal_failure_still_retains_forced_cleanup_truth (__main__.GuardTests.test_signal_failure_still_retains_forced_cleanup_truth) ... ok
+test_stuck_owned_processes_return_failure_at_fixed_deadline (__main__.GuardTests.test_stuck_owned_processes_return_failure_at_fixed_deadline) ... ok
+test_wildcard_ipv6_duplicate_and_zombie_listeners_are_rejected (__main__.GuardTests.test_wildcard_ipv6_duplicate_and_zombie_listeners_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.045s
+
+OK

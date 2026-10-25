@@ -14,6 +14,7 @@ const env = {
   WEEBDEX_FRONTEND_ROOT: frontend,
   PUBLIC_SITE_NAME: process.env.PUBLIC_SITE_NAME ?? "WeebDex",
   PUBLIC_API_URL: process.env.PUBLIC_API_URL ?? "/api",
+  PUBLIC_MANGADEX_CATALOGUE: process.env.PUBLIC_MANGADEX_CATALOGUE ?? "0",
   PUBLIC_KRATOS_PUBLIC_API: process.env.PUBLIC_KRATOS_PUBLIC_API ?? "/auth",
   PUBLIC_COVER_URL: process.env.PUBLIC_COVER_URL ?? "/covers",
   PUBLIC_DATA_URL: process.env.PUBLIC_DATA_URL ?? "/data",
@@ -50,11 +51,22 @@ if (fs.existsSync(portableBuild)) {
 }
 fs.renameSync(portableStage, portableBuild);
 const publicEnv = Object.fromEntries([
-  "PUBLIC_SITE_NAME", "PUBLIC_API_URL", "PUBLIC_KRATOS_PUBLIC_API", "PUBLIC_COVER_URL",
+  "PUBLIC_SITE_NAME", "PUBLIC_API_URL", "PUBLIC_MANGADEX_CATALOGUE", "PUBLIC_KRATOS_PUBLIC_API", "PUBLIC_COVER_URL",
   "PUBLIC_DATA_URL", "PUBLIC_UPLOAD_URL", "PUBLIC_PROXY_URL", "PUBLIC_OPENGRAPH_URL",
 ].map(key => [key, env[key]]));
 const evidence = {
   source_changed: false,
+  public_api_catalogue_enabled: integration.public_api_catalogue_enabled,
+  public_signed_upload_enabled: integration.public_signed_upload_enabled,
+  public_signed_upload_overlay_sha256: integration.public_signed_upload_overlay_sha256,
+  public_signed_upload_anchors_sha256: integration.public_signed_upload_anchors_sha256,
+  approved_public_signed_upload_extensions: integration.approved_public_signed_upload_extensions,
+  approved_public_feature_exceptions: integration.approved_public_feature_exceptions,
+  approved_public_language_exceptions: integration.approved_public_language_exceptions,
+  public_api_overlay_module_sha256: integration.public_api_overlay_sha256,
+  public_api_reconstructed_unverified: true,
+  qa_build_resource_profile: process.env.WEEBDEX_QA_BUILD_RESOURCE_PROFILE ?? null,
+  qa_build_resource_options: process.env.WEEBDEX_QA_BUILD_RESOURCE_PROFILE === "serial-terser" ? { terser_max_workers: 1, report_compressed_size: false, minification_disabled: false, node_options: process.env.NODE_OPTIONS ?? null } : null,
   command: "node scripts/build-frontend.mjs",
   environment: publicEnv,
   spa_fallback_sha256: createHash("sha256").update(index).digest("hex"),
@@ -62,6 +74,7 @@ const evidence = {
   source_import_case_repaired_externally: ["$lib/utils.js -> src/lib/Utils.ts", "stores/./session -> stores/Session.ts"],
   missing_announcements_reconstructed_externally: true,
   reconstructed_routes: integration.reconstructed_routes,
+  integration_utility_sources: integration.integration_utility_sources,
   script_overlay_module_sha256: integration.overlay_module_sha256,
   reader_overlay_module_sha256: integration.reader_overlay_sha256,
   integration_source_inventory_sha256: integration.integration_source_inventory_sha256,
@@ -74,6 +87,8 @@ const evidence = {
   approved_client_name_exceptions: integration.approved_client_name_exceptions,
   approved_search_callback_exceptions: integration.approved_search_callback_exceptions,
   approved_auth_flow_key_exceptions: integration.approved_auth_flow_key_exceptions,
+  approved_registration_onboarding_exceptions: integration.approved_registration_onboarding_exceptions,
+  approved_reader_control_exceptions: integration.approved_reader_control_exceptions,
   anonymous_recovery_derivation: integration.anonymous_recovery_derivation,
   approved_upload_recovery_exceptions: integration.approved_upload_recovery_exceptions,
   approved_recovery_boundary_exceptions: integration.approved_recovery_boundary_exceptions,
@@ -82,7 +97,7 @@ const evidence = {
   reconstruction_limit: "Public announcement listing/detail, pinned homepage data, and staff management are additive reconstruction against the new persisted Rust contract. Original missing announcement HTML/CSS and rendered parity remain unknown.",
   portable_ui_directory: "artifacts/frontend",
   original_go_templates_preserved: ["index", "manga", "chapter", "group"].map(name => `templates/${name}.html`),
-  visual_parity: "Not asserted. Explicit local/protocol panels, scoped library guards, staging-cancel control and restricted-reset boundary are intentional UI extensions. Unrelated supplied markup/styles are preserved by exact exception comparison.",
+  visual_parity: "Not asserted. Explicit local/protocol panels, scoped library guards, staging-cancel control, restricted-reset boundary and fresh-registration welcome are intentional UI extensions. Unrelated supplied markup/styles are preserved by exact exception comparison.",
 };
 const evidenceDir = path.join(root, "test-evidence/frontend");
 fs.mkdirSync(evidenceDir, { recursive: true });

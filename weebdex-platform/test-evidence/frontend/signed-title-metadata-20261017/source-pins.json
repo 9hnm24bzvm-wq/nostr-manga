@@ -1,0 +1,12 @@
+{
+  "platform-integrations/public-api/title-client.ts": "9b0bd2f946bf2b13d9be29a1b2ed8b85969450127e873cb9ebfd867cf248cd36",
+  "platform-integrations/public-api/PublicTitleEditor.svelte": "f355e45291bd7d7dec4e5f0501b65847f56f39e395fb8af34d84243df1e727e0",
+  "platform-integrations/public-api/PublicCreateGate.svelte": "4f4ef18bd7c7407939d2f2541e6c03f9ec48c575ee17d39bd537720b3ed29009",
+  "platform-integrations/public-api/PublicTitleShell.svelte": "2312e11adce6f9ade8c27c23f4df47ac826d9b0ff7ad652280894a31c382605e",
+  "platform-integrations/public-api/anchors.json": "cc94c5bd08bd7fcd9f59394c49173e2930cc84f65771b684d70bee3733b52a03",
+  "platform-integrations/public-api/source-hashes.json": "ceb318e4daa12236ef9758af8cdfa03206c881787f99b7eb9dd8f817f8c267af",
+  "scripts/prepare-frontend-integration.mjs": "46627071a11d41877f62594e6403f75be9ac0ba0139cb269d89b1d7392455c1c",
+  "scripts/reconstruct-public-api-anchors.mjs": "0acdae067e5dcb6f29afdecf3ec3466812f8ca2a1ceedca675a7b54c79a2d3ca",
+  "tests/ci/test_public_title_commands.mjs": "695d721c361584c7d7fd78477df57528e3d19226decb2b404fcbadeb38ac39b4",
+  "tests/ci/public-api-recovery.test.mjs": "941fc8ad8205e5ba8a938cd999e95213b466a0cabd8eb0a21e70915dd8cbf350"
+}

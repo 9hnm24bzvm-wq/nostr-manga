@@ -1,0 +1,35 @@
+(node:13) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ exact original JSON bytes, URL, service, nonce and owner reach one credential-free dispatch without relay response proof (45.996474ms)
+✔ multipart is already serialized, explicitly bounded and identical to its signed digest (6.731933ms)
+✔ empty mutations bind SHA-256 of empty bytes; empty GET omits payload and body; PATCH is supported (11.930278ms)
+✔ unsafe, noncanonical or foreign URLs and unsupported encodings/methods never ask the signer or dispatch (6.703049ms)
+✔ JSON, multipart and caller-lowered request budgets cannot be raised (4.145554ms)
+✔ pre-abort and obsolete signer or view prevent signing (6.702279ms)
+✔ closing before a deferred signer callback prevents the external prompt itself (3.413964ms)
+✔ identity change during a signer prompt and scope change during final refresh prevent dispatch (5.896597ms)
+✔ captured identity fields cannot be swapped while a prompt is pending (9.519074ms)
+✔ signer deadline settles locally; late approval is ignored and never replayed (3.596928ms)
+✔ one absolute deadline spans signer, final refresh, dispatch and a stalled response reader (3.537199ms)
+✔ external abort during signing leaves no dispatch, timer or external listener (3.154914ms)
+✔ network failure is uncertain after exactly one mutation dispatch and is never retried (2.850396ms)
+✔ a late response after deadline is discarded and its stream is cancelled (12.065633ms)
+✔ actual HTTP errors are returned with their body and retry header (4.826979ms)
+✔ known status survives malformed JSON, invalid UTF-8, unexpected types and failed body reads (16.913382ms)
+✔ scope invalidation upon fetch resolution preserves observed mutation status (3.549608ms)
+✔ accepted HTTP 202 with malformed JSON remains a known 202 and is never replayed (3.389516ms)
+✔ HTTP 200 with an unavailable body remains a known 200 without fabricating success data (3.098339ms)
+✔ decoded JSON and images have hard default response caps and lower caller caps (13.352547ms)
+✔ binary preview bytes remain exact; unsafe image content and JSON errors preserve real status (14.051459ms)
+✔ a genuine empty 204 keeps its status and has no invented success body (2.570034ms)
+✔ only the five allowlisted actual response headers are exposed, with absent privacy fields left null (5.538328ms)
+✔ overlong or control-bearing allowlisted header values fail closed while retaining the actual status (11.004688ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 301.994266

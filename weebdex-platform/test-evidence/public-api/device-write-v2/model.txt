@@ -1,0 +1,23 @@
+(node:15) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ anonymous namespace-only UUID series, list/member and page progress save without transport or signer (5.032206ms)
+✔ new legacy IDs and credentials fail atomically while unresolved legacy rows stay intact (3.109956ms)
+✔ stale revision, changed owner/scope and durable migration fences reject before mutation (1.752604ms)
+✔ chapter parent cannot be rebound and membership requires an existing list (2.896114ms)
+✔ root removal cascades local membership with exact archives, issues and monotonic tombstones (1.971864ms)
+✔ same-clock updates advance monotonically and forbidden clear/cursor or owner mutation rolls back (1.521687ms)
+✔ context generation change rolls back records, revision and every sidecar (0.611169ms)
+✔ explicit service adoption updates owner marker atomically and preserves truthful origin-only archives (2.663885ms)
+✔ anonymous full-v2 export and reviewed restore retain owner/provenance and deletion fences (11.146052ms)
+✔ reviewed restore refuses parent rebinding, foreign scopes, fabricated review and stale CAS (2.628241ms)
+✔ actual DeviceStore v2 facade writes, snapshots and confirms offline saved scope; legacy opener stays fenced (2.297173ms)
+✔ namespace mismatch persists a cross-tab write fence and missing live identity cannot clear it (1.704953ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 252.427265

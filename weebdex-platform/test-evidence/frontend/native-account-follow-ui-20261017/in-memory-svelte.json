@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "source": "platform-integrations/public-api/AccountFollow.svelte",
+  "sha256": "b8050832b23299630e69fd9826228e7a772d4ccb7c2fa826c3ef78c07e881220",
+  "real_installed_svelte_compiler": true,
+  "output_written": false,
+  "generated_js_bytes": 16056,
+  "warnings": []
+}

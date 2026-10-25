@@ -1,0 +1,28 @@
+{
+  "schema": "positive-replacement-browser-product-source-association-v1",
+  "product_commit": "e45052ca987a18d3be1fa9792c210e6840a78713",
+  "product_tree": "79979166528041d1560f1915cc6a8a6aa3041de1",
+  "frontend_input_count": 858,
+  "mapped_test_only_differences": [
+    {
+      "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "built_sha256": "8e503077cd0eda3c2bd7c41f274cae8f670391fdc7e69d05d8ef055a3d9e9541",
+      "current_sha256": "30b0626a5c131cb38a581a0db1cf36c7f1918f84ddc789f82d123c4584916f79"
+    },
+    {
+      "path": "weebdex-platform/scripts/public-upload-recovery-observer.mjs",
+      "built_sha256": "c59f4464457d610088c01719645f63b1d379fddeb576f8793a53811c4600e79f",
+      "current_sha256": "2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71"
+    }
+  ],
+  "journey_finite_test_in_frontend_map": false,
+  "frontend_all_other_856_inputs_match": true,
+  "backend_source_count": 308,
+  "backend_all_current_match": true,
+  "original_frontend_8_match": true,
+  "initial_read_only_check_note": "First membership assertion expected three frontend-map deltas including the finite test; actual map has only the two browser scripts. Corrected the assertion to actual membership without changing source or rerunning an application/compiler.",
+  "limits": [
+    "Frontend and runtime binaries were built from e450 product bytes; this successor changes only test harness source.",
+    "No browser or fixture executed for this successor."
+  ]
+}

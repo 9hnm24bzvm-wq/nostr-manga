@@ -1,0 +1,91 @@
+# TOOL-OUTPUT COPY, created after execution; this was not an original file-backed capture.
+# Original tool result chunk: 58c2cc. Command exit: 1.
+# Command: node --test weebdex-platform/tests/ci/test_public_upload_recovery_controls.mjs
+# CWD: /workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree
+# Controls SHA256: 357a4663ec1e0a65e6dcde50b42baf640009bad82ab1de14b28b721cae63b71d
+# Test SHA256: d93d868d2d83ba5649f4583688569eef74b64211ca622acefc3cae735f4d9ca2
+# Independent source review before execution: upload-browser-controls-independent-source-review-20261017.json
+# Outcome association: 48/49 passed; one test-source association error selected opening overlay instead of adjacent fallback overlay. No controls source changed.
+# Exact original command output follows.
+✔ scopes and exact preview-loading topology are present in pinned preserved source and signed overlay (3.463146ms)
+✖ the exact loader branch has no filename heading and the signed placeholder uses the same Empty/Spinner (1.260605ms)
+✔ locators remain exact and direct, excluding global filename and first-match fallback (0.961756ms)
+✔ strict settled filenames and decoded images are returned without mutation (2.136491ms)
+✔ permanent missing page is a failure, never pending (1.227364ms)
+✔ permanent duplicate page is a failure, never pending (0.488684ms)
+✔ permanent unknown page is a failure, never pending (0.468464ms)
+✔ permanent wrong order is a failure, never pending (0.833193ms)
+✔ permanent missing heading is a failure, never pending (0.569146ms)
+✔ permanent conflicting image is a failure, never pending (0.708165ms)
+✔ permanent undecoded image is a failure, never pending (0.569026ms)
+✔ permanent extra page is a failure, never pending (1.611913ms)
+✔ permanent unknown child is a failure, never pending (0.334483ms)
+✔ permanent duplicate panel is a failure, never pending (0.186821ms)
+✔ permanent missing panel is a failure, never pending (0.249845ms)
+✔ permanent duplicate grid is a failure, never pending (0.237166ms)
+✔ real pointer last-to-first waits for known clone/shadow cleanup then strictly verifies order (2.057402ms)
+✔ known marker cleanup can settle on a standalone read (0.617248ms)
+✔ source-backed preview placeholder after drag is separate bounded pending until exact decoded names (2.259296ms)
+✔ permanent clone lifecycle reaches the same absolute deadline (0.805601ms)
+✔ permanent shadow lifecycle reaches the same absolute deadline (1.876651ms)
+✔ permanent preview lifecycle reaches the same absolute deadline (0.415295ms)
+✔ known spinner or DnD marker never excuses unknown filename (0.775156ms)
+✔ known spinner or DnD marker never excuses extra card (0.179269ms)
+✔ known spinner or DnD marker never excuses duplicate filename (0.327773ms)
+✔ a genuine snapshot locator rejection is preserved without pending retry (0.919662ms)
+✔ late resolved await cannot succeed after the original absolute deadline (0.334863ms)
+✔ origin/route is rechecked after awaited panel-count and release remains mandatory after down (0.244688ms)
+✔ origin/route is rechecked after awaited snapshot and release remains mandatory after down (0.168663ms)
+✔ origin/route is rechecked after awaited move-2 and release remains mandatory after down (0.466992ms)
+✔ origin/route is rechecked after awaited up and release remains mandatory after down (0.59187ms)
+✔ external health is rechecked after awaited pointer movement and fences later action (0.481534ms)
+✔ rejected pointer down still attempts up and preserves primary error, release rejection=false (0.68513ms)
+✔ rejected pointer down still attempts up and preserves primary error, release rejection=true (0.641414ms)
+✔ release-only rejection is the primary failure and prevents final settlement reads (0.753032ms)
+✔ deadline after down still releases and separately retains a release rejection (0.672931ms)
+✔ route and health failures discovered after a rejected down never replace that primary error (0.77163ms)
+✔ exact escaped button label has no regex-alternative fallback (1.002337ms)
+✔ unexpected DnD marker topology fails without waiting: multiple clones (0.363626ms)
+✔ unexpected DnD marker topology fails without waiting: multiple shadows (0.254302ms)
+✔ unexpected DnD marker topology fails without waiting: foreign shadow (0.289555ms)
+✔ deadline expiring during release is checked after await before any final read (0.886512ms)
+✔ exact upload URL rejects ?other=1 introduced during snapshot (0.403637ms)
+✔ exact upload URL rejects ?other=1 introduced during health (0.142044ms)
+✔ exact upload URL rejects ?other=1 introduced during move-2 (0.836948ms)
+✔ exact upload URL rejects #other introduced during snapshot (0.318799ms)
+✔ exact upload URL rejects #other introduced during health (0.143546ms)
+✔ exact upload URL rejects #other introduced during move-2 (1.481347ms)
+✔ global clone marker cannot turn a genuinely broken non-shadow card into pending (0.409475ms)
+ℹ tests 49
+ℹ suites 0
+ℹ pass 48
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 141.655471
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/test_public_upload_recovery_controls.mjs:126:1
+✖ the exact loader branch has no filename heading and the signed placeholder uses the same Empty/Spinner (1.260605ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /<Empty.Root class="size-full"><Spinner class="size-10" \/><\/Empty.Root>/. Input:
+  
+  '\t\t{#if page.thumbnail?.startsWith("blob:")}\r\n' +
+    '\t\t{#key page.thumbnail}\r\n' +
+    '\t\t<ImageLoader src={page.thumbnail!}>'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_recovery_controls.mjs:139:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '\t\t{#if page.thumbnail?.startsWith("blob:")}\r\n\t\t{#key page.thumbnail}\r\n\t\t<ImageLoader src={page.thumbnail!}>',
+    expected: /<Empty.Root class="size-full"><Spinner class="size-10" \/><\/Empty.Root>/,
+    operator: 'match',
+    diff: 'simple'
+  }

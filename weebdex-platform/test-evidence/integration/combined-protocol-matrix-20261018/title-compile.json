@@ -1,0 +1,58 @@
+{
+  "sourceCommit": "836ba3a19f3a7634896d899689ee10e4ff381947",
+  "command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/toolchains/cargo/bin/cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "weebdex-platform/backend/Cargo.toml",
+    "--test",
+    "public_manga_writes",
+    "--no-run",
+    "-j",
+    "1"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 18.37,
+  "minimumFreeBytes": 4616245248,
+  "floorBytes": 4294967296,
+  "cleanupReserveBytes": 134217728,
+  "maxOwnedRssBytes": 1205547008,
+  "minimumAvailableMemoryBytes": 7494901760,
+  "stopReason": null,
+  "sourceFiles": 903,
+  "sourceChanged": [],
+  "ownedProcessBirths": [
+    [
+      8,
+      8032877
+    ],
+    [
+      19,
+      8032892
+    ],
+    [
+      42,
+      8034649
+    ],
+    [
+      43,
+      8034650
+    ],
+    [
+      44,
+      8034650
+    ]
+  ],
+  "cleanupSignals": [],
+  "ownedSurvivors": [],
+  "executableFiles": {
+    "tests/public_manga_writes.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_manga_writes-4dea7fe51a404b04",
+      "sha256": "7a323211680d35f992d66cd9adbf3a90da52f70163f6e5b069a1effea6e1f5c5",
+      "bytes": 83733904
+    }
+  },
+  "passed": true
+}

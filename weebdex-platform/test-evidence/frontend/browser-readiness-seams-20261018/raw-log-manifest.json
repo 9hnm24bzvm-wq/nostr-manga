@@ -1,0 +1,26 @@
+{
+  "baseline-progress.log.gz": {
+    "bytes": 787,
+    "sha256": "c747ab13bcffd0ca8532cb85774b8d1a7654489cf1f7d6f272f6304525a8c414",
+    "expandedBytes": 4482,
+    "expandedSha256": "1924ff2d46ed5664c96908d768b4bc554e519c8880013f092f5ac218fcd6f656"
+  },
+  "baseline-wiring.log.gz": {
+    "bytes": 1184,
+    "sha256": "314fef8bbe4117477a352a2b478aee03f7c5fcd3272f9ba2ab732a8c09d654a3",
+    "expandedBytes": 2939,
+    "expandedSha256": "497c8fb4c483c25bf522f951f68758e6b249281b6aafc3dbd02d68c87fdd1976"
+  },
+  "candidate.log.gz": {
+    "bytes": 2143,
+    "sha256": "8a7a1b30e1475d83170e1e05edd834500e6b0328b7817b06c8927b9becc83fd8",
+    "expandedBytes": 6632,
+    "expandedSha256": "f659f5a4c221763aaad08fe3199b0e78ea17485054c84a04c6fcee1d8da0f9c3"
+  },
+  "initial-candidate.log.gz": {
+    "bytes": 1967,
+    "sha256": "0224d4e336adf17b9a1e48c7525a5c46a208a14211104f9fbd37075d8bbdc692",
+    "expandedBytes": 5762,
+    "expandedSha256": "b36e688fdba065a3151162d9adbb0f49c5c1141f2e22457933598a54098f1bf7"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "recovered-signed-upload-evidence-notes-v1",
+  "source_base": "3e46ddcb0fd6dae6745ac19db92956565741b897",
+  "finite_scope": "explicit source/mock seams; no genuine signer/network/decoder/runtime claim",
+  "log_retention": "Adapter30 success and first23 failure and transport22 predecessor are exact copied tool output where labeled. Other final logs are first-run file captures. The original transport setup-failure tool response was truncated; only an explicitly partial copied excerpt and factual summary are retained, never an invented full log.",
+  "predecessor_reconstruction": "Exact21 and24 anchor JSON files were re-derived from current patch data by removing only recorded later deltas, then matched their previously recorded full SHA256 before retention. This concerns current reconstruction candidates, not any lost historical Git blob.",
+  "frontend_originals": "not edited; exact physical/composed/output pins in upload-anchors.json",
+  "pending": [
+    "actual composed frontend strict/syntax/build",
+    "genuine disposable PostgreSQL/HTTP fixture",
+    "natural browser normal upload/commit/resume"
+  ]
+}

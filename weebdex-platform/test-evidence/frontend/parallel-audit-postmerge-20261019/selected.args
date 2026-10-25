@@ -1,0 +1,16 @@
+weebdex-platform/tests/ci/test_reader_history_ownership.mjs
+weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs
+weebdex-platform/tests/ci/test_reader_navigation_edges.mjs
+weebdex-platform/tests/ci/test_reader_modified_shortcuts.mjs
+weebdex-platform/tests/ci/test_reader_accessible_controls.mjs
+weebdex-platform/tests/ci/test_continue_reading_last_completed.mjs
+weebdex-platform/tests/ci/public-api-recovery.test.mjs
+weebdex-platform/tests/ci/test_public_library_catalogue.mjs
+weebdex-platform/tests/ci/test_integrated_read_fanout_plan.mjs
+weebdex-platform/tests/ci/test_reader_group_identity.mjs
+weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs
+weebdex-platform/tests/ci/test_enrollment_policy.mjs
+weebdex-platform/tests/ci/test_account_onboarding_seams.mjs
+weebdex-platform/tests/ci/test_browser_identity_key_controls.mjs
+weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs
+weebdex-platform/tests/ci/test_public_title_commands.mjs

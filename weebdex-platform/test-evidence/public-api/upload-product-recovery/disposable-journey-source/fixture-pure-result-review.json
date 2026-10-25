@@ -1,0 +1,17 @@
+{
+  "schema": "upload-fixture-pure-result-review-v1",
+  "utc": "2026-10-17T04:12:37.430710+00:00",
+  "verdict": "passed_bounded_pure_scope",
+  "rust_receipt_sha256": "11403fb1bc5bddefdb2d5dd6c8765ad2ac67f9dca0c47d2dd592f3f678507981",
+  "rust_log_sha256": "fe4cd1574803f3bca4836bd29324f29d1e6b2988843f7474ad235081a880ddab",
+  "rust_actual_selected_tests": 3,
+  "rust_count_note": "upload_ filter also matches synthetic_volumes_match_original_upload_store_grammar; earlier two-case estimate was inaccurate. All selected cases were within the independently reviewed four-test example scope.",
+  "python_receipt_sha256": "6057709736eb810d98e9c19850598637caeb65d2fefd433431b53764e21b5b02",
+  "python_actual_cases": 10,
+  "source_before_after_current_count": 308,
+  "source_before_after_current_equal": true,
+  "limitations": [
+    "No database/HTTP/browser fixture execution.",
+    "No independent rerun; retained owner command, raw logs and source hashes verified."
+  ]
+}

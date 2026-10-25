@@ -1,0 +1,12 @@
+{
+  "weebdex-platform/docs/verification/browser-readiness-user-flows-20261018.md": "858b4fd7774876342085e07c43ee167493579dd45dfd0b9874a4be946d4fa216",
+  "weebdex-platform/scripts/browser-device-continuity.mjs": "76ca1389c45c5d450f6e384f42bcb0db7e260f5f4a8a2d4582596404b5cc3487",
+  "weebdex-platform/scripts/browser-identity-key-controls.mjs": "fd1a885d190e00a0212ccc85c42654e3a28befe5f14198b0dbfd7ffd45d67c6a",
+  "weebdex-platform/scripts/browser-journeys.mjs": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d",
+  "weebdex-platform/scripts/browser-reader-continuation.mjs": "a3a15e89e42d358f5aef48885f3ed6411315e630a9dde9ab347fbca3bf25017e",
+  "weebdex-platform/tests/ci/test_browser_device_continuity.mjs": "94a324ac79928dcab045877c1087ba694dc60fa556a5859b2fabfbd8cd3ca9bb",
+  "weebdex-platform/tests/ci/test_browser_exact_device_progress.mjs": "e04e2cc1461462eb42498a8c8bd4261dd0e427d06c557ecc6a8c500facde2572",
+  "weebdex-platform/tests/ci/test_browser_identity_key_controls.mjs": "a4d1a727854e9a15de64ead852bbfa3454335c0f711356e4c33727ceb93144cd",
+  "weebdex-platform/tests/ci/test_browser_library_follow_diagnostics.mjs": "ba6c483dc1eb118d5a5345c5cfcd805494dd29af96dcad507e2be028abbab5e9",
+  "weebdex-platform/tests/ci/test_browser_reader_continuation.mjs": "5b1f6da905919ee4154322d5cd7363b4b3db8658cace86ffc445a15d01de55a4"
+}

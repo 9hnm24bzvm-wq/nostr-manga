@@ -1,0 +1,8 @@
+{
+  "sourceCommit": "ed21d6421dff98553470cdd58d401d74877821c3",
+  "identityHelperSha256": "028ae127e78510d4fa15099f4e6e574123f8675e61a6be8d87ee44511b3ffb9b",
+  "identityMethod": "Run current unmodified assertions with the original frozen helper imported from a passive data URL. Only source/import resolution changes in owned generated harness.",
+  "generatedIdentityHarnessSha256": "0fa7f50165fd761c2abc1a9159eaf9579d7b600ce1215520883424b247ca4d55",
+  "continuityMethod": "Run added actual predecessor plus next-step enrollment with route state before changing the ed21 journey. The retained red output is one executed failing case.",
+  "noBrowserOrProductRuntime": true
+}

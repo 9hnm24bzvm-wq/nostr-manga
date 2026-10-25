@@ -1,0 +1,481 @@
+"""SOURCE ONLY: bounded native0 generation owner, never a mounted test launcher.
+
+Launch requires the exact externally admitted freeze hash. No dependency install,
+network service, full-app build, candidate mutation or generated-output acceptance
+is performed. Python/OS standard libraries remain trusted ambient dependencies.
+"""
+import argparse
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import stat
+import shutil
+import subprocess
+import sys
+from html.parser import HTMLParser
+
+REVISION = 'b2817b1c93d37b7286b22146d063fbd1059aaa4d'
+MAX_FILES, MAX_DIRS, MAX_LINKS, TOTAL = 4096, 1024, 2048, 128 * 1024**2
+CAPS = {'source': 8 * 1024**2, 'generated': 64 * 1024**2,
+        'adapter': 16 * 1024**2, 'cache': 16 * 1024**2,
+        'evidence': 16 * 1024**2, 'supervision': 8 * 1024**2}
+
+
+def require(value, message):
+    if not value:
+        raise RuntimeError(message)
+
+
+def signature(info):
+    return (info.st_dev, info.st_ino, info.st_mode, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+
+
+def digest_file(path, limit=2 * 1024**3):
+    before = path.lstat()
+    require(stat.S_ISREG(before.st_mode) and before.st_size <= limit, 'File type/size bound: ' + str(path))
+    digest, size = hashlib.sha256(), 0
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    with os.fdopen(descriptor, 'rb') as stream:
+        require(signature(os.fstat(stream.fileno())) == signature(before), 'File changed before open')
+        while size < before.st_size:
+            block = stream.read(min(1024 * 1024, before.st_size - size))
+            if not block:
+                break
+            size += len(block)
+            require(size <= limit, 'File grew beyond read bound')
+            digest.update(block)
+        require(signature(os.fstat(stream.fileno())) == signature(before), 'Open file changed while reading')
+    require(signature(path.lstat()) == signature(before) and size == before.st_size,
+            'Input changed while reading: ' + str(path))
+    return size, digest.hexdigest()
+
+
+def check_identity(identity):
+    path = Path(identity['path'])
+    require(path.is_absolute(), 'Absolute identity path required')
+    require(digest_file(path) == (identity['bytes'], identity['sha256']), 'Identity mismatch: ' + str(path))
+    return path
+
+
+def read_json_identity(identity, maximum):
+    path = check_identity(identity)
+    require(identity['bytes'] <= maximum, 'JSON identity exceeds bound')
+    raw = path.read_bytes()
+    require(len(raw) == identity['bytes'] and hashlib.sha256(raw).hexdigest() == identity['sha256'], 'JSON changed on second read')
+    return json.loads(raw)
+
+
+def canonical_relative(value):
+    require(isinstance(value, str) and value and not value.startswith('/') and '\\' not in value and '\0' not in value,
+            'Invalid relative path')
+    require(all(piece not in ('', '.', '..') for piece in value.split('/')), 'Noncanonical relative path')
+    return value
+
+
+def contained(path, roots):
+    return any(path == root or root in path.parents for root in roots)
+
+
+def resolve_package_link(entry, allowed):
+    # Inspect every target expansion, not merely the final canonical endpoint.
+    pending, seen = entry, set()
+    for _ in range(64):
+        require(contained(pending, allowed), 'Package link escapes pinned roots: ' + str(entry))
+        require(pending not in seen, 'Package symlink cycle')
+        seen.add(pending)
+        parts = pending.parts
+        prefix = Path(parts[0])
+        for index, part in enumerate(parts[1:], 1):
+            prefix = prefix / part
+            if prefix.is_symlink():
+                target = Path(os.readlink(prefix))
+                replacement = target if target.is_absolute() else prefix.parent / target
+                replacement = Path(os.path.abspath(replacement))
+                require(contained(replacement, allowed), 'Immediate package link target escapes pinned roots')
+                replacement = Path(os.path.abspath(replacement.joinpath(*parts[index + 1:])))
+                require(contained(replacement, allowed), 'Intermediate package link target escapes pinned roots')
+                pending = replacement
+                break
+        else:
+            require(pending.exists(), 'Broken package link')
+            return pending
+    raise RuntimeError('Package symlink resolution bound')
+
+
+def physical_snapshot(root):
+    entries = {'.': signature(root.lstat())}
+    def fail(error):
+        raise error
+    for parent, dirs, files in os.walk(root, followlinks=False, onerror=fail):
+        for name in dirs + files:
+            entry = Path(parent) / name
+            relative = entry.relative_to(root).as_posix()
+            relative.encode('utf-8', errors='strict')
+            entries[relative] = signature(entry.lstat())
+            require(len(entries) <= 160000, 'Package physical-entry count bound')
+    return entries
+
+
+def package_tree(root, allowed, budget):
+    """Exact package-closure.json row digest, with stable full physical snapshots."""
+    root = root.resolve(strict=True)
+    before = physical_snapshot(root)
+    rows = []
+    for relative in sorted((name for name in before if name != '.'), key=lambda name: name.encode('utf-8')):
+        entry = root / relative
+        info = entry.lstat()
+        require(signature(info) == before[relative], 'Package entry changed before hashing')
+        if stat.S_ISLNK(info.st_mode):
+            target = os.readlink(entry)
+            target.encode('utf-8', errors='strict')
+            resolve_package_link(entry, allowed)
+            rows.append([relative, 'symlink', target, None])
+            require(os.readlink(entry) == target and signature(entry.lstat()) == before[relative], 'Package link changed')
+        elif stat.S_ISDIR(info.st_mode):
+            rows.append([relative, 'directory', None, None])
+        elif stat.S_ISREG(info.st_mode):
+            require(budget['files'] + 1 <= 150000 and budget['bytes'] + info.st_size <= 2 * 1024**3, 'Package aggregate pre-read bound')
+            size, digest = digest_file(entry, 2 * 1024**3 - budget['bytes'])
+            budget['files'] += 1
+            budget['bytes'] += size
+            require(budget['files'] <= 150000 and budget['bytes'] <= 2 * 1024**3, 'Package closure read budget exceeded')
+            rows.append([relative, 'file', size, digest])
+        else:
+            raise RuntimeError('Unsupported package filesystem entry: ' + str(entry))
+    digest = hashlib.sha256()
+    for row in rows:
+        digest.update((json.dumps(row, ensure_ascii=False, separators=(',', ':')) + '\n').encode('utf-8'))
+    require(physical_snapshot(root) == before, 'Package physical tree changed during verification')
+    return {'sha256': digest.hexdigest(), 'files': sum(row[1] == 'file' for row in rows),
+            'logicalBytes': sum(row[2] for row in rows if row[1] == 'file')}
+
+
+def verify_packages(manifest):
+    require(manifest.get('schema') == 1 and manifest.get('complete') is True, 'Complete package closure required')
+    roots = [Path(row['path']) for row in manifest['roots']]
+    require(all(root.is_absolute() and root.resolve(strict=True) == root and stat.S_ISDIR(root.lstat().st_mode) for root in roots), 'Package roots must already be canonical physical directories')
+    require(len(roots) == 3 and len(set(roots)) == 3, 'Exactly three distinct pinned package roots required')
+    snapshots = [physical_snapshot(root) for root in roots]
+    require(sum(stat.S_ISREG(value[2]) for snapshot in snapshots for key, value in snapshot.items() if key != '.') <= 150000, 'Package preflight file bound')
+    require(sum(value[3] for snapshot in snapshots for key, value in snapshot.items() if key != '.' and stat.S_ISREG(value[2])) <= 2 * 1024**3, 'Package preflight byte bound')
+    budget = {'files': 0, 'bytes': 0}
+    verified = []
+    for row, root in zip(manifest['roots'], roots):
+        actual = package_tree(root, roots, budget)
+        require(all(actual[key] == row[key] for key in actual), 'Full package tree mismatch: ' + str(root))
+        verified.append({'path': str(root), **actual})
+    require(all(physical_snapshot(root) == snapshot for root, snapshot in zip(roots, snapshots)), 'Package closure changed across complete three-root verification')
+    return verified
+
+
+def census(stage, sampled=False):
+    total = {'logicalBytes': 0, 'allocatedBytes': 0, 'files': 0, 'directories': 0, 'symlinks': 0,
+             'categories': {name: 0 for name in CAPS}, 'disappearedEntries': 0, 'sampled': sampled}
+    def onerror(error):
+        if sampled and isinstance(error, FileNotFoundError):
+            total['disappearedEntries'] += 1
+            require(total['disappearedEntries'] <= 4096, 'Sampled disappearance bound')
+        else:
+            raise error
+    for parent, dirs, files in os.walk(stage, followlinks=False, onerror=onerror):
+        for name in (['.'] if Path(parent) == stage else []) + dirs + files:
+            target = Path(parent) if name == '.' else Path(parent) / name
+            try:
+                info = target.lstat()
+            except FileNotFoundError as error:
+                onerror(error)
+                continue
+            relative = target.relative_to(stage).as_posix()
+            total['logicalBytes'] += info.st_size
+            total['allocatedBytes'] += info.st_blocks * 512
+            total['directories'] += int(stat.S_ISDIR(info.st_mode))
+            total['files'] += int(stat.S_ISREG(info.st_mode))
+            total['symlinks'] += int(stat.S_ISLNK(info.st_mode))
+            if stat.S_ISDIR(info.st_mode) or relative.startswith('native0-owner/') or relative.startswith('native0-'):
+                category = 'supervision'
+            elif '/.svelte-kit/' in '/' + relative or relative.endswith('/.svelte-kit'):
+                category = 'generated'
+            elif '/.vite-temp/' in '/' + relative or relative.endswith('/.vite-temp'):
+                category = 'cache'
+            elif relative.startswith('projection/'):
+                category = 'source'
+            elif relative.startswith('output/served/'):
+                category = 'adapter'
+            elif relative.startswith(('output/vite-cache/', 'tmp/', 'home/')):
+                category = 'cache'
+            else:
+                category = 'evidence'
+            total['categories'][category] += info.st_blocks * 512
+            require(total['files'] <= MAX_FILES and total['directories'] <= MAX_DIRS and total['symlinks'] <= MAX_LINKS, 'Owned file/directory/symlink count bound')
+    return total
+
+
+def within_bounds(value):
+    return value['allocatedBytes'] <= TOTAL and value['logicalBytes'] <= TOTAL and all(value['categories'][key] <= cap for key, cap in CAPS.items())
+
+
+def write_json(path, value, maximum=1024 * 1024):
+    data = (json.dumps(value, indent=2, ensure_ascii=False) + '\n').encode('utf-8')
+    require(len(data) <= maximum, 'Evidence prewrite bound: ' + str(path))
+    with path.open('xb') as stream:
+        stream.write(data)
+
+
+def load_freeze(args):
+    freeze_path = Path(args.freeze).resolve(strict=True)
+    require(digest_file(freeze_path, 131072)[1] == args.admit, 'Exact external freeze admission mismatch')
+    freeze = json.loads(freeze_path.read_text())
+    require(freeze['schema'] == 1 and freeze['scope'] == 'native0-generation-only' and freeze['revision'] == REVISION, 'Wrong generation scope/revision')
+    require(Path(args.out) == Path(freeze['stage']) and Path(args.out).is_absolute(), 'Output differs from admitted fresh target')
+    for identity in freeze['executionInputs']:
+        check_identity(identity)
+    require(any(Path(row['path']).resolve() == Path(__file__).resolve() for row in freeze['executionInputs']), 'Launcher itself is not frozen')
+    return freeze, freeze_path
+
+
+def materialize(freeze, source, stage):
+    require(source['revision'] == REVISION and len(source['files']) <= 600, 'Source inventory revision/count')
+    require(len({row['path'] for row in source['files']}) == len(source['files']), 'Duplicate effective source paths')
+    require(all(row['authority'] in ('git', 'postimage') and row['mode'] in (420, 493) for row in source['files']), 'Unrecognized source authority or ordinary source mode')
+    projection = stage / 'projection'
+    projection.mkdir()
+    git_rows = [row for row in source['files'] if row['authority'] == 'git']
+    process = subprocess.Popen([freeze['git'], '-C', freeze['worktree'], 'cat-file', '--batch'],
+                               stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                               env={'PATH': '/usr/bin:/bin', 'GIT_OPTIONAL_LOCKS': '0', 'LANG': 'C.UTF-8'})
+    try:
+        for row in git_rows:
+            relative = canonical_relative(row['path'])
+            process.stdin.write((row['gitBlob'] + '\n').encode('ascii'))
+            process.stdin.flush()
+            header = process.stdout.readline(256).decode('ascii').strip().split()
+            require(len(header) == 3 and header[0] == row['gitBlob'] and header[1] == 'blob' and int(header[2]) == row['bytes'], 'Git blob header mismatch')
+            require(row['bytes'] <= 2 * 1024**2, 'Git source individual bound')
+            data = process.stdout.read(row['bytes'])
+            require(process.stdout.read(1) == b'\n' and len(data) == row['bytes'] and hashlib.sha256(data).hexdigest() == row['sha256'], 'Git source body mismatch')
+            target = projection / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open('xb') as stream:
+                stream.write(data)
+            target.chmod(row['mode'])
+        process.stdin.close()
+        require(process.wait(timeout=15) == 0 and not process.stderr.read(4097), 'Git batch did not terminate cleanly')
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait(timeout=5)
+        for stream in (process.stdin, process.stdout, process.stderr):
+            if stream and not stream.closed:
+                stream.close()
+    postimages = Path(freeze['postimageRoot']).resolve(strict=True)
+    for row in source['files']:
+        if row['authority'] != 'postimage':
+            continue
+        relative = canonical_relative(row['path'])
+        override = freeze.get('postimageOverrides', {}).get(relative)
+        origin = (Path(override) if override else postimages / relative).resolve(strict=True)
+        allowed = Path(freeze['postimageOverrideRoot']).resolve(strict=True) if override else postimages
+        require(allowed in origin.parents, 'Postimage path escape')
+        require(digest_file(origin) == (row['bytes'], row['sha256']), 'Postimage changed')
+        data = origin.read_bytes()
+        require(len(data) == row['bytes'] and hashlib.sha256(data).hexdigest() == row['sha256'], 'Postimage changed during copy')
+        target = projection / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with target.open('xb') as stream:
+            stream.write(data)
+        target.chmod(row['mode'])
+    for directory in ('output', 'empty-env', 'tmp', 'home'):
+        (stage / directory).mkdir()
+    for binding in freeze['packageBindings']:
+        link = Path(binding['link'])
+        require(stage in link.parents and not link.exists(), 'Package binding target not fresh/owned')
+        root = Path(binding['target']).resolve(strict=True)
+        if binding.get('kind') == 'owned-package-directory':
+            entries = binding['entries']
+            require(len(entries) <= 1024 and len(set(entries)) == len(entries), 'Package link name/count bound')
+            require(all(canonical_relative(name) == name and '/' not in name and name not in ('.bin', '.vite-temp') for name in entries), 'Unadmitted package branch')
+            link.mkdir()
+            for name in entries:
+                target = root / name
+                require(contained(target.resolve(strict=True), [root]), 'Package binding target escape')
+                (link / name).symlink_to(target, target_is_directory=target.is_dir())
+            (link / '.vite-temp').mkdir()
+        else:
+            link.symlink_to(root, target_is_directory=True)
+    verify_projection(source, stage)
+    verify_bindings(freeze)
+    require(within_bounds(census(stage)), 'Source materialization exceeds generation envelope')
+
+
+def verify_projection(source, stage):
+    for row in source['files']:
+        path = stage / 'projection' / canonical_relative(row['path'])
+        require(stat.S_IMODE(path.lstat().st_mode) == row['mode'] and digest_file(path) == (row['bytes'], row['sha256']), 'Projected source bytes/mode mismatch')
+
+
+def verify_bindings(freeze):
+    for binding in freeze['packageBindings']:
+        link, root = Path(binding['link']), Path(binding['target']).resolve(strict=True)
+        if binding.get('kind') == 'owned-package-directory':
+            require(stat.S_ISDIR(link.lstat().st_mode), 'Owned package directory replaced')
+            require({path.name for path in link.iterdir()} == set(binding['entries']) | {'.vite-temp'}, 'Unattributed package directory entry')
+            require(stat.S_ISDIR((link / '.vite-temp').lstat().st_mode), 'Owned Vite temp directory replaced')
+            for name in binding['entries']:
+                require((link / name).is_symlink() and os.readlink(link / name) == str(root / name), 'Package symlink identity changed')
+        else:
+            require(link.is_symlink() and os.readlink(link) == str(root), 'Package-root binding changed')
+
+
+class BootstrapParser(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=False)
+        self.scripts, self.active = [], None
+    def handle_starttag(self, tag, attrs):
+        if tag == 'script':
+            require(self.active is None, 'Nested script in fallback')
+            attributes = dict(attrs)
+            if attributes.get('type', '') in ('', 'text/javascript', 'application/javascript', 'module'):
+                self.active = {'attrs': attributes, 'text': ''}
+                self.scripts.append(self.active)
+    def handle_data(self, data):
+        if self.active is not None:
+            self.active['text'] += data
+    def handle_endtag(self, tag):
+        if tag == 'script':
+            self.active = None
+
+
+def generated_inventory(stage, source_sha, freeze):
+    proof_rows = []
+    for path in sorted(stage.rglob('badge-inputs-*.json')):
+        size, digest = digest_file(path, 4 * 1024**2)
+        proof_rows.append({'path': path.relative_to(stage).as_posix(), 'bytes': size, 'sha256': digest})
+    require(len(proof_rows) <= 8 and sum(row['bytes'] for row in proof_rows) <= 16 * 1024**2, 'All generated/served attribution copies exceed 16 MiB total')
+    write_json(stage / 'generated-attribution-inventory.json', {'schema': 1, 'status': 'unreviewed', 'files': proof_rows})
+    served = stage / 'output/served'
+    fallback_path = served / 'index.html'
+    fallback_size, fallback_sha = digest_file(fallback_path, 512 * 1024)
+    parser = BootstrapParser()
+    parser.feed(fallback_path.read_bytes().decode('utf-8'))
+    require(len(parser.scripts) == 1 and not parser.scripts[0]['attrs'].get('src') and parser.scripts[0]['attrs'].get('type') != 'module', 'Unexpected real Kit fallback bootstrap')
+    bootstrap = parser.scripts[0]['text'].encode('utf-8')
+    assets = []
+    for path in sorted(served.rglob('*')):
+        require(not path.is_symlink(), 'Generated asset symlink is not admitted')
+        if not path.is_file() or path == fallback_path:
+            continue
+        size, sha = digest_file(path, 8 * 1024**2)
+        relative = path.relative_to(served).as_posix()
+        kind = 'module' if path.suffix == '.js' else 'style' if path.suffix == '.css' else 'asset'
+        assets.append({'path': 'output/served/' + relative, 'url': '/' + relative, 'bytes': size, 'sha256': sha, 'kind': kind})
+    require(len(assets) <= 1024 and sum(row['bytes'] for row in assets) <= 64 * 1024**2, 'Emitted asset envelope')
+    dom_root = Path(freeze['domPackageRoot'])
+    def package_descriptor(name, version, entry):
+        def entry_identity(relative):
+            size, sha = digest_file(dom_root / relative)
+            return {'path': relative, 'bytes': size, 'sha256': sha}
+        return {'name': name, 'version': version, 'package': entry_identity(name + '/package.json'), 'entry': entry_identity(entry)}
+    result = {'schema': 1, 'status': 'generated-unreviewed-not-mount-admitted', 'origin': 'http://badge-fixture.test',
+              'sourceRevision': REVISION, 'sourceManifestSha256': source_sha, 'profile': 'native0', 'guardMode': 'installed',
+              'fallback': {'path': 'output/served/index.html', 'bytes': fallback_size, 'sha256': fallback_sha},
+              'bootstrap': {'scriptIndex': 0, 'type': 'classic', 'bytes': len(bootstrap), 'sha256': hashlib.sha256(bootstrap).hexdigest()},
+              'assets': assets, 'domPackage': package_descriptor('jsdom', '27.0.1', 'jsdom/lib/api.js'),
+              'idbPackage': package_descriptor('fake-indexeddb', '6.2.4', 'fake-indexeddb/build/cjs/index.js'),
+              'frameworkReview': None,
+              'reviewRequired': 'Actual routes/nodes/SSR/virtual-source provenance/overlay composition/package closure and generated startup must be independently reviewed. This file is not acceptance.'}
+    write_json(stage / 'generated-manifest.unreviewed.json', result)
+    files = []
+    kit = Path(freeze['cwd']) / '.svelte-kit'
+    for path in sorted(kit.rglob('*')):
+        require(not path.is_symlink(), 'Generated Kit symlink not admitted')
+        if path.is_file():
+            size, sha = digest_file(path, 8 * 1024**2)
+            files.append({'path': path.relative_to(stage).as_posix(), 'bytes': size, 'sha256': sha})
+    require(len(files) <= MAX_FILES, 'Generated Kit inventory bound')
+    write_json(stage / 'generated-kit-inventory.json', {'schema': 1, 'status': 'generated-unreviewed', 'files': files})
+
+
+def worker(args, freeze):
+    require(str(os.getppid()) == os.environ.get('BADGE_GENERATION_OWNER_PID'), 'Worker must be launched by the admitted owner')
+    stage = Path(args.out)
+    source = read_json_identity(freeze['sourceManifest'], 262144)
+    packages = read_json_identity(freeze['packageClosure'], 65536)
+    before = verify_packages(packages)
+    write_json(stage / 'PACKAGE-PINS-BEFORE.json', {'schema': 1, 'roots': before})
+    materialize(freeze, source, stage)
+    environment = dict(freeze['environment'])
+    command = freeze['command']
+    require(command[0] == freeze['node'] and command[2:] == ['build', '--config', str(Path(freeze['cwd']) / 'vite.config.mjs'), '--mode', 'production', '--configLoader', 'native'], 'Only admitted Vite native0 build is supported')
+    require(environment['PUBLIC_MANGADEX_CATALOGUE'] == '0' and environment['WEEBDEX_BADGE_GUARD_MODE'] == 'installed' and environment['WEEBDEX_BADGE_SOURCE_REVISION'] == REVISION, 'Only current native0 installed profile is admitted')
+    code = subprocess.run(command, cwd=freeze['cwd'], env=environment, check=False).returncode
+    require(code == 0, 'Actual Vite/Kit generation failed; preserve owned outputs/logs')
+    verify_projection(source, stage)
+    verify_bindings(freeze)
+    after = verify_packages(packages)
+    require(after == before, 'Package closure changed during generation')
+    write_json(stage / 'PACKAGE-PINS-AFTER.json', {'schema': 1, 'roots': after})
+    generated_inventory(stage, freeze['sourceManifest']['sha256'], freeze)
+    final = census(stage)
+    require(within_bounds(final), 'Generated allocation exceeds proposal')
+    write_json(stage / 'GENERATION-TERMINAL.json', {'schema': 1, 'status': 'generated-unreviewed', 'scope': 'native0-generation-only', 'census': final})
+    print(json.dumps({'status': 'generated-unreviewed', 'profile': 'native0', 'mountedExecution': False}))
+
+
+def launch(args, freeze, freeze_path):
+    stage = Path(args.out)
+    require(not stage.exists(), 'Fresh output required; preserve every prior attempt')
+    # Check the full package closure before the first application compiler import.
+    verify_packages(read_json_identity(freeze['packageClosure'], 65536))
+    require(shutil.disk_usage(stage.parent).free >= 4429185024 + TOTAL, 'Insufficient 128 MiB proposed envelope above unchanged live disk floor')
+    stage.mkdir()
+    spec = importlib.util.spec_from_file_location('badge_reviewed_owner', freeze['owner'])
+    owner = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(owner)
+    require((owner.LAUNCH_DISK, owner.LIVE_DISK, owner.MEMORY_FLOOR, owner.TREE_RSS_LIMIT) == (4563402752, 4429185024, 805306368, 4294967296), 'Reviewed owner resource thresholds changed')
+    base = owner.QualificationOwner
+    class BadgeOwner(base):
+        def resource_sample(self, rows):
+            sample = super().resource_sample(rows)
+            sample['badgeAllocationSample'] = census(stage, sampled=True)
+            if not within_bounds(sample['badgeAllocationSample']):
+                write_json(stage / 'ALLOCATION-STOP.json', {'schema': 1, 'measurement': 'sampled, not hard peak', 'sample': sample})
+                raise RuntimeError('Sampled badge allocation/category bound exceeded')
+            return sample
+    owner.QualificationOwner = BadgeOwner
+    # These lower evidence growth, not resource floors or OS/security settings.
+    owner.MAX_EVIDENCE_GROWTH = TOTAL
+    owner.MAX_SAMPLE_BYTES = 1024 * 1024  # Keep pretty-printed receipt and 4 MiB log within supervision budget.
+    environment = {'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8',
+                   'PYTHONDONTWRITEBYTECODE': '1', 'BADGE_GENERATION_OWNER_PID': str(os.getpid())}
+    command = [freeze['python'], '-I', '-B', str(Path(__file__).resolve()), 'worker',
+               '--freeze', str(freeze_path), '--admit', args.admit, '--out', str(stage)]
+    report = owner.run(command, cwd=stage, env=environment, out=stage, name='native0', deadline=600, evidence_roots=())
+    require(report['status'] == 'passed' and report['exitCode'] == 0, 'Generation owner failed; preserve receipt')
+    clean = report['cleanup']
+    require(clean['verified_stopped'] and not clean['forced'] and clean['remaining_owned'] == 0 and clean['unknown_births'] == 0 and clean['tracking_errors'] == 0 and clean['stdout_eof'] and report['ownedSurvivors'] == [], 'Generation ownership terminal not accepted')
+    final = census(stage)
+    require(within_bounds(final), 'Final exact generation census over envelope')
+    write_json(stage / 'OWNER-TERMINAL.json', {'schema': 1, 'status': 'generation-owner-clean-output-still-unreviewed', 'freezeSha256': args.admit, 'census': final,
+               'measurement': 'Periodic sampled logical/allocated usage/RSS; not a guaranteed hard instantaneous peak. Final exact census recorded after owner cleanup.'})
+    require(within_bounds(census(stage)), 'Final receipt exceeds envelope')
+    print(json.dumps({'status': 'generation-owner-clean-output-still-unreviewed', 'mountedExecution': False}))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('mode', choices=('launch', 'worker'))
+    parser.add_argument('--freeze', required=True)
+    parser.add_argument('--admit', required=True)
+    parser.add_argument('--out', required=True)
+    args = parser.parse_args()
+    freeze, freeze_path = load_freeze(args)
+    if args.mode == 'worker':
+        worker(args, freeze)
+    else:
+        launch(args, freeze, freeze_path)
+
+
+if __name__ == '__main__':
+    main()

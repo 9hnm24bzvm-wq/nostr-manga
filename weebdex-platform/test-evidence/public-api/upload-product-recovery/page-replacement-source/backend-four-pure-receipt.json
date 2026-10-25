@@ -1,0 +1,92 @@
+{
+  "schema": "replacement-four-named-pure-cases-v1",
+  "started_at_utc": "2026-10-17T06:07:00.087337+00:00",
+  "compile_receipt_sha256": "809def827db838541385322c1be243f31a79de81618adcf880f84dcb31700b94",
+  "binary": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-cargo-target-01/debug/deps/weebdex_platform-cdb471e75086c1b6",
+    "sha256": "92659dcc2e4413b58dc060cd304ac8794a9a293695c5dbe9515dd1268f75bda7",
+    "bytes": 42313984,
+    "mode": 493
+  },
+  "scope": "Four exact pure library cases; no DB/HTTP/browser fixture",
+  "phases": [
+    {
+      "name": "domains::uploads::sessions::tests::public_replacement_always_fences_version_and_native_identical_retry_is_preserved",
+      "command": [
+        "/workspace/shared/nostr-manga-recovery-20261017/replacement-cargo-target-01/debug/deps/weebdex_platform-cdb471e75086c1b6",
+        "domains::uploads::sessions::tests::public_replacement_always_fences_version_and_native_identical_retry_is_preserved",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "errors": [],
+      "pid": 6,
+      "reaped": true,
+      "log_sha256": "c53b63e87b7a29e19d0035680fb5e5be53495265b223e0a5d5fbff744cba3649",
+      "exact_one_pass": true,
+      "pass": true
+    },
+    {
+      "name": "public_api::upload_extensions::tests::expected_version_accepts_only_canonical_positive_i32",
+      "command": [
+        "/workspace/shared/nostr-manga-recovery-20261017/replacement-cargo-target-01/debug/deps/weebdex_platform-cdb471e75086c1b6",
+        "public_api::upload_extensions::tests::expected_version_accepts_only_canonical_positive_i32",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "errors": [],
+      "pid": 8,
+      "reaped": true,
+      "log_sha256": "1fc4c83934130ab082883c7f452a4682ced9d3fee3201e7911c814a06c2f2c8b",
+      "exact_one_pass": true,
+      "pass": true
+    },
+    {
+      "name": "public_api::upload_extensions::tests::expected_version_is_a_bounded_plain_first_part",
+      "command": [
+        "/workspace/shared/nostr-manga-recovery-20261017/replacement-cargo-target-01/debug/deps/weebdex_platform-cdb471e75086c1b6",
+        "public_api::upload_extensions::tests::expected_version_is_a_bounded_plain_first_part",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "errors": [],
+      "pid": 10,
+      "reaped": true,
+      "log_sha256": "b193d0a7dfaaa1164c609ab236fbd62efeb8375a94ab8adb2bf38a12f19a5c09",
+      "exact_one_pass": true,
+      "pass": true
+    },
+    {
+      "name": "router::tests::signed_replacement_body_budget_and_private_cache_select_exact_public_path",
+      "command": [
+        "/workspace/shared/nostr-manga-recovery-20261017/replacement-cargo-target-01/debug/deps/weebdex_platform-cdb471e75086c1b6",
+        "router::tests::signed_replacement_body_budget_and_private_cache_select_exact_public_path",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "errors": [],
+      "pid": 12,
+      "reaped": true,
+      "log_sha256": "4cfec42dbdd7d81704924c76d674e7f79cf27f4139e4345bddd4d4d38c7fb037",
+      "exact_one_pass": true,
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "terminal_errors": [],
+  "receipt_persisted": true,
+  "source_binary_and_held_browser_unchanged": true,
+  "free_after": 25268142080,
+  "ended_at_utc": "2026-10-17T06:07:01.035046+00:00"
+}

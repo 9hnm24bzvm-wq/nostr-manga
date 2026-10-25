@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/toolchains/cargo/bin/cargo",
+    "test",
+    "--offline",
+    "--manifest-path",
+    "weebdex-platform/backend/Cargo.toml",
+    "--test",
+    "public_chapter_writes",
+    "--no-run",
+    "-j",
+    "1"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/account-intent-boundaries-worktree-20261017",
+  "exitCode": 0,
+  "elapsedSeconds": 102.392,
+  "floorBytes": 4294967296,
+  "minimumFreeBytes": 5795549184,
+  "freeBytesAfter": 5765025792,
+  "stopReason": null,
+  "ownedGroup": 8,
+  "cleanupSignals": [],
+  "survivors": [],
+  "cleanupVerified": true,
+  "offline": true,
+  "jobs": 1,
+  "incremental": false
+}

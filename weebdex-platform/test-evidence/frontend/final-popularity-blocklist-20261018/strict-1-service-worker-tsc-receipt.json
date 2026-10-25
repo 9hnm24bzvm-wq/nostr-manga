@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/typescript/bin/tsc",
+    "--project",
+    "./tsconfig.worker.json",
+    "--pretty",
+    "false"
+  ],
+  "exit_code": 0,
+  "signal": null,
+  "elapsed_ms": 580
+}

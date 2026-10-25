@@ -1,0 +1,29 @@
+{
+  "artifactId": 12144835667,
+  "name": "hosted-browser-evidence-39148301394-1",
+  "createdAt": "2026-10-18T17:21:34Z",
+  "expiresAt": "2026-10-19T17:21:33Z",
+  "ciCommit": "1261b19561af6c2f09909f09a823ac98cafb95e2",
+  "zipBytes": 2370,
+  "zipSha256": "85e93fdf0fded4cbaa87dfbfeb9d8f53254946600ea08ca3f85023014d44ab4f",
+  "githubDigest": "sha256:85e93fdf0fded4cbaa87dfbfeb9d8f53254946600ea08ca3f85023014d44ab4f",
+  "regularJsonMembers": [
+    {
+      "name": "preparation.json",
+      "bytes": 1359,
+      "sha256": "25db5e08fdba9fcbddb3f641d98b2ed615d37cba09b9f1335feb3192626c2cc5"
+    },
+    {
+      "name": "summary.json",
+      "bytes": 1205,
+      "sha256": "ae384d8957d467173b49bc2c9eda72a3c6af27c89754d0731e8762a1abb8cd94"
+    },
+    {
+      "name": "phases.json",
+      "bytes": 1926,
+      "sha256": "033ce096252d6e6305e0628d30909f3ee680b785306cdb236215122549acb083"
+    }
+  ],
+  "archiveContentsCopiedVerbatim": true,
+  "privateArtifactsRetrieved": false
+}

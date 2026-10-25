@@ -1,0 +1,13 @@
+{
+  "initialCompileInventory": "final-compile-01-source-pins.json (same exact1244 inputs as concurrent strict check onecd842cc)",
+  "correctedCompileAndHttpInventory": "final-source-before.json + final-source-after.json (729ce958)",
+  "onlyRuntimeTestRepair": "Foreign-session expected403\u2192404 and printed status label; production code unchanged.",
+  "domTestSha256": "ab5ecdedca31d87991cf51cb88abe63e47beba55f5939ac156fe16555e1fd040",
+  "actualComponentSha256": "77245d8bf59c4b6288a3a3a4097326782a245eb368134d81c610a8e085923f5c",
+  "sourceHashes": {
+    "backend/src/public_api/chapter_writes.rs": "a11d4a3bcfaf6fd7ccf930d0e908b9bf517e1c46cf67e744bb352362516c4694",
+    "backend/src/public_api/uploads.rs": "3c2a58867fe7f0eff958eed2b28a34bd85dad3b40a0a005bd9e06cc1da55f330",
+    "backend/src/public_api/reports.rs": "d329d21588aae460b8de940c430fad23fb77cc3b9a6c9f262213748d7ec2950e",
+    "platform-integrations/public-api/upload-client.ts": "af792fb9e1ebd24d17cb2d11b0838351ba19f5445786465a73ba70c3e3d4bc18"
+  }
+}

@@ -1,0 +1,23 @@
+(node:15) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ reviewed public identity action uses the active local key and preserves exact verified intent (349.582836ms)
+✖ reviewed library publication uses the same local identity and immutable signed job (105.220495ms)
+✔ closing a reviewed action before deferred signing creates no local signature or durable action (105.29706ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 829.355355
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/test_browser_local_signing_integration.mjs:33:1
+✖ reviewed library publication uses the same local identity and immutable signed job (105.220495ms)
+  Error: Library, canonical mapping or recipient selection changed. Review again.
+      at Module.publishReviewed (/workspace/shared/nostr-manga-recovery-20261017/local-signing-per-key-fixture-worktree-20261018/weebdex-platform/platform-integrations/local-library/publication.ts:261:15)
+      at async TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/local-signing-per-key-fixture-worktree-20261018/weebdex-platform/tests/ci/test_browser_local_signing_integration.mjs:38:16)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

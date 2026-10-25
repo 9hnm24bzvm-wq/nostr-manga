@@ -1,0 +1,222 @@
+{
+  "schema": 1,
+  "source_commit": "a424eb67586d36e269b3fc56c3cf20561e1c052d",
+  "source_tree": "00012dd2cd11f80d1fcf0c47e625f52e4864a3f6",
+  "result": "independently-verified-focused-local-browser",
+  "phase_counts": [
+    {
+      "phase": "startup",
+      "actual_steps": 19,
+      "status": "passed"
+    },
+    {
+      "phase": "local-library",
+      "actual_steps": 6,
+      "status": "passed"
+    },
+    {
+      "phase": "ui12-compact-feed",
+      "actual_steps": 1,
+      "status": "passed"
+    },
+    {
+      "phase": "signed-social",
+      "actual_steps": 9,
+      "status": "passed"
+    },
+    {
+      "phase": "signed-context",
+      "actual_steps": 9,
+      "status": "passed"
+    }
+  ],
+  "actual_steps": 44,
+  "page_errors": 0,
+  "full_hosted_suite_passed": false,
+  "verification": {
+    "closed_source_bound_nested_schemas": true,
+    "actual_acceptance_and_owned_runner_reprojection_exact": true,
+    "strict_four_port_cleanup_and_key_removal": true,
+    "source_archive_files_checked": 2554,
+    "only_functional_tracked_stage_delta": "weebdex-platform/scripts/browser-acceptance.mjs",
+    "stage_generated_evidence_rewrites": [
+      "weebdex-platform/test-evidence/frontend/bootstrap-csp.json",
+      "weebdex-platform/test-evidence/security/live-native-http.json"
+    ],
+    "sandbox_tightened_only": true,
+    "built_artifact_files_checked": 420,
+    "native_binary_and_guard_hashes_match": true,
+    "screenshots_hash_dimensions_and_original_bytes_checked": 16,
+    "json_scope_scan_clean": true,
+    "cleanup_negative_controls_rejected": 20
+  },
+  "files": [
+    {
+      "path": "bindings.json",
+      "bytes": 1711,
+      "sha256": "6f50e3beb64849cc5500cb956053423335aa8766b73b064197374a8c59d99b42"
+    },
+    {
+      "path": "focused-runtime-summary.json",
+      "bytes": 44795,
+      "sha256": "663a22ff680e8ec57314159bfc7d4ffdcb65c092b5f94f1cc3030e735896f5ea"
+    },
+    {
+      "path": "screenshots/relocation-desktop-home.png",
+      "bytes": 173228,
+      "sha256": "6d90dc29894f3dd4d7d7cff0f4cfaffcafc7e2bc69307f339f9cf7740ea307e4"
+    },
+    {
+      "path": "screenshots/relocation-desktop-library-settings.png",
+      "bytes": 98389,
+      "sha256": "c9b9136e936bd754a0328b4e5afb4da64083e2034d1363e548f7a5b2f2ca98f5"
+    },
+    {
+      "path": "screenshots/relocation-desktop-public-identity.png",
+      "bytes": 98389,
+      "sha256": "c9b9136e936bd754a0328b4e5afb4da64083e2034d1363e548f7a5b2f2ca98f5"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader-discussion.png",
+      "bytes": 71255,
+      "sha256": "675d3d3ac0ac51375a3aec9fbade075416356d649622ab0a7dd1abbe40588399"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader.png",
+      "bytes": 75661,
+      "sha256": "498d4e17fcdd7851913306f8383bce4b41ef7b04e9b2c7c29254497889e99fbe"
+    },
+    {
+      "path": "screenshots/relocation-desktop-search.png",
+      "bytes": 109151,
+      "sha256": "7726d9e9338db5920e580eab838abee54d9c5761d6a6edaaae11bc2c75d6fdfa"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title-comments.png",
+      "bytes": 83719,
+      "sha256": "031b873fbfe27e37594b4f0fe234fb2becdb7cd4158d854d3b5bda89da59126c"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title.png",
+      "bytes": 89046,
+      "sha256": "8f7cca6421fb643fc6c2492133ccd6aefd783d5123569bd4375355c3fc6620b4"
+    },
+    {
+      "path": "screenshots/relocation-mobile-home.png",
+      "bytes": 128954,
+      "sha256": "fc240edbd9108708596a10825517674f1b77bc7d40326a3f80ae9195cd188fec"
+    },
+    {
+      "path": "screenshots/relocation-mobile-library-settings.png",
+      "bytes": 58905,
+      "sha256": "e4904d31a5b98a6eb54ef42527754737902de2fdcaaf0ccc24270f3f3e85ce1b"
+    },
+    {
+      "path": "screenshots/relocation-mobile-public-identity.png",
+      "bytes": 54903,
+      "sha256": "13083efbf1150401f3f5c44dc311c1629323fb25519a432d32536c65b2a6f9b2"
+    },
+    {
+      "path": "screenshots/relocation-mobile-reader-discussion.png",
+      "bytes": 24007,
+      "sha256": "91e0993d9fbe6a8c0eb3bb1c0d18826844a2e6446e4c26838839e985f343f911"
+    },
+    {
+      "path": "screenshots/relocation-mobile-reader.png",
+      "bytes": 4017,
+      "sha256": "5e75ec8892ea0eb591cf80a2593b6c979cc42a51f8b51431e9f675dd6fbd0475"
+    },
+    {
+      "path": "screenshots/relocation-mobile-search.png",
+      "bytes": 92828,
+      "sha256": "cfb8c88eb085518ce3c9fe22e56604d3cfe66f1938f87d0818b0b4719eb58fbf"
+    },
+    {
+      "path": "screenshots/relocation-mobile-title-comments.png",
+      "bytes": 51358,
+      "sha256": "1c0683b83cba5280214d8eb2fffde4ab934581b9c4d7bdc62c6964ab563542a0"
+    },
+    {
+      "path": "screenshots/relocation-mobile-title.png",
+      "bytes": 60328,
+      "sha256": "a85d7ad4c8fafa98f15dd0b8e6b99c4190af03cf7142a72fa753b6d981a8026e"
+    },
+    {
+      "path": "screenshots.json",
+      "bytes": 3362,
+      "sha256": "ea7c6ffe976e742d23e5b3c00a109e126bd414fee47b0ef7ba505a470c0b39d3"
+    },
+    {
+      "path": "supplemental-visual/observations.json",
+      "bytes": 2862,
+      "sha256": "a6d74ed63a211bbc90dad422852389fb1971309fa2de0ee01ec32d1a82bd3186"
+    },
+    {
+      "path": "supplemental-visual/screenshots/desktop-chapter-expanded-discussion.png",
+      "bytes": 72838,
+      "sha256": "a2e0724deb185504688b0eb94b595124c0dc043758b1373be7aca153f44142ed"
+    },
+    {
+      "path": "supplemental-visual/screenshots/desktop-manage-arrival.png",
+      "bytes": 98389,
+      "sha256": "c9b9136e936bd754a0328b4e5afb4da64083e2034d1363e548f7a5b2f2ca98f5"
+    },
+    {
+      "path": "supplemental-visual/screenshots/desktop-manga-expanded-discussion.png",
+      "bytes": 96732,
+      "sha256": "f626448500cacb756c7be5c693588815d53c869f1a3acdf7d4a77b43c53211d7"
+    },
+    {
+      "path": "supplemental-visual/screenshots/mobile-chapter-expanded-discussion.png",
+      "bytes": 35112,
+      "sha256": "f95888a40182d0a12c7827a6819973a89dd3280d8a6987b65e676856bbdce09d"
+    },
+    {
+      "path": "supplemental-visual/screenshots/mobile-manage-arrival.png",
+      "bytes": 58858,
+      "sha256": "e634ceb1623cd9b3b27d2e21bfad474cdae3f3ee7383c833058c6f75844307da"
+    },
+    {
+      "path": "supplemental-visual/screenshots/mobile-manga-expanded-discussion.png",
+      "bytes": 50777,
+      "sha256": "bd0138d8d992353b585c11075ff5cff110be72a477cf2042af45603c92db2836"
+    },
+    {
+      "path": "supplemental-visual/screenshots.json",
+      "bytes": 1298,
+      "sha256": "7d7c8a96f4438c65e3918a0f11e592f6914e9d1a3c2bccb73b3f4630be7459ba"
+    },
+    {
+      "path": "supplemental-visual/source-bindings.json",
+      "bytes": 973,
+      "sha256": "7fb934e4445179c3905617c407fb04daf1cd5354606046a88d029400ad792632"
+    },
+    {
+      "path": "supplemental-visual/summary.json",
+      "bytes": 2253,
+      "sha256": "c2b8403f4779a2aeabab53b55ba73c51e5d2879aad8bc9169aca5fee32766a88"
+    }
+  ],
+  "limits": [
+    "Focused sandboxed system Chromium run uses existing pinned Playwright1.62.1; it does not certify hosted Chromium revision1234.",
+    "Five selected phases passed; remaining full-suite phases have not run on this checkpoint.",
+    "Sixteen synthetic anonymous desktop/mobile captures are evidence of this source only. The accepted design subsequently changed to native Settings tabs; this layout is not the approved final UX. A separate supplemental probe found an actual mobile Manage heading obstruction.",
+    "No full pixel parity, broad UX audit completion, or performance generalization is claimed.",
+    "The failed supplemental visual probe stopped its batch before UI11 device-navigation/progress; those phases remain unrun in this local sequence."
+  ],
+  "supplemental_visual_probe": {
+    "phase": "relocation-visual-probe",
+    "actual_steps": 6,
+    "passed_steps": 5,
+    "failed_steps": 1,
+    "failure_check": "mobile-manage-arrival",
+    "failure_code": "heading_obscured",
+    "page_errors": 0,
+    "strict_owned_teardown_verified": true,
+    "lifecycle_and_supervisor_correctly_failed": true,
+    "ui11_device_navigation_executed": false,
+    "ui11_device_progress_executed": false,
+    "screenshots_hash_dimensions_and_original_bytes_checked": 6,
+    "visual_inspection_completed": true
+  }
+}

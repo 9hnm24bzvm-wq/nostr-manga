@@ -254,12 +254,20 @@ class Supervisor:
             self.socket_path.unlink()
 
     def config(self):
+        for name in ("client_temp", "proxy_temp", "fastcgi_temp", "uwsgi_temp", "scgi_temp"):
+            directory(self.runtime / name)
         config = self.runtime / "nginx.conf"
         text = f"""daemon off; master_process on; worker_processes {self.args.workers};
 worker_shutdown_timeout {self.args.shutdown_seconds}s;
 pid {self.runtime}/nginx.pid; error_log {self.runtime}/nginx.log notice;
 events {{worker_connections 4096;}}
 http {{access_log off; sendfile on; open_file_cache off; gzip off; autoindex off; server_tokens off;
+# Keep package-compiled absolute cache defaults out of an unprivileged reader.
+client_body_temp_path {self.runtime}/client_temp;
+proxy_temp_path {self.runtime}/proxy_temp;
+fastcgi_temp_path {self.runtime}/fastcgi_temp;
+uwsgi_temp_path {self.runtime}/uwsgi_temp;
+scgi_temp_path {self.runtime}/scgi_temp;
 types {{image/png png; image/jpeg jpg; image/webp webp;}}
 server {{listen {self.address}:{self.port};
 add_header Cache-Control "no-store" always; add_header X-Content-Type-Options "nosniff" always;
@@ -324,6 +332,8 @@ location / {{return 404;}}
                     str(self.binary),
                     [
                         str(self.binary),
+                        "-e",
+                        str(self.runtime / "nginx.log"),
                         "-p",
                         str(self.runtime) + "/",
                         "-c",

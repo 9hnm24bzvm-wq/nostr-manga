@@ -2,14 +2,35 @@
 // Importing this module starts no fixture, browser, listener or application.
 // All credentials, CSRF values, mail links and client keys remain in memory.
 import { randomBytes } from "node:crypto";
+import { focusReaderShortcut } from "./browser-reader-controls.mjs";
 
 export const ui10JourneyPhases = Object.freeze([
   "ui10-api-client", "ui10-auth-lifetimes", "ui10-recovery-lifetimes",
   "ui10-preferences", "ui10-reader-transition"
 ]);
 
+const readerCases = Object.freeze(["403", "404", "delayed", "normal"]);
+const readerCheckSuffixes = Object.freeze(["open", "page-one", "image-bytes", "settings", "shortcut-focus", "navigation", "destination"]);
+export const ui10DiagnosticChecks = Object.freeze({
+  "ui10-reader-transition": Object.freeze([
+    ...readerCases.flatMap(control => readerCheckSuffixes.map(check => `reader-transition-${control}-${check}`)),
+    ...["title-control", "title-route", "chapter-link", "page-one", "image-bytes", "realm", "progress", "incomplete", "settled"].map(check => `reader-transition-normal-destination-${check}`)
+  ]),
+  "ui10-recovery-lifetimes": Object.freeze([
+    "recovery-reset-realm", "recovery-reset-hold-session", "recovery-reset-submit",
+    "recovery-reset-held-session", "recovery-reset-newer-search", "recovery-reset-late-response",
+    "recovery-reset-no-stale-ui", "recovery-reset-logout", "recovery-reset-old-login-form",
+    "recovery-reset-old-password", "recovery-reset-old-login-settled", "recovery-reset-old-session-denied",
+    "recovery-reset-new-password", "recovery-reset-link-replay"
+  ])
+});
+
 export async function runUi10Journeys(h) {
   const { phase, page, context, origin, fixture, step, insist, open, redactions } = h;
+  const check = (id, operation) => {
+    insist(typeof h.check === "function", "The reviewed fixed-check diagnostic recorder is required for this journey");
+    return h.check(id, operation);
+  };
   insist(ui10JourneyPhases.includes(phase), "Unknown UI10 journey phase");
   const marker = randomBytes(6).toString("hex"), ids = fixture.ids ?? {};
   let account;
@@ -319,22 +340,36 @@ export async function runUi10Journeys(h) {
       } finally { await held.close(); oldFlow = undefined; }
     });
     await step("UI10 recovery: delayed acknowledged reset Session refresh preserves newer navigation and actual password outcome", async () => {
-      const replacement = remember(`Recovered!${randomBytes(24).toString("base64url")}9a`); await realm();
-      const held = await holdOne(origin + "/api/auth/check", request => request.method() === "GET", async response => { const body = await response.json(); insist(response.status() === 200 && body.identity?.username === account.username && body.session_purpose !== "recovery", "Real reset did not rotate to a normal account session"); });
+      insist(typeof h.check === "function", "The reviewed fixed-check diagnostic recorder is required for this recovery journey");
+      const check = (id, operation) => h.check(id, operation);
+      const replacement = remember(`Recovered!${randomBytes(24).toString("base64url")}9a`);
+      await check("recovery-reset-realm", realm);
+      const held = await check("recovery-reset-hold-session", () => holdOne(origin + "/api/auth/check", request => request.method() === "GET", async response => { const body = await response.json(); insist(response.status() === 200 && body.identity?.username === account.username && body.session_purpose !== "recovery", "Real reset did not rotate to a normal account session"); }));
       let posts = 0; const count = request => { if (new URL(request.url()).pathname === "/auth/self-service/settings" && request.method() === "POST") posts++; }; page.on("request", count);
       try {
-        await page.locator('input[name="password"]').fill(replacement); await page.getByRole("button", { name: "Reset Password", exact: true }).click(); await held.wait(); await search();
-        await held.release(); await assertRouteStable("/search"); await sameRealm();
-        insist(await page.getByText("Password reset completed", { exact: true }).count() === 0 && posts === 1, "Old reset completion leaked onto newer UI or replayed its write");
-        await logout(); await open("/auth/login"); await fillLogin();
-        const rejected = page.waitForResponse(response => new URL(response.url()).pathname === "/auth/self-service/login" && response.request().method() === "POST");
-        await page.getByRole("button", { name: "Sign in", exact: true }).click();
-        insist((await rejected).status() === 400, "Actual old-password login was not rejected by the server");
-        await until(() => page.locator('input[name="password"]').isEnabled(), Boolean, "Rejected old-password login never settled");
-        insist((await api("/api/auth/check")).status === 401, "Old password remained usable after the actually acknowledged reset");
-        account.password = replacement; await fillLogin(); await page.getByRole("button", { name: "Sign in", exact: true }).click();
-        await until(() => api("/api/auth/check"), value => value.status === 200 && value.body?.identity?.username === account.username, "Replacement password failed actual login after abandoned reset UI");
-        const replay = await context.request.get(oneTimeLink, { maxRedirects: 0 }); insist(replay.status() === 400, "Actual one-time recovery link remained replayable");
+        await check("recovery-reset-submit", async () => { await page.locator('input[name="password"]').fill(replacement); await page.getByRole("button", { name: "Reset Password", exact: true }).click(); });
+        await check("recovery-reset-held-session", () => held.wait());
+        await check("recovery-reset-newer-search", search);
+        await check("recovery-reset-late-response", async () => { await held.release(); await assertRouteStable("/search"); await sameRealm(); });
+        await check("recovery-reset-no-stale-ui", async () => { insist(await page.getByText("Password reset completed", { exact: true }).count() === 0 && posts === 1, "Old reset completion leaked onto newer UI or replayed its write"); });
+        await check("recovery-reset-logout", logout);
+        await check("recovery-reset-old-login-form", async () => { await open("/auth/login"); await fillLogin(); });
+        await check("recovery-reset-old-password", async () => {
+          // Both the real response and click are owned immediately, including
+          // failure, so a later login-response timeout cannot go unhandled.
+          const [rejected] = await Promise.all([
+            page.waitForResponse(response => new URL(response.url()).pathname === "/auth/self-service/login" && response.request().method() === "POST"),
+            page.getByRole("button", { name: "Sign in", exact: true }).click()
+          ]);
+          insist(rejected.status() === 400, "Actual old-password login was not rejected by the server");
+        });
+        await check("recovery-reset-old-login-settled", () => until(() => page.locator('input[name="password"]').isEnabled(), Boolean, "Rejected old-password login never settled"));
+        await check("recovery-reset-old-session-denied", async () => { insist((await api("/api/auth/check")).status === 401, "Old password remained usable after the actually acknowledged reset"); });
+        await check("recovery-reset-new-password", async () => {
+          account.password = replacement; await fillLogin(); await page.getByRole("button", { name: "Sign in", exact: true }).click();
+          await until(() => api("/api/auth/check"), value => value.status === 200 && value.body?.identity?.username === account.username, "Replacement password failed actual login after abandoned reset UI");
+        });
+        await check("recovery-reset-link-replay", async () => { const replay = await context.request.get(oneTimeLink, { maxRedirects: 0 }); insist(replay.status() === 400, "Actual one-time recovery link remained replayable"); });
         return { actual_password_posts: posts, discarded_stale_reset_ui: true, newer_search_retained: true, old_password_401: true, new_password_authenticated: true, one_time_link_replay_400: true };
       } finally { page.off("request", count); await held.close(); }
     });
@@ -402,25 +437,39 @@ export async function runUi10Journeys(h) {
       try { return await new Promise((resolve, reject) => { const query = db.transaction("records", "readonly").objectStore("records").getAll(); query.onsuccess = () => resolve(query.result.find(row => row.family === "chapters" && row.id === chapterId)); query.onerror = () => reject(query.error); }); }
       finally { db.close(); }
     }, id);
-    const readyReader = async id => {
-      await until(() => page.title(), value => value.startsWith("Page 1:"), "Reader did not remain at its explicit one-based page-one route");
-      insist(new URL(page.url()).pathname === `/chapter/${id}/1`, "Reader changed explicit page-one URL before user reading");
-      await until(() => page.locator('img[src^="blob:"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length), count => count > 0, "Actual fixture image bytes did not decode");
+    const readyReader = async (id, prefix) => {
+      const checkpoint = (suffix, operation) => prefix ? check(prefix + suffix, operation) : operation();
+      await checkpoint("page-one", async () => {
+        await until(() => page.title(), value => value.startsWith("Page 1:"), "Reader did not remain at its explicit one-based page-one route");
+        insist(new URL(page.url()).pathname === `/chapter/${id}/1`, "Reader changed explicit page-one URL before user reading");
+      });
+      await checkpoint("image-bytes", () => until(() => page.locator('img[src^="blob:"]').evaluateAll(images => images.filter(image => image.complete && image.naturalWidth > 0).length), count => count > 0, "Actual fixture image bytes did not decode"));
     };
     const settings = async () => {
       await page.getByRole("button", { name: "Single", exact: true }).click();
       await page.getByRole("button", { name: "Left-to-right", exact: true }).click();
       await checked(page, "#auto_advance", true);
     };
-    const unrelatedFromTitle = async () => {
-      await page.waitForURL(url => url.pathname.startsWith(`/title/${manga}`));
-      await page.locator(`a[href="/chapter/${unrelated}"]`).first().click();
+    const prepareReader = async control => {
+      const prefix = `reader-transition-${control}-`;
+      await check(prefix + "open", () => open(`/chapter/${current}/1`));
+      await readyReader(current, prefix);
+      await check(prefix + "settings", settings);
+      await check(prefix + "shortcut-focus", () => focusReaderShortcut(page, insist));
+      await realm();
+    };
+    const unrelatedFromTitle = async prefix => {
+      const checkpoint = (suffix, operation) => prefix ? check(prefix + suffix, operation) : operation();
+      await checkpoint("title-route", () => page.waitForURL(url => url.pathname.startsWith(`/title/${manga}`)));
+      await checkpoint("chapter-link", () => page.locator(`a[href="/chapter/${unrelated}"]`).first().click());
       // The retained title entry is a normal chapter link; the reader supplies1.
-      await readyReader(unrelated); await sameRealm();
-      const row = await until(() => deviceRow(unrelated), value => value?.page === 1, "Unrelated reader page-one progress did not persist on this device");
-      insist(row.completed === false && !row.readAt, "Unrelated page-one navigation recorded completion without reading");
-      await page.waitForTimeout(500); const settled = await deviceRow(unrelated);
-      insist(new URL(page.url()).pathname === `/chapter/${unrelated}/1` && settled?.page === 1 && settled.completed === false, "A late previous-chapter intent completed an unrelated reader");
+      await readyReader(unrelated, prefix); await checkpoint("realm", sameRealm);
+      const row = await checkpoint("progress", () => until(() => deviceRow(unrelated), value => value?.page === 1, "Unrelated reader page-one progress did not persist on this device"));
+      await checkpoint("incomplete", async () => { insist(row.completed === false && !row.readAt, "Unrelated page-one navigation recorded completion without reading"); });
+      await checkpoint("settled", async () => {
+        await page.waitForTimeout(500); const settled = await deviceRow(unrelated);
+        insist(new URL(page.url()).pathname === `/chapter/${unrelated}/1` && settled?.page === 1 && settled.completed === false, "A late previous-chapter intent completed an unrelated reader");
+      });
     };
     const unrelatedViaControls = async () => {
       // Keep the same JS realm: a page.goto here would conceal the old module-global flag.
@@ -436,7 +485,7 @@ export async function runUi10Journeys(h) {
       return { real_chapters: 3, multi_page_bytes: true, anonymous_device_mode: true, unrelated_destination_is_distinct_japanese_alternative: true };
     });
     for (const status of [403, 404]) await step(`UI10 reader: controlled previous-detail${status} cannot make an unrelated chapter open last or completed`, async () => {
-      await open(`/chapter/${current}/1`); await readyReader(current); await settings(); await realm();
+      await prepareReader(String(status));
       let failures = 0;
       const pattern = origin + `/api/chapter/${previous}`;
       const intercept = async route => {
@@ -448,35 +497,48 @@ export async function runUi10Journeys(h) {
       };
       await context.route(pattern, intercept);
       try {
-        await page.keyboard.press("ArrowLeft");
-        await page.getByText(status === 403 ? "403 - Forbidden" : "404 - Not Found", { exact: true }).waitFor({ state: "visible" });
-        insist(failures === 1, "Previous-page control did not request the intended genuine chapter once");
+        await check(`reader-transition-${status}-navigation`, async () => {
+          await page.keyboard.press("ArrowLeft");
+          await page.getByText(status === 403 ? "403 - Forbidden" : "404 - Not Found", { exact: true }).waitFor({ state: "visible" });
+          insist(failures === 1, "Previous-page control did not request the intended genuine chapter once");
+        });
       } finally { await context.unroute(pattern, intercept); }
-      await unrelatedViaControls();
+      await check(`reader-transition-${status}-destination`, unrelatedViaControls);
       return { actual_previous_detail_forwarded: true, controlled_ui_error: status, intended_previous_requests: failures, same_document_navigation: true, unrelated_url_page: 1, actual_device_page: 1, actual_device_completed: false };
     });
     await step("UI10 reader: delayed genuine previous navigation cannot supersede unrelated page-one reentry", async () => {
-      await open(`/chapter/${current}/1`); await readyReader(current); await settings(); await realm();
+      await prepareReader("delayed");
       const held = await holdOne(origin + `/api/chapter/${previous}`, request => request.method() === "GET", async response => { insist(response.status() === 200, "Actual delayed previous detail was unavailable"); });
       try {
-        await page.keyboard.press("ArrowLeft"); await held.wait();
-        await page.locator(`a[href^="/title/${manga}"]`).first().click(); await unrelatedFromTitle();
-        await held.release(); await assertRouteStable(`/chapter/${unrelated}/1`); await sameRealm();
-        const row = await deviceRow(unrelated); insist(row?.page === 1 && row.completed === false, "Superseded previous navigation changed unrelated persisted progress");
-        await page.goBack({ waitUntil: "domcontentloaded" }); await page.waitForURL(url => url.pathname.startsWith(`/title/${manga}`));
-        await page.goForward({ waitUntil: "domcontentloaded" }); await readyReader(unrelated); await sameRealm();
-        const restored = await deviceRow(unrelated); insist(restored?.page === 1 && restored.completed === false, "Back/Forward reentry inherited an abandoned last-page intent");
+        await check("reader-transition-delayed-navigation", async () => { await page.keyboard.press("ArrowLeft"); await held.wait(); });
+        await check("reader-transition-delayed-destination", async () => {
+          await page.locator(`a[href^="/title/${manga}"]`).first().click(); await unrelatedFromTitle();
+          await held.release(); await assertRouteStable(`/chapter/${unrelated}/1`); await sameRealm();
+          const row = await deviceRow(unrelated); insist(row?.page === 1 && row.completed === false, "Superseded previous navigation changed unrelated persisted progress");
+          await page.goBack({ waitUntil: "domcontentloaded" }); await page.waitForURL(url => url.pathname.startsWith(`/title/${manga}`));
+          await page.goForward({ waitUntil: "domcontentloaded" }); await readyReader(unrelated); await sameRealm();
+          const restored = await deviceRow(unrelated); insist(restored?.page === 1 && restored.completed === false, "Back/Forward reentry inherited an abandoned last-page intent");
+        });
         return { real_delayed_detail_200: true, actual_title_and_chapter_controls: true, old_delivery: held.disposition, superseding_page_one_retained: true, device_completed: false, back_forward_retains_page_one: true };
       } finally { await held.close(); }
     });
     await step("UI10 reader: normal automatic previous chapter opens only its intended last page", async () => {
-      await open(`/chapter/${current}/1`); await readyReader(current); await settings(); await realm();
+      await prepareReader("normal");
       const count = (await api(`/api/chapter/${previous}`)).body.data.length;
-      await page.keyboard.press("ArrowLeft"); await page.waitForURL(url => url.pathname === `/chapter/${previous}/${count}`);
-      await until(() => page.title(), value => value.startsWith(`Page ${count}:`), "Successful previous transition did not select the intended chapter's actual last page");
-      await sameRealm(); const persisted = await until(() => deviceRow(previous), row => row?.page === count && row.completed === true, "Intended last-page progress was not really persisted");
-      insist(persisted.completed, "Normal previous last-page progress lost completion");
-      await page.locator(`a[href^="/title/${manga}"]`).first().click(); await unrelatedFromTitle();
+      await check("reader-transition-normal-navigation", async () => {
+        await page.keyboard.press("ArrowLeft"); await page.waitForURL(url => url.pathname === `/chapter/${previous}/${count}`);
+        await until(() => page.title(), value => value.startsWith(`Page ${count}:`), "Successful previous transition did not select the intended chapter's actual last page");
+        await sameRealm(); const persisted = await until(() => deviceRow(previous), row => row?.page === count && row.completed === true, "Intended last-page progress was not really persisted");
+        insist(persisted.completed, "Normal previous last-page progress lost completion");
+      });
+      await check("reader-transition-normal-destination", async () => {
+        const prefix = "reader-transition-normal-destination-";
+        // End-of-chapter Title links stop bubbling and use browser navigation.
+        // The retained current sidebar heading link keeps this SPA-lifetime case
+        // in the same realm, as required by the original assertion.
+        await check(prefix + "title-control", () => page.locator(`[data-sidebar="header"] h1 a[href^="/title/${manga}"]`).click());
+        await unrelatedFromTitle(prefix);
+      });
       return { successful_previous_target_exact: true, actual_last_page: count, target_progress_completed: true, unrelated_transition_not_inherited: true };
     });
   }

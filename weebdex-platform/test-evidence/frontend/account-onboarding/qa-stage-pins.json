@@ -1,0 +1,11 @@
+{
+  "stage": "/workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-qa-518bde4f20a9",
+  "ui_dir": "/workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-qa-518bde4f20a9/frontend",
+  "manifest": "/workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-qa-518bde4f20a9/artifact-manifest.json",
+  "manifest_sha256": "f4ce4991f2e220632de2266cde69e7022e826e3601082a90433ea80d39f515ef",
+  "index_sha256": "518bde4f20a9152ceec9263a714a8c89b9ae827e6d6c15d14545de1b716c0b37",
+  "file_count": 426,
+  "total_bytes": 7062340,
+  "source_input_manifest_sha256": "55b2c104f4412d3835722f85ff8cca913a7bdd5a01eec65534307ea6b6de4668",
+  "browser_acceptance": "pending"
+}

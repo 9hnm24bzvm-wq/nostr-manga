@@ -1,0 +1,50 @@
+{
+  "README.md": {
+    "bytes": 1549,
+    "sha256": "3f72abf07df9dc300d330552eb7fc69589d6c5fcff1eac12da4d0e54926dd715"
+  },
+  "discovery-continuation.json": {
+    "bytes": 17002,
+    "sha256": "e7dbf82f22bb877425224137d4c7e69593173eede1a356e129f14f01bffd7b70"
+  },
+  "status.json": {
+    "bytes": 967,
+    "sha256": "b7267bb4faf2b5b37867edad89600da5217343a44ca33fa938eb595169494501"
+  },
+  "run-selected.sh": {
+    "bytes": 539,
+    "sha256": "205809e08c68bb8fbb9a1788d1ddcb08fe3ab3cc4fc463f9daf4791482daa824"
+  },
+  "run-guarded.py": {
+    "bytes": 3054,
+    "sha256": "50039d4fda59a86b18f330a89447eeee7a719a53e13fe51bb1f1c25e4dcada26"
+  },
+  "resource-receipt.json": {
+    "bytes": 12866,
+    "sha256": "f8e28a1f123aba99ae3b4c03f21410eb71f6b6022c0da183ae9786a7d4f4e8a0"
+  },
+  "raw-log-manifest.json": {
+    "bytes": 153,
+    "sha256": "afdb11edc4c0d4265362e92d7a3d8dcc80345ed556f31f2cdf6542afad4bbc5b"
+  },
+  "prior-seven-roots-current-verification.json": {
+    "bytes": 138,
+    "sha256": "c0b8830637dcc9da4ff53d9417f19a5fcc232e894b2d7825fd386342b928046d"
+  },
+  "runtime.json": {
+    "bytes": 872,
+    "sha256": "bbeb2ad7cfec192baeacf8717ab1ceee87a0c6a3f5895b9edded853268d24cbb"
+  },
+  "installed-current.json": {
+    "bytes": 9396,
+    "sha256": "df0f57f710c4a4a44ab993cd9beeb39509f8d38ba4050fb3e13fb6a61dff01d6"
+  },
+  "run.log.gz": {
+    "bytes": 697,
+    "sha256": "f589ad8dcb88a947ca3bca6d155237f1061ef2f3444a6a0d8ff9fe5598fe6251"
+  },
+  "selected-files.json": {
+    "bytes": 984,
+    "sha256": "dc617284547af90adff54a488a4523f2f4b826b1eb6af1ca4829bcafd57ca04d"
+  }
+}

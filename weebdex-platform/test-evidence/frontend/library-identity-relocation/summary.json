@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "scope": "Route-owned library and public identity controls; no native query changes",
+  "focused_tests": {
+    "passed": 77,
+    "failed": 0,
+    "boundary": "Pinned Svelte client, actual publication/queue/delivery/IDB modules, real Noble signatures; explicit DOM/service/worker/locks/IDB adapters; no browser or real network"
+  },
+  "anchored_semantic_cases": 132,
+  "strict_composed": {
+    "status": "passed",
+    "errors": 0,
+    "warnings": 15,
+    "canonical_frontend_files": 679,
+    "canonical_frontend_unchanged": true
+  },
+  "frontend_supplied_files_unchanged": 676,
+  "frontend_tracked_files_unchanged": 679,
+  "indexeddb_versions_unchanged": [
+    1,
+    5
+  ],
+  "browser_visual_acceptance": "pending separate isolated run",
+  "live_preview_changed": false,
+  "native_patch_19402fc_changed": false,
+  "source_files": {
+    "platform-integrations/local-library/LibraryProtected.svelte": "d608111ebc7c1eecf9a30bc08c40337f664038e438a6d7f06e210da482087b34",
+    "platform-integrations/local-library/LibraryRuntime.svelte": "13e4f2677623ce83723cc49d5d5cc08f9319c60e0f047cca1627f108cae75fd8",
+    "platform-integrations/local-library/LocalLibraryPanel.svelte": "9319b37b25744bca38c73d00053176bc8d39b5870a08315517280cad6bf01608",
+    "platform-integrations/local-library/MangaDiscussion.svelte": "d10df4f2632f11b4f08305a1694eb59e7fd4310329b9f2e43f51b344674b54a3",
+    "platform-integrations/local-library/ProtocolIdentityPanel.svelte": "1faa4ef91441f723ef6496f5d490c40fcf5a4abaf0334781647a83701365dae8",
+    "platform-integrations/local-library/publication.ts": "c2d21235ac2050fbab06f02adb79aea840b7987cb43841b719519077d9f8e036",
+    "platform-integrations/local-library/protocol/publishing.js": "144a07f06b0fb4f7877f61cf6dd056073b169c7df403002b16285be2c7cdef3d",
+    "platform-integrations/frontend-overlays.mjs": "0f4ed01c8e3022b64c93a6d5ccaf47232724586765ad0f8ab43221dfd964957e",
+    "scripts/prepare-frontend-integration.mjs": "577a6418cdd91410590e59483ba13d22320183b3a6952aca87e9649233e0e022",
+    "tests/ci/test_library_identity_route_ownership.mjs": "39246a1fb61a3f9e990ce6f68054e175c4aa027ae18e68b8fd817974df52fcff",
+    "tests/ci/test_library_management_lifetime.mjs": "8cc3b807134352a712cea2d8e9e3f7404d3b188aa9387088a6650541c63a4c78",
+    "tests/ci/test_browser_signed_native_select_controls.mjs": "8cc683a1295450b3e7247e896423b21492ed2f9dddadc12c16f668be5e628b48",
+    "tests/ci/test_browser_signed_publication_clone.mjs": "af410478c188921b4babc77a668bcbed8144a2f8bb4f6cbc500e3d3b78ee6490",
+    "tests/ci/test_browser_ordinary_library_source_seams.mjs": "f44d2b484bdd0e6d964741412cc83a94961e246820bd00b46a15df7aecfb49c0"
+  },
+  "test_driver": "node --experimental-vm-modules --test; WEEBDEX_FRONTEND_ROOT points to existing pinned Svelte5.55.1/TypeScript5.9.3 dependency stage, WEEBDEX_BROWSER_DOM_NODE_MODULES to existing JSDOM27.0.1/fake-indexeddb6.2.4 stage; existing Noble2.0.1 cache",
+  "focused_test_files": [
+    "test_library_identity_route_ownership.mjs",
+    "test_library_management_lifetime.mjs",
+    "test_browser_ordinary_library_source_seams.mjs",
+    "test_browser_signed_native_select_controls.mjs",
+    "test_browser_signed_publication_clone.mjs",
+    "test_browser_library_relocation.mjs",
+    "test_browser_signed_signer_setup.mjs",
+    "test_browser_signed_conversation_observer.mjs",
+    "test_browser_title_select_controls.mjs",
+    "test_browser_library_fixed_checks.mjs"
+  ]
+}

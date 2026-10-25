@@ -1,0 +1,23 @@
+node:fs:1795
+  const stats = binding.stat(
+                        ^
+
+Error: ENOENT: no such file or directory, stat '/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/test-evidence/frontend/final-discovered-ci-20261018/cache-audit/finite'
+    at Object.statSync (node:fs:1795:25)
+    at Object.<anonymous> (/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/scripts/semantic-readonly-cache-guard.cjs:13:64)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1617:12)
+    at node:internal/modules/cjs/loader:2164:12
+    at loadPreloadModules (node:internal/process/pre_execution:710:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: '/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/test-evidence/frontend/final-discovered-ci-20261018/cache-audit/finite'
+}
+
+Node.js v24.19.0
+{"command": ["bash", "weebdex-platform/test-evidence/frontend/final-discovered-ci-20261018/run-finite.sh"], "cwd": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017", "exitCode": 1, "stopReason": null, "elapsedSeconds": 1.201, "minimumFreeBytes": 4838215680, "minimumAvailableMemoryBytes": 8404594688, "ownedSurvivors": [], "status": "failed"}

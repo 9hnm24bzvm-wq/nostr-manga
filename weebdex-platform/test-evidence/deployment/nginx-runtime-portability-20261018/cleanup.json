@@ -1,0 +1,12 @@
+{
+  "allObservedPortsClosed": true,
+  "error": null,
+  "forced": false,
+  "ownedBirthCount": 54,
+  "recordedLoopbackPortCount": 10,
+  "remaining": [],
+  "socketFdInventory": "not available for some owned children; exact source/argv port records and closed-port proofs used",
+  "sourcePackageLogsAndEvidenceRetained": true,
+  "unconfirmedBirths": [],
+  "verifiedStopped": true
+}

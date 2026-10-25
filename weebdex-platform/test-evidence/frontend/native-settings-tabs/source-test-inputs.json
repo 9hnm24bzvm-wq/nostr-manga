@@ -1,0 +1,16 @@
+{
+  "platform-integrations/local-library/LibraryManagementTools.svelte": "abc7a8daa2d7d4349611982542d47ee42af48cbf7fbb6a7cabe45e4367dba6ec",
+  "platform-integrations/local-library/LocalLibraryPanel.svelte": "66671736d3a256ea460103f9f60cd6464c0ac6242f3dfe2335e50b9c81df4acb",
+  "platform-integrations/local-library/ProtocolIdentityPanel.svelte": "2b2c621fffa228046157b0c146078a03b4432960a4da49212e3d95ef539a2b7f",
+  "platform-integrations/local-library/PublicIdentitySettings.svelte": "6885e2856293f7b6fa3197bba35a25ad2d1b9ecffa46554a725882820fb11dbe",
+  "platform-integrations/local-library/protocol-identity.ts": "d75dae63cba7b9cd1f08def966418e6bbf83b74117c81f2e8dff314b02944e42",
+  "platform-integrations/local-library/publication.ts": "15a014a71c7321b7c5ab1373e6ba82d601c33d2a05df354f71ebc1dff5498b0c",
+  "scripts/browser-journeys.mjs": "b41abfa95057a04be915f7b589311c87b934f380e645d477045d72b021369b39",
+  "scripts/browser-signed-journeys.mjs": "4fca00922ff7a52364525f25342f06077164e66f022a5e40494f582f21a95c7a",
+  "scripts/browser-ui11-16-journeys.mjs": "48f215d33e9a7484812bc9cd0e9cdd0d35292a2d8a2b011cbe8f89d37495ed1b",
+  "tests/ci/library-management-fixture.mjs": "c1578446cea58d3d0159611cc466b430f38df60ab8914cee85797082c7d7afa9",
+  "tests/ci/test_library_identity_route_ownership.mjs": "b8c652319386c4bcf7a8084e290145340d25bad5698939d9d79ba55169bd8041",
+  "tests/ci/test_library_management_lifetime.mjs": "501fddd6a3a79f843f56e50499fa3d97f21f333c68388f1ca9fa3e6f2c67c161",
+  "tests/ci/test_native_settings_utility_sources.mjs": "d9e9d419e03a1e7a5fc3c6e493d6e51a73fde0f5a21c16a36ede596ef65fddaa",
+  "tests/ci/test_public_action_dialog_lifetime.mjs": "370b37234cf22c561beade9a14312320422c23199ade6bcff5019ff9a6cab671"
+}

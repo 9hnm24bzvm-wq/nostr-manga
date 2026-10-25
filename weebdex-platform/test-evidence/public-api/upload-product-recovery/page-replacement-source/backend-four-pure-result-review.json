@@ -1,0 +1,59 @@
+{
+  "schema": "independent-pure-result-review-v1",
+  "receipt": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-backend-pure-01/receipt.json",
+    "sha256": "fe011091a2a6d2c851bac6e6be763ac689675fee6c826bbbb6acf811f20b7867",
+    "bytes": 3594
+  },
+  "logs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-backend-pure-01/01.log",
+      "sha256": "c53b63e87b7a29e19d0035680fb5e5be53495265b223e0a5d5fbff744cba3649",
+      "bytes": 242
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-backend-pure-01/02.log",
+      "sha256": "1fc4c83934130ab082883c7f452a4682ced9d3fee3201e7911c814a06c2f2c8b",
+      "bytes": 217
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-backend-pure-01/03.log",
+      "sha256": "b193d0a7dfaaa1164c609ab236fbd62efeb8375a94ab8adb2bf38a12f19a5c09",
+      "bytes": 211
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-backend-pure-01/04.log",
+      "sha256": "4cfec42dbdd7d81704924c76d674e7f79cf27f4139e4345bddd4d4d38c7fb037",
+      "bytes": 215
+    }
+  ],
+  "compile_receipt": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-backend-compile-01/receipt.json",
+    "sha256": "809def827db838541385322c1be243f31a79de81618adcf880f84dcb31700b94",
+    "bytes": 79945
+  },
+  "binary": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-cargo-target-01/debug/deps/weebdex_platform-cdb471e75086c1b6",
+    "sha256": "92659dcc2e4413b58dc060cd304ac8794a9a293695c5dbe9515dd1268f75bda7",
+    "bytes": 42313984,
+    "mode": 493
+  },
+  "observed": {
+    "exact_cases": 4,
+    "passed": 4,
+    "failed": 0,
+    "all_reaped": true,
+    "timeouts": 0,
+    "terminal_errors": []
+  },
+  "rehash": {
+    "replacement_sources": 308,
+    "held_browser_pins": 1167,
+    "held_frontend_files": 432
+  },
+  "limits": [
+    "Four in-memory library tests only; the new ignored HTTP/PG replacement scenario remains unexecuted.",
+    "No browser, actual Web Lock, actual frontend compile or publication qualification.",
+    "Held original browser03 permission denial is unaffected."
+  ]
+}

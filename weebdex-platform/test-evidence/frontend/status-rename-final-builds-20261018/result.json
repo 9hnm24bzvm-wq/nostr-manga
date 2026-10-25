@@ -1,0 +1,169 @@
+{
+  "schema": "status-rename-final-production-build-qualification-v1",
+  "qualifiedSource": "53130b47424b107d3b9d1b5ceb00959b62addaa5",
+  "sourceTree": "442605e1265c9e7c644838e6ae4b6531038b49c4",
+  "frontendEquivalentReviewedAndStrictPin": "8a1a54f6fe592116511a3328e33baad74b31cd6d",
+  "successorChangedPaths": [
+    "weebdex-platform/backend/tests/public_relation_pages.rs",
+    "weebdex-platform/test-evidence/integration/resource-guard-20261018/approved-eight-synthetic-db-cleanup.json",
+    "weebdex-platform/test-evidence/recovery/verified-combined-checkpoints-20261018.json"
+  ],
+  "frontendGitSubtrees": {
+    "frontend": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+    "platform-integrations": "4e4b642492b1ff11a9a0eaa9859479b277df0a22",
+    "scripts": "fb8c70c24c26ae1afc323ff1599e8cedaa4581a3"
+  },
+  "sourceFiles": 1268,
+  "frontendInputFiles": 914,
+  "canonicalFiles": 679,
+  "dependencyEntries": 39226,
+  "nodeBinarySha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+  "dependencyManifestSha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "profiles": {
+    "default": {
+      "source_commit": "53130b47424b107d3b9d1b5ceb00959b62addaa5",
+      "exit_code": 0,
+      "source_map_sha256": "82860d2237cc332f9ab7f9f3eb4235e12acec93f715d261a131e8f1f0ffbf994",
+      "frontend_inputs_sha256": "e6db8e4a2b91dad84771a2447b31593366cd2ee93f4008d15b55c0a790dba23e",
+      "canonical_manifest_sha256": "af37b108d0c4b4fbd57bd47c97fd40a853711c8a9fdba5c3a1f7eea8c347eaa5",
+      "dependencies_map_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+      "artifact_files": 449,
+      "artifact_bytes": 7262717,
+      "artifact_manifest_sha256": "e0a8821036723395dfdddc0f55cc10f2fd1751a20444b037e769bf561c4839e9",
+      "index_sha256": "3ce1b2c288795201f8af73a6521146400bef749dcd14fc106eeb9768e8a082ad",
+      "build_log_sha256": "6e19b31dd531a98c9958b3b8893d5f8ccd7e2822ac4738638e8eec05d2bbe8e0",
+      "source_unchanged": true,
+      "dependencies_unchanged": true,
+      "canonical_frontend_679_files_preserved": true,
+      "pass": true,
+      "limitsAndCleanup": {
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+          "/workspace/shared/nostr-manga-recovery-20261017/final-frontend-build-worktree-20261018/weebdex-platform/scripts/build-frontend.mjs"
+        ],
+        "cwd": "/workspace/shared/nostr-manga-recovery-20261017/final-frontend-build-worktree-20261018/weebdex-platform",
+        "deadline_seconds": 900,
+        "elapsed_seconds": 46.066,
+        "process_exit_code": 0,
+        "deadline_exceeded": false,
+        "cleanup_verified": true,
+        "surviving_owned_process_ids": [],
+        "owned_process_births": [
+          [
+            6,
+            8096817
+          ],
+          [
+            13,
+            8096826
+          ],
+          [
+            21,
+            8096836
+          ],
+          [
+            38,
+            8097011
+          ],
+          [
+            57,
+            8098677
+          ]
+        ],
+        "cleanup_signals": [],
+        "stop_reason": null,
+        "minimum_free_bytes": 4904214528,
+        "cleanup_reserve_bytes": 134217728,
+        "floor_bytes": 4294967296,
+        "maximum_owned_rss_bytes": 2511880192,
+        "minimum_available_memory_bytes": 5642158080,
+        "terminal_receipt": true,
+        "identity": "verified process births and pidfd-owned descendants"
+      },
+      "artifactPath": "/workspace/shared/nostr-manga-recovery-20261017/final-frontend-builds-evidence-20261018/artifact-default",
+      "markupParityAfterExactApprovedExceptions": {
+        "transformedSources": 118,
+        "allVerified": true,
+        "canonicalOriginalFilesWritten": false,
+        "renderedVisualParityAsserted": false
+      }
+    },
+    "enabled": {
+      "source_commit": "53130b47424b107d3b9d1b5ceb00959b62addaa5",
+      "exit_code": 0,
+      "source_map_sha256": "82860d2237cc332f9ab7f9f3eb4235e12acec93f715d261a131e8f1f0ffbf994",
+      "frontend_inputs_sha256": "e6db8e4a2b91dad84771a2447b31593366cd2ee93f4008d15b55c0a790dba23e",
+      "canonical_manifest_sha256": "af37b108d0c4b4fbd57bd47c97fd40a853711c8a9fdba5c3a1f7eea8c347eaa5",
+      "dependencies_map_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+      "artifact_files": 448,
+      "artifact_bytes": 7281058,
+      "artifact_manifest_sha256": "e51769e81f13df5e2cd4e8c43c6a825a1471c18c3e98f957acb4e552c5af31d4",
+      "index_sha256": "67f7d8a9a4d6f07df3b70ebd0853cfe58981d24e31e5a29ed605133e256b0586",
+      "build_log_sha256": "fb7a0022886be404a98d595c6f01b4e08bb9c38c22fc8f03c800ecd9d6079a4a",
+      "source_unchanged": true,
+      "dependencies_unchanged": true,
+      "canonical_frontend_679_files_preserved": true,
+      "pass": true,
+      "limitsAndCleanup": {
+        "command": [
+          "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+          "/workspace/shared/nostr-manga-recovery-20261017/final-frontend-build-worktree-20261018/weebdex-platform/scripts/build-frontend.mjs"
+        ],
+        "cwd": "/workspace/shared/nostr-manga-recovery-20261017/final-frontend-build-worktree-20261018/weebdex-platform",
+        "deadline_seconds": 900,
+        "elapsed_seconds": 44.977,
+        "process_exit_code": 0,
+        "deadline_exceeded": false,
+        "cleanup_verified": true,
+        "surviving_owned_process_ids": [],
+        "owned_process_births": [
+          [
+            79,
+            8101835
+          ],
+          [
+            86,
+            8101846
+          ],
+          [
+            94,
+            8101855
+          ],
+          [
+            111,
+            8102043
+          ],
+          [
+            131,
+            8103649
+          ]
+        ],
+        "cleanup_signals": [],
+        "stop_reason": null,
+        "minimum_free_bytes": 4863655936,
+        "cleanup_reserve_bytes": 134217728,
+        "floor_bytes": 4294967296,
+        "maximum_owned_rss_bytes": 2495606784,
+        "minimum_available_memory_bytes": 5695614976,
+        "terminal_receipt": true,
+        "identity": "verified process births and pidfd-owned descendants"
+      },
+      "artifactPath": "/workspace/shared/nostr-manga-recovery-20261017/final-frontend-builds-evidence-20261018/artifact-enabled",
+      "markupParityAfterExactApprovedExceptions": {
+        "transformedSources": 140,
+        "allVerified": true,
+        "canonicalOriginalFilesWritten": false,
+        "renderedVisualParityAsserted": false
+      }
+    }
+  },
+  "artifactFilesPhysicallyRehashed": 897,
+  "allSourceInputsUnchanged": true,
+  "allDependencyInputsUnchanged": true,
+  "canonicalFrontendUnchanged": true,
+  "browserExecuted": false,
+  "networkInstallOrDownload": false,
+  "heavySlotReleasedTo": "API owner for serialized backend qualification",
+  "scope": "Two actual Vite production profiles and artifact integrity, including composed device-list rename and native-account status UI.683-case/strict evidence belongs to its separate owner. Backend functional qualification, actual browser, hosted deployment, rendered parity and load acceptance are not established by these builds. Future source association requires matching the complete frontend input map and dependency/canonical hashes.",
+  "browserLimitation": "Supported Chromium exists, but no supported application-host route has been established. Earlier out-of-sandbox bootstrap failed before Python in bwrap on a policy-denied path; no retry, path access or bridge workaround was attempted."
+}

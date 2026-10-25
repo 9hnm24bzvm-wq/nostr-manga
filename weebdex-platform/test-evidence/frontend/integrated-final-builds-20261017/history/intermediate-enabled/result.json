@@ -1,0 +1,80 @@
+{
+  "schema": "integrated-frontend-production-build-v2",
+  "label": "enabled",
+  "source_commit": "c3945444eba7a2656f9ed9287eee6293d9d50bc4",
+  "started_at_utc": "2026-10-17T22:56:16.314097+00:00",
+  "ended_at_utc": "2026-10-17T22:57:03.201459+00:00",
+  "source_map_sha256": "86393b53b95299f81e74724bb83c29db348f92382c8bbc11b141b15702790126",
+  "frontend_inputs_sha256": "45d1e2a146e5e9dee607dd91bb9d6eb8415e19f065a0e64c84c23299ddd5d5f1",
+  "canonical_manifest_sha256": "af37b108d0c4b4fbd57bd47c97fd40a853711c8a9fdba5c3a1f7eea8c347eaa5",
+  "dependencies_map_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform/scripts/build-frontend.mjs"
+  ],
+  "environment": {
+    "NODE_OPTIONS": "--max-old-space-size=2048",
+    "WEEBDEX_QA_BUILD_RESOURCE_PROFILE": "serial-terser",
+    "PUBLIC_MANGADEX_CATALOGUE": "1",
+    "WEEBDEX_FRONTEND_ROOT": "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform/.build/frontend-validation02-enabled"
+  },
+  "exit_code": 0,
+  "owned": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform/scripts/build-frontend.mjs"
+    ],
+    "cwd": "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform",
+    "deadline_seconds": 900,
+    "elapsed_seconds": 46.887,
+    "process_exit_code": 0,
+    "deadline_exceeded": false,
+    "cleanup_verified": true,
+    "surviving_owned_process_ids": [],
+    "owned_process_births": [
+      [
+        5,
+        7118656
+      ],
+      [
+        12,
+        7118668
+      ],
+      [
+        20,
+        7118677
+      ],
+      [
+        37,
+        7118870
+      ],
+      [
+        57,
+        7120581
+      ]
+    ],
+    "cleanup_signals": [],
+    "stop_reason": null,
+    "minimum_free_bytes": 5687324672,
+    "cleanup_reserve_bytes": 134217728,
+    "floor_bytes": 4294967296,
+    "maximum_owned_rss_bytes": 2580627456,
+    "minimum_available_memory_bytes": 5426126848,
+    "terminal_receipt": true,
+    "identity": "verified process births and pidfd-owned descendants"
+  },
+  "source_unchanged": true,
+  "dependencies_unchanged": true,
+  "free_after": 5678694400,
+  "build_log_sha256": "d81713a0edb4438e577ec1cc8151bb6a88291f2cc2f9c91f56568a37ca91e76e",
+  "browser_executed": false,
+  "dependency_downloaded": false,
+  "pass": true,
+  "canonical_frontend_679_files_preserved": true,
+  "artifact": "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation02-evidence-20261017/artifact-enabled",
+  "artifact_files": 447,
+  "artifact_bytes": 7271363,
+  "artifact_manifest_sha256": "4498ed62dcfd7cb3117264301f7d5cba3114b0adef0310c5a2b8b3182a42c8ee",
+  "index_sha256": "db9a4e0ffd7e489ca9451fcf9cc08af31df68d0298e96bc09bda09b792cdd880",
+  "build_integration_sha256": "1c5ffb97e384d7a76db4b02fc17db8d7903687f990e65c6ee9b60f17520aa3a3"
+}

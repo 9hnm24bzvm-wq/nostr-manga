@@ -1,0 +1,512 @@
+   Compiling manga-node v0.1.0 (/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/manga-protocol-lab/server)
+warning: field `service` is never read
+   --> /workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/manga-protocol-lab/server/src/http_auth.rs:111:5
+    |
+110 | pub struct HttpRequestPreflight {
+    |            -------------------- field in this struct
+111 |     service: Id,
+    |     ^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` on by default
+
+warning: method `service` is never used
+   --> /workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/manga-protocol-lab/server/src/http_auth.rs:114:19
+    |
+113 | impl HttpRequestPreflight {
+    | ------------------------- method in this implementation
+114 |     pub(crate) fn service(&self) -> Id {
+    |                   ^^^^^^^
+
+warning: `manga-node` (lib) generated 2 warnings
+   Compiling weebdex-platform v0.1.0 (/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/backend)
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::ensure_upload_target`
+  --> src/domains/catalog/repository.rs:67:5
+   |
+67 | /     pub async fn ensure_upload_target(
+68 | |         tx: &Transaction<'_>,
+69 | |         manga_id: &str,
+70 | |         actor: &impl CatalogMutationActor,
+71 | |         groups: &[String],
+72 | |     ) -> ApiResult<()> {
+   | |______________________^ associated function `CatalogRepository::ensure_upload_target` is reachable at visibility `pub`
+   |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+  --> src/domains/catalog/entity_mutations.rs:12:1
+   |
+12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: `#[warn(private_bounds)]` on by default
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::authorize_chapter_edit`
+  --> src/domains/catalog/repository.rs:79:5
+   |
+79 | /     pub async fn authorize_chapter_edit(
+80 | |         tx: &Transaction<'_>,
+81 | |         id: &str,
+82 | |         actor: &impl CatalogMutationActor,
+83 | |         version: i32,
+84 | |     ) -> ApiResult<Value> {
+   | |_________________________^ associated function `CatalogRepository::authorize_chapter_edit` is reachable at visibility `pub`
+   |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+  --> src/domains/catalog/entity_mutations.rs:12:1
+   |
+12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::replace_chapter_pages`
+   --> src/domains/catalog/repository.rs:100:5
+    |
+100 | /     pub async fn replace_chapter_pages(
+101 | |         tx: &Transaction<'_>,
+102 | |         id: &str,
+103 | |         actor: &impl CatalogMutationActor,
+...   |
+107 | |         pages: &[CatalogPage],
+108 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::replace_chapter_pages` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::update_chapter`
+   --> src/domains/catalog/repository.rs:248:5
+    |
+248 | /     pub async fn update_chapter(
+249 | |         tx: &Transaction<'_>,
+250 | |         id: &str,
+251 | |         actor: &impl CatalogMutationActor,
+252 | |         patch: &Value,
+253 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::update_chapter` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::delete_chapter`
+   --> src/domains/catalog/repository.rs:326:5
+    |
+326 | /     pub async fn delete_chapter(
+327 | |         tx: &Transaction<'_>,
+328 | |         id: &str,
+329 | |         actor: &impl CatalogMutationActor,
+330 | |     ) -> ApiResult<()> {
+    | |______________________^ associated function `CatalogRepository::delete_chapter` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::claim_chapter`
+   --> src/domains/catalog/repository.rs:347:5
+    |
+347 | /     pub async fn claim_chapter(
+348 | |         tx: &Transaction<'_>,
+349 | |         id: &str,
+350 | |         actor: &impl CatalogMutationActor,
+351 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::claim_chapter` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::update_cover`
+   --> src/domains/catalog/repository.rs:416:5
+    |
+416 | /     pub async fn update_cover(
+417 | |         tx: &Transaction<'_>,
+418 | |         id: &str,
+419 | |         actor: &impl CatalogMutationActor,
+420 | |         patch: &Value,
+421 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::update_cover` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `CatalogRepository::delete_cover`
+   --> src/domains/catalog/repository.rs:468:5
+    |
+468 | /     pub async fn delete_cover(
+469 | |         tx: &Transaction<'_>,
+470 | |         id: &str,
+471 | |         actor: &impl CatalogMutationActor,
+472 | |     ) -> ApiResult<()> {
+    | |______________________^ associated function `CatalogRepository::delete_cover` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `require_manga_edit`
+   --> src/domains/catalog/repository.rs:515:1
+    |
+515 | / pub async fn require_manga_edit(
+516 | |     tx: &Transaction<'_>,
+517 | |     id: &str,
+518 | |     actor: &impl CatalogMutationActor,
+519 | |     permission: &str,
+520 | | ) -> ApiResult<()> {
+    | |__________________^ function `require_manga_edit` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `publish_native_manga`
+   --> src/protocol/publication.rs:940:1
+    |
+940 | / pub async fn publish_native_manga(
+941 | |     state: &crate::state::AppState,
+942 | |     tx: &tokio_postgres::Transaction<'_>,
+943 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+944 | |     manga: &str,
+945 | |     submitted_version: i32,
+946 | | ) -> ApiResult<Option<PublicationReceipt>> {
+    | |__________________________________________^ function `publish_native_manga` is reachable at visibility `pub`
+    |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `publish_native_upload`
+    --> src/protocol/publication.rs:1050:1
+     |
+1050 | / pub async fn publish_native_upload(
+1051 | |     state: &crate::state::AppState,
+1052 | |     tx: &tokio_postgres::Transaction<'_>,
+1053 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+...    |
+1058 | |     native_commit_payload: &serde_json::Value,
+1059 | | ) -> ApiResult<Option<PublicationReceipt>> {
+     | |__________________________________________^ function `publish_native_upload` is reachable at visibility `pub`
+     |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `native_manga_publication_retry_allowed`
+    --> src/protocol/publication.rs:1387:1
+     |
+1387 | / pub async fn native_manga_publication_retry_allowed(
+1388 | |     state: &crate::state::AppState,
+1389 | |     tx: &tokio_postgres::Transaction<'_>,
+1390 | |     manga: &str,
+1391 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+1392 | | ) -> ApiResult<bool> {
+     | |____________________^ function `native_manga_publication_retry_allowed` is reachable at visibility `pub`
+     |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `pending_native_manga_receipt_allowed`
+    --> src/protocol/publication.rs:1414:1
+     |
+1414 | / pub async fn pending_native_manga_receipt_allowed(
+1415 | |     state: &crate::state::AppState,
+1416 | |     tx: &tokio_postgres::Transaction<'_>,
+1417 | |     manga: &str,
+1418 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+1419 | | ) -> ApiResult<bool> {
+     | |____________________^ function `pending_native_manga_receipt_allowed` is reachable at visibility `pub`
+     |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `CatalogMutationActor` is more private than the item `pending_native_receipt_allowed`
+    --> src/protocol/publication.rs:1441:1
+     |
+1441 | / pub async fn pending_native_receipt_allowed(
+1442 | |     state: &crate::state::AppState,
+1443 | |     tx: &tokio_postgres::Transaction<'_>,
+1444 | |     chapter: &str,
+1445 | |     session: &str,
+1446 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+1447 | | ) -> ApiResult<bool> {
+     | |____________________^ function `pending_native_receipt_allowed` is reachable at visibility `pub`
+     |
+note: but trait `CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `weebdex-platform` (lib) generated 14 warnings
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `CatalogRepository::ensure_upload_target`
+  --> src/domains/catalog/repository.rs:67:5
+   |
+67 | /     pub async fn ensure_upload_target(
+68 | |         tx: &Transaction<'_>,
+69 | |         manga_id: &str,
+70 | |         actor: &impl CatalogMutationActor,
+71 | |         groups: &[String],
+72 | |     ) -> ApiResult<()> {
+   | |______________________^ associated function `CatalogRepository::ensure_upload_target` is reachable at visibility `pub`
+   |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+  --> src/domains/catalog/entity_mutations.rs:12:1
+   |
+12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: `#[warn(private_bounds)]` on by default
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `CatalogRepository::authorize_chapter_edit`
+  --> src/domains/catalog/repository.rs:79:5
+   |
+79 | /     pub async fn authorize_chapter_edit(
+80 | |         tx: &Transaction<'_>,
+81 | |         id: &str,
+82 | |         actor: &impl CatalogMutationActor,
+83 | |         version: i32,
+84 | |     ) -> ApiResult<Value> {
+   | |_________________________^ associated function `CatalogRepository::authorize_chapter_edit` is reachable at visibility `pub`
+   |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+  --> src/domains/catalog/entity_mutations.rs:12:1
+   |
+12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `CatalogRepository::replace_chapter_pages`
+   --> src/domains/catalog/repository.rs:100:5
+    |
+100 | /     pub async fn replace_chapter_pages(
+101 | |         tx: &Transaction<'_>,
+102 | |         id: &str,
+103 | |         actor: &impl CatalogMutationActor,
+...   |
+107 | |         pages: &[CatalogPage],
+108 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::replace_chapter_pages` is reachable at visibility `pub`
+    |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `CatalogRepository::update_chapter`
+   --> src/domains/catalog/repository.rs:248:5
+    |
+248 | /     pub async fn update_chapter(
+249 | |         tx: &Transaction<'_>,
+250 | |         id: &str,
+251 | |         actor: &impl CatalogMutationActor,
+252 | |         patch: &Value,
+253 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::update_chapter` is reachable at visibility `pub`
+    |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `CatalogRepository::delete_chapter`
+   --> src/domains/catalog/repository.rs:326:5
+    |
+326 | /     pub async fn delete_chapter(
+327 | |         tx: &Transaction<'_>,
+328 | |         id: &str,
+329 | |         actor: &impl CatalogMutationActor,
+330 | |     ) -> ApiResult<()> {
+    | |______________________^ associated function `CatalogRepository::delete_chapter` is reachable at visibility `pub`
+    |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `CatalogRepository::claim_chapter`
+   --> src/domains/catalog/repository.rs:347:5
+    |
+347 | /     pub async fn claim_chapter(
+348 | |         tx: &Transaction<'_>,
+349 | |         id: &str,
+350 | |         actor: &impl CatalogMutationActor,
+351 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::claim_chapter` is reachable at visibility `pub`
+    |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `CatalogRepository::update_cover`
+   --> src/domains/catalog/repository.rs:416:5
+    |
+416 | /     pub async fn update_cover(
+417 | |         tx: &Transaction<'_>,
+418 | |         id: &str,
+419 | |         actor: &impl CatalogMutationActor,
+420 | |         patch: &Value,
+421 | |     ) -> ApiResult<Value> {
+    | |_________________________^ associated function `CatalogRepository::update_cover` is reachable at visibility `pub`
+    |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `CatalogRepository::delete_cover`
+   --> src/domains/catalog/repository.rs:468:5
+    |
+468 | /     pub async fn delete_cover(
+469 | |         tx: &Transaction<'_>,
+470 | |         id: &str,
+471 | |         actor: &impl CatalogMutationActor,
+472 | |     ) -> ApiResult<()> {
+    | |______________________^ associated function `CatalogRepository::delete_cover` is reachable at visibility `pub`
+    |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `require_manga_edit`
+   --> src/domains/catalog/repository.rs:515:1
+    |
+515 | / pub async fn require_manga_edit(
+516 | |     tx: &Transaction<'_>,
+517 | |     id: &str,
+518 | |     actor: &impl CatalogMutationActor,
+519 | |     permission: &str,
+520 | | ) -> ApiResult<()> {
+    | |__________________^ function `require_manga_edit` is reachable at visibility `pub`
+    |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `publish_native_manga`
+   --> src/protocol/publication.rs:940:1
+    |
+940 | / pub async fn publish_native_manga(
+941 | |     state: &crate::state::AppState,
+942 | |     tx: &tokio_postgres::Transaction<'_>,
+943 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+944 | |     manga: &str,
+945 | |     submitted_version: i32,
+946 | | ) -> ApiResult<Option<PublicationReceipt>> {
+    | |__________________________________________^ function `publish_native_manga` is reachable at visibility `pub`
+    |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+   --> src/domains/catalog/entity_mutations.rs:12:1
+    |
+ 12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `publish_native_upload`
+    --> src/protocol/publication.rs:1050:1
+     |
+1050 | / pub async fn publish_native_upload(
+1051 | |     state: &crate::state::AppState,
+1052 | |     tx: &tokio_postgres::Transaction<'_>,
+1053 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+...    |
+1058 | |     native_commit_payload: &serde_json::Value,
+1059 | | ) -> ApiResult<Option<PublicationReceipt>> {
+     | |__________________________________________^ function `publish_native_upload` is reachable at visibility `pub`
+     |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `native_manga_publication_retry_allowed`
+    --> src/protocol/publication.rs:1387:1
+     |
+1387 | / pub async fn native_manga_publication_retry_allowed(
+1388 | |     state: &crate::state::AppState,
+1389 | |     tx: &tokio_postgres::Transaction<'_>,
+1390 | |     manga: &str,
+1391 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+1392 | | ) -> ApiResult<bool> {
+     | |____________________^ function `native_manga_publication_retry_allowed` is reachable at visibility `pub`
+     |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `pending_native_manga_receipt_allowed`
+    --> src/protocol/publication.rs:1414:1
+     |
+1414 | / pub async fn pending_native_manga_receipt_allowed(
+1415 | |     state: &crate::state::AppState,
+1416 | |     tx: &tokio_postgres::Transaction<'_>,
+1417 | |     manga: &str,
+1418 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+1419 | | ) -> ApiResult<bool> {
+     | |____________________^ function `pending_native_manga_receipt_allowed` is reachable at visibility `pub`
+     |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: trait `entity_mutations::CatalogMutationActor` is more private than the item `pending_native_receipt_allowed`
+    --> src/protocol/publication.rs:1441:1
+     |
+1441 | / pub async fn pending_native_receipt_allowed(
+1442 | |     state: &crate::state::AppState,
+1443 | |     tx: &tokio_postgres::Transaction<'_>,
+1444 | |     chapter: &str,
+1445 | |     session: &str,
+1446 | |     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+1447 | | ) -> ApiResult<bool> {
+     | |____________________^ function `pending_native_receipt_allowed` is reachable at visibility `pub`
+     |
+note: but trait `entity_mutations::CatalogMutationActor` is only usable at visibility `pub(crate)`
+    --> src/domains/catalog/entity_mutations.rs:12:1
+     |
+  12 | pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: `weebdex-platform` (lib test) generated 14 warnings
+    Finished `test` profile [unoptimized] target(s) in 2m 38s
+  Executable unittests src/lib.rs (/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/weebdex_platform-4adb5f241d38c865)
+  Executable tests/library_http.rs (/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/library_http-55259628f70af7b4)
+  Executable tests/public_account_reads.rs (/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_account_reads-0c5f6c511cdc8c20)
+  Executable tests/public_catalogue_compatibility.rs (/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_catalogue_compatibility-be2cfe96256eda1d)
+  Executable tests/public_catalogue_reads.rs (/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_catalogue_reads-7672bc48ac2f8925)
+  Executable tests/public_list_follows.rs (/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_list_follows-a91ea76ca1882c2b)
+  Executable tests/public_nostr_lists.rs (/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_nostr_lists-0c5e58c6a501a08b)
+  Executable tests/public_statistics.rs (/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_statistics-1f81e4a3753701df)

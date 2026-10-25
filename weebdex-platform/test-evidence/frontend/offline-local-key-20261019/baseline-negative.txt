@@ -1,0 +1,141 @@
+(node:15) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ both key backups are available before instance discovery or admission (39.945602ms)
+✔ public copy refusal retains a readonly selectable fallback without activating the key (2.613158ms)
+✔ deferring setup resets the wizard and discards unfinished key ownership (2.313084ms)
+✖ backup step offers explicit local connection independently of instance review (3.065118ms)
+✖ acknowledged generated key connects locally without instance discovery (2.707879ms)
+✖ acknowledged imported key connects locally without instance discovery (2.621641ms)
+✖ failed instance discovery still permits explicitly acknowledged local connection (2.491828ms)
+✖ external signer local continuation requires backup acknowledgement and no instance discovery (2.423427ms)
+✔ local setup cannot overwrite a newer signing selection or activate after closure (6.230152ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 4
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 151.022755
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:58:1
+✖ backup step offers explicit local connection independently of instance review (3.065118ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /disabled=\{pending \|\| !backupAcknowledged\} onclick=\{connectSession\}>Use this key for this session/. Input:
+  
+  "{:else if stage === 'backup' && identity}\n" +
+    "    {#if identity.source === 'external'}\n" +
+    '      <p class="text-sm">Your browser signer keeps the private key. Make sure you have backed it up using that signer.</p>\n' +
+    '    {:else}\n' +
+    '      <p class="text-sm">Your private key controls this identity. Save a private copy somewhere safe before continuing.</p>\n' +
+    '      <p class="text-destructive text-sm">If you lose it, this site cannot recover it. Resetting your site password will not restore this key.</p>\n' +
+    '      <div class="flex flex-wrap gap-2">\n' +
+    `        <Button class="min-h-11" variant="outline" disabled={pending} onclick={reveal}>{revealedSecret ? 'Hide private key' : 'Reveal private key'}</Button>\n` +
+    '        <Button class="min-h-11" variant="outline" disabled={pending} onclick={copyPrivate}>Copy private key</Button>\n' +
+    '      </div>\n' +
+    '      {#if revealedSecret}<Input aria-label="Private key for backup" value={revealedSecret} readonly autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore spellcheck={false} class="font-mono text-xs" />{/if}\n' +
+    '      <p class="text-muted-foreground text-sm">Copying may leave the key in clipboard history or sync. Keep it private. This browser forgets it when you reload or lock it.</p>\n' +
+    '    {/if}\n' +
+    '    <div class="space-y-2">\n' +
+    '      <p class="text-sm font-medium">Your public key</p>\n' +
+    '      <Input aria-label="Your public key" value={identity.npub} readonly spellcheck={false} class="font-mono text-xs" />\n' +
+    '      <Button class="min-h-11" variant="outline" disabled={pending} onclick={copyPublic}>Copy public key</Button>\n' +
+    '      <p class="text-muted-foreground text-sm">You can share this public key. It does not contain your private key.</p>\n' +
+    '    </div>\n' +
+    `    <label class="flex items-start gap-3 text-sm"><input class="mt-1 size-4 shrink-0" type="checkbox" bind:checked={backupAcknowledged} disabled={pending} /> <span>{identity.source === 'external' ? 'I manage my private-key backup in my signer.' : 'I have saved my private key somewhere safe.'}</span></label>\n` +
+    '    <p class="text-muted-foreground text-xs">This acknowledgement does not create or verify a backup for you.</p>\n' +
+    '    <Button class="min-h-11 w-full" disabled={pending || !backupAcknowledged} onclick={reviewInstance}>Review public identity</Button>\n' +
+    '    <Button class="min-h-11 w-full" variant="ghost" disabled={pending} onclick={startAgain}>Discard setup and go back</Button>\n' +
+    '  '
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/offline-local-key-worktree/weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:60:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: `{:else if stage === 'backup' && identity}\n    {#if identity.source === 'external'}\n      <p class="text-sm">Your browser signer keeps the private key. Make sure you have backed it up using that signer.</p>\n    {:else}\n      <p class="text-sm">Your private key controls this identity. Save a private copy somewhere safe before continuing.</p>\n      <p class="text-destructive text-sm">If you lose it, this site cannot recover it. Resetting your site password will not restore this key.</p>\n      <div class="flex flex-wrap gap-2">\n        <Button class="min-h-11" variant="outline" disabled={pending} onclick={reveal}>{revealedSecret ? 'Hide private key' : 'Reveal private key'}</Button>\n        <Button class="min-h-11" variant="outline" disabled={pending} onclick={copyPrivate}>Copy private key</Button>\n      </div>\n      {#if revealedSecret}<Input aria-label="Private key for backup" value={revealedSecret} readonly autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore spellcheck={false} class="font-mono text-xs" />{/if}\n      <p class="text-muted-foreground text-sm">Copying may leave the key in clipboard history or sync. Keep it private. This browser forgets it when you reload or lock it.</p>\n    {/if}\n    <div class="space-y-2">\n      <p class="text-sm font-medium">Your public key</p>\n      <Input aria-label="Your public key" value={identity.npub} readonly spellcheck={false} class="font-mono text-xs" />\n      <Button class="min-h-11" variant="outline" disabled={pending} onclick={copyPublic}>Copy public key</Button>\n      <p class="text-muted-foreground text-sm">You can share this public key. It does not contain your private key.</p>\n    </div>\n    <label class="flex items-start gap-3 text-sm"><input class="mt-1 size-4 shrink-0" type="checkbox" bind:checked={backupAcknowledged} disabled={pending} /> <span>{identity.source === 'external' ? 'I manage my private-key backup in my signer.' : 'I have saved my private key somewhere safe.'}</span></label>\n    <p class="text-muted-foreground text-xs">This acknowledgement does not create or verify a backup for you.</p>\n    <Button class="min-h-11 w-full" disabled={pending || !backupAcknowledged} onclick={reviewInstance}>Review public identity</Button>\n    <Button class="min-h-11 w-full" variant="ghost" disabled={pending} onclick={startAgain}>Discard setup and go back</Button>\n  `,
+    expected: /disabled=\{pending \|\| !backupAcknowledged\} onclick=\{connectSession\}>Use this key for this session/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:65:52
+✖ acknowledged generated key connects locally without instance discovery (2.707879ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'backup'
+  - 'connected'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/offline-local-key-worktree/weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:72:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'backup',
+    expected: 'connected',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:65:52
+✖ acknowledged imported key connects locally without instance discovery (2.621641ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'backup'
+  - 'connected'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/offline-local-key-worktree/weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:72:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'backup',
+    expected: 'connected',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:78:1
+✖ failed instance discovery still permits explicitly acknowledged local connection (2.491828ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'backup'
+  - 'connected'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/offline-local-key-worktree/weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:81:40)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'backup',
+    expected: 'connected',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:88:1
+✖ external signer local continuation requires backup acknowledgement and no instance discovery (2.423427ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'backup'
+  - 'connected'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261018/offline-local-key-worktree/weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs:91:61)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'backup',
+    expected: 'connected',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

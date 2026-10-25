@@ -1,0 +1,31 @@
+✔ production native Settings tabs own management and preserve account/client protections (3.676873ms)
+✔ real native Settings pages retain failed-scope backups without accordions or routine keys (105.518083ms)
+✔ storage open failure never hides the mode, backup or recovery page (12.601495ms)
+✔ home to title A to title B to reader keeps one context and clears drafts/reviews synchronously (41.858014ms)
+✔ late source read cannot attach after target navigation or disclosure dismissal (24.539577ms)
+(node:12) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ real compiled source-only title and reader mount without native account discussion context (35.298079ms)
+✔ actual compiled task Close joins original durable signing/transport fence at worker (195.874898ms)
+✔ actual compiled task Escape joins original durable signing/transport fence at snapshot (101.653142ms)
+✔ actual compiled task Close joins original durable signing/transport fence at proof (92.639858ms)
+✔ actual compiled task Escape joins original durable signing/transport fence at final-read (100.937006ms)
+✔ actual compiled task route joins original durable signing/transport fence at snapshot (88.207898ms)
+✔ actual compiled task task-switch joins original durable signing/transport fence at snapshot (87.228464ms)
+✔ actual recovery task Close stops a held fresh proof before transport (68.56774ms)
+✔ actual recovery task Escape stops a held fresh proof before transport (69.867098ms)
+✔ closed Lists held read cannot change mode or navigate: Close (18.571873ms)
+✔ closed Lists held read cannot change mode or navigate: Escape (13.027305ms)
+✔ closed Lists held read cannot change mode or navigate: route-owner (11.046763ms)
+✔ current metadata read remains inspectable while routine action rows hide raw proof (34.990498ms)
+✔ utility scan includes the reviewed external integrations without rewriting original CSS (1.546209ms)
+✔ additive route membership is exactly existing announcements plus anonymous identity (1.516505ms)
+✔ actual generated CSS contains the integration-only native dialog width utility (1.091406ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2658.473406

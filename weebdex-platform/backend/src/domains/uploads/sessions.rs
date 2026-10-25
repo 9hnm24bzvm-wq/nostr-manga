@@ -2,7 +2,7 @@ use super::storage::{self, MAX_FILES, MAX_SESSION_BYTES, StoredImage};
 use crate::{
     domains::{
         auth::{self, SessionPrincipal},
-        catalog::{CatalogPage, CatalogRepository, ChapterPublication, CoverPublication},
+        catalog::{CatalogPage, CatalogRepository, ChapterPublication, CoverPublication, entity_mutations::CatalogMutationActor},
     },
     error::{ApiError, ApiResult},
     state::AppState,
@@ -22,37 +22,37 @@ use tokio_postgres::{Row, Transaction};
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Begin {
-    manga: String,
+    pub(crate) manga: String,
     #[serde(default)]
-    groups: Vec<String>,
+    pub(crate) groups: Vec<String>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Edit {
     #[serde(default)]
-    replace: bool,
-    version: i32,
+    pub(crate) replace: bool,
+    pub(crate) version: i32,
 }
 #[derive(Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Draft {
-    volume: Option<String>,
-    chapter: Option<String>,
-    title: Option<String>,
-    language: String,
+    pub(crate) volume: Option<String>,
+    pub(crate) chapter: Option<String>,
+    pub(crate) title: Option<String>,
+    pub(crate) language: String,
 }
 #[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Commit {
-    draft: Draft,
-    page_order: Vec<String>,
+    pub(crate) draft: Draft,
+    pub(crate) page_order: Vec<String>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ResumePatch {
-    version: i32,
-    draft: Value,
-    page_order: Vec<String>,
+    pub(crate) version: i32,
+    pub(crate) draft: Value,
+    pub(crate) page_order: Vec<String>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -78,8 +78,12 @@ fn session_id(id: &str) -> ApiResult<()> {
         Err(ApiError::bad_request("Invalid upload session identifier"))
     }
 }
+#[cfg(test)]
 fn validate_draft(draft: &Draft) -> ApiResult<()> {
-    crate::domains::catalog::validation::language(&draft.language)?;
+    validate_draft_for(draft, crate::domains::catalog::validation::LanguageContract::Native)
+}
+pub(crate) fn validate_draft_for(draft: &Draft, contract: crate::domains::catalog::validation::LanguageContract) -> ApiResult<()> {
+    contract.validate(&draft.language)?;
     for value in [&draft.volume, &draft.chapter] {
         if value.as_ref().is_some_and(|v| !valid_number(v)) {
             return Err(ApiError::bad_request("Invalid chapter or volume number"));
@@ -122,7 +126,7 @@ fn valid_number(value: &str) -> bool {
     }
     parts.next().is_none()
 }
-async fn open_session(tx: &Transaction<'_>, id: &str, user: &str) -> ApiResult<Row> {
+pub(crate) async fn open_session(tx: &Transaction<'_>, id: &str, user: &str) -> ApiResult<Row> {
     open_session_for(tx, id, user, false).await
 }
 async fn open_session_for(
@@ -131,6 +135,7 @@ async fn open_session_for(
     user: &str,
     retry_prepared_commit: bool,
 ) -> ApiResult<Row> {
+    crate::domains::auth::closure::active_in(tx,user).await?;
     session_id(id)?;
     let row=tx.query_opt("SELECT manga_id,chapter_id,edit_version,groups,state,committed_chapter_id,commit_hash,expires_at>clock_timestamp() AS active FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR UPDATE",&[&id,&user]).await?.ok_or_else(||ApiError::not_found("Upload session not found"))?;
     if row.get::<_, String>(4) != "open" {
@@ -156,7 +161,7 @@ async fn open_session_for(
 }
 /// An independently prepared original publication fixes its signed input.
 /// Preserve those native files for exact commit retry and rollback recovery.
-async fn require_mutable_session(tx: &Transaction<'_>, id: &str) -> ApiResult<()> {
+pub(crate) async fn require_mutable_session(tx: &Transaction<'_>, id: &str) -> ApiResult<()> {
     let prepared: bool = tx.query_one(
         "SELECT EXISTS(SELECT 1 FROM platform.protocol_publication_commands WHERE upload_session_id=$1 AND state IN ('prepared','source_accepted'))",
         &[&id],
@@ -169,7 +174,7 @@ async fn require_mutable_session(tx: &Transaction<'_>, id: &str) -> ApiResult<()
         Ok(())
     }
 }
-async fn session_json(tx: &Transaction<'_>, id: &str) -> ApiResult<Value> {
+pub(crate) async fn session_json(tx: &Transaction<'_>, id: &str) -> ApiResult<Value> {
     let row=tx.query_one("SELECT id,platform.catalog_timestamp(created_at),platform.catalog_timestamp(updated_at),version,state,manga_id,chapter_id,owner_id,groups,platform.catalog_timestamp(expires_at),expires_at>clock_timestamp(),resume_draft,resume_page_order,committed_chapter_id FROM platform.upload_sessions WHERE id=$1",&[&id]).await?;
     let manga: Option<Value> = tx
         .query_opt(
@@ -239,7 +244,7 @@ async fn session_json(tx: &Transaction<'_>, id: &str) -> ApiResult<Value> {
         json!({"id":row.get::<_,String>(0),"created_at":row.get::<_,String>(1),"updated_at":row.get::<_,String>(2),"version":row.get::<_,i32>(3),"state":session_state,"is_committed":session_state=="committed","is_processed":true,"is_deleted":session_state=="deleted","expires_at":row.get::<_,String>(9),"is_expired":!active,"can_mutate":session_state=="open"&&active&&!fixed,"can_cancel":session_state=="open"&&active&&!fixed,"can_retry_commit":session_state=="open"&&(active||fixed),"publication_status":publication_status,"publication_event_id":command.as_ref().and_then(|r|r.get::<_,Option<String>>(2)),"manga_id":row.get::<_,String>(5),"chapter_id":chapter_id,"draft":draft,"page_order":page_order,"receipt":if session_state=="committed"{chapter.clone()}else{None},"committed_result":if session_state=="committed"{chapter.clone()}else{None},"relationships":{"manga":manga,"chapter":chapter,"uploader":{"id":owner},"groups":group_json,"files":files}}),
     )
 }
-async fn file_rows(tx: &Transaction<'_>, id: &str) -> ApiResult<Vec<Row>> {
+pub(crate) async fn file_rows(tx: &Transaction<'_>, id: &str) -> ApiResult<Vec<Row>> {
     Ok(tx.query("SELECT f.id,o.digest,o.extension,o.bytes,f.original_name,o.width,o.height,o.id FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.session_id=$1 ORDER BY f.position,f.id",&[&id]).await?)
 }
 fn file_json(row: &Row) -> Value {
@@ -252,14 +257,24 @@ async fn current_committed_result(
     tx: &Transaction<'_>,
     chapter: &str,
     session: &str,
-    actor: &SessionPrincipal,
+    actor: &impl CatalogMutationActor,
+) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    current_committed_result_for_owner(state, tx, chapter, session, actor.user_id()).await
+}
+async fn current_committed_result_for_owner(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    chapter: &str,
+    session: &str,
+    owner: &str,
 ) -> ApiResult<Value> {
     if let Some(value) = tx.query_opt(
         "SELECT platform.catalog_chapter_json(c.id) FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id)",
         &[&chapter],
     ).await?.and_then(|r|r.get::<_,Option<Value>>(0)) { return Ok(value); }
-    if !crate::protocol::publication::pending_native_receipt_allowed(
-        state, tx, chapter, session, actor,
+    if !crate::protocol::publication::pending_native_receipt_allowed_for_owner(
+        state, tx, chapter, session, owner,
     )
     .await?
     {
@@ -269,7 +284,7 @@ async fn current_committed_result(
     }
     let row = tx.query_one(
         "SELECT s.committed_result,c.protocol_event_id FROM platform.upload_sessions s JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id WHERE s.id=$1 AND s.owner_id=$2 AND c.id=$3",
-        &[&session,&actor.user_id,&chapter],
+        &[&session,&owner,&chapter],
     ).await?;
     let saved: Value = row
         .get::<_, Option<Value>>(0)
@@ -313,6 +328,72 @@ async fn current_committed_result(
     receipt.insert("is_unavailable".into(), json!(true));
     Ok(Value::Object(receipt))
 }
+/// Owner-only resumable view shared by native and signed-public reads. The
+/// caller rechecks authentication/binding in this transaction; this helper locks
+/// ownership and preserves current receipt visibility and capability downgrades.
+/// It never turns a read principal into a catalogue mutation capability.
+pub(crate) async fn owner_snapshot_in(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    id: &str,
+    owner: &str,
+    can_manage: bool,
+) -> ApiResult<Value> {
+    session_id(id)?;
+    tx.query_opt(
+        "SELECT id FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR SHARE",
+        &[&id, &owner],
+    ).await?.ok_or_else(|| ApiError::not_found("Upload session not found"))?;
+    let mut value = session_json(tx, id).await?;
+    value["target_manga"] = value["relationships"]["manga"]
+        .as_object()
+        .map(|m| json!({"id":m.get("id"),"title":m.get("title")}))
+        .unwrap_or(Value::Null);
+    value["target_status"] = json!(if value["target_manga"].is_null() {
+        "unavailable"
+    } else {
+        "available"
+    });
+    if value["is_committed"] == true {
+        let session_id = value["id"].as_str().ok_or_else(ApiError::unavailable)?;
+        let chapter_id = value["chapter_id"]
+            .as_str()
+            .ok_or_else(ApiError::unavailable)?;
+        match current_committed_result_for_owner(state, tx, chapter_id, session_id, owner).await {
+            Ok(receipt) => {
+                if value["target_manga"].is_null() && receipt["is_unavailable"] == true {
+                    if let Some(target)=tx.query_opt("SELECT id,title FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND state='published'", &[&value["manga_id"].as_str().ok_or_else(ApiError::unavailable)?]).await? {
+                        value["target_manga"] = json!({"id":target.get::<_,String>(0),"title":target.get::<_,String>(1),"scope":"instance-local","is_unavailable":true});
+                        value["target_status"] = json!("accepted_pending_projection");
+                    }
+                }
+                value["committed_result"] = receipt.clone();
+                value["receipt"] = receipt;
+            }
+            Err(error) if error.status == StatusCode::NOT_FOUND => {
+                value["committed_result"] = Value::Null;
+                value["receipt"] = Value::Null;
+                value["source_unavailable"] = json!(true);
+            }
+            Err(error) => return Err(error),
+        }
+    }
+    if value["target_status"] == "unavailable" {
+        value["can_retry_commit"] = json!(false);
+    }
+    if !can_manage {
+        value["can_mutate"] = json!(false);
+        value["can_cancel"] = json!(false);
+        value["can_retry_commit"] = json!(false);
+    }
+    if value["publication_status"] != "unprepared"
+        && state.config.protocol_publication.is_none()
+    {
+        value["can_retry_commit"] = json!(false);
+        value["publication_configuration_available"] = json!(false);
+    }
+    Ok(value)
+}
 pub async fn get(State(state): State<AppState>, headers: HeaderMap) -> ApiResult<Response> {
     let actor = auth::require_principal(&state, &headers).await?;
     if actor.is_api_client || actor.recovery_session {
@@ -325,54 +406,8 @@ pub async fn get(State(state): State<AppState>, headers: HeaderMap) -> ApiResult
     let row=tx.query_opt("SELECT id FROM platform.upload_sessions s WHERE owner_id=$1 AND ((state='open' AND (expires_at>clock_timestamp() OR EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.user_id=s.owner_id AND p.state IN ('prepared','source_accepted')))) OR (state='committed' AND committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection') AND EXISTS(SELECT 1 FROM platform.catalog_chapters c WHERE c.id=s.committed_chapter_id AND c.deleted_at IS NULL))) ORDER BY (state='open') DESC,updated_at DESC,id LIMIT 1",&[&actor.user_id]).await?;
     let response = match row {
         Some(row) => {
-            let mut value = session_json(&tx, &row.get::<_, String>(0)).await?;
-            value["target_manga"] = value["relationships"]["manga"]
-                .as_object()
-                .map(|m| json!({"id":m.get("id"),"title":m.get("title")}))
-                .unwrap_or(Value::Null);
-            value["target_status"] = json!(if value["target_manga"].is_null() {
-                "unavailable"
-            } else {
-                "available"
-            });
-            if value["is_committed"] == true {
-                let session_id = value["id"].as_str().ok_or_else(ApiError::unavailable)?;
-                let chapter_id = value["chapter_id"]
-                    .as_str()
-                    .ok_or_else(ApiError::unavailable)?;
-                match current_committed_result(&state, &tx, chapter_id, session_id, &actor).await {
-                    Ok(receipt) => {
-                        if value["target_manga"].is_null() && receipt["is_unavailable"] == true {
-                            if let Some(target)=tx.query_opt("SELECT id,title FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND state='published'", &[&value["manga_id"].as_str().ok_or_else(ApiError::unavailable)?]).await? {
-                                value["target_manga"] = json!({"id":target.get::<_,String>(0),"title":target.get::<_,String>(1),"scope":"instance-local","is_unavailable":true});
-                                value["target_status"] = json!("accepted_pending_projection");
-                            }
-                        }
-                        value["committed_result"] = receipt.clone();
-                        value["receipt"] = receipt;
-                    }
-                    Err(error) if error.status == StatusCode::NOT_FOUND => {
-                        value["committed_result"] = Value::Null;
-                        value["receipt"] = Value::Null;
-                        value["source_unavailable"] = json!(true);
-                    }
-                    Err(error) => return Err(error),
-                }
-            }
-            if value["target_status"] == "unavailable" {
-                value["can_retry_commit"] = json!(false);
-            }
-            if !actor.verified || !actor.has_perm("self.chapter.update") {
-                value["can_mutate"] = json!(false);
-                value["can_cancel"] = json!(false);
-                value["can_retry_commit"] = json!(false);
-            }
-            if value["publication_status"] != "unprepared"
-                && state.config.protocol_publication.is_none()
-            {
-                value["can_retry_commit"] = json!(false);
-                value["publication_configuration_available"] = json!(false);
-            }
+            let value = owner_snapshot_in(&state, &tx, &row.get::<_, String>(0),
+                &actor.user_id, actor.verified && actor.has_perm("self.chapter.update")).await?;
             Json(value).into_response()
         }
         None => StatusCode::NO_CONTENT.into_response(),
@@ -388,6 +423,21 @@ pub async fn save_resume(
     Json(payload): Json<ResumePatch>,
 ) -> ApiResult<Json<Value>> {
     let actor = actor(&state, &headers).await?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let result = save_resume_in(&tx, &actor, &id, &payload).await?;
+    tx.commit().await?;
+    Ok(Json(result))
+}
+/// Persist only private draft/order metadata under the same version, ownership,
+/// expiry and prepared-command fences for native and public transports.
+pub(crate) async fn save_resume_in(
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    id: &str,
+    payload: &ResumePatch,
+) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
     let v = &payload.draft;
     if payload.version <= 0 {
@@ -403,12 +453,10 @@ pub async fn save_resume(
         crate::domains::catalog::validation::string(v, field, max, false)?;
     }
     if let Some(language) = v["language"].as_str().filter(|lang| !lang.is_empty()) {
-        crate::domains::catalog::validation::language(language)?;
+        actor.language_contract().validate(language)?;
     }
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    open_session(&tx, &id, &actor.user_id).await?;
-    require_mutable_session(&tx, &id).await?;
+    open_session(tx, id, actor.user_id()).await?;
+    require_mutable_session(tx, id).await?;
     let version: i32 = tx
         .query_one(
             "SELECT version FROM platform.upload_sessions WHERE id=$1",
@@ -421,7 +469,7 @@ pub async fn save_resume(
             "Upload session changed; reload its current files and version",
         ));
     }
-    let files = file_rows(&tx, &id)
+    let files = file_rows(tx, id)
         .await?
         .iter()
         .map(|r| r.get::<_, String>(0))
@@ -436,10 +484,9 @@ pub async fn save_resume(
         ));
     }
     tx.execute("UPDATE platform.upload_sessions SET resume_draft=$2,resume_page_order=$3,version=version+1,updated_at=clock_timestamp() WHERE id=$1", &[&id,&payload.draft,&payload.page_order]).await?;
-    let result = session_json(&tx, &id).await?;
-    tx.commit().await?;
-    Ok(Json(result))
+    session_json(tx, id).await
 }
+
 pub async fn begin(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -449,12 +496,24 @@ pub async fn begin(
     actor.require_permission("chapter.create")?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    CatalogRepository::ensure_upload_target(&tx, &payload.manga, &actor, &payload.groups).await?;
-    expire_owner(&tx, &actor.user_id).await?;
+    let result = begin_in(&tx, &actor, &payload).await?;
+    tx.commit().await?;
+    cleanup(&state).await;
+    Ok((StatusCode::CREATED, Json(result)))
+}
+pub(crate) async fn begin_in(
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    payload: &Begin,
+) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    actor.require_permission("chapter.create")?;
+    CatalogRepository::ensure_upload_target(&tx, &payload.manga, actor, &payload.groups).await?;
+    expire_owner(&tx, &actor.user_id()).await?;
     if tx
         .query_opt(
             "SELECT id FROM platform.upload_sessions WHERE owner_id=$1 AND state='open'",
-            &[&actor.user_id],
+            &[&actor.user_id()],
         )
         .await?
         .is_some()
@@ -466,13 +525,11 @@ pub async fn begin(
     let id = storage::short_id();
     tx.execute(
         "INSERT INTO platform.upload_sessions(id,owner_id,manga_id,groups) VALUES($1,$2,$3,$4)",
-        &[&id, &actor.user_id, &payload.manga, &payload.groups],
+        &[&id, &actor.user_id(), &payload.manga, &payload.groups],
     )
     .await?;
     let result = session_json(&tx, &id).await?;
-    tx.commit().await?;
-    cleanup(&state).await;
-    Ok((StatusCode::CREATED, Json(result)))
+    Ok(result)
 }
 pub async fn begin_edit(
     State(state): State<AppState>,
@@ -484,13 +541,29 @@ pub async fn begin_edit(
     actor.require_permission("self.chapter.update")?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
+    let result = begin_edit_in(&tx, &actor, &chapter, &payload).await?;
+    tx.commit().await?;
+    cleanup(&state).await;
+    Ok((StatusCode::CREATED, Json(result)))
+}
+pub(crate) async fn begin_edit_in(
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    chapter: &str, payload: &Edit,
+) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    actor.require_permission("self.chapter.update")?;
+    // Expiry may lock the owner's old OPEN session and media references. Take
+    // those locks before the chapter, matching commit/scheduling admission.
+    // Authorization/version failures roll this entire transaction back; no
+    // filesystem cleanup runs before the handler commits successfully.
+    expire_owner(&tx, &actor.user_id()).await?;
     let old =
-        CatalogRepository::authorize_chapter_edit(&tx, &chapter, &actor, payload.version).await?;
-    expire_owner(&tx, &actor.user_id).await?;
+        CatalogRepository::authorize_chapter_edit(&tx, &chapter, actor, payload.version).await?;
     if tx
         .query_opt(
             "SELECT id FROM platform.upload_sessions WHERE owner_id=$1 AND state='open'",
-            &[&actor.user_id],
+            &[&actor.user_id()],
         )
         .await?
         .is_some()
@@ -509,7 +582,7 @@ pub async fn begin_edit(
         .filter_map(|g| g["id"].as_str().map(str::to_owned))
         .collect();
     let id = storage::short_id();
-    tx.execute("INSERT INTO platform.upload_sessions(id,owner_id,manga_id,chapter_id,edit_version,groups) VALUES($1,$2,$3,$4,$5,$6)",&[&id,&actor.user_id,&manga,&chapter,&payload.version,&groups]).await?;
+    tx.execute("INSERT INTO platform.upload_sessions(id,owner_id,manga_id,chapter_id,edit_version,groups) VALUES($1,$2,$3,$4,$5,$6)",&[&id,&actor.user_id(),&manga,&chapter,&payload.version,&groups]).await?;
     if !payload.replace {
         for row in tx.query("SELECT p.object_id,p.position,o.extension FROM platform.chapter_pages p JOIN platform.media_objects o ON o.id=p.object_id WHERE p.chapter_id=$1 ORDER BY p.position",&[&chapter]).await? {
    let file=storage::short_id();let position:i32=row.get(1);let original=format!("{}.{}",position+1,row.get::<_,String>(2));
@@ -518,9 +591,7 @@ pub async fn begin_edit(
   }
     }
     let result = session_json(&tx, &id).await?;
-    tx.commit().await?;
-    cleanup(&state).await;
-    Ok((StatusCode::CREATED, Json(result)))
+    Ok(result)
 }
 pub async fn check_approval(
     State(state): State<AppState>,
@@ -664,8 +735,54 @@ pub async fn replace_file(
     }
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    open_session(&tx, &id, &actor.user_id).await?;
-    require_mutable_session(&tx, &id).await?;
+    let replaced = replace_file_in(
+        &state, &tx, &actor, &id, &file, expected,
+        ReplacementVersionPolicy::NativeIdenticalRetry,
+        &original, &mut image, &mut variants,
+    ).await?;
+    tx.commit().await?;
+    if replaced.changed {
+        image.confirm_persisted().await;
+        for (_, derivative) in variants.iter_mut() {
+            derivative.confirm_persisted().await;
+        }
+    }
+    Ok(Json(replaced.file))
+}
+
+/// Native cookie uploads have always allowed an identical lost-response retry.
+/// Signed public replacement instead fences every request on its signed version.
+#[derive(Clone, Copy)]
+pub(crate) enum ReplacementVersionPolicy {
+    NativeIdenticalRetry,
+    Exact,
+}
+pub(crate) struct FileReplacement {
+    pub(crate) file: Value,
+    pub(crate) changed: bool,
+}
+/// Caller-owned mutation transaction, shared by native and signed public routes.
+/// The public caller must construct its write actor in this same transaction,
+/// after raw-body admission and image decoding. No preflight actor is promoted.
+pub(crate) async fn replace_file_in(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    id: &str,
+    file: &str,
+    expected: i32,
+    version_policy: ReplacementVersionPolicy,
+    original: &str,
+    image: &mut StoredImage,
+    variants: &mut Vec<(String, StoredImage)>,
+) -> ApiResult<FileReplacement> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    actor.require_permission("self.chapter.update")?;
+    if !storage::valid_id(file) || expected < 1 {
+        return Err(ApiError::bad_request("Invalid replacement file or version"));
+    }
+    open_session(tx, id, actor.user_id()).await?;
+    require_mutable_session(tx, id).await?;
     let old = tx.query_opt("SELECT o.digest,o.bytes,f.original_name FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.id=$1 AND f.session_id=$2 FOR UPDATE OF f", &[&file,&id]).await?
         .ok_or_else(||ApiError::not_found("Upload file not found in this session"))?;
     let version: i32 = tx
@@ -676,19 +793,15 @@ pub async fn replace_file(
         .await?
         .get(0);
     let identical = old.get::<_, String>(0) == image.digest && old.get::<_, String>(2) == original;
+    require_replacement_version(version_policy, version, expected, identical)?;
     if !identical {
-        if version != expected {
-            return Err(ApiError::conflict(
-                "Upload session version changed; reload before replacing the page",
-            ));
-        }
         let bytes: i64 = tx.query_one("SELECT COALESCE(sum(o.bytes),0)::BIGINT FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.session_id=$1", &[&id]).await?.get(0);
         if bytes - old.get::<_, i64>(1) + image.bytes > MAX_SESSION_BYTES {
             return Err(ApiError::bad_request(
                 "Upload session exceeds its byte budget",
             ));
         }
-        let object = insert_object(&tx, &image).await?;
+        let object = insert_object(tx, image).await?;
         tx.execute(
             "DELETE FROM platform.upload_file_derivatives WHERE file_id=$1",
             &[&file],
@@ -696,32 +809,40 @@ pub async fn replace_file(
         .await?;
         tx.execute("UPDATE platform.upload_files SET object_id=$3,original_name=$4 WHERE id=$1 AND session_id=$2", &[&file,&id,&object,&original]).await?;
         for (_, derivative) in variants.iter() {
-            let object = insert_object(&tx, derivative).await?;
+            let object = insert_object(tx, derivative).await?;
             let name = format!("{}.{}", storage::short_id(), derivative.ext);
             tx.execute("INSERT INTO platform.upload_file_derivatives(file_id,name,object_id) VALUES($1,$2,$3)", &[&file,&name,&object]).await?;
         }
         tx.execute("UPDATE platform.upload_sessions SET version=version+1,updated_at=clock_timestamp() WHERE id=$1", &[&id]).await?;
-        queue_unused(&tx).await?;
+        queue_unused(tx).await?;
         image.protect_commit(&state.config.uploads_dir).await?;
         for (_, derivative) in variants.iter_mut() {
             derivative.protect_commit(&state.config.uploads_dir).await?;
         }
     }
-    let mut result = file_rows(&tx, &id)
+    let mut result = file_rows(tx, id)
         .await?
         .iter()
         .find(|r| r.get::<_, String>(0) == file)
         .map(file_json)
         .ok_or_else(ApiError::unavailable)?;
-    result["version"] = json!(if identical { version } else { version + 1 });
-    tx.commit().await?;
-    if !identical {
-        image.confirm_persisted().await;
-        for (_, derivative) in variants.iter_mut() {
-            derivative.confirm_persisted().await;
-        }
+    // Report the persisted value while the session lock is still held, including
+    // unchanged requests. Never infer a client-visible version from its input.
+    result["version"] = json!(tx.query_one(
+        "SELECT version FROM platform.upload_sessions WHERE id=$1", &[&id],
+    ).await?.get::<_, i32>(0));
+    Ok(FileReplacement { file: result, changed: !identical })
+}
+fn require_replacement_version(
+    policy: ReplacementVersionPolicy, actual: i32, expected: i32, identical: bool,
+) -> ApiResult<()> {
+    if actual != expected && (matches!(policy, ReplacementVersionPolicy::Exact) || !identical) {
+        Err(ApiError::conflict(
+            "Upload session version changed; reload before replacing the page",
+        ))
+    } else {
+        Ok(())
     }
-    Ok(Json(result))
 }
 async fn attach(
     state: &AppState,
@@ -733,7 +854,26 @@ async fn attach(
 ) -> ApiResult<Value> {
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    open_session(&tx, id, &actor.user_id).await?;
+    let result = attach_in(state, &tx, id, actor, original, image, variants).await?;
+    tx.commit().await?;
+    image.confirm_persisted().await;
+    for (_, derivative) in variants.iter_mut() {
+        derivative.confirm_persisted().await;
+    }
+    Ok(result)
+}
+pub(crate) async fn attach_in(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    id: &str,
+    actor: &impl CatalogMutationActor,
+    original: &str,
+    image: &mut StoredImage,
+    variants: &mut Vec<(String, StoredImage)>,
+) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    actor.require_permission("self.chapter.update")?;
+    open_session(&tx, id, &actor.user_id()).await?;
     require_mutable_session(&tx, id).await?;
     let row=tx.query_one("SELECT count(*) AS count,COALESCE(sum(o.bytes),0)::BIGINT AS bytes,COALESCE(max(f.position),-1)::INTEGER AS position FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.session_id=$1",&[&id]).await?;
     if row.get::<_, i64>(0) >= MAX_FILES as i64
@@ -761,16 +901,11 @@ async fn attach(
     for (_, derivative) in variants.iter_mut() {
         derivative.protect_commit(&state.config.uploads_dir).await?;
     }
-    tx.commit().await?;
-    image.confirm_persisted().await;
-    for (_, derivative) in variants.iter_mut() {
-        derivative.confirm_persisted().await;
-    }
     Ok(
         json!({"id":file,"file_hash":image.digest,"file_name":format!("{}.{}",file,image.ext),"file_ext":format!(".{}",image.ext),"file_size":image.bytes.to_string(),"original_file_name":original}),
     )
 }
-async fn insert_object(tx: &Transaction<'_>, image: &StoredImage) -> ApiResult<String> {
+pub(crate) async fn insert_object(tx: &Transaction<'_>, image: &StoredImage) -> ApiResult<String> {
     tx.query_one(
         "SELECT pg_advisory_xact_lock(hashtextextended($1,724194))",
         &[&image.key],
@@ -787,14 +922,44 @@ pub async fn commit(
 ) -> ApiResult<Json<Value>> {
     let actor = actor(&state, &headers).await?;
     actor.require_permission("self.chapter.update")?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    let result = commit_in(&state, &tx, &actor, &id, &payload).await?;
+    tx.commit().await?;
+    cleanup(&state).await;
+    Ok(Json(result))
+}
+pub(crate) async fn commit_in(
+    state: &AppState,
+    tx: &Transaction<'_>,
+    actor: &impl CatalogMutationActor,
+    id: &str,
+    payload: &Commit,
+) -> ApiResult<Value> {
+    commit_impl(state, tx, actor, id, payload, None).await
+}
+/// Only the private durable scheduling gate can construct this actor. Ordinary
+/// native/public commits never acquire permission to mutate scheduled sessions.
+pub(crate) async fn commit_scheduled_in(
+    state: &AppState, tx: &Transaction<'_>,
+    actor: &crate::public_api::scheduled_uploads::ScheduledUploadActor,
+    id: &str, payload: &Commit,
+) -> ApiResult<Value> {
+    commit_impl(state, tx, actor, id, payload, Some(actor)).await
+}
+async fn commit_impl(
+    state: &AppState, tx: &Transaction<'_>, actor: &impl CatalogMutationActor,
+    id: &str, payload: &Commit,
+    scheduled: Option<&crate::public_api::scheduled_uploads::ScheduledUploadActor>,
+) -> ApiResult<Value> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    actor.require_permission("self.chapter.update")?;
     session_id(&id)?;
-    validate_draft(&payload.draft)?;
+    validate_draft_for(&payload.draft, actor.language_contract())?;
     let hash = hex::encode(Sha256::digest(
         serde_json::to_vec(&payload).map_err(|_| ApiError::bad_request("Invalid commit"))?,
     ));
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    let row=tx.query_opt("SELECT state,committed_chapter_id,commit_hash,committed_result FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR UPDATE",&[&id,&actor.user_id]).await?.ok_or_else(||ApiError::not_found("Upload session not found"))?;
+    let row=tx.query_opt("SELECT state,committed_chapter_id,commit_hash,committed_result FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR UPDATE",&[&id,&actor.user_id()]).await?.ok_or_else(||ApiError::not_found("Upload session not found"))?;
     if row.get::<_, String>(0) == "committed" {
         if row.get::<_, Option<String>>(2).as_deref() != Some(&hash) {
             return Err(ApiError::conflict(
@@ -804,10 +969,13 @@ pub async fn commit(
         let chapter: String = row
             .get::<_, Option<String>>(1)
             .ok_or_else(ApiError::unavailable)?;
-        let value = current_committed_result(&state, &tx, &chapter, &id, &actor).await?;
-        return Ok(Json(value));
+        let value = current_committed_result(&state, &tx, &chapter, &id, actor).await?;
+        return Ok(value);
     }
-    let session = open_session_for(&tx, &id, &actor.user_id, true).await?;
+    let session = match scheduled {
+        Some(schedule) => schedule.session_for(tx, id, &hash).await?,
+        None => open_session_for(tx, id, actor.user_id(), true).await?,
+    };
     let native_commit_payload =
         serde_json::to_value(&payload).map_err(|_| ApiError::bad_request("Invalid commit"))?;
     let rows = file_rows(&tx, &id).await?;
@@ -865,7 +1033,7 @@ pub async fn commit(
         let value = CatalogRepository::replace_chapter_pages(
             &tx,
             &chapter,
-            &actor,
+            actor,
             version,
             &patch,
             &state.config.public_origin,
@@ -875,13 +1043,13 @@ pub async fn commit(
         (chapter, value)
     } else {
         actor.require_permission("chapter.create")?;
-        CatalogRepository::ensure_upload_target(&tx, &manga, &actor, &groups).await?;
-        let chapter = storage::short_id();
+        CatalogRepository::ensure_upload_target(&tx, &manga, actor, &groups).await?;
+        let chapter = scheduled.map(|s| s.chapter_id().to_owned()).unwrap_or_else(storage::short_id);
         let mut record = ChapterPublication {
             id: chapter.clone(),
             manga_id: manga.clone(),
-            uploader_id: actor.user_id.clone(),
-            uploader_name: actor.username.clone(),
+            uploader_id: actor.user_id().to_owned(),
+            uploader_name: actor.username().to_owned(),
             title: draft.title.clone(),
             volume: draft.volume.clone(),
             chapter: draft.chapter.clone(),
@@ -919,22 +1087,24 @@ pub async fn commit(
                 }
             })
             .collect::<Vec<_>>();
-        let receipt = crate::protocol::publication::publish_native_upload(
+        let receipt = crate::protocol::publication::publish_native_upload_fenced(
             &state,
             &tx,
-            &actor,
+            actor,
             &id,
             &hash,
             &mut record,
             &originals,
             &native_commit_payload,
+            scheduled.map(|s| s.source_identity()),
+            scheduled.and_then(|s| s.parent_manifest()),
         )
         .await?;
         let value = match receipt {
             Some(receipt) => {
-                CatalogRepository::publish_verified_protocol_chapter(&tx, &record, &receipt).await?
+                CatalogRepository::publish_verified_protocol_chapter(&tx, &record, &receipt, actor.language_contract()).await?
             }
-            None => CatalogRepository::publish_chapter(&tx, &record).await?,
+            None => CatalogRepository::publish_chapter_for(&tx, &record, actor.language_contract()).await?,
         };
         // Original protocol names are canonical hashes; keep all positions,
         // including repeated identical original bytes, in the instance index.
@@ -986,9 +1156,7 @@ pub async fn commit(
     .await?;
     queue_unused(&tx).await?;
     crate::protocol::publication::finalize_native_upload(&tx, &id, &manga).await?;
-    tx.commit().await?;
-    cleanup(&state).await;
-    Ok(Json(result))
+    Ok(result)
 }
 pub fn validate_order(order: &[String], files: &[String]) -> ApiResult<()> {
     let unique: BTreeSet<_> = order.iter().collect();
@@ -1013,16 +1181,27 @@ pub async fn cancel(
 ) -> ApiResult<StatusCode> {
     let actor = actor(&state, &headers).await?;
     actor.require_permission("self.chapter.update")?;
-    session_id(&id)?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
+    cancel_in(&tx, &actor, &id).await?;
+    tx.commit().await?;
+    cleanup(&state).await;
+    Ok(StatusCode::NO_CONTENT)
+}
+pub(crate) async fn cancel_in(tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    actor.require_permission("self.chapter.update")?;
+    session_id(&id)?;
     let row = tx
         .query_opt(
             "SELECT state FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR UPDATE",
-            &[&id, &actor.user_id],
+            &[&id, &actor.user_id()],
         )
         .await?
         .ok_or_else(|| ApiError::not_found("Upload session not found"))?;
+    if row.get::<_, String>(0) == "scheduled" {
+        return Err(ApiError::conflict("Use the signed owner schedule cancellation operation"));
+    }
     require_mutable_session(&tx, &id).await?;
     if row.get::<_, String>(0) == "committed" {
         return Err(ApiError::conflict(
@@ -1036,9 +1215,7 @@ pub async fn cancel(
     )
     .await?;
     queue_unused(&tx).await?;
-    tx.commit().await?;
-    cleanup(&state).await;
-    Ok(StatusCode::NO_CONTENT)
+    Ok(())
 }
 pub async fn delete_file(
     State(state): State<AppState>,
@@ -1063,12 +1240,20 @@ async fn remove_files(
 ) -> ApiResult<StatusCode> {
     let actor = actor(state, headers).await?;
     actor.require_permission("self.chapter.update")?;
+    let mut client = state.db.client().await?;
+    let tx = client.transaction().await?;
+    remove_files_in(&tx, &actor, id, files).await?;
+    tx.commit().await?;
+    cleanup(state).await;
+    Ok(StatusCode::NO_CONTENT)
+}
+pub(crate) async fn remove_files_in(tx: &Transaction<'_>, actor: &impl CatalogMutationActor, id: &str, files: &[String]) -> ApiResult<()> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    actor.require_permission("self.chapter.update")?;
     if files.len() > MAX_FILES || files.iter().any(|f| !storage::valid_id(f)) {
         return Err(ApiError::bad_request("Invalid upload file identifiers"));
     }
-    let mut client = state.db.client().await?;
-    let tx = client.transaction().await?;
-    open_session(&tx, id, &actor.user_id).await?;
+    open_session(&tx, id, &actor.user_id()).await?;
     require_mutable_session(&tx, id).await?;
     let count: i64 = tx
         .query_one(
@@ -1087,16 +1272,14 @@ async fn remove_files(
     .await?;
     tx.execute("UPDATE platform.upload_sessions SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id]).await?;
     queue_unused(&tx).await?;
-    tx.commit().await?;
-    cleanup(state).await;
-    Ok(StatusCode::NO_CONTENT)
+    Ok(())
 }
 async fn expire_owner(tx: &Transaction<'_>, owner: &str) -> ApiResult<()> {
     tx.execute("UPDATE platform.upload_sessions s SET state='deleted',version=version+1,updated_at=clock_timestamp() WHERE owner_id=$1 AND state='open' AND expires_at<=clock_timestamp() AND NOT EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.state IN ('prepared','source_accepted')) AND NOT EXISTS(SELECT 1 FROM platform.upload_files retained JOIN platform.protocol_publication_originals pins ON pins.object_id=retained.object_id WHERE retained.session_id=s.id) AND NOT EXISTS(SELECT 1 FROM platform.upload_files retained JOIN platform.upload_file_derivatives derivative ON derivative.file_id=retained.id JOIN platform.protocol_publication_originals pins ON pins.object_id=derivative.object_id WHERE retained.session_id=s.id)",&[&owner]).await?;
     tx.execute("DELETE FROM platform.upload_files f USING platform.upload_sessions s WHERE f.session_id=s.id AND s.owner_id=$1 AND s.state='deleted' AND NOT EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.state IN ('prepared','source_accepted')) AND NOT EXISTS(SELECT 1 FROM platform.upload_files retained JOIN platform.protocol_publication_originals pins ON pins.object_id=retained.object_id WHERE retained.session_id=s.id) AND NOT EXISTS(SELECT 1 FROM platform.upload_files retained JOIN platform.upload_file_derivatives derivative ON derivative.file_id=retained.id JOIN platform.protocol_publication_originals pins ON pins.object_id=derivative.object_id WHERE retained.session_id=s.id)",&[&owner]).await?;
     queue_unused(tx).await
 }
-async fn queue_unused(tx: &Transaction<'_>) -> ApiResult<()> {
+pub(crate) async fn queue_unused(tx: &Transaction<'_>) -> ApiResult<()> {
     // Foreign keys serialize concurrent reference insertion against object deletion.
     let rows=tx.query("WITH unused AS (SELECT o.id FROM platform.media_objects o WHERE NOT EXISTS(SELECT 1 FROM platform.upload_files f WHERE f.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.chapter_pages p WHERE p.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.cover_media c WHERE c.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.upload_file_derivatives d WHERE d.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.chapter_page_derivatives d WHERE d.object_id=o.id) AND NOT EXISTS(SELECT 1 FROM platform.protocol_publication_originals p WHERE p.object_id=o.id) ORDER BY o.created_at,o.id LIMIT 100 FOR UPDATE OF o SKIP LOCKED) DELETE FROM platform.media_objects o USING unused u WHERE o.id=u.id RETURNING o.storage_key",&[]).await?;
     for row in rows {
@@ -1438,6 +1621,16 @@ pub async fn claim_chapter(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn public_replacement_always_fences_version_and_native_identical_retry_is_preserved() {
+        for identical in [false, true] {
+            assert!(require_replacement_version(ReplacementVersionPolicy::Exact, 9, 9, identical).is_ok());
+            assert!(require_replacement_version(ReplacementVersionPolicy::Exact, 9, 8, identical).is_err());
+            assert!(require_replacement_version(ReplacementVersionPolicy::NativeIdenticalRetry, 9, 9, identical).is_ok());
+        }
+        assert!(require_replacement_version(ReplacementVersionPolicy::NativeIdenticalRetry, 9, 8, true).is_ok());
+        assert!(require_replacement_version(ReplacementVersionPolicy::NativeIdenticalRetry, 9, 8, false).is_err());
+    }
     #[test]
     fn commit_order_cannot_duplicate_omit_or_reference_another_session_file() {
         let files = vec!["Abcdef1234".into(), "Defghi5678".into()];

@@ -1,0 +1,20 @@
+
+running 1 test
+test exact_nostr_upload_contracts_ownership_validation_and_original_commit ... FAILED
+
+failures:
+
+---- exact_nostr_upload_contracts_ownership_validation_and_original_commit stdout ----
+
+thread 'exact_nostr_upload_contracts_ownership_validation_and_original_commit' panicked at tests/public_uploads.rs:38:9:
+assertion `left == right` failed: POST /api/v1/upload/97b474ac-c9a2-82f6-a409-19261a3e1eb1/commit: {"errors":[{"detail":"Resource projection is unavailable","id":"8f4bae25-7ce4-4bee-86c8-0450a30a9e3e","status":503,"title":"Service Unavailable"}],"result":"error"}
+  left: 503
+ right: 200
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    exact_nostr_upload_contracts_ownership_validation_and_original_commit
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.84s
+

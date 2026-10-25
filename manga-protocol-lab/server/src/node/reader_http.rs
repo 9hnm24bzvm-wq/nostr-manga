@@ -100,46 +100,19 @@ async fn register(a: &App, kind: &str, key: &str, payload: Value) -> Result<Stri
     Ok(key)
 }
 pub(super) async fn profile(a: &App, publisher: Id, allow_empty: bool) -> Result<Value, ApiError> {
-    let c = a.repo.pool.get().await.map_err(|_| unavailable())?;
-    let known: bool = c
-        .query_one(
-            "SELECT EXISTS(SELECT 1 FROM events WHERE publisher=$1 AND state='hosted')",
-            &[&publisher.as_slice()],
-        )
+    let profile = a
+        .repo
+        .public_account_profile(publisher)
         .await
-        .map_err(|_| unavailable())?
-        .get(0);
-    let row=c.query_opt("SELECT event_id FROM account_heads WHERE publisher=$1 AND kind=0 AND event_id IS NOT NULL",&[&publisher.as_slice()]).await.map_err(|_|unavailable())?;
-    drop(c);
+        .map_err(|_| unavailable())?;
+    let known = profile.known;
     if !known && !allow_empty {
         return Err(missing());
     }
-    let mut event = None;
-    if let Some(row) = row {
-        let key: Id = row
-            .get::<_, Vec<u8>>(0)
-            .try_into()
-            .map_err(|_| unavailable())?;
-        event = a.repo.visible_event(key).await.map_err(|_| unavailable())?;
-    }
-    let metadata = event
-        .as_ref()
-        .map(|e| serde_json::from_str::<Value>(&e.content))
-        .transpose()
-        .map_err(|_| unavailable())?
-        .unwrap_or(json!({}));
     let public = hex::encode(publisher);
-    let username = metadata
-        .get("display_name")
-        .and_then(Value::as_str)
-        .filter(|s| !s.is_empty() && s.len() <= 512)
-        .or_else(|| {
-            metadata
-                .get("name")
-                .and_then(Value::as_str)
-                .filter(|s| !s.is_empty() && s.len() <= 512)
-        })
-        .unwrap_or(&public);
+    let username = profile.display_name().unwrap_or(&public);
+    let metadata = &profile.metadata;
+    let event = &profile.event;
     let alias = if known {
         register(a, "user", &public, json!({"nostrPubkey":public})).await?
     } else {

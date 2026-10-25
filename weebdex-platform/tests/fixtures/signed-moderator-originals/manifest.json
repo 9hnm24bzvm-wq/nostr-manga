@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "scope": "Exact retained original layout and unchanged source witnesses only. No Git runtime dependency, fallback, fabricated baseline or historical execution relabelling.",
+  "predecessor_commit": "d4028ee6ccf8cf8bc22228cf8bc9dc97bd927e25",
+  "original_frontend_tree": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+  "original_frontend_file_count": 679,
+  "layout": {
+    "source": "weebdex-platform/frontend/src/routes/(app)/my/+layout.svelte",
+    "fixture": "native-my-layout.svelte",
+    "bytes": 173,
+    "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+    "git_blob": "7695cb572374935c0239e6cb7cb1d17fcd85dc0d"
+  },
+  "frontend_manifests": [
+    {
+      "path": "test-evidence/frontend/source-parity.json",
+      "sha256": "7288948ce8c9bd9dcfde0e75a84266ea782e8d52a4790d245660fb2404842755"
+    },
+    {
+      "path": "scripts/ci/frontend-additions.json",
+      "sha256": "ce187fe79bc46c309b816d0919f3ee177cff29569e3ead6f851189d2e9e89a95"
+    }
+  ],
+  "inspectors": [
+    {
+      "path": "backend/src/public_api/native_report_inspection.rs",
+      "bytes": 5800,
+      "sha256": "c771d686f8a2c08e30bdcd70956df367116d771867d77b36066f339b423410b3"
+    },
+    {
+      "path": "platform-integrations/public-api/native-report-inspection.ts",
+      "bytes": 9457,
+      "sha256": "0c5be70b854822319072b6fa8dcfb7804017d64ccc0e8a6d5237e260cedaea9a"
+    },
+    {
+      "path": "platform-integrations/public-api/NativeReportInspection.svelte",
+      "bytes": 7986,
+      "sha256": "c0e33f86121fc288d9a7d8229323c686f66e39d8f063b37509b36b12443a59a5"
+    }
+  ]
+}

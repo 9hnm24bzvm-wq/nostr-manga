@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "run_id": 38671869087,
+  "run_attempt": 1,
+  "job_id": 116216618813,
+  "remote_commit": "5dc19a59c31e9e99f2ab1845bd70b5338d483bfc",
+  "remote_tree": "fc87bea7426f2899d511cff29a28ec212e70ceb0",
+  "artifact_id": 11945194027,
+  "zip_bytes": 9655,
+  "zip_sha256": "42277959df43e90ae5abd6ada41bb1b234d7777444a8c3128eef9be91848964e",
+  "zip_digest_matches_github": true,
+  "strict_three_name_allowlist": true,
+  "official_file_count": 3,
+  "closed_schemas_valid": true,
+  "summary_present": true,
+  "summary_recomputed_exact": true,
+  "prepared_source_snapshot_bound": true,
+  "reviewed_source_snapshot_sha256": "dbeffdbe303ca88a52008e2017c68867494b50e906282eab6738bade3d4ed0d6",
+  "source_snapshot_inputs": 1069,
+  "original_676_plus_3_preserved": true,
+  "required_unique_phases": 39,
+  "planned_batches": 11,
+  "planned_phase_executions": 51,
+  "preparation_status": "prepared",
+  "native_feed_regression": {
+    "cleanup_verified": true,
+    "deadline_exceeded": false,
+    "fixture_cleanup_verified": true,
+    "measurement": {
+      "all_505_ids_reached": true,
+      "baseline_ms": 5001,
+      "baseline_outcome": "query-canceled",
+      "batched_first_page_ms": 210,
+      "bilingual506_preserved": true,
+      "canonical_sample_parity": true,
+      "scenario": "compact-feed505-plus10000-metadata",
+      "statement_timeout_unchanged": true,
+      "visibility_withdrawals_verified": true
+    },
+    "owned_terminal": true,
+    "process_exit_code": 0,
+    "process_started": true,
+    "schema": 1,
+    "status": "passed"
+  },
+  "summary": {
+    "actual_phase_runs": 37,
+    "all_fixture_lifecycles_clean": false,
+    "all_fixture_teardowns_verified": true,
+    "budget_exhausted": false,
+    "failed_unique_phases": [
+      "editorial",
+      "signed-recipients",
+      "ui12-compact-feed",
+      "ui14-actor-follow",
+      "ui14-home-failures",
+      "upload"
+    ],
+    "full_suite_passed": false,
+    "interrupted": false,
+    "passed_unique_phases": [
+      "account",
+      "account-recovery",
+      "filters",
+      "local-library",
+      "signed-context",
+      "signed-library",
+      "signed-profile",
+      "signed-social",
+      "startup",
+      "ui10-api-client",
+      "ui10-auth-lifetimes",
+      "ui10-preferences",
+      "ui10-reader-transition",
+      "ui10-recovery-lifetimes",
+      "ui11-device-navigation",
+      "ui11-device-progress",
+      "ui13-feed-authority",
+      "ui13-terminal-feed",
+      "ui14-account-failures",
+      "ui14-entity-pagination"
+    ],
+    "pending_unique_phases": [
+      "announcements",
+      "community",
+      "pwa",
+      "reader",
+      "signed-namespace",
+      "signed-restart",
+      "signed-source-controls",
+      "ui15-16-empty-tabs",
+      "ui15-chapter-filter",
+      "ui15-reader-feedback",
+      "ui15-reader-geometry",
+      "ui16-home-preferences",
+      "ui16-search-cap"
+    ],
+    "pixel_parity_established": false,
+    "private_runtime_artifacts_uploaded": false,
+    "required_unique_phases": 39,
+    "schema": 1,
+    "screenshots_or_raw_logs_uploaded": false,
+    "selected_scope_passed": false,
+    "selection": "all"
+  },
+  "safe_json_files": {
+    "summary.json": {
+      "bytes": 1170,
+      "sha256": "9814a0c6651c74548e9d2b652911dcf8c371879c7af3e438c7c2d3f45c8e2f0d"
+    },
+    "preparation.json": {
+      "bytes": 1359,
+      "sha256": "d856d3060cd0f8697dcadb29baf980bdb91c058e762baf8186cfe40dcf83b7ce"
+    },
+    "phases.json": {
+      "bytes": 219625,
+      "sha256": "49454c086e179afd7a73bdfb89f0a14165ea5a43fb3788c4226eaebe0ce3cbed"
+    }
+  }
+}

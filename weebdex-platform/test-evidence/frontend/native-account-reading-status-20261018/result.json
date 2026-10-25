@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "76e443bc13863a6e99c76fb892bed10978f8700b",
+  "backendContract": "96241c03b60b2103f667e8471f300c65513e6a4f",
+  "status": "pass",
+  "tests": 60,
+  "passed": 60,
+  "failed": 0,
+  "groups": {
+    "newProductionClientFinite": 19,
+    "newCompiledSvelteJSDOM": 16,
+    "existingFollowClient": 13,
+    "existingFollowComponentFinite": 12
+  },
+  "versions": {
+    "svelte": "5.55.1",
+    "jsdom": "27.0.1"
+  },
+  "boundaries": [
+    "Actual production client modules and compiled AccountFollow component execute.",
+    "Bound native-account access, HTTP storage and leaf controls are explicit finite stand-ins.",
+    "The backend96241c contract runtime qualification is pending independently.",
+    "No full composed strict/Vite, mounted application, native-browser or production acceptance is claimed."
+  ],
+  "canonicalFrontendChanged": false,
+  "dependencyInstallOrCopy": false
+}

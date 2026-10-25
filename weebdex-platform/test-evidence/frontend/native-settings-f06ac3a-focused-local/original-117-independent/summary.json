@@ -1,0 +1,1157 @@
+{
+  "schema": 1,
+  "application_source_commit": "11706deb4dce8ae374e05e878e7f06f0ecb9bae4",
+  "selected_scope_passed": false,
+  "full_suite_passed": false,
+  "known_compact_failure_not_retested": true,
+  "phases": [
+    {
+      "batch": "local-compact",
+      "phase": "startup",
+      "status": "passed",
+      "actual_steps": 19,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "runner_report_present": true,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true,
+      "evidence_scope": "actual browser controls and persisted-result assertions; pixel parity remains unverified",
+      "runner_diagnostics": {
+        "schema": 1,
+        "record_valid": true,
+        "stage": "complete",
+        "fatal_kind": "none",
+        "fatal_code": "none",
+        "fatal_stage": "none",
+        "exit_observed": true,
+        "exit_code": 0,
+        "owned_exit_code": 0,
+        "report_finalized": true,
+        "report_passed": true,
+        "proxy_diagnostics": {
+          "schema": 1,
+          "record_valid": true,
+          "connect_denials": 6,
+          "expected_connect_resets": 0,
+          "remaining_socket_count": 0,
+          "shutdown_started": true,
+          "observations_truncated": false,
+          "closed": true
+        },
+        "private_values_omitted": true,
+        "raw_messages_exported": false
+      },
+      "startup_diagnostics": {
+        "schema": 1,
+        "check_results": [
+          {
+            "index": 0,
+            "check_id": "homepage",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 1,
+            "check_id": "search",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 2,
+            "check_id": "groups",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 3,
+            "check_id": "users",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 4,
+            "check_id": "popular",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 5,
+            "check_id": "trending",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 6,
+            "check_id": "updates",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 7,
+            "check_id": "announcements",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 8,
+            "check_id": "about",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 9,
+            "check_id": "guidelines",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 10,
+            "check_id": "terms",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 11,
+            "check_id": "privacy",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 12,
+            "check_id": "login",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 13,
+            "check_id": "register",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 14,
+            "check_id": "random-title",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 15,
+            "check_id": "seed-title",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 16,
+            "check_id": "seed-group",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 17,
+            "check_id": "seed-chapter",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          },
+          {
+            "index": 18,
+            "check_id": "missing-assets",
+            "check_identity_verified": true,
+            "status": "passed",
+            "error_class": "None",
+            "category": "none",
+            "missing_global": "none"
+          }
+        ],
+        "private_values_omitted": true,
+        "raw_messages_exported": false,
+        "observations_truncated": true,
+        "seed_title_readiness": {
+          "schema": 1,
+          "record_valid": true,
+          "original_body_meaningful": true,
+          "wait_outcome": "not-needed",
+          "initial": {
+            "body_meaningful": true,
+            "document_ready": true,
+            "fixture_heading_visible": true,
+            "fixture_route": true
+          },
+          "late": {
+            "body_meaningful": true,
+            "document_ready": true,
+            "fixture_heading_visible": true,
+            "fixture_route": true
+          }
+        },
+        "page_errors": [],
+        "console_errors": [
+          {
+            "path": "/",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 3
+          },
+          {
+            "path": "/about",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/about",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/announcements",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/announcements",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/auth/login",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/auth/login",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/auth/register",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/auth/register",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/chapter/SeedChapt1",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/chapter/SeedChapt1",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/group/SeedGroup1",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/group/SeedGroup1",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/groups",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/groups",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/guidelines",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/guidelines",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/popular",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/popular",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/privacy",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/privacy",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/search",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/search",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/terms",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/terms",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/title/SeedManga1",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/title/SeedManga1",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/title/random",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/title/random",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/trending",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/trending",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/updates",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/updates",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          },
+          {
+            "path": "/users",
+            "error_class": "Unknown",
+            "category": "csp-blocked",
+            "missing_global": "none",
+            "count": 2
+          },
+          {
+            "path": "/users",
+            "error_class": "Unknown",
+            "category": "unknown",
+            "missing_global": "none",
+            "count": 1
+          }
+        ],
+        "csp_violations": [
+          {
+            "path": "/",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/<unlisted-path>",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/<unlisted-path>",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/about",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/about",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/announcements",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/announcements",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/auth/login",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/auth/login",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/auth/register",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/auth/register",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/group/SeedGroup1",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/group/SeedGroup1",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/groups",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/groups",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/guidelines",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/guidelines",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/popular",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/popular",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/privacy",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/privacy",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/search",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/search",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/terms",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/terms",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/title/SeedManga1",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/title/SeedManga1",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/title/random",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/title/random",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/trending",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/trending",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/updates",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/updates",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          },
+          {
+            "path": "/users",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "inline",
+            "count": 1
+          },
+          {
+            "path": "/users",
+            "directive": "script-src-elem",
+            "disposition": "enforce",
+            "blocked": "other-origin",
+            "count": 1
+          }
+        ],
+        "network": [
+          {
+            "path": "/",
+            "resource": "document",
+            "status": 200,
+            "mime": "html",
+            "failure": "none",
+            "count": 1
+          },
+          {
+            "path": "/<unlisted-path>",
+            "resource": "image",
+            "status": 200,
+            "mime": "image",
+            "failure": "none",
+            "count": 4
+          },
+          {
+            "path": "/<unlisted-path>",
+            "resource": "image",
+            "status": 404,
+            "mime": "json",
+            "failure": "none",
+            "count": 2
+          },
+          {
+            "path": "/_app/immutable/assets/<asset>",
+            "resource": "stylesheet",
+            "status": 200,
+            "mime": "css",
+            "failure": "none",
+            "count": 12
+          },
+          {
+            "path": "/_app/immutable/chunks/<module>.js",
+            "resource": "script",
+            "status": 200,
+            "mime": "javascript",
+            "failure": "none",
+            "count": 214
+          },
+          {
+            "path": "/_app/immutable/entry/<module>.js",
+            "resource": "script",
+            "status": 200,
+            "mime": "javascript",
+            "failure": "none",
+            "count": 4
+          },
+          {
+            "path": "/_app/immutable/nodes/<module>.js",
+            "resource": "script",
+            "status": 200,
+            "mime": "javascript",
+            "failure": "none",
+            "count": 5
+          },
+          {
+            "path": "/api/<endpoint>",
+            "resource": "fetch",
+            "status": 200,
+            "mime": "json",
+            "failure": "none",
+            "count": 2
+          },
+          {
+            "path": "/api/<endpoint>",
+            "resource": "xhr",
+            "status": 200,
+            "mime": "json",
+            "failure": "none",
+            "count": 3
+          },
+          {
+            "path": "/api/<endpoint>",
+            "resource": "xhr",
+            "status": 401,
+            "mime": "json",
+            "failure": "none",
+            "count": 1
+          },
+          {
+            "path": "/fonts/<asset>",
+            "resource": "font",
+            "status": 200,
+            "mime": "font",
+            "failure": "none",
+            "count": 3
+          },
+          {
+            "path": "/images/<asset>",
+            "resource": "image",
+            "status": 200,
+            "mime": "image",
+            "failure": "none",
+            "count": 3
+          },
+          {
+            "path": "/search",
+            "resource": "document",
+            "status": 200,
+            "mime": "html",
+            "failure": "none",
+            "count": 1
+          },
+          {
+            "path": "<other-origin>",
+            "resource": "script",
+            "status": 0,
+            "mime": "empty",
+            "failure": "unknown",
+            "count": 1
+          }
+        ],
+        "seed_title_network": [
+          {
+            "path": "/api/<endpoint>",
+            "resource": "xhr",
+            "status": 401,
+            "mime": "json",
+            "failure": "none",
+            "count": 1
+          },
+          {
+            "path": "/api/manga/SeedManga1",
+            "resource": "xhr",
+            "status": 200,
+            "mime": "json",
+            "failure": "none",
+            "count": 1
+          },
+          {
+            "path": "/title/SeedManga1",
+            "resource": "document",
+            "status": 200,
+            "mime": "html",
+            "failure": "none",
+            "count": 1
+          },
+          {
+            "path": "<other-origin>",
+            "resource": "script",
+            "status": 0,
+            "mime": "empty",
+            "failure": "unknown",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "batch": "local-compact",
+      "phase": "signed-social",
+      "status": "failed",
+      "actual_steps": 9,
+      "failed_steps": [
+        {
+          "index": 2,
+          "status": "failed"
+        },
+        {
+          "index": 3,
+          "status": "failed"
+        },
+        {
+          "index": 4,
+          "status": "failed"
+        },
+        {
+          "index": 5,
+          "status": "failed"
+        },
+        {
+          "index": 6,
+          "status": "failed"
+        },
+        {
+          "index": 7,
+          "status": "failed"
+        },
+        {
+          "index": 8,
+          "status": "failed"
+        }
+      ],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "runner_report_present": true,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": false,
+      "evidence_scope": "actual browser controls and persisted-result assertions; pixel parity remains unverified",
+      "runner_diagnostics": {
+        "schema": 1,
+        "record_valid": true,
+        "stage": "complete",
+        "fatal_kind": "none",
+        "fatal_code": "none",
+        "fatal_stage": "none",
+        "exit_observed": true,
+        "exit_code": 1,
+        "owned_exit_code": 1,
+        "report_finalized": true,
+        "report_passed": false,
+        "proxy_diagnostics": {
+          "schema": 1,
+          "record_valid": true,
+          "connect_denials": 9,
+          "expected_connect_resets": 0,
+          "remaining_socket_count": 0,
+          "shutdown_started": true,
+          "observations_truncated": false,
+          "closed": true
+        },
+        "private_values_omitted": true,
+        "raw_messages_exported": false
+      },
+      "journey_diagnostics": {
+        "schema": 1,
+        "record_valid": true,
+        "private_values_omitted": true,
+        "raw_messages_exported": false,
+        "check_results": [
+          {
+            "check_id": "signed-social-mapped-title-navigation",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-mapped-follow-trigger-visible-unique",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-mapped-follow-popup-open",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-mapped-follow-option-selected",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-mapped-status-durable",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-native-title-navigation",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-native-follow-trigger-visible-unique",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-native-follow-popup-open",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-native-follow-option-selected",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-reader-bytes",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-reader-progress-durable",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-library-navigation",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-device-list-durable",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-device-member-durable",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-device-authority-unpublished",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-missing-signer-refused",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-signer-binding-installed",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-signer-selection-denied",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-signer-connected",
+            "status": "passed"
+          },
+          {
+            "check_id": "signed-social-recipient-wrong-key-refused",
+            "status": "failed"
+          },
+          {
+            "check_id": "signed-social-recipient-disallowed-origin-refused",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-recipient-verified",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-recipient-selected",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-social-conversation-loaded",
+            "status": "failed"
+          },
+          {
+            "check_id": "signed-social-conversation-target-controls",
+            "status": "failed"
+          },
+          {
+            "check_id": "signed-social-conversation-mapping-response",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-conversation-root-response",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-conversation-feed-response",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-conversation-source-visible",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-social-comment-reviewed",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-social-comment-sent",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-social-comment-counterpart",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-social-reaction-reviewed",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-social-reaction-sent",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-social-reaction-counterpart",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-social-feed-verified",
+            "status": "pending"
+          },
+          {
+            "check_id": "signed-social-social-comment-rendered",
+            "status": "pending"
+          }
+        ]
+      }
+    }
+  ],
+  "cleanup": {
+    "cleanup": {
+      "verified_stopped": true,
+      "ports_closed": true,
+      "keys_removed": true,
+      "remaining_owned_process_count": 0,
+      "final_teardown_clean": true,
+      "lifecycle_clean": false,
+      "expected_port_roles": [
+        "platform",
+        "mail",
+        "postgres",
+        "original"
+      ]
+    },
+    "outer_cleanup": {
+      "forced": false,
+      "verified_stopped": true,
+      "remaining_owned_process_count": 0
+    },
+    "supervisor_terminal": true,
+    "supervisor_exit_zero": false
+  },
+  "failure_classification": "exact-known-key-label-includes-optional-description-help",
+  "source_proven_control": "input#sync-instance-key inside destinations task",
+  "secondary_signed_failures": "recipient setup missing after original common prerequisite failure",
+  "signed_context_and_device_lifecycle": "not-run",
+  "corrected_test_commit": "f06ac3ac5be5382fe49b12ead6477d546734c1f4",
+  "raw_receipt_hash_role": {
+    "path": "runtime/relocation-independent/result.json",
+    "sha256": "2cab94d7ad18092517422560d7318a8804a0b16e7a0c02865c4918d6a60959dc"
+  },
+  "raw_messages_exported": false
+}

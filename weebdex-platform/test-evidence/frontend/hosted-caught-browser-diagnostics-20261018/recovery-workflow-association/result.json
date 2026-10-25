@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "2e62d4ccc7d339c92f08598d763385114dc5760e",
+  "status": "passed-finite-source-association-only",
+  "nodeRunnerCases": 2,
+  "passed": 2,
+  "failedOrSkipped": 0,
+  "scope": "Exactly two previously existing source-association cases. Both exact workflow variants are exercised inside the current association case; every16 historical source hash and8 current runtime association remains retained. Not additional browser coverage.",
+  "workflowVariants": {
+    "recovery": "df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27",
+    "boundedPublicUploadCi": "19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1"
+  },
+  "pins": {
+    "weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs": "56f32a65b635e9549306165790509a401fffb199880d314b5cd83ed893d161fa",
+    "weebdex-platform/tests/ci/fixtures/browser-actor-follow-current-source.json": "ec236f2d33caca6900a260ea36804ba3c5b4f4e1d94a62fe2dc166e4621906d9",
+    "weebdex-platform/tests/ci/fixtures/browser-actor-follow-historical-source.json.gz": "e9b26938a27beebc727debb4a2b576a9b733339f19c558fc42b16efc8dc0b2af",
+    "weebdex-platform/scripts/ci/validate-ci-evidence.py": "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77",
+    ".github/workflows/hosted-browser-e2e.yml": "19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1"
+  },
+  "exactOnlyReversal": true,
+  "unknownBudgetMutationRefused": true,
+  "publicWorkflowUnchanged": true,
+  "rawBytes": 348,
+  "rawSha256": "47fd49bcca5919a78ce012d41e5eeb2f20d033c256439db1ee3a5c132b69e24c",
+  "guardSeconds": 0.215,
+  "noBrowserOrCiTrigger": true
+}

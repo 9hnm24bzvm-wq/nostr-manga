@@ -1,6 +1,7 @@
 //! Native Rust compatibility for the unchanged @ory/client browser flow API.
 //! No Kratos service, dummy session, or unverified email trust is used.
 mod clients;
+pub(crate) mod closure;
 mod crypto;
 mod flows;
 mod mail;
@@ -14,6 +15,7 @@ pub use principal::{
     SessionPrincipal, optional_personal_principal, optional_principal, require_library_principal,
     require_principal, validate_mutation,
 };
+pub(crate) use principal::require_native_library_principal_in;
 
 pub const MIGRATIONS: &[Migration] = &[
     Migration {
@@ -41,4 +43,5 @@ pub fn api_router() -> Router<AppState> {
     Router::new()
         .route("/auth/check", get(preferences::check))
         .merge(clients::router())
+        .merge(closure::router())
 }

@@ -1,0 +1,11 @@
+{
+  "scope": "Post-run evidence parser only; no test rerun or product change",
+  "firstAssertion": "Expected all 46 verbose test lines to end with ... ok",
+  "actual": {
+    "testLineStarts": 46,
+    "sameLineOk": 43,
+    "unittestSummary": "Ran 46 tests / OK",
+    "asyncioDiagnosticsInterruptingVerboseLines": 3
+  },
+  "correction": "Bind all 46 test line starts plus the exact successful unittest summary and guard receipt; preserve the original raw log unchanged"
+}

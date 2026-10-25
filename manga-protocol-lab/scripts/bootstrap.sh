@@ -15,6 +15,14 @@ verify_repo() {
   test "$(git -C "$dir" rev-parse HEAD)" = "$expected" || { echo "Unexpected revision: $dir" >&2; exit 1; }
   git -C "$dir" diff --quiet HEAD || { echo "Tracked local changes in $dir; refusing to overwrite." >&2; exit 1; }
 }
+# BEGIN NGINX COMPATIBILITY VERIFY
+verify_nginx_compatibility_link() {
+  if [[ ! -L vendor/nginx-1.28.0 ]] || [[ "$(readlink vendor/nginx-1.28.0)" != nginx-1.30.6 ]]; then
+    echo "Nginx compatibility link is not the current pinned build; refusing to execute it." >&2
+    return 1
+  fi
+}
+# END NGINX COMPATIBILITY VERIFY
 verify_all() {
   timeout --version | grep -q "GNU coreutils"
   verify_repo vendor/strfry 4cd3cf64850caf47dda46c2a2abbbf3525a64d10
@@ -22,7 +30,10 @@ verify_all() {
   verify_repo vendor/lmdb 3a29a24777c82a0165de813ae696a5068b5add30
   verify_repo vendor/flatbuffers 1c514626e83c20fffa8557e75641848e1e15cd5e
   test -x vendor/strfry/strfry
-  test -x vendor/nginx-1.30.5/objs/nginx
+  test -x vendor/nginx-1.30.6/objs/nginx
+  test "$(vendor/nginx-1.30.6/objs/nginx -v 2>&1)" = "nginx version: nginx/1.30.6"
+  verify_nginx_compatibility_link
+  test "$(vendor/nginx-1.28.0/objs/nginx -v 2>&1)" = "nginx version: nginx/1.30.6"
   "$RUSTUP" toolchain list | grep -q '^1.90.0'
   "$CARGO" --version
   PYTHONPATH="$ROOT/vendor/pydeps" python3 - <<'PY'
@@ -98,14 +109,26 @@ export APPS='dbutils relay mesh'
 PATH="$ROOT/vendor/flatbuffers/build:$PATH" make -C vendor/strfry -j2 NPROC=2 OPT='-O1' \
   XCXXFLAGS="-I$ROOT/vendor/secp256k1/include -I$ROOT/vendor/lmdb/libraries/liblmdb -I$ROOT/vendor/flatbuffers/include" \
   XLDFLAGS="-L$ROOT/vendor/secp256k1/build/lib -L$ROOT/vendor/lmdb/libraries/liblmdb"
-if [[ ! -f vendor/nginx-1.30.5.tar.gz ]]; then
-  download https://nginx.org/download/nginx-1.30.5.tar.gz vendor/nginx-1.30.5.tar.gz
+if [[ ! -f vendor/nginx-1.30.6.tar.gz ]]; then
+  download https://nginx.org/download/nginx-1.30.6.tar.gz vendor/nginx-1.30.6.tar.gz
 fi
-echo '6c20565aa2325cb82216ae804f4a4ff1875179014759a381c42ddc8e11c4906d  vendor/nginx-1.30.5.tar.gz' | sha256sum -c -
-if [[ ! -d vendor/nginx-1.30.5 ]]; then tar -xzf vendor/nginx-1.30.5.tar.gz -C vendor; fi
-(cd vendor/nginx-1.30.5 && ./configure --prefix="$PWD/local" --with-http_auth_request_module --with-http_ssl_module --with-threads && make -j2)
-# Compatibility path used by the recovered fixture, still serving nginx 1.30.5.
-if [[ ! -e vendor/nginx-1.28.0 ]]; then ln -s nginx-1.30.5 vendor/nginx-1.28.0; fi
+echo '3cf46f5ed7504d460125866b7bea99fb357f31d887e2e63b35503310e9b8b6c8  vendor/nginx-1.30.6.tar.gz' | sha256sum -c -
+if [[ ! -d vendor/nginx-1.30.6 ]]; then tar -xzf vendor/nginx-1.30.6.tar.gz -C vendor; fi
+(cd vendor/nginx-1.30.6 && ./configure --prefix="$PWD/local" --with-http_auth_request_module --with-http_ssl_module --with-threads && make -j2)
+# Compatibility path used by the recovered fixture, still serving nginx 1.30.6.
+# BEGIN NGINX COMPATIBILITY LINK
+if [[ -L vendor/nginx-1.28.0 ]]; then
+  case "$(readlink vendor/nginx-1.28.0)" in
+    nginx-1.30.5|nginx-1.30.6) ln -sfn nginx-1.30.6 vendor/nginx-1.28.0 ;;
+    *) echo "Unexpected nginx compatibility link; refusing to replace it." >&2; exit 1 ;;
+  esac
+elif [[ ! -e vendor/nginx-1.28.0 ]]; then
+  ln -s nginx-1.30.6 vendor/nginx-1.28.0
+else
+  echo "Existing nginx compatibility directory/file; refusing to replace it." >&2
+  exit 1
+fi
+# END NGINX COMPATIBILITY LINK
 if [[ "${1:-}" != "--dependencies-only" ]]; then
 CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$ROOT/prototype/target}" "$CARGO" build --locked --manifest-path server/Cargo.toml -j2
 fi

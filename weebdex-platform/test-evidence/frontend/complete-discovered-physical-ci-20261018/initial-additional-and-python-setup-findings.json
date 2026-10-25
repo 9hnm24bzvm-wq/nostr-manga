@@ -1,0 +1,18 @@
+{
+  "originalModelRun": {
+    "tests": 140,
+    "pass": 139,
+    "fail": 1,
+    "cause": "Missing owned results/rebuild-client parent for the final app DOM evidence export; UI assertions completed",
+    "repair": "Explicitly create owned output directory, rerun all20 original model files"
+  },
+  "platformPythonDirectRun": {
+    "executed": 130,
+    "unexecuted": 16,
+    "cause": "One selected module has no __main__ runner; direct invocation imported it without unittest execution",
+    "repair": "Load all9 selected modules via unittest discovery with exact per-file counts, rerun whole group"
+  },
+  "packagingPython": "Also lacks __main__; use explicit unittest discovery instead of direct invocation",
+  "productionChanged": false,
+  "assertionsWeakened": false
+}

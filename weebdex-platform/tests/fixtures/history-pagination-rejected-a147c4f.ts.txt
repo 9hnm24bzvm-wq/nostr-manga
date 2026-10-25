@@ -1,0 +1,109 @@
+// Device history alone has a local ordering key. Do not reuse this cursor for
+// title/updates views whose global catalogue ordering is not known locally.
+export type HistoryKey = Readonly<{ id: string; mangaId: string; readAt: string }>;
+export type HistoryRow = { id: string; read_at?: string; relationships: { manga: { id: string } } };
+export const HISTORY_LIMITS = Object.freeze({ batch: 100, scan: 1000, requests: 40, bytes: 8 * 1024 * 1024, responseBytes: 1024 * 1024, cacheBytes: 4 * 1024 * 1024, deadlineMs: 10000, cachedPages: 3 });
+export class HistoryBudgetStop extends Error {}
+export class HistoryCancelled extends Error { constructor() { super('History loading was cancelled. Continue to resume.'); } }
+export class HistoryBudget {
+  readonly controller = new AbortController();
+  readonly signal = this.controller.signal;
+  readonly expires: number;
+  requests = 0;
+  bytes = 0;
+  private readonly timer: ReturnType<typeof setTimeout>;
+  constructor(private readonly assertCurrent: () => void, private readonly clock = () => Date.now()) {
+    this.expires = clock() + HISTORY_LIMITS.deadlineMs;
+    this.timer = setTimeout(() => this.controller.abort(new HistoryBudgetStop('deadline')), HISTORY_LIMITS.deadlineMs);
+  }
+  check() {
+    this.assertCurrent();
+    if (this.signal.aborted) throw this.signal.reason;
+    if (this.clock() >= this.expires) throw new HistoryBudgetStop('deadline');
+  }
+  request() { this.check(); if (this.requests >= HISTORY_LIMITS.requests) throw new HistoryBudgetStop('request budget'); this.requests++; }
+  consume(bytes: number) { this.check(); if (!Number.isSafeInteger(bytes) || bytes < 0) throw Error('Invalid history byte accounting'); this.bytes += bytes; if (this.bytes > HISTORY_LIMITS.bytes) throw new HistoryBudgetStop('byte budget'); }
+  cancel() { this.controller.abort(new HistoryCancelled()); }
+  close() { clearTimeout(this.timer); }
+}
+export type HistoryPage<T> = { page: number; limit: number; data: T[]; total: number | null; scanned: number; candidates: number; ready: boolean; complete: boolean; continuation: boolean; reason?: string };
+export type HistoryHydrate<T> = (keys: readonly HistoryKey[], budget: HistoryBudget) => Promise<T[]>;
+const compare = (a: string, b: string) => a < b ? -1 : a > b ? 1 : 0;
+const bytes = (value: unknown) => new TextEncoder().encode(JSON.stringify(value)).byteLength;
+export class HistoryPager<T extends HistoryRow> {
+  private keys: HistoryKey[];
+  private offset = 0;
+  private accepted = 0;
+  private window: { ordinal: number; row: T }[] = [];
+  private pages = new Map<number, T[]>();
+  private active?: HistoryBudget;
+  private disposed = false;
+  private batchLimit: number;
+  constructor(keys: readonly HistoryKey[], private readonly hydrate: HistoryHydrate<T>, private readonly assertCurrent: () => void, readonly limit = 100, direction = 'desc') {
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100 || !['asc', 'desc'].includes(direction)) throw Error('Invalid device history page controls');
+    this.batchLimit = Math.min(HISTORY_LIMITS.batch, limit);
+    if (keys.length > 2000000) throw Error('History snapshot exceeds the existing local record budget');
+    const unique = new Set<string>();
+    this.keys = keys.map(row => { if (unique.has(row.id) || !row.id || !row.mangaId || !Number.isFinite(Date.parse(row.readAt))) throw Error('Invalid device history snapshot'); unique.add(row.id); return Object.freeze({ ...row }); });
+    const order = direction === 'asc' ? 1 : -1;
+    this.keys.sort((a, b) => order * compare(a.readAt, b.readAt) || compare(a.id, b.id));
+  }
+  cancel() { this.active?.cancel(); }
+  dispose() { this.disposed = true; this.cancel(); this.keys = []; this.pages.clear(); this.window = []; }
+  private check() { if (this.disposed) throw new HistoryCancelled(); this.assertCurrent(); }
+  private response(page: number, data: T[], ready: boolean, reason?: string): HistoryPage<T> {
+    const complete = this.offset === this.keys.length;
+    return { page, limit: this.limit, data, total: complete ? this.accepted : null, scanned: this.offset, candidates: this.keys.length, ready, complete, continuation: !ready || !complete || page * this.limit < this.accepted, ...(reason ? { reason } : {}) };
+  }
+  private remember(page: number, rows: T[]) {
+    this.pages.delete(page); this.pages.set(page, rows);
+    while (this.pages.size > HISTORY_LIMITS.cachedPages || bytes([...this.pages.values()]) > HISTORY_LIMITS.cacheBytes) this.pages.delete(this.pages.keys().next().value!);
+  }
+  async load(page = 1): Promise<HistoryPage<T>> {
+    this.check();
+    if (!Number.isSafeInteger(page) || page < 1 || !Number.isSafeInteger(page * this.limit)) throw Error('Invalid device history page');
+    if (this.active) throw Error('History loading is already in progress');
+    const cached = this.pages.get(page);
+    if (cached) return this.response(page, cached, true);
+    const start = (page - 1) * this.limit, end = start + this.limit;
+    // An evicted previous page is re-scanned, not guessed from stale counts.
+    if (start < (this.window[0]?.ordinal ?? this.accepted)) { this.offset = 0; this.accepted = 0; this.window = []; this.pages.clear(); }
+    const budget = this.active = new HistoryBudget(() => this.check());
+    const actionStart = this.offset;
+    let attempted = 0;
+    let scanned = 0, reason: string | undefined;
+    try {
+      while (this.accepted < end && this.offset < this.keys.length) {
+        budget.check();
+        if (scanned >= HISTORY_LIMITS.scan) { reason = 'scan budget'; break; }
+        const chunk = this.keys.slice(this.offset, this.offset + this.batchLimit);
+        attempted = chunk.length;
+        const rows = await this.hydrate(chunk, budget); budget.check();
+        const wanted = new Map(chunk.map(row => [row.id, row])), found = new Map<string, T>();
+        for (const row of rows) { const key = wanted.get(row.id); if (!key || found.has(row.id) || row.relationships?.manga?.id !== key.mangaId) throw Error('History lookup returned a duplicate, unrequested or wrong-parent chapter'); found.set(row.id, { ...row, read_at: key.readAt }); }
+        if (bytes([...found.values()]) > HISTORY_LIMITS.cacheBytes / 2) throw Error('History batch exceeds its retained page byte budget');
+        // Commit only after the entire scoped hydration succeeded. Missing or
+        // filtered identities are not transport failures and consume no slots.
+        for (const key of chunk) { const row = found.get(key.id); if (row) this.window.push({ ordinal: this.accepted++, row }); }
+        this.window = this.window.slice(-2 * this.limit);
+        this.offset += chunk.length; scanned += chunk.length;
+      }
+    } catch (error) {
+      const cause = budget.signal.aborted ? budget.signal.reason : error;
+      budget.controller.abort(cause);
+      if (cause instanceof HistoryBudgetStop) {
+        reason = cause.message;
+        // A valid byte-prefix server can require several subpages per batch.
+        // If no whole batch fitted, the next explicit action retries a smaller
+        // exact scope rather than looping forever on the same 100 IDs.
+        if (this.offset === actionStart && attempted > 1) this.batchLimit = Math.max(1, Math.floor(attempted / 2));
+      } else throw cause;
+    }
+    finally { budget.close(); this.active = undefined; }
+    this.check();
+    const rows = this.window.filter(entry => entry.ordinal >= start && entry.ordinal < end).map(entry => entry.row);
+    const ready = this.accepted >= end || this.offset === this.keys.length;
+    if (ready) this.remember(page, rows);
+    return this.response(page, rows, ready, reason);
+  }
+}

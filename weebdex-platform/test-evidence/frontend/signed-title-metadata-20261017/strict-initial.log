@@ -1,0 +1,7 @@
+▲ [WARNING] Cannot find base config file "./.svelte-kit/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:12:
+      2 │   "extends": "./.svelte-kit/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+{"status":"failed","errors":4,"warnings":12,"integration_files":90,"canonical_files":679,"canonical_unchanged":true,"evidence":".build/audit-title-gate-on-20261017/evidence"}

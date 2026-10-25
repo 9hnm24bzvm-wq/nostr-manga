@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "selectedOriginalFiles": 6,
+  "unittestMethods": 38,
+  "passed": 38,
+  "failed": 0,
+  "skipped": 0,
+  "unittestElapsedSeconds": 6.682,
+  "guardedElapsedSeconds": 7.032,
+  "actualDatabaseStarted": false,
+  "httpServiceStarted": false,
+  "externalNetworkUsed": false,
+  "loopbackWitnesses": "Reject-before-connect assertions only in aliases/library_input/migration_plan; no accepted connection expected",
+  "largestFiniteFixtureReviewMarkers": 16000,
+  "fakePsqlOnly": true,
+  "maximumPlanRaceSubprocesses": 2,
+  "requirementsRuntime": {
+    "cbor2": "5.6.5",
+    "coincurve": "21.0.0",
+    "aiohttp": "3.14.4",
+    "Pillow": "12.3.0",
+    "cffi": "2.1.1"
+  },
+  "aiohttpDifference": {
+    "project": "3.13.5",
+    "actual": "3.14.4",
+    "modified": false,
+    "httpBehaviourQualified": false
+  },
+  "installedPinnedInputEntriesUnchanged": 47,
+  "consumerAliasUnchanged": true,
+  "priorSevenPhysicalDependencyRootsUnchanged": true,
+  "productInputsUnchanged": 922,
+  "executionInputsUnchanged": 1242,
+  "sourceImplementationChanged": false,
+  "priorPinnedMigrationEvidence": "f662c3f11e79e32dd94e471fb96a39319aa3921c",
+  "combinedOriginalFinitePython": {
+    "files": 8,
+    "passed": 50,
+    "executionGroups": "Current38 +priorAPIindex5 +priorfullmigration7; not one blanket run"
+  },
+  "unexecutedNetworkDatabaseOrHeavyBenchFiles": 9,
+  "fullRepositoryOrPinnedRuntimeParityClaim": false,
+  "unexecutedOriginalNginxMethods": 8,
+  "currentDiscoveryContinuation": "discovery-continuation.json",
+  "runtimePins": "runtime.json"
+}

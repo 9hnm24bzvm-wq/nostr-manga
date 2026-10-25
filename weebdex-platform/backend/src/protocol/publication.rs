@@ -87,6 +87,7 @@ pub struct PublicationReceipt {
 pub struct PublicationRuntime {
     repository: Repository,
     storage: Arc<UploadStore>,
+    pub(super) library_objects: Arc<manga_node::library_storage::LibraryObjects>,
     publications: Arc<Publications>,
     groups: Option<Arc<Groups>>,
     peer_sync: Arc<manga_node::peers::PeerSync>,
@@ -147,6 +148,20 @@ impl PublicationRuntime {
             identity(&config.storage_holder)?,
         )
         .await?;
+        let library_limits = config
+            .native_node
+            .as_ref()
+            .map(|value| {
+                serde_json::from_value::<manga_node::node::NodeConfig>(value.clone())
+                    .map(|node| node.library_concurrency)
+            })
+            .transpose()?
+            .unwrap_or_default();
+        let library_objects = manga_node::library_storage::LibraryObjects::configured(
+            repository.clone(),
+            storage.clone(),
+            library_limits,
+        )?;
         let publications = Publications::new(repository.clone(), storage.clone());
         let groups = config
             .group_keys_dir
@@ -179,6 +194,7 @@ impl PublicationRuntime {
         Ok(Arc::new(Self {
             repository,
             storage,
+            library_objects,
             publications,
             groups,
             peer_sync,
@@ -200,6 +216,8 @@ impl PublicationRuntime {
     ) -> Result<Arc<Self>> {
         identity(expected_publisher)?;
         let secret = load_signer(key_file, expected_publisher)?;
+        let library_objects =
+            manga_node::library_storage::LibraryObjects::new(repository.clone(), storage.clone());
         let publications = Publications::new(repository.clone(), storage.clone());
         let peer_sync = manga_node::peers::PeerSync::new(
             repository.clone(),
@@ -210,6 +228,7 @@ impl PublicationRuntime {
         Ok(Arc::new(Self {
             repository,
             storage,
+            library_objects,
             publications,
             groups,
             peer_sync,
@@ -242,12 +261,14 @@ impl PublicationRuntime {
         let (shutdown_sender, shutdown_receiver) = tokio::sync::oneshot::channel();
         let repo = self.repository.clone();
         let storage = self.storage.clone();
+        let library_objects = self.library_objects.clone();
         let task = tokio::spawn(async move {
-            manga_node::node::serve_prepared_with_store(
+            manga_node::node::serve_prepared_with_shared_library(
                 config,
                 repo,
                 serving,
                 Some(storage),
+                Some(library_objects),
                 Some(ready_sender),
                 Some(shutdown_receiver),
             )
@@ -511,12 +532,15 @@ impl ProtocolFacade {
             )
         })
     }
-    pub async fn publish_for_native_user(
+    pub(crate) async fn publish_for_native_user(
         &self,
+        account_tx: &tokio_postgres::Transaction<'_>,
         user_id: &str,
         group_id: Option<&str>,
         input: PublicationInput,
     ) -> ApiResult<PublicationReceipt> {
+        crate::domains::auth::closure::active_in(account_tx,user_id).await?;
+
         let runtime = self.publication_runtime().await?;
         let member = self
             .repository
@@ -525,7 +549,7 @@ impl ProtocolFacade {
             .await
             .map_err(|_| ApiError::unavailable())?
             .query_opt(
-                "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1",
+                "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL",
                 &[&user_id],
             )
             .await?
@@ -543,7 +567,7 @@ impl ProtocolFacade {
                 .await
                 .map_err(|_| ApiError::unavailable())?
                 .query_opt(
-                    "SELECT publisher FROM platform.protocol_identity_bindings WHERE group_id=$1",
+                    "SELECT publisher FROM platform.protocol_identity_bindings WHERE group_id=$1 AND revoked_at IS NULL",
                     &[&group_id],
                 )
                 .await?
@@ -627,7 +651,7 @@ async fn read_native_original(
 }
 async fn prepared_input(
     state: &crate::state::AppState,
-    actor: &crate::domains::auth::SessionPrincipal,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
     group: Option<&str>,
     command: &str,
     kind: &str,
@@ -638,7 +662,7 @@ async fn prepared_input(
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
     let Some(row)=tx.query_opt("SELECT user_id,group_id,resource_kind,upload_session_id,native_commit_hash,native_commit_payload,source_manifest FROM platform.protocol_publication_commands WHERE command_id=$1",&[&command]).await? else{return Ok(None)};
-    if row.get::<_, String>(0) != actor.user_id
+    if row.get::<_, String>(0) != actor.user_id()
         || row.get::<_, Option<String>>(1).as_deref() != group
         || row.get::<_, String>(2) != kind
         || row.get::<_, Option<String>>(3).as_deref() != session
@@ -697,7 +721,8 @@ async fn prepared_input(
 
 async fn command_publish(
     state: &crate::state::AppState,
-    actor: &crate::domains::auth::SessionPrincipal,
+    account_tx: &tokio_postgres::Transaction<'_>,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
     group: Option<&str>,
     command: &str,
     kind: &str,
@@ -706,6 +731,8 @@ async fn command_publish(
     commit_hash: Option<&str>,
     native_payload: Option<&serde_json::Value>,
     mut input: PublicationInput,
+    expected_signer: Option<&str>,
+    scheduled_session: Option<&str>,
 ) -> ApiResult<PublicationReceipt> {
     let runtime = state.protocol.publication_runtime().await?;
     let publisher = if let Some(group) = group {
@@ -714,7 +741,7 @@ async fn command_publish(
             .client()
             .await?
             .query_opt(
-                "SELECT publisher FROM platform.protocol_identity_bindings WHERE group_id=$1",
+                "SELECT publisher FROM platform.protocol_identity_bindings WHERE group_id=$1 AND revoked_at IS NULL",
                 &[&group],
             )
             .await?
@@ -723,6 +750,9 @@ async fn command_publish(
     } else {
         runtime.publisher.clone()
     };
+    if expected_signer.is_some_and(|expected| expected != publisher) {
+        return Err(ApiError::conflict("Scheduled original signer changed"));
+    }
     // Reject absent/revoked signer authority before allocating a durable command.
     // Otherwise an unsigned native account could reserve another title's stable
     // source command and block the genuinely configured publisher forever.
@@ -731,8 +761,8 @@ async fn command_publish(
         .client()
         .await?
         .query_opt(
-            "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1",
-            &[&actor.user_id],
+            "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL",
+            &[&actor.user_id()],
         )
         .await?
         .map(|row| row.get::<_, String>(0))
@@ -768,7 +798,7 @@ async fn command_publish(
             .map_err(|_| ApiError::forbidden("Current original publisher admission is required"))?;
     }
     let manifest = auth::hash(&input.canonical_manifest);
-    let input_hash=auth::hash(serde_json::json!({"kind":input.kind,"manifest":manifest,"user":actor.user_id,"group":group}).to_string().as_bytes());
+    let input_hash=auth::hash(serde_json::json!({"kind":input.kind,"manifest":manifest,"user":actor.user_id(),"group":group}).to_string().as_bytes());
     let timestamp = auth::now();
     let mut unsigned = Event {
         id: String::new(),
@@ -784,9 +814,10 @@ async fn command_publish(
     {
         let mut client = state.db.client().await?;
         let tx = client.transaction().await?;
-        tx.execute("INSERT INTO platform.protocol_publication_commands(command_id,user_id,group_id,input_hash,created_at,resource_kind,catalog_id,upload_session_id,native_commit_hash,native_commit_payload,source_manifest) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) ON CONFLICT(command_id) DO NOTHING",&[&command,&actor.user_id,&group,&input_hash,&(timestamp as i64),&kind,&*catalog_id,&session,&commit_hash,&native_payload,&input.canonical_manifest]).await?;
-        let row=tx.query_one("SELECT user_id,group_id,input_hash,created_at,catalog_id,event_id,native_commit_hash,upload_session_id,native_commit_payload,source_manifest FROM platform.protocol_publication_commands WHERE command_id=$1 FOR UPDATE",&[&command]).await?;
-        if row.get::<_, String>(0) != actor.user_id
+        tx.execute("INSERT INTO platform.protocol_publication_commands(command_id,user_id,group_id,input_hash,created_at,resource_kind,catalog_id,upload_session_id,native_commit_hash,native_commit_payload,source_manifest,scheduled_session_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) ON CONFLICT(command_id) DO NOTHING",&[&command,&actor.user_id(),&group,&input_hash,&(timestamp as i64),&kind,&*catalog_id,&session,&commit_hash,&native_payload,&input.canonical_manifest,&scheduled_session]).await?;
+        let row=tx.query_one("SELECT user_id,group_id,input_hash,created_at,catalog_id,event_id,native_commit_hash,upload_session_id,native_commit_payload,source_manifest,scheduled_session_id FROM platform.protocol_publication_commands WHERE command_id=$1 FOR UPDATE",&[&command]).await?;
+        if row.get::<_, Option<String>>(10).as_deref() != scheduled_session
+            || row.get::<_, String>(0) != actor.user_id()
             || row.get::<_, Option<String>>(1).as_deref() != group
             || row.get::<_, String>(2) != input_hash
             || row.get::<_, Option<String>>(6).as_deref() != commit_hash
@@ -837,7 +868,7 @@ async fn command_publish(
     let expected_id = hex::encode(unsigned.digest());
     let receipt = state
         .protocol
-        .publish_for_native_user(&actor.user_id, group, input)
+        .publish_for_native_user(account_tx,&actor.user_id(), group, input)
         .await?;
     if receipt.event.id != expected_id {
         return Err(ApiError::unavailable());
@@ -849,6 +880,7 @@ async fn native_series_input(
     state: &crate::state::AppState,
     tx: &tokio_postgres::Transaction<'_>,
     manga: &str,
+    require_original_cover: bool,
 ) -> ApiResult<PublicationInput> {
     let row=tx.query_one("SELECT title,metadata,language,publication_status,content_rating,demographic,year FROM platform.catalog_manga WHERE id=$1",&[&manga]).await?;
     let metadata: serde_json::Value = row.get(1);
@@ -856,6 +888,9 @@ async fn native_series_input(
     let title: String = row.get(0);
     let mut titles = BTreeMap::new();
     titles.insert(lang.clone(), title);
+    if let Some(localized) = metadata["localized_titles"].as_object() {
+        titles = localized.iter().filter_map(|(lang,title)|title.as_str().map(|title|(lang.clone(),title.to_owned()))).collect();
+    }
     let mut alternatives = Vec::new();
     if let Some(localized) = metadata["alt_titles"].as_object() {
         for (lang, names) in localized {
@@ -870,14 +905,22 @@ async fn native_series_input(
     for credit in tx.query("SELECT mc.role,a.name FROM platform.catalog_manga_creators mc JOIN platform.catalog_authors a ON a.id=mc.author_id WHERE mc.manga_id=$1 AND a.deleted_at IS NULL ORDER BY mc.role,a.id",&[&manga]).await?{credits.push(manga_node::series_metadata::Credit{role:credit.get(0),name:credit.get(1)});}
     let categories=tx.query("SELECT t.name FROM platform.catalog_manga_tags mt JOIN platform.catalog_tags t ON t.id=mt.tag_id WHERE mt.manga_id=$1 ORDER BY t.id",&[&manga]).await?.into_iter().map(|r|r.get::<_,String>(0)).collect();
     let mut originals = BTreeMap::new();
-    let cover=if let Some(cover)=tx.query_opt("SELECT o.digest,o.mime,o.bytes,o.width,o.height,o.storage_key FROM platform.catalog_covers c JOIN platform.cover_media cm ON cm.cover_id=c.id AND cm.variant='original' JOIN platform.media_objects o ON o.id=cm.object_id WHERE c.manga_id=$1 AND c.deleted_at IS NULL ORDER BY c.is_main DESC,c.created_at DESC,c.id LIMIT 1",&[&manga]).await? {
+    let cover=if let Some(cover)=tx.query_opt("SELECT o.digest,o.mime,o.bytes,o.width,o.height,o.storage_key FROM platform.catalog_covers c JOIN platform.cover_media cm ON cm.cover_id=c.id AND cm.variant='original' JOIN platform.media_objects o ON o.id=cm.object_id WHERE c.manga_id=$1 AND c.deleted_at IS NULL AND (NOT $2::bool OR (c.language=$3 AND platform.protocol_source_is_visible(c.protocol_event_id) AND o.bytes>0)) ORDER BY c.is_main DESC,c.created_at DESC,c.id LIMIT 1",&[&manga,&require_original_cover,&lang]).await? {
   let file=NativeOriginal{hash:cover.get(0),mime:cover.get(1),bytes:cover.get::<_,i64>(2) as u64,width:cover.get::<_,i32>(3) as u32,height:cover.get::<_,i32>(4) as u32,storage_key:cover.get(5)};
   originals.insert(file.hash.clone(),read_native_original(state,&file).await?);Some(manga_node::manifest::Page{hash:file.hash,size:file.bytes,mime:file.mime,width:file.width,height:file.height})
- }else{None};
-    let description = metadata["description"]
+ }else{
+     if require_original_cover {return Err(ApiError::bad_request("Original publication requires an original-language cover"));}
+     None
+ };
+    if let Some(alts) = metadata["localized_alt_titles"].as_array() {
+        alternatives = alts.iter().filter_map(|alt|alt.as_object().map(|m|m.iter().filter_map(|(lang,title)|title.as_str().map(|title|(lang.clone(),title.to_owned()))).collect())).collect();
+    }
+    let description = metadata["localized_description"].as_object()
+        .map(|m|m.iter().filter_map(|(lang,text)|text.as_str().map(|text|(lang.clone(),text.to_owned()))).collect())
+        .or_else(|| metadata["description"]
         .as_str()
         .filter(|s| !s.is_empty())
-        .map(|s| BTreeMap::from([(lang.clone(), s.to_owned())]));
+        .map(|s| BTreeMap::from([(lang.clone(), s.to_owned())])));
     let source = manga_node::series_metadata::SeriesMetadata {
         titles,
         alt_titles: Some(alternatives),
@@ -901,16 +944,37 @@ async fn native_series_input(
         created_at: None,
     })
 }
+/// Snapshot only: reads immutable native originals but never signs, stores in
+/// the original source, allocates an alias, or prepares a publication command.
+pub(crate) async fn scheduled_parent_manifest(
+    state: &crate::state::AppState, tx: &tokio_postgres::Transaction<'_>, manga: &str,
+) -> ApiResult<Vec<u8>> {
+    Ok(native_series_input(state, tx, manga, false).await?.canonical_manifest)
+}
 /// Called only after the normal submitted-version/staff draft review checks.
 /// A native review is not permission to sign: the actor still needs the exact
 /// explicitly configured original operator identity binding and admission.
 pub async fn publish_native_manga(
     state: &crate::state::AppState,
     tx: &tokio_postgres::Transaction<'_>,
-    actor: &crate::domains::auth::SessionPrincipal,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
     manga: &str,
     submitted_version: i32,
 ) -> ApiResult<Option<PublicationReceipt>> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    publish_native_manga_with_cover_requirement(state, tx, actor, manga, submitted_version, false).await
+}
+/// Public title review requires a qualifying original only for fresh input.
+/// Exact durable retries keep the original input captured by prepared_input.
+pub(crate) async fn publish_native_manga_with_cover_requirement(
+    state: &crate::state::AppState,
+    tx: &tokio_postgres::Transaction<'_>,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+    manga: &str,
+    submitted_version: i32,
+    require_original_cover: bool,
+) -> ApiResult<Option<PublicationReceipt>> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     let command = format!("manga:{manga}");
     if state.config.protocol_publication.is_none() {
         let prepared:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.protocol_publication_commands WHERE command_id=$1)",&[&command]).await?.get(0);
@@ -932,7 +996,7 @@ pub async fn publish_native_manga(
     }
     let runtime = state.protocol.publication_runtime().await?;
     let native_payload = serde_json::json!({"action":"publish_manga","manga_id":manga,"submitted_version":submitted_version});
-    if let Some(command_row)=tx.query_opt("SELECT p.event_id FROM platform.protocol_publication_commands p JOIN platform.catalog_manga m ON m.id=p.catalog_id AND m.protocol_series_id=p.event_id WHERE p.command_id=$1 AND p.user_id=$2 AND p.resource_kind='manga' AND p.state='materialized' AND p.native_commit_payload=$3 AND m.id=$4 AND m.deleted_at IS NULL AND m.state='published'",&[&command,&actor.user_id,&native_payload,&manga]).await? {
+    if let Some(command_row)=tx.query_opt("SELECT p.event_id FROM platform.protocol_publication_commands p JOIN platform.catalog_manga m ON m.id=p.catalog_id AND m.protocol_series_id=p.event_id WHERE p.command_id=$1 AND p.user_id=$2 AND p.resource_kind='manga' AND p.state='materialized' AND p.native_commit_payload=$3 AND m.id=$4 AND m.deleted_at IS NULL AND m.state='published'",&[&command,&actor.user_id(),&native_payload,&manga]).await? {
         let source:String=command_row.get(0);let source_id=identity(&source).map_err(|_|ApiError::unavailable())?;
         let (event,locally_visible)=if let Some(entry)=state.protocol.entry(source_id).await? {(entry.event,true)} else {
             let event=manga_node::platform_bridge::pending_series_receipt(tx,source_id).await.map_err(|_|ApiError::unavailable())?.ok_or_else(||ApiError::not_found("Original title is no longer available"))?;
@@ -963,11 +1027,12 @@ pub async fn publish_native_manga(
     .await?
     {
         Some(input) => input,
-        None => native_series_input(state, tx, manga).await?,
+        None => native_series_input(state, tx, manga, require_original_cover).await?,
     };
     let mut alias = manga.to_owned();
     let receipt = command_publish(
         state,
+        tx,
         actor,
         None,
         &command,
@@ -977,6 +1042,8 @@ pub async fn publish_native_manga(
         None,
         Some(&native_payload),
         input,
+        None,
+        None,
     )
     .await?;
     if alias != manga {
@@ -1005,13 +1072,30 @@ pub async fn publish_native_manga(
 pub async fn publish_native_upload(
     state: &crate::state::AppState,
     tx: &tokio_postgres::Transaction<'_>,
-    actor: &crate::domains::auth::SessionPrincipal,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
     session: &str,
     commit_hash: &str,
     record: &mut crate::domains::catalog::ChapterPublication,
     files: &[NativeOriginal],
     native_commit_payload: &serde_json::Value,
 ) -> ApiResult<Option<PublicationReceipt>> {
+    publish_native_upload_fenced(state, tx, actor, session, commit_hash, record, files, native_commit_payload, None, None).await
+}
+/// A durable schedule pins both the group selection and original signer. This
+/// extra fence is never serialized into ordinary native commit payloads.
+pub(crate) async fn publish_native_upload_fenced(
+    state: &crate::state::AppState,
+    tx: &tokio_postgres::Transaction<'_>,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+    session: &str,
+    commit_hash: &str,
+    record: &mut crate::domains::catalog::ChapterPublication,
+    files: &[NativeOriginal],
+    native_commit_payload: &serde_json::Value,
+    expected_identity: Option<(&str, Option<&str>)>,
+    expected_parent_manifest: Option<&[u8]>,
+) -> ApiResult<Option<PublicationReceipt>> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     if state.config.protocol_publication.is_none() {
         let prepared:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.protocol_publication_commands WHERE upload_session_id=$1)", &[&session]).await?.get(0);
         if prepared {
@@ -1078,7 +1162,7 @@ pub async fn publish_native_upload(
 
     let groups = tx
         .query(
-            "SELECT group_id FROM platform.protocol_identity_bindings WHERE group_id=ANY($1)",
+            "SELECT group_id FROM platform.protocol_identity_bindings WHERE group_id=ANY($1) AND revoked_at IS NULL",
             &[&record.groups],
         )
         .await?;
@@ -1088,6 +1172,9 @@ pub async fn publish_native_upload(
         ));
     }
     let group = groups.first().map(|r| r.get::<_, String>(0));
+    if expected_identity.is_some_and(|(_, expected)| expected != group.as_deref()) {
+        return Err(ApiError::conflict("Scheduled signing group changed"));
+    }
     let source: Option<String> = tx
         .query_one(
             "SELECT protocol_series_id FROM platform.catalog_manga WHERE id=$1 FOR UPDATE",
@@ -1112,11 +1199,15 @@ pub async fn publish_native_upload(
         .await?
         {
             Some(input) => input,
-            None => native_series_input(state, tx, &record.manga_id).await?,
+            None => native_series_input(state, tx, &record.manga_id, false).await?,
         };
+        if expected_parent_manifest.is_some_and(|expected| expected != input.canonical_manifest.as_slice()) {
+            return Err(ApiError::conflict("Scheduled parent immutable manifest changed"));
+        }
         let mut alias = record.manga_id.clone();
         let receipt = command_publish(
             state,
+            tx,
             actor,
             group.as_deref(),
             &format!("manga:{}", record.manga_id),
@@ -1126,6 +1217,8 @@ pub async fn publish_native_upload(
             None,
             None,
             input,
+        expected_identity.map(|(signer, _)| signer),
+        expected_identity.map(|_| session),
         )
         .await?;
         crate::domains::catalog::CatalogRepository::associate_protocol_manga(
@@ -1170,6 +1263,7 @@ pub async fn publish_native_upload(
     };
     let receipt = command_publish(
         state,
+        tx,
         actor,
         group.as_deref(),
         &format!("upload:{session}"),
@@ -1179,6 +1273,8 @@ pub async fn publish_native_upload(
         Some(commit_hash),
         Some(native_commit_payload),
         input,
+        expected_identity.map(|(signer, _)| signer),
+        expected_identity.map(|_| session),
     )
     .await?;
     record.protocol_event_id = Some(receipt.event.id.clone());
@@ -1311,16 +1407,17 @@ impl PublicationRuntime {
 async fn current_operator_receipt_authority(
     state: &crate::state::AppState,
     tx: &tokio_postgres::Transaction<'_>,
-    actor: &crate::domains::auth::SessionPrincipal,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
     publisher: &str,
 ) -> ApiResult<bool> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     let Ok(runtime) = state.protocol.publication_runtime().await else {
         return Ok(false);
     };
     let Some(binding) = tx
         .query_opt(
-            "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1",
-            &[&actor.user_id],
+            "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL",
+            &[&actor.user_id()],
         )
         .await?
     else {
@@ -1343,14 +1440,15 @@ pub async fn native_manga_publication_retry_allowed(
     state: &crate::state::AppState,
     tx: &tokio_postgres::Transaction<'_>,
     manga: &str,
-    actor: &crate::domains::auth::SessionPrincipal,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
 ) -> ApiResult<bool> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     if !state.protocol.is_ready() || state.config.protocol_publication.is_none() {
         return Ok(false);
     }
     let Some(row) = tx.query_opt(
         "SELECT m.version,p.native_commit_payload FROM platform.catalog_manga m JOIN platform.protocol_publication_commands p ON p.catalog_id=m.id AND p.command_id='manga:'||m.id AND p.resource_kind='manga' WHERE m.id=$1 AND m.deleted_at IS NULL AND m.state='submitted' AND p.user_id=$2 AND p.group_id IS NULL AND p.upload_session_id IS NULL AND p.state IN('prepared','source_accepted') AND p.source_manifest IS NOT NULL",
-        &[&manga, &actor.user_id],
+        &[&manga, &actor.user_id()],
     ).await? else {
         return Ok(false);
     };
@@ -1370,12 +1468,13 @@ pub async fn pending_native_manga_receipt_allowed(
     state: &crate::state::AppState,
     tx: &tokio_postgres::Transaction<'_>,
     manga: &str,
-    actor: &crate::domains::auth::SessionPrincipal,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
 ) -> ApiResult<bool> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     if !state.protocol.is_ready() || state.config.protocol_publication.is_none() {
         return Ok(false);
     }
-    let Some(row)=tx.query_opt("SELECT m.protocol_series_id FROM platform.catalog_manga m JOIN platform.protocol_publication_commands p ON p.catalog_id=m.id AND p.resource_kind='manga' AND p.event_id=m.protocol_series_id WHERE m.id=$1 AND m.deleted_at IS NULL AND m.state='published' AND p.user_id=$2 AND p.group_id IS NULL AND p.state IN('source_accepted','materialized')",&[&manga,&actor.user_id]).await? else{return Ok(false)};
+    let Some(row)=tx.query_opt("SELECT m.protocol_series_id FROM platform.catalog_manga m JOIN platform.protocol_publication_commands p ON p.catalog_id=m.id AND p.resource_kind='manga' AND p.event_id=m.protocol_series_id WHERE m.id=$1 AND m.deleted_at IS NULL AND m.state='published' AND p.user_id=$2 AND p.group_id IS NULL AND p.state IN('source_accepted','materialized')",&[&manga,&actor.user_id()]).await? else{return Ok(false)};
     let Some(source) = row.get::<_, Option<String>>(0) else {
         return Ok(false);
     };
@@ -1398,12 +1497,24 @@ pub async fn pending_native_receipt_allowed(
     tx: &tokio_postgres::Transaction<'_>,
     chapter: &str,
     session: &str,
-    actor: &crate::domains::auth::SessionPrincipal,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+) -> ApiResult<bool> {
+    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    pending_native_receipt_allowed_for_owner(state, tx, chapter, session, actor.user_id()).await
+}
+/// Read-only receipt policy. The caller authenticates and locks the account and
+/// exact session owner in this transaction; no catalogue mutation actor is needed.
+pub(crate) async fn pending_native_receipt_allowed_for_owner(
+    state: &crate::state::AppState,
+    tx: &tokio_postgres::Transaction<'_>,
+    chapter: &str,
+    session: &str,
+    owner: &str,
 ) -> ApiResult<bool> {
     if !state.protocol.is_ready() || state.config.protocol_publication.is_none() {
         return Ok(false);
     }
-    let Some(row)=tx.query_opt("SELECT c.protocol_event_id,m.protocol_series_id,p.group_id,b.publisher FROM platform.upload_sessions s JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id JOIN platform.catalog_manga m ON m.id=c.manga_id JOIN platform.protocol_publication_commands p ON p.upload_session_id=s.id AND p.catalog_id=c.id AND p.event_id=c.protocol_event_id AND p.user_id=s.owner_id JOIN platform.protocol_identity_bindings b ON b.user_id=s.owner_id WHERE s.id=$1 AND s.owner_id=$2 AND c.id=$3 AND s.state='committed' AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND p.state IN('source_accepted','materialized')", &[&session,&actor.user_id,&chapter]).await? else{return Ok(false)};
+    let Some(row)=tx.query_opt("SELECT c.protocol_event_id,m.protocol_series_id,p.group_id,b.publisher FROM platform.upload_sessions s JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id JOIN platform.catalog_manga m ON m.id=c.manga_id JOIN platform.protocol_publication_commands p ON p.upload_session_id=s.id AND p.catalog_id=c.id AND p.event_id=c.protocol_event_id AND p.user_id=s.owner_id JOIN platform.protocol_identity_bindings b ON b.user_id=s.owner_id AND b.revoked_at IS NULL WHERE s.id=$1 AND s.owner_id=$2 AND c.id=$3 AND s.state='committed' AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND p.state IN('source_accepted','materialized')", &[&session,&owner,&chapter]).await? else{return Ok(false)};
     let Some(source) = row.get::<_, Option<String>>(0) else {
         return Ok(false);
     };
@@ -1427,7 +1538,7 @@ pub async fn pending_native_receipt_allowed(
     if let Some(group) = row.get::<_, Option<String>>(2) {
         let Some(binding) = tx
             .query_opt(
-                "SELECT publisher FROM platform.protocol_identity_bindings WHERE group_id=$1",
+                "SELECT publisher FROM platform.protocol_identity_bindings WHERE group_id=$1 AND revoked_at IS NULL",
                 &[&group],
             )
             .await?

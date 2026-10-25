@@ -1,0 +1,143 @@
+{
+  "utc": "2026-10-17T18:28:03.863683+00:00",
+  "prior_commit": "ef4f960aab273800ee39a1a0b60acafe06b493ab",
+  "scope": "Private explicitly bound native-account membership following typed original signed public protocol lists, with real source visibility/head and no graph/private-native-list ownership conversion.",
+  "checks": [
+    {
+      "name": "library_unit",
+      "result": "test result: ok. 121 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.84s",
+      "output_sha256": "3b860259542b1746f01073dc014151879f08eba1514cf8b37254907912fa33ed"
+    },
+    {
+      "name": "public_list_follows-bd6bd095256e177a",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.17s",
+      "output_sha256": "641eca5fb21604ea974b338d8b7a532b25abac37815e1cbe3404f9919d13146e"
+    },
+    {
+      "name": "public_nostr_lists-000e8f3c9f6a3429",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.83s",
+      "output_sha256": "c99f4b7c1c7aadafc87de2c1e517c650741c304fc641f2cf2504528639fab941"
+    },
+    {
+      "name": "public_account_reads-55dde832bbd6c52c",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.13s",
+      "output_sha256": "44dcbc4ef43774c17ae116b4bd6b3dcc0baeb62288d85dabea084d6d906e9475"
+    },
+    {
+      "name": "public_statistics-f01460db3aa7ffa9",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s",
+      "output_sha256": "529b27183e5bdc91ced6bfce8bd1765391b14f14de4af97829fdd7dffcd40d97"
+    },
+    {
+      "name": "public_catalogue_compatibility-7bc8ad9b6a8d2d77",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.84s",
+      "output_sha256": "97a68944740a3bb3770d7a6fde1a4de94b5bbc5bda8232ae09e51b0268972c63"
+    },
+    {
+      "name": "public_catalogue_reads-99a3bf88daacfe81",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.56s",
+      "output_sha256": "d2705cd73880a1b0b46053a3c9cdd35ae08bd427694bd5813fa49390988c6654"
+    }
+  ],
+  "postgres_fixture_cleanup": [
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    }
+  ],
+  "verified_original_backend_sha256": "dabd4b2c90f0f44751c741d0d44832df7b18a1655a60b1a9d6ba8791ce50c03c",
+  "source_sha256": {
+    "weebdex-platform/backend/migrations/0099_native_public_list_follows.sql": "2fd2753eaf86d7ac2968641fdfc6896426d91ec7a1da8652a47d2cd6e9e91d1c",
+    "weebdex-platform/backend/src/domains/mod.rs": "9e55c8b91a87777f17adf838b86edece1fda5351215a836cc578ed8f79b248ef",
+    "weebdex-platform/backend/src/public_api/list_follows.rs": "29e46902662640ada15d3b63fe0dcdda0f2bcafc3e4f50823d9c582b674cf202",
+    "weebdex-platform/backend/src/public_api/lists.rs": "de2b9b792b4ef0d8ec2bb9122e65d68336e1668ca7263e48c2ad2a1acd8e6127",
+    "weebdex-platform/backend/src/public_api/mod.rs": "f04dacdb5e7c893e1de1b20c562cc52040224011ef448d802b8f12a64f4c5276",
+    "weebdex-platform/backend/src/public_api/routes.rs": "fbb66bb3745057813a8c51beb3ba8a679ba981ae9863d7d7e34f93934e6ef606",
+    "weebdex-platform/backend/tests/public_list_follows.rs": "f73485835e99b5e77f536c0175ff4a2dfda749e2f374ddf1c498a105142bf2d9",
+    "weebdex-platform/docs/mangadex-native-public-list-follows.md": "f0d3632f5004a9a764e9a9486728bd2376e624efd3442d6e0a14f6cf9a31b897"
+  },
+  "test_binary_sha256": {
+    "public_list_follows-bd6bd095256e177a": "b7d0c0410aa706c2cc42b865e9806a1ca826311adf32e0e439d8bfda2fd22121",
+    "public_nostr_lists-000e8f3c9f6a3429": "d62f7f28b738e02cb69565c7aa6d80ddacc031f4abbb64b59920999612765e3e",
+    "public_account_reads-55dde832bbd6c52c": "e742ef2bcbef420e482d30ca04c0c4cf7ea2ea47af267d6c1098d2dc48350b76",
+    "public_statistics-f01460db3aa7ffa9": "016c8747bea093e31b6c5ce99e75ceaebbdc5d5fe0fee75ed7a0226cfa30923e",
+    "public_catalogue_compatibility-7bc8ad9b6a8d2d77": "77438669c586cfcee2adaa1248ad953fdf27e60b4ad9b309185dde5759ffb068",
+    "public_catalogue_reads-99a3bf88daacfe81": "e1a91e8012e189df20780cbe6f5ef5d4c094dc08bb4f46e911c7fac96e544834"
+  },
+  "covered_seams": [
+    "Actual original signed library storage and verified pinned strfry over real HTTP",
+    "Typed native follower account versus protocol list publisher identities",
+    "Canonical and imported UUIDs without read-created aliases; native private and wrong-kind target rejection",
+    "Private owner isolation, current verified binding/admission and write permissions",
+    "Version/tombstone/no-op idempotency, body-bound account/head preconditions and exact proof replay",
+    "Current source rename, pending projection503, stale head409 and exact visible pagination totals",
+    "Signed source replacement/withdrawal/deletion hides metadata and preserves private membership",
+    "Unfollow after disappeared source remains possible with genuine owner authority",
+    "Existing signed-list/alias/backfill, account/rating, statistics and catalogue regressions"
+  ],
+  "bounded_work": {
+    "max_active_follows_per_account": 1000,
+    "max_page_size": 100,
+    "max_page_manga_relationships": 5000,
+    "max_read_seconds": 30,
+    "max_body_bytes": 1024,
+    "unselected_member_expansions_retained": false
+  },
+  "limits": [
+    "Evidence belongs to this isolated source; no final combined integration claim.",
+    "Follow commands persist instance-account membership only; no protocol publication or signer ownership mutation.",
+    "Native private/owned lists remain separate typed targets and are not exposed as signed public lists.",
+    "Source checks use original bounded APIs; this is not load, browser or production qualification.",
+    "Rustfmt unavailable; git diff --check passes; existing compiler warnings remain."
+  ]
+}

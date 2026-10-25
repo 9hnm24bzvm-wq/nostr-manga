@@ -1,0 +1,35 @@
+(node:15) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ genuine persisted instance mean is displayed with honest presentation precision (1.366024ms)
+✔ zero/unavailable/global/fabricated rating data stays unavailable rather than zero (0.527904ms)
+(node:16) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ rating client proves service and reads a genuinely bound native account separate from pubkey (2.177254ms)
+✔ save/remove/recreate use exact score, expected account, CAS and tombstone versions (2.356063ms)
+✔ same rating and never-rated removal retain real no-op revision instead of invented increments (0.732221ms)
+✔ invalid scores, unverified state and concurrent requests never dispatch writes (1.145272ms)
+✔ rebound native account with colliding version refuses captured old-account intent (0.426782ms)
+✔ wrong account, wrong title, omitted version and fabricated zero rating fail closed (1.140925ms)
+✔ unconfirmed or wrong successful receipts freeze writes until explicit reload, without replay (1.114516ms)
+✔ authorization/CAS denials do not claim a save and require a fresh read (3.945463ms)
+✔ signer/view/service/catalogue changes stop deferred or next requests at captured scope (0.652972ms)
+✔ a pending rating command cannot race a second command for the same captured version (0.559832ms)
+(node:17) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ anonymous reading or opening rating never invokes a signer/account read until connected (49.047776ms)
+✔ intentional title rating loads the bound account and uses actual saved score/remove controls (2.576214ms)
+✔ closing during a delayed rating read discards late account/score state (1.734067ms)
+✔ signer change clears previous account score/review and cannot install delayed results (1.598163ms)
+✔ unconfirmed rating never claims saved or retries automatically (1.62261ms)
+✔ genuine rating control stays in the native title action row and gate-off markup is unchanged (20.152535ms)
+✔ native title score is an actual instance average and does not relax unrelated forum visibility fences (13.392119ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 190.781282

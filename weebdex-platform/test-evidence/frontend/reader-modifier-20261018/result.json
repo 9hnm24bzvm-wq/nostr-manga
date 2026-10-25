@@ -1,0 +1,31 @@
+{
+  "sourceBase": "0395fbc3f0191008d07c1cd8c9c6a5de8801d59b",
+  "sourceSha256": {
+    "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs": "ca00368c31284cf3e6a8733198de9b2e411883236be810cacff8ec501474f801",
+    "weebdex-platform/tests/ci/test_reader_modified_shortcuts.mjs": "ba49e115d984e6b8d98e6006954c8fefe50b8df4ad655902ca38f0fd4f41100b"
+  },
+  "baseline": {
+    "newTests": 7,
+    "passed": 3,
+    "failed": 4,
+    "expectedExit": 1,
+    "scope": "Actual composed reader script before correction; Alt,Meta,composition and held-scroll regressions fail."
+  },
+  "corrected": {
+    "files": 3,
+    "tests": 86,
+    "passed": 86,
+    "failed": 0,
+    "newTests": 7,
+    "command": "node --test tests/ci/test_reader_modified_shortcuts.mjs tests/ci/test_browser_reader_account_diagnostics.mjs tests/ci/test_reader_navigation_edges.mjs",
+    "workingDirectory": "weebdex-platform"
+  },
+  "canonicalFilesVerifiedUnchanged": 679,
+  "scope": "Actual four-overlay composed script under finite reader/DOM/event/RAF seams; plain LTR/RTL and existing controls retained. No browser, service, full strict or Vite run for this successor.",
+  "qualifiedSource": "d2fb82656c4e313a325463bc363f1d9f82130461",
+  "rawLogSha256": {
+    "corrected.log": "adc20274fef2f28ee841eacb1c57987a9436f85113d2291acd126f6058fecbe4",
+    "baseline.log": "3ab8a2cb1761f46f90a146a94672c22f10a906aef9ef26212e5dd287185e260d"
+  },
+  "rawLogsRetainedAsGzipWithoutByteChanges": true
+}

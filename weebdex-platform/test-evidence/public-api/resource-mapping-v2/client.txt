@@ -1,0 +1,17 @@
+(node:16) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ versioned read-only mapper preserves requested aliases, exact source and parent provenance (6.595187ms)
+✔ unmapped local-only UUID remains explicit and empty references never fetch (0.662807ms)
+✔ wrong service, namespace, kind, missing parent, invented or incomplete resources fail closed (4.712908ms)
+✔ legacy IDs, duplicate input, invalid origins and oversize input fail before network (0.58522ms)
+✔ captured scope cannot be rebound during fetch; caller scope generation is checked (0.848035ms)
+✔ bounded response rejects HTML, non-JSON, HTTP refusal and oversized bodies (1.290079ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.92107

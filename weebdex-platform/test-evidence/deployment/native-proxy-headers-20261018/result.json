@@ -1,0 +1,15 @@
+{
+  "baseline": "51b986c076d45135e6fc2508f0186a67eff24c70",
+  "finiteCasesPassed": 11,
+  "finiteCasesFailed": 0,
+  "command": "node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+  "inputs": {
+    "weebdex-platform/deployment/nginx.example.conf": "dae095acb8f45300d7180db7dbc48efb2c19618b174dad40c13620d9b05de97b",
+    "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs": "8f377f873e747a05e4175b2be0856ed6541782ccff0b083ecdef6ee18b68d101"
+  },
+  "logSha256": "3819968e724d6ab4d011de35b04dc225c7b6e1e29173a2c30c86cfa331f12082",
+  "officialReference": "https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_set_header",
+  "fix": "Both native child locations now explicitly retain Host, X-Forwarded-Proto and edge-overwritten X-Forwarded-For alongside their own Connection/Upgrade directives.",
+  "nginxSyntaxAndLiveProxy": "not_run; official executable unavailable; no install/listener permitted",
+  "backendAndProtocolChanged": false
+}

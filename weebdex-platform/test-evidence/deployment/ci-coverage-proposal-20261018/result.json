@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "backendGateEnabled": false,
+    "onlySemanticWorkflowChange": "one finite proxy step after pinned setup-node",
+    "proxyFiniteCasesPassed": 11,
+    "remoteWorkflowTriggered": false,
+    "timeoutMinutes": 2,
+    "triggersPermissionsRepositoryRunnerGuardsUnchanged": true,
+    "yamlParsed": true
+  },
+  "files": {
+    ".github/workflows/hosted-browser-e2e.yml": "df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27",
+    "weebdex-platform/docs/ci-backend-coverage-proposal.md": "8ab6f25f2711bf85df2e974703ea8631101c3aec495dff299dceace97356ea89",
+    "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs": "8f377f873e747a05e4175b2be0856ed6541782ccff0b083ecdef6ee18b68d101"
+  },
+  "schema": "ci-coverage-source-seam-v1",
+  "sourceBase": "3bee0ad8e907cb02fbe7fe70d8e7bbc7c09eb74d"
+}

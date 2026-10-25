@@ -1,0 +1,914 @@
+// SOURCE POSTIMAGE ONLY. No build, import or execution is admitted by this file.
+// Execute only separately reviewed SvelteKit/Vite output in an owned process.
+// This is a DOM/emitted-module adapter, not a browser-fidelity qualification.
+import { createHash } from 'node:crypto';
+import { readFile, realpath, stat } from 'node:fs/promises';
+import path from 'node:path';
+import { createRequire } from 'node:module';
+import vm from 'node:vm';
+
+/**
+ * Reviewed generated-output manifest, schema 1 (all paths relative to their root):
+ * {
+ *   schema: 1, sourceRevision: '<40-char reviewed Git revision>',
+ *   origin: 'http://badge-fixture.test', profile: 'native0'|'public1',
+ *   fallback: { path: 'index.html', bytes: N, sha256: HEX },
+ *   bootstrap: { scriptIndex: 0, type: 'classic', bytes: N, sha256: HEX },
+ *   assets: [{ path: '_app/...js', url: '/_app/...js', bytes: N,
+ *              sha256: HEX, kind: 'module'|'style'|'asset', contentType?: string }],
+ *   domPackage: { name: 'jsdom', version: '27.0.1',
+ *     package: { path: 'jsdom/package.json', bytes: N, sha256: HEX },
+ *     entry: { path: 'jsdom/lib/api.js', bytes: N, sha256: HEX } },
+ *   idbPackage: { name: 'fake-indexeddb', version: '6.2.4',
+ *     package: { path: 'fake-indexeddb/package.json', bytes: N, sha256: HEX },
+ *     entry: { path: 'fake-indexeddb/build/cjs/index.js', bytes: N, sha256: HEX } }
+ * }
+ *
+ * bootstrap.scriptIndex counts executable script elements in DOM order. Exactly
+ * one executable script, inline and classic, is admitted. Its textContent hash
+ * is additional to the exact generated fallback file hash. Populate identities
+ * only after actual generation; invented placeholder bootstrap is never valid.
+ * The outer owner separately pins the complete jsdom transitive package closure,
+ * Node binary/flags (--experimental-vm-modules), source composition, generator
+ * and output provenance. An entry hash alone does not pin a package closure.
+ * packageRoot is the existing qualification-tools node_modules, not the app's
+ * Svelte root. This driver does not resolve or import source/app packages.
+ *
+ * fixture: attachWindow(window), fetch(input,init), close(); optionally
+ * createXMLHttpRequest(window), attachDriver(driver). attachWindow installs
+ * gates on the driver-created fresh IDBFactory and HTTP/XHR before bootstrap.
+ * assertIdle() reports {pendingHttp:0,pendingBodies:0,pendingIdb:0}. Only after
+ * that terminal evidence may an independent case reload a fresh realm using the
+ * same fixture facade; configure must reseed it. Remount cases NEVER reload.
+ * fork() provides a separate boundary instance for an old-source comparison.
+ * Its close() must terminate outstanding data/body/IDB operations and report
+ * their terminal outcomes. The driver counts fetch header terminals, not unread
+ * response bodies, and must not consume extra clones to change their timing.
+ *
+ * Root fixture bridge: badge-fixture-command {id,name,args}; corresponding
+ * badge-fixture-result {id,ok:true,value} or {id,ok:false,error:{name,message}}.
+ * Emit badge-fixture-ready {schema:1} from the real root onMount after installing
+ * the listener. The bridge imports genuine $app/navigation/$app/state, invokes
+ * real goto and exposes observations/actions through actual application APIs.
+ * Never replace these modules or set page/root/controller/authority/epoch state.
+ */
+const LIMITS = Object.freeze({
+  assets: 1024, fileBytes: 8 * 1024 * 1024, totalBytes: 64 * 1024 * 1024,
+  fallbackBytes: 512 * 1024, events: 20000, operations: 10000,
+  payloadBytes: 256 * 1024, snapshotBytes: 256 * 1024, domNodes: 10000,
+  defaultTimeoutMs: 10000, maxTimeoutMs: 120000, pollMs: 5
+});
+const COMMANDS = new Set([
+  'navigate', 'snapshot', 'refreshSession', 'selectMode', 'verifyCatalogue',
+  'refreshLibrary', 'openLibrary', 'createList', 'cancelNextNavigation', 'hash', 'back', 'forward'
+]);
+const SELECTORS = new Set([
+  'article:has(a[href^="/chapter/"])', 'article', 'a[href^="/chapter/"]',
+  'button[title="Read status unavailable"]', 'button[title="Mark as read"]',
+  'button[title="Mark as unread"]', '[aria-label="Read status unavailable"]',
+  'button[title="Mark as read"],button[title="Mark as unread"]',
+  '[role="status"][aria-label="Chapter read status"]',
+  '[data-badge-route]', '[data-badge-fixture-route]', '[data-badge-fixture-ready]'
+]);
+const ROLES = new Map([
+  ['button', new Set(['Retry read status', 'Mark as read', 'Mark as unread', 'Read status unavailable', 'Start Reading', 'Continue', 'Continue Reading'])],
+  ['status', new Set(['Chapter read status'])],
+  ['link', new Set(['Continue', 'Continue Reading', 'Start Reading'])]
+]);
+const sha256 = (value) => createHash('sha256').update(value).digest('hex');
+const messageOf = (error) => String(error?.message ?? error).slice(0, 2048);
+const plain = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+
+export class BadgeFrameworkInfrastructureError extends Error {
+  constructor(message, cause) {
+    super(message, cause === undefined ? undefined : { cause });
+    this.name = 'BadgeFrameworkInfrastructureError';
+    this.code = 'BADGE_FRAMEWORK_INFRASTRUCTURE';
+    this.infrastructure = true;
+  }
+}
+export class BadgeFixtureCommandError extends Error {
+  constructor(name, detail) {
+    super(`Fixture command ${name}: ${messageOf(detail)}`);
+    this.name = 'BadgeFixtureCommandError';
+    this.code = 'BADGE_FIXTURE_COMMAND_REJECTED';
+    this.command = name;
+    this.applicationErrorName = String(detail?.name ?? 'Error');
+    this.infrastructure = false;
+  }
+}
+function invariant(condition, message) {
+  if (!condition) throw new BadgeFrameworkInfrastructureError(message);
+}
+function boundedInteger(value, minimum, maximum, label) {
+  invariant(Number.isSafeInteger(value) && value >= minimum && value <= maximum, `Invalid ${label}`);
+  return value;
+}
+function relativePath(value, label) {
+  invariant(typeof value === 'string' && value.length > 0 && value.length <= 1024, `Invalid ${label}`);
+  invariant(!path.isAbsolute(value) && !value.includes('\\') && !value.includes('\0'), `Non-relative ${label}`);
+  invariant(value.split('/').every((part) => part && part !== '.' && part !== '..'), `Non-canonical ${label}`);
+  return value;
+}
+function validateIdentity(value, label, maxBytes = LIMITS.fileBytes) {
+  invariant(plain(value), `Missing ${label} identity`);
+  relativePath(value.path, `${label}.path`);
+  boundedInteger(value.bytes, 0, maxBytes, `${label}.bytes`);
+  invariant(typeof value.sha256 === 'string' && /^[a-f0-9]{64}$/.test(value.sha256), `Invalid ${label}.sha256`);
+}
+async function readVerified(root, identity, label) {
+  validateIdentity(identity, label);
+  const fullPath = await realpath(path.join(root, identity.path));
+  invariant(fullPath.startsWith(root + path.sep), `${label} escapes its reviewed root`);
+  const before = await stat(fullPath);
+  invariant(before.isFile() && before.size === identity.bytes, `${label} size/type mismatch`);
+  const bytes = await readFile(fullPath);
+  invariant(bytes.length === identity.bytes && sha256(bytes) === identity.sha256, `${label} hash/size mismatch`);
+  // Keep exactly the verified bytes in memory; no second mutable-file read at execution.
+  return { fullPath, bytes };
+}
+function jsonCopy(value, label, maximum = LIMITS.payloadBytes) {
+  let encoded;
+  try { encoded = JSON.stringify(value); }
+  catch (error) { throw new BadgeFrameworkInfrastructureError(`${label} is not JSON data`, error); }
+  invariant(typeof encoded === 'string' && Buffer.byteLength(encoded) <= maximum, `${label} exceeds JSON bound`);
+  return JSON.parse(encoded);
+}
+
+async function createBadgeFrameworkRealm({ manifest, assetRoot, packageRoot, fixture, record, timeoutMs = LIMITS.defaultTimeoutMs }) {
+  boundedInteger(timeoutMs, 1, LIMITS.maxTimeoutMs, 'timeoutMs');
+  invariant(typeof vm.SourceTextModule === 'function', 'Owner must enable the pinned Node VM module API');
+  invariant(plain(manifest) && manifest.schema === 1, 'Unsupported generated manifest');
+  invariant(typeof manifest.sourceRevision === 'string' && /^[a-f0-9]{40}$/.test(manifest.sourceRevision), 'Reviewed source revision is required');
+  invariant(manifest.origin === 'http://badge-fixture.test', 'Only the isolated declared synthetic origin is admitted');
+  invariant(['native0', 'public1'].includes(manifest.profile), 'Native/public profile is required, never interchangeable');
+  invariant(Array.isArray(manifest.assets) && manifest.assets.length > 0 && manifest.assets.length <= LIMITS.assets, 'Invalid emitted asset inventory');
+  invariant(typeof fixture?.attachWindow === 'function' && typeof fixture?.fetch === 'function' && typeof fixture?.close === 'function', 'Missing boundary fixture methods');
+  invariant(typeof record === 'function', 'An explicit evidence recorder is required');
+  validateIdentity(manifest.fallback, 'fallback', LIMITS.fallbackBytes);
+  invariant(plain(manifest.bootstrap) && manifest.bootstrap.type === 'classic', 'Only the actual classic Kit fallback bootstrap is supported');
+  boundedInteger(manifest.bootstrap.scriptIndex, 0, 0, 'bootstrap.scriptIndex');
+  boundedInteger(manifest.bootstrap.bytes, 1, LIMITS.fallbackBytes, 'bootstrap.bytes');
+  invariant(/^[a-f0-9]{64}$/.test(manifest.bootstrap.sha256), 'Invalid bootstrap hash');
+  invariant(manifest.domPackage?.name === 'jsdom' && manifest.domPackage.version === '27.0.1', 'Wrong reviewed DOM package');
+  invariant(manifest.idbPackage?.name === 'fake-indexeddb' && manifest.idbPackage.version === '6.2.4', 'Wrong reviewed IDB package');
+  const origin = manifest.origin;
+  const root = await realpath(assetRoot);
+  const domRoot = await realpath(packageRoot);
+  const assets = new Map();
+  const paths = new Set();
+  let declaredBytes = manifest.fallback.bytes;
+  for (const entry of manifest.assets) {
+    validateIdentity(entry, 'asset');
+    invariant(['module', 'style', 'asset'].includes(entry.kind), `Unknown asset kind ${entry.kind}`);
+    invariant(typeof entry.url === 'string' && entry.url.startsWith('/') && !entry.url.startsWith('//'), 'Asset URL must be same-origin root-relative');
+    const url = new URL(entry.url, origin);
+    invariant(url.origin === origin && !url.search && !url.hash && url.pathname === entry.url, 'Asset URL is not canonical');
+    invariant(!assets.has(url.href) && !paths.has(entry.path), 'Duplicate emitted asset URL/path');
+    declaredBytes += entry.bytes;
+    invariant(declaredBytes <= LIMITS.totalBytes, 'Emitted inventory exceeds bounded read envelope');
+    const verified = await readVerified(root, entry, entry.url);
+    assets.set(url.href, { ...entry, fullPath: verified.fullPath, bytesBuffer: verified.bytes, href: url.href });
+    paths.add(entry.path);
+  }
+  const fallback = await readVerified(root, manifest.fallback, 'fallback');
+  const domPackage = await readVerified(domRoot, manifest.domPackage.package, 'jsdom package');
+  const domEntry = await readVerified(domRoot, manifest.domPackage.entry, 'jsdom entry');
+  const packageMetadata = JSON.parse(domPackage.bytes.toString('utf8'));
+  invariant(packageMetadata.name === 'jsdom' && packageMetadata.version === '27.0.1', 'DOM package metadata mismatch');
+  const require = createRequire(domPackage.fullPath);
+  invariant(await realpath(require.resolve('jsdom')) === domEntry.fullPath, 'DOM package entry resolved outside its reviewed pin');
+  const idbPackage = await readVerified(domRoot, manifest.idbPackage.package, 'fake-indexeddb package');
+  const idbEntry = await readVerified(domRoot, manifest.idbPackage.entry, 'fake-indexeddb entry');
+  const idbMetadata = JSON.parse(idbPackage.bytes.toString('utf8'));
+  invariant(idbMetadata.name === 'fake-indexeddb' && idbMetadata.version === '6.2.4', 'IDB package metadata mismatch');
+  invariant(await realpath(require.resolve('fake-indexeddb')) === idbEntry.fullPath, 'IDB package entry resolved outside its reviewed pin');
+  // Package imports occur only when a future admitted owner executes create.
+  const { JSDOM, ResourceLoader, VirtualConsole } = require(domEntry.fullPath);
+  const idbExports = require(idbEntry.fullPath);
+  invariant(typeof idbExports.IDBFactory === 'function', 'Pinned IDB package has no IDBFactory');
+  const counters = {
+    inputFiles: assets.size + 5, inputBytes: declaredBytes + domPackage.bytes.length + domEntry.bytes.length + idbPackage.bytes.length + idbEntry.bytes.length,
+    records: 0, operations: 0, moduleCreates: 0, moduleImports: 0, moduleEvaluations: 0,
+    resourceRequests: 0, resourceTerminals: 0, resourceBytes: 0,
+    fetchStarted: 0, fetchResolved: 0, fetchRejected: 0,
+    commandStarted: 0, commandResolved: 0, commandRejected: 0, commandTerminated: 0,
+    waitsStarted: 0, waitsResolved: 0, waitsRejected: 0, domClicks: 0, zeroScrollCalls: 0,
+    observerConstructed: 0, observerDisconnected: 0
+  };
+  let dom, window, context, indexedDB, booted = false, ready = false, disposed = false, disposing = false;
+  let firstFailure = null;
+  let eventSequence = 0, commandSequence = 0, requestSequence = 0;
+  const modules = new Map(), evaluationPromises = new Map(), commands = new Map(), activeFetches = new Map();
+  const commandTerminals = new Set(), observerInstances = new Set(), hostTimers = new Set();
+  const listenerIds = new WeakMap(), listenerObservations = [], frameworkEvents = [];
+  let listenerSequence = 0, linkTail = Promise.resolve();
+  let rejectFailure;
+  const failurePromise = new Promise((_, reject) => { rejectFailure = reject; });
+  failurePromise.catch(() => {});
+  const emit = (type, details = {}) => {
+    invariant(counters.records < LIMITS.events, 'Evidence event bound exhausted');
+    counters.records += 1;
+    const data = jsonCopy(details, 'evidence event');
+    if (Object.prototype.hasOwnProperty.call(data, 'type')) { data.eventType = data.type; delete data.type; }
+    record({ ...data, type: `badge-dom:${type}`, sequence: ++eventSequence, profile: manifest.profile });
+  };
+  const fail = (error, action = 'DOM infrastructure') => {
+    const failure = error instanceof BadgeFrameworkInfrastructureError ? error : new BadgeFrameworkInfrastructureError(`${action}: ${messageOf(error)}`, error);
+    if (!firstFailure) {
+      firstFailure = failure;
+      try { emit('infrastructure-failed', { action, error: messageOf(failure) }); } catch { /* Original failure remains authoritative. */ }
+      rejectFailure(failure);
+    }
+    return failure;
+  };
+  const active = () => {
+    if (firstFailure) throw firstFailure;
+    invariant(!disposed && !disposing, 'DOM driver is closed');
+  };
+  const operation = (label) => {
+    active();
+    counters.operations += 1;
+    invariant(counters.operations <= LIMITS.operations, `Operation bound exceeded at ${label}`);
+  };
+  const timer = (callback, milliseconds) => {
+    const handle = setTimeout(() => { hostTimers.delete(handle); callback(); }, milliseconds);
+    hostTimers.add(handle);
+    return handle;
+  };
+  const untimer = (handle) => { clearTimeout(handle); hostTimers.delete(handle); };
+  const bounded = async (promise, label, milliseconds = timeoutMs, watchFailure = true) => {
+    let handle;
+    const deadline = new Promise((_, reject) => { handle = timer(() => reject(fail(new Error(`Timed out after ${milliseconds} ms: ${label}`), label)), milliseconds); });
+    try { return await Promise.race(watchFailure ? [promise, deadline, failurePromise] : [promise, deadline]); }
+    finally { untimer(handle); }
+  };
+  const sameOrigin = (input, base = window?.location.href ?? origin + '/') => {
+    let url;
+    try { url = new URL(String(input), base); } catch (error) { throw fail(error, 'resolve URL'); }
+    invariant(url.origin === origin && !url.username && !url.password, `Off-contract destination: ${url.origin}`);
+    return url;
+  };
+  const emitted = (url, kind) => {
+    const canonical = sameOrigin(url);
+    invariant(!canonical.hash && !canonical.search, `Unreviewed asset URL suffix: ${canonical.href}`);
+    const asset = assets.get(canonical.href);
+    invariant(asset && (!kind || asset.kind === kind), `Unreviewed ${kind ?? 'resource'}: ${canonical.href}`);
+    return asset;
+  };
+  const accountResource = (asset, via) => {
+    counters.resourceRequests += 1;
+    counters.resourceTerminals += 1;
+    counters.resourceBytes += asset.bytes;
+    emit('asset-terminal', { url: asset.href, via, bytes: asset.bytes, sha256: asset.sha256 });
+    return asset.bytesBuffer;
+  };
+  class ReviewedResources extends ResourceLoader {
+    fetch(url, options) {
+      let result;
+      try {
+        const asset = emitted(url);
+        invariant(options?.element?.localName !== 'script', 'External DOM script execution is not admitted; use the generated inline bootstrap and canonical module loader');
+        result = Promise.resolve(accountResource(asset, 'jsdom-resource'));
+      } catch (error) { result = Promise.reject(fail(error, 'DOM resource request')); }
+      // jsdom's resource queue expects abort(). No live request exists here.
+      result.abort = () => {};
+      return result;
+    }
+  }
+  const virtualConsole = new VirtualConsole();
+  virtualConsole.on('jsdomError', (error) => { fail(error, `jsdom ${error.type ?? 'error'}`); });
+  for (const level of ['log', 'info', 'warn', 'error', 'debug']) {
+    virtualConsole.on(level, (...values) => {
+      try { emit('console', { level, values: values.slice(0, 8).map((value) => messageOf(value)) }); }
+      catch (error) { fail(error, 'console evidence'); }
+    });
+  }
+  const onUnhandled = (reason) => { fail(reason, 'unhandled promise rejection in owned DOM process'); };
+  const onUncaught = (error) => { fail(error, 'uncaught exception in owned DOM process'); };
+  let processListenersInstalled = false;
+
+  function moduleFor(url) {
+    active();
+    const asset = emitted(url, 'module');
+    if (modules.has(asset.href)) return modules.get(asset.href);
+    const source = accountResource(asset, 'vm-module').toString('utf8');
+    const module = new vm.SourceTextModule(source, {
+      context, identifier: asset.href,
+      initializeImportMeta(meta) { meta.url = asset.href; },
+      importModuleDynamically(specifier, referencingModule, attributes) {
+        return importEmitted(specifier, referencingModule.identifier, attributes);
+      }
+    });
+    modules.set(asset.href, module);
+    counters.moduleCreates += 1;
+    return module;
+  }
+  function resolveImport(specifier, parentUrl, attributes) {
+    invariant(typeof specifier === 'string' && /^(?:\.{1,2}\/|\/|https?:\/\/)/.test(specifier), `Unresolved/bare emitted import: ${String(specifier)}`);
+    invariant(!attributes || Object.keys(attributes).length === 0, 'Import attributes require explicit emitted-graph review');
+    return emitted(sameOrigin(specifier, parentUrl).href, 'module').href;
+  }
+  async function ensureLinked(module) {
+    const link = linkTail.then(async () => {
+      if (module.status === 'unlinked') {
+        await module.link((specifier, referencingModule, extra) => moduleFor(resolveImport(specifier, referencingModule.identifier, extra?.attributes ?? extra?.assert)));
+      }
+      invariant(!['unlinked', 'linking'].includes(module.status), `Module linkage did not settle: ${module.identifier}`);
+    });
+    // Serializing only linking avoids competing roots relinking shared chunks.
+    // Evaluation is not serialized, so actual dynamic imports/TLA can progress.
+    linkTail = link.catch(() => {});
+    await link;
+  }
+  async function importEmitted(specifier, parentUrl, attributes) {
+    try {
+      active();
+      counters.moduleImports += 1;
+      const module = moduleFor(resolveImport(specifier, parentUrl, attributes));
+      await ensureLinked(module);
+      if (!evaluationPromises.has(module.identifier)) {
+        counters.moduleEvaluations += 1;
+        evaluationPromises.set(module.identifier, module.evaluate({ timeout: timeoutMs }));
+      }
+      await bounded(evaluationPromises.get(module.identifier), `evaluate ${module.identifier}`);
+      if (module.status === 'errored') throw module.error;
+      invariant(module.status === 'evaluated', `Module has no evaluated terminal: ${module.identifier}`);
+      return module;
+    } catch (error) { throw fail(error, 'emitted module import'); }
+  }
+
+  const boundaryFetch = async (input, init) => {
+    active();
+    const url = sameOrigin(typeof input === 'string' || input instanceof window.URL ? input : input?.url);
+    const asset = assets.get(url.href);
+    if (asset) {
+      invariant((init?.method ?? input?.method ?? 'GET').toUpperCase() === 'GET', 'Generated asset fetch must be GET');
+      return new window.Response(accountResource(asset, 'fetch'), { status: 200, headers: {
+        'content-type': asset.contentType ?? (asset.kind === 'module' ? 'text/javascript' : asset.kind === 'style' ? 'text/css' : 'application/octet-stream'),
+        'content-length': String(asset.bytes)
+      } });
+    }
+    invariant(!url.pathname.startsWith('/_app/'), `Unreviewed generated asset fetch: ${url.href}`);
+    const id = ++requestSequence;
+    counters.fetchStarted += 1;
+    emit('fetch-start', { id, url: url.href, method: init?.method ?? input?.method ?? 'GET' });
+    // Preserve Request body/signal identity; normalize only string/URL inputs.
+    const requestInput = typeof input === 'string' || input instanceof window.URL ? url.href : input;
+    const pending = Promise.resolve().then(() => fixture.fetch(requestInput, init));
+    activeFetches.set(id, pending);
+    try {
+      const response = await pending;
+      invariant(response instanceof window.Response, 'Fixture fetch returned a non-Response');
+      counters.fetchResolved += 1;
+      emit('fetch-header-terminal', { id, status: response.status, bodyTerminalOwnedByFixture: true });
+      return response;
+    } catch (error) {
+      counters.fetchRejected += 1;
+      emit('fetch-rejected', { id, error: messageOf(error), aborted: error?.name === 'AbortError' });
+      throw error;
+    } finally { activeFetches.delete(id); }
+  };
+
+  function installDomEnvironment() {
+    // These standard web classes are environment bindings, never app modules.
+    for (const name of ['Request', 'Response', 'Headers', 'TextEncoder', 'TextDecoder', 'ReadableStream', 'WritableStream', 'TransformStream', 'Uint8Array', 'ArrayBuffer', 'DataView']) {
+      invariant(typeof globalThis[name] === 'function', `Owner Node lacks ${name}`);
+      Object.defineProperty(window, name, { configurable: true, writable: true, value: globalThis[name] });
+    }
+    window.fetch = boundaryFetch;
+    // Unsupported alternate network/worker paths must not escape the finite map.
+    for (const name of ['WebSocket', 'EventSource', 'Worker', 'SharedWorker']) {
+      Object.defineProperty(window, name, { configurable: true, value: class { constructor() { throw fail(new Error(`${name} is outside the reviewed fixture boundaries`), name); } } });
+    }
+    Object.defineProperty(window.navigator, 'sendBeacon', { configurable: true, value: () => { throw fail(new Error('sendBeacon is outside the reviewed fixture boundaries'), 'sendBeacon'); } });
+    indexedDB = new idbExports.IDBFactory();
+    Object.defineProperty(window, 'indexedDB', { configurable: true, value: indexedDB });
+    for (const name of ['IDBCursor', 'IDBCursorWithValue', 'IDBDatabase', 'IDBFactory', 'IDBIndex', 'IDBKeyRange', 'IDBObjectStore', 'IDBOpenDBRequest', 'IDBRequest', 'IDBTransaction', 'IDBVersionChangeEvent']) {
+      invariant(typeof idbExports[name] === 'function', `Pinned IDB package lacks ${name}`);
+      Object.defineProperty(window, name, { configurable: true, writable: true, value: idbExports[name] });
+    }
+    if (!window.structuredClone) window.structuredClone = globalThis.structuredClone;
+    // No geometry fidelity is claimed. The only supported scroll is the real
+    // router's normalization to the already-zero nonvisual viewport. Anything
+    // requiring layout is an infrastructure failure, not a successful no-op.
+    window.scrollTo = (...args) => {
+      const options = typeof args[0] === 'object' ? args[0] : { left: args[0], top: args[1] };
+      if ((options.left ?? 0) !== 0 || (options.top ?? 0) !== 0 || (options.behavior && options.behavior !== 'auto') || window.scrollX !== 0 || window.scrollY !== 0) {
+        throw fail(new Error('Nonzero/animated scroll requires a real layout engine'), 'scrollTo');
+      }
+      counters.zeroScrollCalls += 1;
+    };
+    window.scroll = window.scrollTo;
+    window.scrollBy = () => { throw fail(new Error('Relative scrolling is unsupported'), 'scrollBy'); };
+    window.HTMLElement.prototype.scrollIntoView = () => { throw fail(new Error('Element scrolling requires a real layout engine'), 'scrollIntoView'); };
+    // Kit constructs this unconditionally. With no viewport-preload targets the
+    // constructor is inert by specification. Do not invent intersection data.
+    window.IntersectionObserver = class NonvisualIntersectionObserver {
+      constructor(callback, options = {}) {
+        invariant(typeof callback === 'function' && !options.root && (!options.rootMargin || options.rootMargin === '0px') && (options.threshold === undefined || options.threshold === 0), 'Unsupported intersection-observer configuration');
+        this.root = null; this.rootMargin = '0px 0px 0px 0px'; this.thresholds = [0];
+        observerInstances.add(this); counters.observerConstructed += 1;
+      }
+      observe() { throw fail(new Error('Intersection observation requires layout and was not admitted'), 'IntersectionObserver.observe'); }
+      unobserve() { throw fail(new Error('No observed targets are admitted'), 'IntersectionObserver.unobserve'); }
+      takeRecords() { return []; }
+      disconnect() { observerInstances.delete(this); counters.observerDisconnected += 1; }
+    };
+    const add = window.addEventListener.bind(window), remove = window.removeEventListener.bind(window);
+    for (const [name, original] of [['addEventListener', add], ['removeEventListener', remove]]) {
+      window[name] = function (type, callback, options) {
+        // Observation only: forward original function, receiver and options.
+        // Counts are observed explicit calls, not an invented callback registry.
+        if (['hashchange', 'popstate', 'badge-fixture-command'].includes(type) && callback && (typeof callback === 'object' || typeof callback === 'function')) {
+          if (!listenerIds.has(callback)) listenerIds.set(callback, ++listenerSequence);
+          const event = { action: name === 'addEventListener' ? 'add' : 'remove', type, listener: listenerIds.get(callback), capture: typeof options === 'boolean' ? options : Boolean(options?.capture), once: Boolean(options?.once), hasSignal: Boolean(options?.signal) };
+          invariant(listenerObservations.length < LIMITS.events, 'Listener observation bound exceeded');
+          listenerObservations.push(event);
+          emit('listener-observation', event);
+        }
+        return original(type, callback, options);
+      };
+    }
+    window.addEventListener('error', (event) => { fail(event.error ?? new Error(event.message), 'window error'); });
+    window.addEventListener('unhandledrejection', (event) => { fail(event.reason, 'window unhandled rejection'); });
+    window.addEventListener('hashchange', () => emit('browser-event', { type: 'hashchange', href: window.location.href }));
+    window.addEventListener('popstate', () => emit('browser-event', { type: 'popstate', href: window.location.href }));
+    for (const eventType of ['badge-fixture-navigation', 'badge-fixture-guard']) {
+      window.addEventListener(eventType, (event) => {
+        try {
+          invariant(frameworkEvents.length < LIMITS.events, 'Framework observation bound exceeded');
+          const observation = { type: eventType, detail: jsonCopy(event.detail, 'framework event'), href: window.location.href };
+          frameworkEvents.push(observation);
+          emit('framework-observation', observation);
+        } catch (error) { fail(error, 'framework observation'); }
+      });
+    }
+    window.addEventListener('badge-fixture-ready', (event) => {
+      if (ready || event.detail?.schema !== 1) { fail(new Error('Duplicate/invalid fixture ready event'), 'bridge readiness'); return; }
+      ready = true;
+      emit('fixture-ready', { href: window.location.href });
+    });
+    window.addEventListener('badge-fixture-result', (event) => {
+      const detail = event.detail;
+      const pending = plain(detail) ? commands.get(detail.id) : undefined;
+      if (!pending) { fail(new Error(`Unexpected/duplicate fixture result ${String(detail?.id)}`), 'command result'); return; }
+      try {
+        invariant(typeof detail.ok === 'boolean', 'Fixture result lacks an explicit success/failure outcome');
+        commands.delete(detail.id); commandTerminals.add(detail.id);
+        untimer(pending.timer);
+        if (detail.ok) {
+          counters.commandResolved += 1;
+          pending.resolve(jsonCopy(detail.value ?? null, 'fixture result'));
+        } else {
+          counters.commandRejected += 1;
+          pending.reject(new BadgeFixtureCommandError(pending.name, detail.error));
+        }
+        emit('command-terminal', { id: detail.id, name: pending.name, ok: detail.ok });
+      } catch (error) { pending.reject(fail(error, 'command result')); }
+    });
+    emit('environment-contract', {
+      currentScript: 'actual generated inline element during synchronous classic evaluation only',
+      history: 'native jsdom URL/history/events; no router replacement or framework-state writes',
+      geometry: 'zero scroll only; actual intersection targets and element/nonzero scroll fail infrastructure',
+      webClasses: 'Node Fetch/stream/encoding and byte-buffer constructors for real Response chunk instanceof checks; jsdom URL/URLSearchParams and DOM events remain native',
+      moduleIdentity: 'one canonical emitted URL map for the complete realm lifetime',
+      packageClosure: 'requires outer-owner full transitive verification; entry/package hashes are not sufficient'
+    });
+  }
+
+  function domSnapshot() {
+    active();
+    const document = window.document;
+    invariant(document.querySelectorAll('*').length <= LIMITS.domNodes, 'DOM snapshot node bound exceeded');
+    const entries = [...document.querySelectorAll('article')].filter((element) => element.querySelector('a[href^="/chapter/"]'));
+    return jsonCopy({
+      href: window.location.href, title: document.title, ready, booted,
+      entries: entries.map((element) => ({
+        class: element.getAttribute('class'),
+        hrefs: [...element.querySelectorAll('a[href^="/chapter/"]')].map((anchor) => anchor.getAttribute('href')),
+        buttons: [...element.querySelectorAll('button[title]')].map((button) => ({ title: button.getAttribute('title'), disabled: button.disabled, label: button.getAttribute('aria-label') })),
+        unavailableLabels: element.querySelectorAll('[aria-label="Read status unavailable"]').length,
+        text: element.textContent?.trim().slice(0, 2048)
+      })),
+      status: [...document.querySelectorAll('[role="status"]')].map((element) => ({ label: element.getAttribute('aria-label'), text: element.textContent?.trim().slice(0, 4096) })),
+      listeners: listenerObservations, frameworkEvents,
+      modules: [...modules].map(([url, module]) => ({ url, status: module.status, sha256: assets.get(url).sha256 })),
+      counters: { ...counters }, pendingCommands: [...commands].map(([id, pending]) => ({ id, name: pending.name })), pendingFetches: [...activeFetches.keys()]
+    }, 'DOM snapshot', LIMITS.snapshotBytes);
+  }
+  async function waitFor(predicate, options = 'condition') {
+    operation('waitFor');
+    invariant(typeof predicate === 'function', 'waitFor requires a host-side observation predicate');
+    const label = typeof options === 'string' ? options : options?.label ?? 'condition';
+    const duration = typeof options === 'object' ? options.timeoutMs ?? timeoutMs : timeoutMs;
+    boundedInteger(duration, 1, LIMITS.maxTimeoutMs, 'waitFor timeoutMs');
+    counters.waitsStarted += 1;
+    try {
+      const value = await bounded((async () => {
+        for (;;) {
+          active();
+          const result = await predicate();
+          if (result) return result;
+          await new Promise((resolve) => timer(resolve, LIMITS.pollMs));
+        }
+      })(), `waitFor ${label}`, duration);
+      counters.waitsResolved += 1;
+      return value;
+    } catch (error) { counters.waitsRejected += 1; throw error; }
+  }
+  async function command(name, args = {}) {
+    operation(`command ${name}`);
+    invariant(booted && ready, 'The real fixture bridge is not mounted');
+    invariant(COMMANDS.has(name), `Unsupported fixture command ${String(name)}`);
+    invariant(plain(args), 'Fixture command args must be a plain data object');
+    const payload = jsonCopy(args, 'fixture command args');
+    if (name === 'navigate') { invariant(typeof payload.href === 'string' && payload.href.length > 0, 'navigate requires a nonempty href'); sameOrigin(payload.href); }
+    if (name === 'hash') invariant(typeof payload.hash === 'string' && (payload.hash === '' || payload.hash.startsWith('#')), 'Invalid hash command');
+    if (name === 'selectMode') invariant(['account', 'device'].includes(payload.mode), 'Invalid library mode');
+    const id = `badge-${++commandSequence}`;
+    counters.commandStarted += 1;
+    const promise = new Promise((resolve, reject) => {
+      const handle = timer(() => {
+        if (!commands.has(id)) return;
+        commands.delete(id); commandTerminals.add(id); counters.commandTerminated += 1;
+        reject(fail(new Error(`Fixture command did not terminate: ${name} (${id})`), 'command timeout'));
+      }, timeoutMs);
+      commands.set(id, { name, resolve, reject, timer: handle });
+    });
+    // Attach failure observers before dispatch, including for synchronous errors.
+    const observed = Promise.race([promise, failurePromise]);
+    try {
+      emit('command-start', { id, name });
+      window.dispatchEvent(new window.CustomEvent('badge-fixture-command', { detail: { id, name, args: payload } }));
+    } catch (error) { throw fail(error, 'command dispatch'); }
+    return observed;
+  }
+  const exactOne = (elements, label) => {
+    invariant(elements.length === 1, `${label} requires exactly one DOM element; found ${elements.length}`);
+    return elements[0];
+  };
+  function select(roots, selector) {
+    invariant(SELECTORS.has(selector), `Unsupported finite locator selector: ${selector}`);
+    const result = [];
+    for (const root of roots) {
+      if (selector === 'article:has(a[href^="/chapter/"])') {
+        result.push(...[...root.querySelectorAll('article')].filter((element) => element.querySelector('a[href^="/chapter/"]')));
+      } else result.push(...root.querySelectorAll(selector));
+    }
+    return [...new Set(result)];
+  }
+  function byRole(roots, role, options) {
+    invariant(ROLES.has(role) && plain(options) && typeof options.name === 'string' && ROLES.get(role).has(options.name) && (options.exact === undefined || options.exact === true), `Unsupported finite role locator ${String(role)} / ${String(options?.name)}`);
+    const selector = role === 'button' ? 'button,[role="button"]' : role === 'link' ? 'a[href],[role="link"]' : '[role="status"]';
+    return [...new Set(roots.flatMap((root) => [...root.querySelectorAll(selector)]))].filter((element) => {
+      const label = element.getAttribute('aria-label') ?? element.getAttribute('title') ?? element.textContent?.trim().replace(/\s+/g, ' ');
+      return label === options.name;
+    });
+  }
+  function locator(resolve, label) {
+    const elements = () => { active(); invariant(window, 'DOM has not booted'); return resolve(); };
+    const api = {
+      locator(selector) { return locator(() => select(elements(), selector), `${label} >> ${selector}`); },
+      getByRole(role, options) { return locator(() => byRole(elements(), role, options), `${label} >> role ${role}`); },
+      async all() { return elements().map((element, index) => locator(() => element.isConnected ? [element] : [], `${label}[${index}]`)); },
+      async count() { return elements().length; },
+      nth(index) { boundedInteger(index, 0, LIMITS.domNodes, 'locator index'); return locator(() => elements().slice(index, index + 1), `${label}[${index}]`); },
+      first() { return api.nth(0); },
+      async getAttribute(name) {
+        invariant(['class', 'href', 'title', 'aria-label', 'data-badge-route', 'data-badge-fixture-route'].includes(name), `Unsupported observed attribute ${name}`);
+        return exactOne(elements(), label).getAttribute(name);
+      },
+      async textContent() { return exactOne(elements(), label).textContent; },
+      async isDisabled() {
+        const element = exactOne(elements(), label);
+        invariant(element.matches('button,input,select,textarea,fieldset,option,optgroup'), `Disabled semantics unsupported for ${element.localName}`);
+        return element.matches(':disabled');
+      },
+      async click() {
+        operation('DOM click');
+        const element = exactOne(elements(), label);
+        invariant(element instanceof window.HTMLElement && element.matches('a[href],button'), 'Finite clicks support native buttons and anchors only');
+        invariant(!element.matches(':disabled') && !element.closest('[hidden],[inert]'), 'Cannot click disabled/hidden/inert control');
+        if (element.localName === 'a') sameOrigin(element.href);
+        counters.domClicks += 1;
+        // HTMLElement.click dispatches actual jsdom bubbling/cancelable events.
+        // Real retained handlers and Kit router own effects; do not call them.
+        element.click();
+        await Promise.resolve();
+        active();
+      }
+    };
+    return Object.freeze(api);
+  }
+  const page = Object.freeze({
+    locator(selector) { invariant(SELECTORS.has(selector), `Unsupported finite locator selector: ${selector}`); return locator(() => select([window.document], selector), selector); },
+    getByRole(role, options) { return locator(() => byRole([window.document], role, options), `role ${role} ${String(options?.name)}`); },
+    command,
+    goto(href, options = {}) { invariant(!options || Object.keys(options).every((key) => key === 'replaceState'), 'Unsupported goto options'); return command('navigate', { href, ...options }); },
+    url() { active(); invariant(window, 'DOM has not booted'); return window.location.href; },
+    waitFor,
+    // Named evaluate-like probes intentionally reject arbitrary callbacks/code.
+    // All route controls go through the authored application's actual bridge.
+    evaluate(name, args = {}) {
+      invariant(typeof name === 'string', 'Arbitrary page.evaluate code is not admitted; use a named observation or command');
+      if (name === 'domSnapshot') return Promise.resolve(domSnapshot());
+      invariant(['snapshot', 'hash', 'back', 'forward'].includes(name), `Unsupported page evaluation ${name}`);
+      return command(name, args);
+    },
+    snapshot: () => snapshot()
+  });
+
+  async function boot({ href }) {
+    operation('boot');
+    invariant(!booted && !dom, 'Boot is once per realm; remount through the real router, never rebuild the module graph');
+    const url = sameOrigin(href, origin + '/');
+    invariant(url.pathname === '/__badge_outside' || /^\/(?:title\/[^/]+|chapter\/[^/]+\/[^/]+)\/?$/.test(url.pathname), 'Initial boot must use a reviewed fixture route');
+    try {
+      process.on('unhandledRejection', onUnhandled);
+      process.on('uncaughtExceptionMonitor', onUncaught);
+      processListenersInstalled = true;
+      dom = new JSDOM(fallback.bytes, {
+        url: url.href, runScripts: 'outside-only', pretendToBeVisual: true,
+        resources: new ReviewedResources(), virtualConsole,
+        contentType: 'text/html', includeNodeLocations: true
+      });
+      window = dom.window;
+      context = dom.getInternalVMContext();
+      installDomEnvironment();
+      const originalXHR = window.XMLHttpRequest;
+      await bounded(Promise.resolve(fixture.attachWindow(window)), 'attach HTTP/IDB boundaries');
+      if (typeof fixture.createXMLHttpRequest === 'function') window.XMLHttpRequest = fixture.createXMLHttpRequest(window);
+      invariant(window.XMLHttpRequest !== originalXHR, 'Fixture did not replace jsdom live-network XMLHttpRequest');
+      invariant(typeof window.XMLHttpRequest === 'function' && window.indexedDB && typeof window.indexedDB.open === 'function', 'Fixture failed to install XMLHttpRequest/IndexedDB boundaries');
+      invariant(window.fetch === boundaryFetch, 'Fixture must not replace the driver-owned fetch whitelist');
+      invariant(window.indexedDB === indexedDB, 'Fixture must retain the fresh per-realm IDBFactory; wrap its methods, do not replace it');
+      const scripts = [...window.document.scripts].filter((script) => !script.type || ['text/javascript', 'application/javascript', 'module'].includes(script.type));
+      invariant(scripts.length === 1 && !scripts[0].src && scripts[0].type !== 'module', 'Unexpected executable fallback scripts');
+      invariant(!window.document.querySelector('script[type="importmap"],script[type="speculationrules"]'), 'Unsupported executable fallback metadata');
+      const bootstrap = scripts[manifest.bootstrap.scriptIndex];
+      const source = bootstrap.textContent;
+      invariant(Buffer.byteLength(source) === manifest.bootstrap.bytes && sha256(source) === manifest.bootstrap.sha256, 'Generated bootstrap text differs from reviewed identity');
+      invariant(bootstrap.parentElement, 'Generated bootstrap has no actual mount parent');
+      invariant(!window.document.querySelector('base'), 'A base element requires a separately reviewed asset-resolution contract');
+      const prior = Object.getOwnPropertyDescriptor(window.document, 'currentScript');
+      // Model HTML classic-script execution, not generated code: native currentScript
+      // is normally set by jsdom's parser, which outside-only intentionally skips.
+      Object.defineProperty(window.document, 'currentScript', { configurable: true, get: () => bootstrap });
+      booted = true;
+      try {
+        const script = new vm.Script(source, {
+          filename: `${origin}/${manifest.fallback.path}#generated-bootstrap`,
+          importModuleDynamically: (specifier, _script, attributes) => importEmitted(specifier, url.href, attributes)
+        });
+        script.runInContext(context, { timeout: timeoutMs });
+      } finally {
+        if (prior) Object.defineProperty(window.document, 'currentScript', prior);
+        else delete window.document.currentScript;
+      }
+      invariant(window.document.currentScript === null, 'currentScript did not return to native no-script state');
+      emit('bootstrap-executed', { fallbackSha256: manifest.fallback.sha256, bootstrapSha256: manifest.bootstrap.sha256, bootstrapBytes: manifest.bootstrap.bytes, href: url.href });
+      await waitFor(() => ready, 'actual root onMount bridge');
+      const initial = await command('snapshot');
+      invariant(plain(initial) && initial.routeId && typeof initial.pageUrl === 'string', 'Fixture snapshot omitted real route/page observations');
+      invariant(new URL(initial.pageUrl).pathname === url.pathname && new URL(initial.pageUrl).search === url.search, 'Initial real router did not accept the requested fixture route');
+      emit('boot-terminal', { href: window.location.href, routeId: initial.routeId, pageUrl: initial.pageUrl, moduleCount: modules.size });
+      return initial;
+    } catch (error) { throw fail(error, 'authentic fallback boot'); }
+  }
+  async function snapshot() {
+    operation('snapshot');
+    return { frameworkReady: ready && booted, uncaughtErrors: firstFailure ? 1 : 0, application: await command('snapshot'), dom: domSnapshot() };
+  }
+  async function teardownRealm({ closeFixture = true } = {}) {
+    if (disposed) return { alreadyDisposed: true, counters: { ...counters } };
+    invariant(!disposing, 'Concurrent dispose is unsupported');
+    if (!closeFixture) {
+      active();
+      invariant(commands.size === 0 && activeFetches.size === 0, 'Independent-case reload cannot bypass unsettled commands/transports');
+    }
+    disposing = true;
+    const errors = [];
+    const pendingAtClose = [...commands].map(([id, entry]) => ({ id, name: entry.name }));
+    for (const [id, entry] of commands) {
+      untimer(entry.timer);
+      counters.commandTerminated += 1; commandTerminals.add(id);
+      entry.reject(new BadgeFrameworkInfrastructureError(`Realm closed with command pending: ${entry.name}`));
+    }
+    commands.clear();
+    if (closeFixture) {
+      try { await bounded(Promise.resolve().then(() => fixture.close()), 'boundary fixture close', timeoutMs, false); }
+      catch (error) { errors.push(messageOf(error)); }
+    }
+    try { await bounded(Promise.allSettled([...activeFetches.values()]), 'fetch header terminals at close', timeoutMs, false); }
+    catch (error) { errors.push(messageOf(error)); }
+    if (activeFetches.size) errors.push(`${activeFetches.size} fetch operations lack terminal settlement`);
+    if (counters.fetchStarted !== counters.fetchResolved + counters.fetchRejected + activeFetches.size) errors.push('Fetch terminal accounting mismatch');
+    if (counters.commandStarted !== counters.commandResolved + counters.commandRejected + counters.commandTerminated) errors.push('Command terminal accounting mismatch');
+    if (counters.waitsStarted !== counters.waitsResolved + counters.waitsRejected) errors.push('Observation wait lacks terminal accounting');
+    if (counters.resourceRequests !== counters.resourceTerminals) errors.push('Generated resource terminal accounting mismatch');
+    if (pendingAtClose.length) errors.push(`${pendingAtClose.length} application commands were still pending at close`);
+    const moduleTerminals = [...modules].map(([url, module]) => ({ url, status: module.status }));
+    if (moduleTerminals.some((entry) => !['evaluated', 'errored'].includes(entry.status))) errors.push('Some created VM modules lack evaluated/errored terminals');
+    for (const observer of observerInstances) observer.disconnect();
+    try { window?.close(); } catch (error) { errors.push(messageOf(error)); }
+    for (const handle of hostTimers) untimer(handle);
+    if (processListenersInstalled) {
+      process.removeListener('unhandledRejection', onUnhandled);
+      process.removeListener('uncaughtExceptionMonitor', onUncaught);
+      processListenersInstalled = false;
+    }
+    disposed = true; disposing = false;
+    const evidence = {
+      outcome: errors.length || firstFailure ? 'infrastructure-failed' : 'closed',
+      errors, firstFailure: firstFailure ? messageOf(firstFailure) : null,
+      counters: { ...counters }, pendingAtClose, moduleTerminals,
+      inputProfile: manifest.profile, fixtureClosed: closeFixture, realmClosed: Boolean(window?.closed ?? !window?.document),
+      timersRemaining: hostTimers.size, fetchesRemaining: activeFetches.size,
+      processObserversRemoved: !processListenersInstalled,
+      note: 'Realm teardown is not a Kit destroy API or proof of component cleanup. Remount cleanup must be observed through real route transitions before disposal. The outer owner must reap its process.'
+    };
+    emit('dispose-terminal', evidence);
+    if (firstFailure && !errors.length) throw firstFailure;
+    if (errors.length) throw new BadgeFrameworkInfrastructureError(`DOM cleanup failed: ${errors.join('; ')}`);
+    return evidence;
+  }
+  const driver = Object.freeze({ page, boot, waitFor, command, snapshot, dispose: () => teardownRealm(), teardownRealm });
+  emit('inputs-verified', { assetCount: assets.size, declaredBytes, fallbackSha256: manifest.fallback.sha256, domPackageVersion: manifest.domPackage.version });
+  return driver;
+}
+
+/**
+ * Public facade. Current-source reload is permitted ONLY between independent
+ * configurations after boundary terminal evidence; retained module-global
+ * mutation fences are never reset inside a remount/unsettled-owner case.
+ *
+ * Optional comparison map (no fallback to invented/current output):
+ * comparisons[revision] = { revision, profile, assetRoot, packageRoot?,
+ *   manifestIdentity: {path,bytes,sha256} }.
+ * Each comparison manifest is read as exact pinned bytes below its own output
+ * root. Its sourceRevision/profile must match the request. The outer generation
+ * owner must additionally prove that those outputs derive from those sources.
+ *
+ * Optional manifestIdentity supplies the exact current manifest file identity.
+ * Without it manifestSha256 is the hash of JSON.stringify(manifest), explicitly
+ * a serialized-object identity, not an assertion about a file on disk.
+ */
+export async function createBadgeFrameworkDom(options) {
+  invariant(plain(options), 'Driver options are required');
+  const { assetRoot, packageRoot, fixture, record, timeoutMs = LIMITS.defaultTimeoutMs } = options;
+  const comparisons = jsonCopy(options.comparisons ?? {}, 'comparison map', 2 * 1024 * 1024);
+  boundedInteger(timeoutMs, 1, LIMITS.maxTimeoutMs, 'timeoutMs');
+  invariant(plain(comparisons), 'Comparison map must be a reviewed object');
+  let manifest = jsonCopy(options.manifest, 'generated manifest', 2 * 1024 * 1024);
+  let manifestSha256 = sha256(JSON.stringify(manifest));
+  let manifestIdentityKind = 'JSON.stringify-object';
+  if (options.manifestIdentity) {
+    const verified = await readVerified(await realpath(assetRoot), options.manifestIdentity, 'current generated manifest');
+    const parsed = JSON.parse(verified.bytes.toString('utf8'));
+    invariant(JSON.stringify(parsed) === JSON.stringify(manifest), 'Supplied current manifest differs from its pinned file bytes');
+    manifest = parsed;
+    manifestSha256 = options.manifestIdentity.sha256;
+    manifestIdentityKind = 'exact-file-bytes';
+  }
+  let current = await createBadgeFrameworkRealm({ manifest, assetRoot, packageRoot, fixture, record, timeoutMs });
+  let changingRealm = false, closed = false, facade, reloads = 0;
+  const comparisonsOpen = new Set();
+  const usable = () => {
+    invariant(!closed, 'DOM facade is closed');
+    invariant(!changingRealm, 'A realm boundary transition is still pending');
+    invariant(current, 'Current realm creation failed; no substitute realm is available');
+    return current;
+  };
+  const within = async (promise, label) => {
+    let handle;
+    try {
+      return await Promise.race([promise, new Promise((_, reject) => {
+        handle = setTimeout(() => reject(new BadgeFrameworkInfrastructureError(`Timed out at lifecycle boundary: ${label}`)), timeoutMs);
+      })]);
+    } finally { clearTimeout(handle); }
+  };
+  const assertIdle = async (boundary, label) => {
+    invariant(typeof boundary?.assertIdle === 'function', `${label} requires explicit HTTP/body/IDB idle evidence`);
+    const idle = await within(Promise.resolve().then(() => boundary.assertIdle()), `${label} terminal check`);
+    invariant(plain(idle) && ['pendingHttp', 'pendingBodies', 'pendingIdb'].every((key) => idle[key] === 0), `${label} cannot evade unsettled boundary owners`);
+    return idle;
+  };
+  // Locators are recipes, not cached DOM nodes, so the public page remains valid
+  // after an explicit independent-case reload. all() intentionally returns
+  // elements from the current operation and must not straddle a realm boundary.
+  const routeLocator = (steps) => {
+    const resolve = () => steps.reduce((target, step) => target[step.method](...step.args), usable().page);
+    const chain = (method, args) => routeLocator([...steps, { method, args }]);
+    return Object.freeze({
+      locator: (...args) => chain('locator', args), getByRole: (...args) => chain('getByRole', args),
+      nth: (...args) => chain('nth', args), first: () => chain('first', []),
+      all: (...args) => resolve().all(...args), count: (...args) => resolve().count(...args),
+      getAttribute: (...args) => resolve().getAttribute(...args), textContent: (...args) => resolve().textContent(...args),
+      isDisabled: (...args) => resolve().isDisabled(...args), click: (...args) => resolve().click(...args)
+    });
+  };
+  const page = Object.freeze({
+    locator: (...args) => routeLocator([{ method: 'locator', args }]),
+    getByRole: (...args) => routeLocator([{ method: 'getByRole', args }]),
+    command: (...args) => usable().command(...args),
+    goto: (...args) => usable().page.goto(...args),
+    url: () => usable().page.url(),
+    waitFor: (...args) => usable().waitFor(...args),
+    evaluate: (...args) => usable().page.evaluate(...args),
+    snapshot: () => usable().snapshot()
+  });
+  async function reloadCurrentSource({ fixture: requestedFixture = fixture, href = manifest.origin + '/__badge_outside' } = {}) {
+    const previous = usable();
+    invariant(requestedFixture === fixture, 'Current reload must retain the case fixture identity; use a separate comparison for another fixture');
+    const idle = await assertIdle(fixture, 'current-source reload');
+    // snapshot is observational and checks the old realm has not failed. A failed
+    // infrastructure realm must never become a successful later case via reload.
+    const last = await previous.snapshot();
+    invariant(last.dom.pendingCommands.length === 0 && last.dom.pendingFetches.length === 0, 'Current realm has outstanding commands/fetches');
+    changingRealm = true;
+    try {
+      await within(previous.teardownRealm({ closeFixture: false }), 'clean current realm teardown');
+      current = null;
+      const replacement = await createBadgeFrameworkRealm({ manifest, assetRoot, packageRoot, fixture, record, timeoutMs });
+      current = replacement;
+      const initial = await replacement.boot({ href });
+      reloads += 1;
+      record({ type: 'badge-dom:independent-case-reload', profile: manifest.profile, sourceRevision: manifest.sourceRevision, manifestSha256, manifestIdentityKind, reloads, idle, href: initial.pageUrl });
+      return { reloaded: true, sourceRevision: manifest.sourceRevision, manifestSha256, manifestIdentityKind, page };
+    } finally { changingRealm = false; }
+  }
+  async function openComparisonSource({ revision, profile = manifest.profile, fixture: suppliedFixture, href = manifest.origin + '/__badge_outside' } = {}) {
+    usable();
+    invariant(typeof revision === 'string' && /^[a-f0-9]{40}$/.test(revision), 'Comparison requires an exact revision');
+    invariant(revision !== manifest.sourceRevision, 'Old-source comparison cannot alias the current source revision');
+    invariant(['native0', 'public1'].includes(profile), 'Comparison profile must be explicit');
+    invariant(Object.prototype.hasOwnProperty.call(comparisons, revision), `No separately admitted generated comparison for ${revision}`);
+    const specification = comparisons[revision];
+    invariant(plain(specification) && specification.revision === revision && specification.profile === profile, 'Comparison map revision/profile mismatch');
+    invariant(specification.manifestIdentity, 'Comparison requires exact generated manifest file identity');
+    await assertIdle(fixture, 'comparison start');
+    const verified = await readVerified(await realpath(specification.assetRoot), specification.manifestIdentity, 'old generated manifest');
+    const comparisonManifest = JSON.parse(verified.bytes.toString('utf8'));
+    invariant(comparisonManifest.sourceRevision === revision && comparisonManifest.profile === profile, 'Old generated manifest is not the requested source/profile');
+    invariant(comparisonManifest.origin === manifest.origin, 'Comparison synthetic origin differs from the reviewed fixture');
+    let boundary = suppliedFixture;
+    if (!boundary) {
+      invariant(typeof fixture.fork === 'function', 'Comparison requires a distinct boundary fixture');
+      boundary = await within(Promise.resolve(fixture.fork()), 'fork comparison boundaries');
+    }
+    invariant(boundary && boundary !== fixture, 'Comparison must not reuse the current boundary instance');
+    await assertIdle(boundary, 'comparison boundary');
+    let child;
+    try {
+      child = await createBadgeFrameworkDom({
+        manifest: comparisonManifest, manifestIdentity: specification.manifestIdentity,
+        assetRoot: specification.assetRoot, packageRoot: specification.packageRoot ?? packageRoot,
+        fixture: boundary, record, timeoutMs
+      });
+      await child.boot({ href });
+      let comparisonClosed = false;
+      const result = Object.freeze({
+        page: child.page, manifest: comparisonManifest, sourceRevision: revision,
+        manifestSha256: specification.manifestIdentity.sha256,
+        snapshot: () => child.snapshot(),
+        close: async () => {
+          if (comparisonClosed) return { alreadyDisposed: true };
+          comparisonClosed = true;
+          try { return await child.dispose(); } finally { comparisonsOpen.delete(result); }
+        }
+      });
+      comparisonsOpen.add(result);
+      record({ type: 'badge-dom:comparison-opened', sourceRevision: revision, profile, manifestSha256: result.manifestSha256, separateRealm: true, currentRealmPreserved: true });
+      return result;
+    } catch (error) {
+      let cleanupFailure;
+      try { if (child) await child.dispose(); else await Promise.resolve(boundary.close()); }
+      catch (cleanupError) { cleanupFailure = messageOf(cleanupError); }
+      record({ type: 'badge-dom:comparison-mount-failed', revision, profile, error: messageOf(error), cleanupFailure: cleanupFailure ?? null });
+      throw new BadgeFrameworkInfrastructureError(`Old-source comparison infrastructure did not mount: ${messageOf(error)}${cleanupFailure ? '; cleanup: ' + cleanupFailure : ''}`, error);
+    }
+  }
+  async function dispose() {
+    if (closed) return { alreadyDisposed: true };
+    invariant(!changingRealm, 'Cannot dispose during a realm transition');
+    closed = true;
+    const errors = [];
+    for (const comparison of [...comparisonsOpen]) {
+      try { await comparison.close(); } catch (error) { errors.push(messageOf(error)); }
+    }
+    let evidence;
+    try { evidence = current ? await current.dispose() : await within(Promise.resolve(fixture.close()), 'close failed recreation boundaries'); }
+    catch (error) { errors.push(messageOf(error)); }
+    if (errors.length) throw new BadgeFrameworkInfrastructureError(`Facade cleanup failed: ${errors.join('; ')}`);
+    return evidence;
+  }
+  facade = Object.freeze({
+    page, boot: (...args) => usable().boot(...args), waitFor: (...args) => usable().waitFor(...args),
+    command: (...args) => usable().command(...args), snapshot: () => usable().snapshot(),
+    reloadCurrentSource, openComparisonSource, dispose
+  });
+  if (typeof fixture.attachDriver === 'function') await within(Promise.resolve(fixture.attachDriver(facade)), 'attach driver facade');
+  record({ type: 'badge-dom:manifest-binding', profile: manifest.profile, sourceRevision: manifest.sourceRevision, manifestSha256, manifestIdentityKind });
+  return facade;
+}

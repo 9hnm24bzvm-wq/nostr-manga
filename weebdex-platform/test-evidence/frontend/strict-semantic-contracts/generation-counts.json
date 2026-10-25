@@ -1,0 +1,23 @@
+{
+  "application_source_commit": "0a18be23b5e43979f7f5b6336faa7d91a038a412",
+  "baseline_commit": "899e0be3cb2d22874faae765dac6db291c6a1986",
+  "baseline_transformed_sources": 107,
+  "current_transformed_sources": 110,
+  "added_transformed_sources": [
+    "src/lib/components/AppHeader.svelte",
+    "src/lib/components/Lightbox.svelte",
+    "src/routes/(app)/search/+page.svelte"
+  ],
+  "baseline_mapped_sources": 586,
+  "current_mapped_sources": 591,
+  "added_mapped_sources": [
+    "platform-integrations/frontend-behavior/install-prompt.ts",
+    "platform-integrations/frontend-behavior/manga-search-query.ts",
+    "platform-integrations/local-library/graph-transfer.ts",
+    "platform-integrations/local-library/protocol-receipt.ts",
+    "platform-integrations/local-library/protocol/types.d.ts"
+  ],
+  "current_reachable_integration_files": 52,
+  "current_integration_inventory_files": 68,
+  "integration_source_inventory_sha256": "8dca0e78b6e5f8cc92bb1f451492ac705657616d61a7224f08c901c868e0c7a6"
+}

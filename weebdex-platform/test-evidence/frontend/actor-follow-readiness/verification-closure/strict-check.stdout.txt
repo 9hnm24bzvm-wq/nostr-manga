@@ -1,0 +1,1 @@
+{"status":"passed","errors":0,"warnings":15,"integration_files":53,"canonical_files":679,"canonical_unchanged":true,"evidence":".build/follow-readiness-semantic-verified/evidence"}

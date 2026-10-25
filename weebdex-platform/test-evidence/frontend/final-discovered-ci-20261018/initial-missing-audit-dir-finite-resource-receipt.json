@@ -1,0 +1,27 @@
+{
+  "command": [
+    "bash",
+    "weebdex-platform/test-evidence/frontend/final-discovered-ci-20261018/run-finite.sh"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017",
+  "exitCode": 1,
+  "stopReason": null,
+  "elapsedSeconds": 1.201,
+  "minimumFreeBytes": 4838215680,
+  "minimumAvailableMemoryBytes": 8404594688,
+  "ownedSurvivors": [],
+  "samples": [
+    {
+      "elapsedSeconds": 0.0,
+      "freeBytes": 4838215680,
+      "availableMemoryBytes": 8423063552,
+      "owned": [
+        {
+          "pid": 7,
+          "rssBytes": 131072
+        }
+      ]
+    }
+  ],
+  "status": "failed"
+}

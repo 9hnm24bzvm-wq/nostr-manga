@@ -1,0 +1,72 @@
+{
+  "consumer-0-test_composed_semantic_projection.log": {
+    "bytes": 446,
+    "sha256": "11f8b37b5116c9b6384f32fc9d40a9515d1d7e65310ed1b7dc9ae8bf2256d33d",
+    "retained": "consumer-0-test_composed_semantic_projection.log.gz"
+  },
+  "initial-direct-python.log": {
+    "bytes": 1604,
+    "sha256": "30ded719232fcaf11d065c4874a037972e61cceaef36d16e5969f013813dc9f4",
+    "retained": "initial-direct-python.log.gz"
+  },
+  "finite.log": {
+    "bytes": 218174,
+    "sha256": "84b637d1dc9e2f6e8c8e56e84fea9f7cfa8ec1bfe5ebf3a40a8e57724455937c",
+    "retained": "finite.log.gz"
+  },
+  "consumer-1-test_composed_semantic_projection.log": {
+    "bytes": 446,
+    "sha256": "6bbafa466fd22362102450fedad391d5a3f2b62668d11832851e6918de5bcded",
+    "retained": "consumer-1-test_composed_semantic_projection.log.gz"
+  },
+  "python.log": {
+    "bytes": 27624,
+    "sha256": "fbd07e15401c575f55e54d7fa53b738baa98757e03276e80f8cba3d011d184dc",
+    "retained": "python.log.gz"
+  },
+  "strict-run.log": {
+    "bytes": 1014,
+    "sha256": "78407bd77e65982b31d4a7603d16535f841862956a6be36ba978ef290ab2b5e4",
+    "retained": "strict-run.log.gz"
+  },
+  "consumer-1-test_semantic_validation_fail_closed.log": {
+    "bytes": 3510,
+    "sha256": "c1a505673cf68ef5ccf6ba938e76c4e8445a12a581b2003d6dc6b753b503e1b7",
+    "retained": "consumer-1-test_semantic_validation_fail_closed.log.gz"
+  },
+  "strict-0.log": {
+    "bytes": 425,
+    "sha256": "1965d40d0c72e2b364c54876702f096304ac0ff3cdc4e5dd47b385304b7c78c1",
+    "retained": "strict-0.log.gz"
+  },
+  "strict-1.log": {
+    "bytes": 425,
+    "sha256": "5db110d9358f82f1d1af766d8c73d2e0da95d4dae13f56a2bd6fcc205189aeab",
+    "retained": "strict-1.log.gz"
+  },
+  "selected-benches.log": {
+    "bytes": 6061,
+    "sha256": "923e5adc957b21c0d8184ba98c653f66c74f30224c00a6ea064d6943426fdc81",
+    "retained": "selected-benches.log.gz"
+  },
+  "consumers-run.log": {
+    "bytes": 8419,
+    "sha256": "640748b75407000a06f376a7fdc17a553bda346ea229f5a0fcbe618e5658bb17",
+    "retained": "consumers-run.log.gz"
+  },
+  "additional.log": {
+    "bytes": 18453,
+    "sha256": "aa2a3474c9d4cc6ef9d89d832787fbf4402ab3312c19190c1a640bfc362a090e",
+    "retained": "additional.log.gz"
+  },
+  "consumer-0-test_semantic_validation_fail_closed.log": {
+    "bytes": 3510,
+    "sha256": "2283f4eccf1f43e0c2a71dcce0183a872c7c29d799b916a699ea6e65c7db25bd",
+    "retained": "consumer-0-test_semantic_validation_fail_closed.log.gz"
+  },
+  "initial-missing-dom-output-additional.log": {
+    "bytes": 14204,
+    "sha256": "8303f15bd5d021e6fd11e51e6a5fb04f98f27e08b34643b0d52e41d65fec2ca0",
+    "retained": "initial-missing-dom-output-additional.log.gz"
+  }
+}

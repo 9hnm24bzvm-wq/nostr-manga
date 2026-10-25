@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "base_commit": "d4e811dc7a2b9eba1c461880e54b5ae744fafc8a",
+  "node": "v24.19.0",
+  "command": "node --experimental-vm-modules tests/ci/test_frontend_bootstrap.mjs",
+  "command_exit": 0,
+  "original_frontend_files_checked": 676,
+  "pinned_additions_checked": 3,
+  "all679_frontend_files_identical": true,
+  "production_build_executed": false,
+  "real_browser_executed": false,
+  "integration_preparation_passed": true,
+  "result_sha256": "1769539bfd8a84acf961ae2239dad73b8962c3294d2737ffa34cb69c4aa50d64"
+}

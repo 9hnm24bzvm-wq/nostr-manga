@@ -1,0 +1,22 @@
+{
+  "baseline.log": {
+    "bytes": 3565,
+    "sha256": "bd0ed66d0be8a05e2b73c7d4763b4c1c5eef21759e1e2601f5440a580b19fde1",
+    "retained": "baseline.log.gz"
+  },
+  "new-regressions.log": {
+    "bytes": 1130,
+    "sha256": "a80adcdc5361b9037a78be5aff4a5f677ac097cee12ebf3751f0006721bd0ba4",
+    "retained": "new-regressions.log.gz"
+  },
+  "shared-regressions.log": {
+    "bytes": 19663,
+    "sha256": "a4d87736feff1983d1abab7870218870f7ad844795b45f03b9ad1392449bc616",
+    "retained": "shared-regressions.log.gz"
+  },
+  "frozen-regressions.log": {
+    "bytes": 20676,
+    "sha256": "72c286c511e25736bf2a4f86efaf1c26c6bf9a0d41ea10f7ccee2233713be514",
+    "retained": "frozen-regressions.log.gz"
+  }
+}

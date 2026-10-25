@@ -1,0 +1,68 @@
+{
+  "source_commit": "0756e7dd468104a67ccf7a0f6e06489a6b13d652",
+  "base": "0395fbc3f0191008d07c1cd8c9c6a5de8801d59b",
+  "recorded_at_utc": "2026-10-18T02:22:27.096799+00:00",
+  "production_source_files": [
+    "weebdex-platform/platform-integrations/public-api/AccountBlocklistEditor.svelte",
+    "weebdex-platform/platform-integrations/public-api/AccountPreferenceSave.svelte",
+    "weebdex-platform/platform-integrations/public-api/blocklist-client.ts",
+    "weebdex-platform/scripts/prepare-frontend-integration.mjs",
+    "weebdex-platform/tests/ci/test_account_blocklists_client.mjs",
+    "weebdex-platform/tests/ci/test_account_blocklists_dom.mjs"
+  ],
+  "source_sha256": {
+    "weebdex-platform/platform-integrations/public-api/AccountBlocklistEditor.svelte": "b462c7fbf812bad4d406cf4c60fe21b30c405b0dd19276cef4f0dd497a859c83",
+    "weebdex-platform/platform-integrations/public-api/AccountPreferenceSave.svelte": "7509dd2c3ba477afab990796a4343693401df2f69937bd2c6a8be8c679d39740",
+    "weebdex-platform/platform-integrations/public-api/blocklist-client.ts": "f4b262be345942f29e58cad8e4eaae355738a4a362a424695782d649a5c6b495",
+    "weebdex-platform/scripts/prepare-frontend-integration.mjs": "21e29de2f922662ad44841e411739ec55dde4b9410b649c0e0de038b89007c91",
+    "weebdex-platform/tests/ci/test_account_blocklists_client.mjs": "8a42b18a4ca03075daa35cffc40b5f049580f07ae8cd078f866afc1543e8143b",
+    "weebdex-platform/tests/ci/test_account_blocklists_dom.mjs": "e36e9ef552027d453c3235d341522db8aba490177cf5ac8fa41da8c5f206c7c7"
+  },
+  "finite": {
+    "passed": 46,
+    "failed": 0,
+    "actual_svelte_jsdom_cases": 8,
+    "actual_controller_cases": 12,
+    "existing_settings_cases": 26,
+    "seconds": 0.970253022,
+    "scope": "Actual blocklist/settings TypeScript controllers and actual compiled Svelte component lifecycle. Account transport and dialog/button leaves are explicit stand-ins; no native-browser/portal/layout/HTTP or database acceptance."
+  },
+  "retained_query_prefix": {
+    "baseline_red": true,
+    "actual_retained_layout_override_executed": true,
+    "fix_commit": "b81af4dd7fb091fc55e72c95342c04bde80919f1"
+  },
+  "strict_history": {
+    "first": "Stopped before type checking because the new worktree lacked verified Noble/Scure cache aliases; existing caches were later symlinked without copies.",
+    "enabled_b81": {
+      "errors": 1,
+      "warnings": 12,
+      "error": "Dynamic Object.fromEntries snapshot assertion did not structurally expose groups/uploaders.",
+      "corrected_by": "0756e7dd468104a67ccf7a0f6e06489a6b13d652",
+      "correction": "Explicit typed rows helper and groups/uploaders fields; no suppression/cast.",
+      "final_source_recheck": "Pending the root-coordinated final combined strict run; no isolated retry after hold."
+    },
+    "default": "Not run for final source."
+  },
+  "source_review": {
+    "b81": "Independent reviewer found no further concrete blocker after actual retained query-prefix regression.",
+    "0756": "Independent narrow source review clear: explicit typed fields are behavior-equivalent, retain copied snapshots and add no cast/suppression or authority/transport change."
+  },
+  "invariants": [
+    "No backend, native settings contract, public profile Block fence, native cookie/local device store or canonical frontend source changes.",
+    "Existing settings API captures expectedAccountId, actual version, server timestamp and immutable template; only changed group/uploader UUID lists are submitted.",
+    "Unavailable native references/unknown fields remain preserved by the existing server merge.",
+    "No automatic write/publication; signer/route/open/search epochs reject stale completions."
+  ],
+  "evidence_sha256": {
+    "finite.log": "aed1f6b5b7ec12d53d23989c4abdd72760f757b63ec5ccb3920854127645b385",
+    "retained-query-prefix-red.log": "12e93225bae743c8a82d5e5baadc5d086aa3698b8e94132600eff10393f35f4b",
+    "strict-history/cache-alias-setup.log": "22b41425fde118c5a3983d172dc2fa595104ad280a3f2023727bb24529eaf5ca",
+    "strict-history/type-check.log": "13689ecf886f71614845dfd5637692901d1c7831b7fa28d7970d96d2412d08f4",
+    "strict-history/svelte-check.stdout.log": "31dd6ca354da67df2007e9813b6ac4faa76f115e3b0ce3c28b6c52364de756d8"
+  },
+  "pending": [
+    "Final combined strict after source composition",
+    "Any final combined Vite/release or genuine browser acceptance required by the overall task"
+  ]
+}

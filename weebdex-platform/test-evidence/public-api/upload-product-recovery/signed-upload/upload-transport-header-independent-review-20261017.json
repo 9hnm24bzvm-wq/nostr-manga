@@ -1,0 +1,19 @@
+{
+  "schema": "recovered-upload-transport-header-independent-review-v1",
+  "prior_review_sha256": "a057f20fef1383c98ff142dc5d281a2900ffcbbf1027c480bc4e22eec0d3bbd9",
+  "pins": {
+    "platform-integrations/public-api/nostr-upload-request.ts": "fc46780d76d196ce2b575e6bc6e5427d513f4c88e4804bf5abbe4aaae7842b08",
+    "tests/ci/test_public_upload_request_recovery.mjs": "11220a9eaef94061b42367ae2258a46c12f902323a66bf38e8b8c1cd0c63f0d8"
+  },
+  "verdict": "source_clear_and_owner_finite_log_verified",
+  "delta": "Five fixed actual response headers, each bounded to4096 code units and no C0/DEL. Adds cache-control, vary, x-content-type-options. Missing fields remain null; cookies, authorization and relay-proof headers never exposed. Malformed headers preserve observed HTTP status and cancel the unconsumed response.",
+  "log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-request-finite-headers-final.log",
+    "sha256": "f3f13456054516f78a720f4f437a9fc24600ded438076f4637e2f0a065092d8b",
+    "tests": 24,
+    "pass": 24,
+    "fail": 0
+  },
+  "execution": "Owner ran exact source-audited mocked transport suite once. Reviewer read/hash-verified log and source; no reviewer runtime or test rerun. No actual cryptographic, HTTP, browser or publication qualification.",
+  "reviewer_check_correction": "Initial read-only receipt check assumed TAP summary prefixes; inspected actual unchanged Node spec reporter and corrected assertion only. No source/test/log mutation or rerun."
+}

@@ -1,0 +1,73 @@
+{
+  "utc": "2026-10-17T17:47:43.553466+00:00",
+  "tested_integrated_commit": "992993be25bbd948038e78786d96ae35d197c30e",
+  "checks": [
+    {
+      "name": "platform_library_unit",
+      "result": "test result: ok. 116 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.97s",
+      "output_sha256": "640ca2719344ebb4abbc210c306ad8094a8205e1008c392ee6fdf459fcafc1de"
+    },
+    {
+      "name": "private_account_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s",
+      "output_sha256": "54d8893f75ae18fb53eece9f869a38e7fd649f98d3fa7132ba0a0a34b9675d09"
+    },
+    {
+      "name": "public_compatibility_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.55s",
+      "output_sha256": "b4b883e30fec7dce47da17477903566a91a51c0387de8d19f5564415fe48c22e"
+    },
+    {
+      "name": "catalogue_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.56s",
+      "output_sha256": "d2705cd73880a1b0b46053a3c9cdd35ae08bd427694bd5813fa49390988c6654"
+    }
+  ],
+  "postgres_fixture_cleanup": [
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    }
+  ],
+  "binary_sha256": {
+    "public_account_reads-667b6bd92bc10ebc": "e5908b0ab3858cba31929bed9e35de8cbc084616afcafff66d5db961c004f223",
+    "public_catalogue_compatibility-8120f639f44a8e42": "ae9b37d63ad794a1868312838f0e1f780b1670ddb6df47bb3b5b9d98b4f30405",
+    "public_catalogue_reads-4c623a1e0c27899f": "3eebfad2e70c5e2cc9182a46cd64d9cafcf68e7ca9dd95892a3efd29be1d176b"
+  },
+  "snapshot_counts": {
+    "audited_core_read": 18,
+    "audited_private_account_read": 9,
+    "explicit_501_protocol_auth_exception": 12,
+    "known_501_unimplemented_in_this_snapshot": 36,
+    "separate_module_not_revalidated_by_this_audit": 38
+  },
+  "limits": [
+    "Pipeline repeat ordering/canonical publication issue remains a separate pending qualification; these read tests do not clear it.",
+    "No load/performance, production readiness or full113-operation equivalence claim.",
+    "Later history/library write changes require their own and combined checks.",
+    "Existing compiler warnings remain; rustfmt unavailable in recovered toolchain."
+  ]
+}

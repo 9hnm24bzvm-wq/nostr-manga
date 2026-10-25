@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "publicRepository": "9hnm24bzvm-wq/nostr-manga",
+  "branch": "recovery/combined-successor-20261018",
+  "localSourceCommit": "d3fc7f0c85dcd8c4aa6299290db2b88f75761f76",
+  "remoteCommit": "19b646eb123c3a6323113716d3166bcea8030303",
+  "exactTree": "e0f11e3417c743700260e0a5f9d1e0d2d70e622f",
+  "verifiedSourceEntries": 5356,
+  "verifiedRecursiveEntries": 5922,
+  "normalFastForwardParent": "ca7ef03b99c5ac31a987ea19d7d59c7457d48b29",
+  "verifiedMainUnchanged": "ffc4e1c2ea2378921d0f4da3a58fa3881f08a768",
+  "restore": {
+    "method": "Credential-free public Git clone",
+    "head": "19b646eb123c3a6323113716d3166bcea8030303",
+    "exactTree": "e0f11e3417c743700260e0a5f9d1e0d2d70e622f",
+    "gitFsckPassed": true,
+    "workingTreeEntriesBlobHashAndModeVerified": 5356,
+    "verifiedTrackedBytes": 98555526,
+    "clean": true
+  },
+  "boundary": "Tracked project source, documentation and sanitized evidence recovered. Ignored runtime databases, private backups, packages, caches and generated build output were not part of this Git source restoration."
+}

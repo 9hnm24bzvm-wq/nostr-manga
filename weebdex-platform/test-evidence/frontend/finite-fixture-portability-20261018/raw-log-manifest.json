@@ -1,0 +1,26 @@
+{
+  "finite.log.gz": {
+    "bytes": 987,
+    "sha256": "431f411ef03cf0d26248ec453af5962a9298a9daee20d4a890caf73e1ae4b15b",
+    "expandedBytes": 3556,
+    "expandedSha256": "596eb25c8ff8e4c4411d61397080c94328e587ce2b5b51f929bd15120f30ed15"
+  },
+  "jpeg-before.log.gz": {
+    "bytes": 558,
+    "sha256": "2b10351634ad7009bf4fe02860c6a7c8cae49539bfad049c5bbde3547beab4e1",
+    "expandedBytes": 1509,
+    "expandedSha256": "923d12ffb4a71bcc1891b45ff5aceba208be44068fd2eb506352b308c3008b03"
+  },
+  "plan-before.log.gz": {
+    "bytes": 669,
+    "sha256": "5b4dd4350ab194a2685e5f3981d09a391dc48a3834df91f7844a83e0662da056",
+    "expandedBytes": 2204,
+    "expandedSha256": "78cef5c7a98c7051a1eb23bc2702d0da98e0ddbddb652e0a038e57f15fc81ab9"
+  },
+  "install.log.gz": {
+    "bytes": 1279,
+    "sha256": "75f7898fb4ed60a08666790b7bbb46ed208a507f85f6352768bd9f92f07a2f52",
+    "expandedBytes": 3373,
+    "expandedSha256": "5969406ae4d4805ce0ea432b66a36faa0d72be9fb9bc55d2120f8074926316d7"
+  }
+}

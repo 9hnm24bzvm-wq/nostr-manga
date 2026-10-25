@@ -1,0 +1,22 @@
+{
+  "evidence_kind": "exact output copied from the original execution tool result",
+  "originally_file_backed": false,
+  "logging_only_rerun_performed": false,
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/ci/test_auth_fixture_guard_recovery.py -v",
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform",
+  "tool_chunk_id": "659269",
+  "tool_exit_code": 0,
+  "tool_wall_time_seconds": 0.06317659,
+  "reported_test_count": 18,
+  "reported_test_duration_seconds": 0.045,
+  "reported_result": "OK",
+  "output_file": "auth-fixture-guard-finite-first-run-20261017.tool-output.log",
+  "source_sha256": {
+    "scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "tests/runtime/auth_fixture_guard.py": "4f58eb17e042d95b7ac885facda0a32c30abf5b181744ab348f3d04e6ef408bb",
+    "tests/ci/test_auth_fixture_guard_recovery.py": "c4c350b012abe3d6b77bf912d2fc5f3cb5e854df307710521514ec2007c59dc5"
+  },
+  "scope": "Finite fake-procfs, clock, signal, socket and subprocess seams only; no real PostgreSQL, browser, service launch, build or install. Does not qualify real fixture cleanup.",
+  "reviewer": "/root/review_runtime_test_boundaries",
+  "review_authorization": "Exact finite command source-cleared before execution; helper 4f58eb17 and test c4c350b0."
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "base_commit": "f593787141469cc8d6da057545eb11a53fb7271b",
+  "test_only_source_commit": "667f6d63dcb5df94be39a8e1b84429783e59e76c",
+  "classification": "Stale fixture carried the previous external key relay revision1 into a newly activated local key canonical database with revision0. The production guard correctly refused.",
+  "changed_test": {
+    "path": "weebdex-platform/tests/ci/test_browser_local_signing_integration.mjs",
+    "bytes": 5073,
+    "sha256": "b052e17ca30a3bac6ba55774e70c222ec610e2a1c8985a35aa81a0159207c8ef"
+  },
+  "unchanged_production_publication": {
+    "path": "weebdex-platform/platform-integrations/local-library/publication.ts",
+    "bytes": 29791,
+    "sha256": "d59cccb7b6f298824e7ad430b9186cb474af497c4bd9e2738b38f21a9777ad65"
+  },
+  "results": {
+    "before": {
+      "cases": 3,
+      "passed": 2,
+      "failed": 1
+    },
+    "after": {
+      "cases": 3,
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "assertions": [
+    "old key review rejected by signer identity",
+    "merely relabelled review rejected by per-key recipient revision with no job or POST",
+    "explicit new-key recipient selection followed by actual fresh preview",
+    "real synthetic local Schnorr signature validates exact immutable manifest/event/job bytes",
+    "previous key outbox remains empty and relay revision unchanged"
+  ],
+  "boundaries": [
+    "Actual production publication, local signing codec and fake-indexeddb6.2.4 execute.",
+    "Workers, Web Locks, service proofs and transport are declared finite adapters.",
+    "No real network, account, native database, browser or production source mutation."
+  ],
+  "logs": [
+    {
+      "path": "weebdex-platform/test-evidence/frontend/local-signing-per-key-fixture-20261018/before.log",
+      "bytes": 1470,
+      "sha256": "cc948bca0c25be1ff817c01eff6047b645af757d5c579613ce056468d8e2457c"
+    },
+    {
+      "path": "weebdex-platform/test-evidence/frontend/local-signing-per-key-fixture-20261018/after.log",
+      "bytes": 613,
+      "sha256": "9fe87c3035050a76c6fbce16b2969bfad6bd7a1c6da3028aab96afaf2d2eb51b"
+    }
+  ]
+}

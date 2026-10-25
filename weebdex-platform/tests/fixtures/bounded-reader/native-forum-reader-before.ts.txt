@@ -1,0 +1,98 @@
+// Resolve a direct forum URL through persisted server provenance. Never infer a
+// public UUID from a native thread relationship or create a catalogue alias.
+import {record,PublicApiContractError} from '../validation';
+import {nativeThreadId,nativeDiscussionTarget,type NativeDiscussionTarget} from './context';
+export interface NativeDiscussionContextDependencies {
+ fetch:typeof fetch;
+ origin():string;
+ setTimer(callback:()=>void,ms:number):ReturnType<typeof setTimeout>;
+ clearTimer(timer:ReturnType<typeof setTimeout>):void;
+}
+export const NATIVE_DISCUSSION_CONTEXT_LIMITS=Object.freeze({bytes:16*1024,fragments:4096,emptyFragments:128,deadlineMs:10000,cleanupMs:250});
+export class NativeDiscussionContextUnsettled extends PublicApiContractError {
+ readonly unsettled=true;
+ constructor(status=499){super('Discussion target lookup cleanup is unconfirmed. New lookups are stopped until pending fetch, read and cancellation work settles. Browser login remains separate.',status);}
+}
+const defaults:NativeDiscussionContextDependencies={fetch:(...args)=>fetch(...args),origin:()=>window.location.origin,setTimer:(callback,ms)=>setTimeout(callback,ms),clearTimer:timer=>clearTimeout(timer)};
+function fail(message:string,status=502):never{throw new PublicApiContractError(message,status);}
+export function createNativeDiscussionTargetReader(injected:Partial<NativeDiscussionContextDependencies>={}) {
+ const deps={...defaults,...injected};
+ // The exported production singleton retains this slot across view unmounts,
+ // retries and route changes. Caller timeout never releases underlying work.
+ let active:object|undefined;
+ return async(threadInput:string,signal?:AbortSignal,assertCurrent=()=>{}):Promise<NativeDiscussionTarget|null>=>{
+  const threadId=nativeThreadId(threadInput),origin=new URL(deps.origin()).origin;
+  assertCurrent();
+  if(active)throw new NativeDiscussionContextUnsettled();
+  const owner=active={},abort=new AbortController();
+  let timedOut=false,eof=false,noTarget=false,response:Response|undefined,reader:ReadableStreamDefaultReader<Uint8Array>|undefined;
+  let fetchWork:Promise<Response>|undefined,readWork:Promise<ReadableStreamReadResult<Uint8Array>>|undefined;
+  let timer:ReturnType<typeof setTimeout>|undefined;
+  const cancelled=()=>new PublicApiContractError(timedOut?'Discussion target lookup exceeded its 10-second deadline':'Discussion target lookup cancelled',timedOut?504:499);
+  let rejectAbort:(reason:unknown)=>void=()=>{};
+  const aborted=new Promise<never>((_resolve,reject)=>{rejectAbort=reject;});void aborted.catch(()=>{});
+  const onAbort=()=>rejectAbort(cancelled()),cancel=()=>abort.abort();
+  abort.signal.addEventListener('abort',onAbort,{once:true});
+  signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
+  const check=()=>{assertCurrent();if(signal?.aborted||abort.signal.aborted)throw cancelled();if(new URL(deps.origin()).origin!==origin)fail('Discussion target destination changed',409);};
+  const release=()=>{reader?.releaseLock();if(active===owner)active=undefined;};
+  try {
+   check();
+   timer=deps.setTimer(()=>{timedOut=true;abort.abort();},NATIVE_DISCUSSION_CONTEXT_LIMITS.deadlineMs);
+   fetchWork=Promise.resolve().then(()=>{
+    check();
+    return deps.fetch(origin+'/api/v1/nostr/native-forum/threads/'+encodeURIComponent(threadId)+'/context',{method:'GET',credentials:'omit',cache:'no-store',redirect:'error',signal:abort.signal,headers:{Accept:'application/json'}});
+   }).then(value=>{response=value;return value;});
+   response=await Promise.race([fetchWork,aborted]);check();
+   if(response.status===404){noTarget=true;return null;}
+   if(response.status!==200)fail('Signed discussion target lookup unavailable (HTTP '+response.status+'). Browser login remains separate.',response.status);
+   if(response.headers.get('content-type')?.split(';',1)[0].trim().toLowerCase()!=='application/json')fail('Discussion target lookup returned a non-JSON response');
+   const limit=NATIVE_DISCUSSION_CONTEXT_LIMITS.bytes,declared=response.headers.get('content-length');
+   if(declared!==null&&(!/^(0|[1-9][0-9]*)$/.test(declared)||Number(declared)>limit))fail('Discussion target lookup exceeds its response budget');
+   reader=response.body?.getReader();if(!reader)fail('Discussion target lookup returned no response body');
+   // One fixed allocation, never retained fragment arrays or repeated string
+   // concatenation. Byte, total-fragment and empty-fragment limits are separate.
+   const bytes=new Uint8Array(limit);let length=0,fragments=0,empty=0;
+   for(;;){
+    check();if(++fragments>NATIVE_DISCUSSION_CONTEXT_LIMITS.fragments)fail('Discussion target lookup exceeds its fragment budget');
+    readWork=Promise.resolve().then(()=>{check();return reader!.read();}).then(part=>{if(part.done)eof=true;return part;});
+    const part=await Promise.race([readWork,aborted]);check();if(part.done)break;
+    if(!(part.value instanceof Uint8Array)||part.value.byteLength>limit-length)fail('Discussion target lookup exceeds its response budget');
+    if(!part.value.byteLength&&++empty>NATIVE_DISCUSSION_CONTEXT_LIMITS.emptyFragments)fail('Discussion target lookup exceeds its empty-fragment budget');
+    bytes.set(part.value,length);length+=part.value.byteLength;
+   }
+   const text=new TextDecoder('utf-8',{fatal:true}).decode(bytes.subarray(0,length));check();
+   const body=record(JSON.parse(text),'native discussion context'),meta=record(body.nostr),data=record(body.data);
+   if(body.result!=='ok'||meta.source!=='persisted-native-discussion-target')fail('Discussion target lacks persisted native provenance');
+   const target=nativeDiscussionTarget({kind:data.kind,targetId:data.id,threadId:data.threadId},threadId);
+   check();return target;
+  } finally {
+   if(timer!==undefined)deps.clearTimer(timer);
+   signal?.removeEventListener('abort',cancel);abort.signal.removeEventListener('abort',onAbort);
+   if(eof){
+    // Clean EOF is terminal even when later JSON/provenance validation fails.
+    // Do not retroactively abort or cancel an already consumed healthy body.
+    try{release();}catch{throw new NativeDiscussionContextUnsettled();}
+   }else{
+    if(!noTarget)abort.abort();
+    const cleanup=(async()=>{
+     // Chain late response ownership, rather than snapshotting a mutable set.
+     // A fetch ignoring abort still owns its eventual body cancellation.
+     if(fetchWork)await fetchWork.catch(()=>undefined);
+     if(!reader&&response?.body)reader=response.body.getReader();
+     if(reader)await Promise.allSettled([Promise.resolve().then(()=>reader!.cancel()),...(readWork?[readWork]:[])]);
+     release();
+    })();
+    // This observer and owner survive the finite caller grace period. Rejected
+    // cancellation is terminal; an unsettled operation or failed release is not.
+    const settled=cleanup.then(()=>true,()=>false);
+    let cleanupTimer:ReturnType<typeof setTimeout>|undefined;
+    try{
+     if(!await Promise.race([settled,new Promise<boolean>(resolve=>{cleanupTimer=deps.setTimer(()=>resolve(false),NATIVE_DISCUSSION_CONTEXT_LIMITS.cleanupMs);})]))throw new NativeDiscussionContextUnsettled(timedOut?504:499);
+     if(noTarget)check();
+    }finally{if(cleanupTimer!==undefined)deps.clearTimer(cleanupTimer);}
+   }
+  }
+ };
+}
+export const readNativeDiscussionTarget=createNativeDiscussionTargetReader();

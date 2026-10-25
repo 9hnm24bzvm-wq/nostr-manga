@@ -1,6 +1,12 @@
+import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';
 // Exact path repair only. The original frontend configuration stays unchanged.
 import path from "node:path";
+import { createUploadRefusalQaPlugin } from "./public-upload-refusal-qa.mjs";
+import { readPublicApiGate } from "../platform-integrations/public-api/overlays.mjs";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { createPublicApiOverlays } from "../platform-integrations/public-api/overlays.mjs";
+import { createPublicUploadOverlays } from "../platform-integrations/public-api/upload-overlays.mjs";
+import { createIntegrationUtilitySources } from "../platform-integrations/integration-utility-sources.mjs";
 import { createReaderOverlays } from "../platform-integrations/frontend-reader-overlays.mjs";
 import { createFrontendOverlays } from "../platform-integrations/frontend-overlays.mjs";
 import { createLocalLibraryOverlays, createLocalLibraryResolver } from "../platform-integrations/local-library/overlays.mjs";
@@ -16,7 +22,7 @@ export default async configEnv => {
   const original = await loadConfigFromFile(configEnv, path.join(frontend, "vite.config.ts"), frontend);
   if (!original) throw new Error("Original attachment Vite configuration could not be loaded");
   const merged = mergeConfig(original.config, {
-  resolve: { dedupe: ["svelte"], alias: { "$announcements": reconstruction, "$platform": path.join(root, "platform-integrations/frontend-behavior"), "$localLibrary": path.join(root, "platform-integrations/local-library"), "svelte-sonner": path.join(frontend, "node_modules/svelte-sonner/dist/index.js"), "axios": path.join(frontend, "node_modules/axios/index.js"), "http-status-codes": path.join(frontend, "node_modules/http-status-codes/build/es/index.js"), "@noble/curves": path.join(root, ".build/local-library-noble-2.0.1/node_modules/@noble/curves"), "@noble/hashes": path.join(root, ".build/local-library-noble-2.0.1/node_modules/@noble/hashes") } },
+  resolve: { dedupe: ["svelte"], alias: [{ find: /^@lucide\/svelte$/, replacement: path.join(frontend, "node_modules/@lucide/svelte/dist/lucide-svelte.js") }, ...Object.entries({ "$announcements": reconstruction, "$boundedReader": path.join(root, "platform-integrations/bounded-reader"), "$platform": path.join(root, "platform-integrations/frontend-behavior"), "$localLibrary": path.join(root, "platform-integrations/local-library"), "$publicApi": path.join(root, "platform-integrations/public-api"), "svelte-sonner": path.join(frontend, "node_modules/svelte-sonner/dist/index.js"), "axios": path.join(frontend, "node_modules/axios/index.js"), "http-status-codes": path.join(frontend, "node_modules/http-status-codes/build/es/index.js"), "@noble/curves": path.join(root, ".build/local-library-noble-2.0.1/node_modules/@noble/curves"), "@noble/hashes": path.join(root, ".build/local-library-noble-2.0.1/node_modules/@noble/hashes"), "@scure/base": path.join(root, ".build/local-signing-base-2.0.0/node_modules/@scure/base") }).map(([find, replacement]) => ({ find, replacement }))] },
   plugins: [{
     name: "attachment-exact-import-case-repair",
     enforce: "pre",
@@ -35,6 +41,12 @@ export default async configEnv => {
   }],
   });
   // The immutable-source script repair must run before Svelte compilation.
-  merged.plugins.unshift(createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createLocalLibraryResolver(frontend, path.join(root, "platform-integrations/local-library")));
+  merged.plugins.unshift(createUploadRefusalQaPlugin(root, { publicUploadEnabled: readPublicApiGate() }), createIntegrationUtilitySources(frontend, path.join(root, "platform-integrations")), createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createPublicApiOverlays(frontend), createPublicUploadOverlays(frontend), createBoundedReaderOverlays(frontend), createLocalLibraryResolver(frontend, path.join(root, "platform-integrations/local-library")));
+  // Explicit bounded QA resource profile; default production options are unchanged.
+  const qaProfile = process.env.WEEBDEX_QA_BUILD_RESOURCE_PROFILE;
+  if (qaProfile !== undefined) {
+    if (qaProfile !== "serial-terser") throw Error("Unknown QA build resource profile");
+    merged.build = { ...merged.build, reportCompressedSize: false, terserOptions: { ...merged.build?.terserOptions, maxWorkers: 1 } };
+  }
   return merged;
 };

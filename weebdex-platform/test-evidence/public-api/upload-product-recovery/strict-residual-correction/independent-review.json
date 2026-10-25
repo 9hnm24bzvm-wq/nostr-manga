@@ -1,0 +1,52 @@
+{
+  "schema": "independent-source-result-review-v1",
+  "time_utc": "2026-10-17T04:25:55.962874+00:00",
+  "verdict": "source_and_finite_clear_for_guarded_strict_retry",
+  "sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts",
+      "sha256": "19c8d31f14f1b6e62d62c0d6fec36f55248a6cead73df3058eea591282e5d87e",
+      "bytes": 14646
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/platform-integrations/public-api/upload-client.ts",
+      "sha256": "f99db300a031ef912db6097d9f84451130923019171008020cec51af83537af2",
+      "bytes": 47263
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_request_recovery.mjs",
+      "sha256": "11220a9eaef94061b42367ae2258a46c12f902323a66bf38e8b8c1cd0c63f0d8",
+      "bytes": 23856
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_public_upload_adapter_recovery.mjs",
+      "sha256": "ae94d64c2e0a871190cd5f17c9093057ed27629d37dbbdcc0c9b248e2de4acbe",
+      "bytes": 39142
+    }
+  ],
+  "logs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-request-finite-types-residual.log",
+      "sha256": "dd0bf6cc7a66562d3ae378de1a1cd8e1717c1948bc2622c315e098cc1e67a218",
+      "bytes": 2826
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-adapter-finite-types-residual.log",
+      "sha256": "4067097c3c3941e85e0cbc209a5959af1813254ad5ed4953427b541d61569145",
+      "bytes": 3683
+    }
+  ],
+  "pass": 58,
+  "fail": 0,
+  "owner_reported_exit_codes": [
+    0,
+    0
+  ],
+  "findings": [
+    "Transport captures actual Headers from the guarded Response before the nested safeHeader function; preserves all header/content/body/outcome checks.",
+    "Adapter replaces membership-in-three-literals with equivalent explicit comparisons to give TypeScript the exact state union; no accepted state/default or authority change.",
+    "Both original finite suites are unchanged; 24 transport and 34 adapter cases pass on the new helper bytes."
+  ],
+  "scope": "Two helper-only strict narrowing corrections. Actual enabled strict retry, build and browser remain pending; earlier strict failures stay failures.",
+  "reviewer_execution": false
+}

@@ -1,0 +1,58 @@
+{
+  "sourceProductAssociationCommit": "9b83a30a9d0e306b3a7363e71dd42628e3570bdd",
+  "sourceProductAssociationTree": "468368fc84023e8936a21fcc49a806d671d6dab6",
+  "frontend": {
+    "finiteDOMIndexedDB": {
+      "passed": 683,
+      "failed": 0,
+      "files": 49
+    },
+    "strict": {
+      "default": {
+        "errors": 0,
+        "warnings": 15
+      },
+      "enabled": {
+        "errors": 0,
+        "warnings": 12
+      }
+    },
+    "actualProductionBuilds": {
+      "default": {
+        "passed": true,
+        "seconds": 46.066,
+        "artifactFiles": 449
+      },
+      "enabled": {
+        "passed": true,
+        "seconds": 44.977,
+        "artifactFiles": 448
+      }
+    },
+    "independentAssociation": {
+      "strictAndTestSourcePins": 1044,
+      "strictProductEntries": 916,
+      "buildProductEntries": 914,
+      "buildAndStrictIntersectionExact": true,
+      "strictExtraEntries": [
+        "contracts/mangadex-5.13.1-inventory.json",
+        "contracts/native-settings-template-v1.json"
+      ]
+    },
+    "manifestDigests": {
+      "strictCanonicalSortedCompactJSON": "106fca6bb2ca34985447bc5e63cf6cdc520c1dd38a3f4221ea12a008adee2e70",
+      "strictOnDiskJSON": "be0329df610a8afd2a10b9dc48c8358f8acea03614822f004b59a516d63e494a",
+      "buildOnDiskJSON": "e6db8e4a2b91dad84771a2447b31593366cd2ee93f4008d15b55c0a790dba23e"
+    },
+    "canonicalFilesPreserved": 679,
+    "buildDependencyEntriesPreserved": 39226
+  },
+  "backend": {
+    "productionAndTestFreeze": "53130b47424b107d3b9d1b5ceb00959b62addaa5",
+    "currentNativeReadingStatusRuntime": "pending",
+    "fullCurrentCombinedMatrix": "pending",
+    "historicalEvidence": "Seven API seams,138 library cases and113 routing observations qualified on ec1 production. Chapter/title two-case continuation qualified on836ba3a. These remain historical after native status/0102; current full-source qualification is tracked separately."
+  },
+  "browserHostedLoadAndRenderedVisualParity": "not established",
+  "qualification": "Verified frontend product and source preservation checkpoint. Full current backend acceptance is still pending."
+}

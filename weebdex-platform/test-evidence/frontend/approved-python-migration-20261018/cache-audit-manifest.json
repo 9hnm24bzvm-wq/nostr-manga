@@ -1,0 +1,22 @@
+{
+  "records": [
+    {
+      "file": "cache-audit/migration/15.json",
+      "sha256": "9cf6fe1ee9dc6240d131b1f3026f6e246ff8507e089b8ef06557ce90114bc35b",
+      "pid": 15,
+      "protectedRoots": 7,
+      "checkedMutations": 0,
+      "protectedWriteAttempts": 0
+    },
+    {
+      "file": "cache-audit/migration/32.json",
+      "sha256": "6592c0f911e4e55090d5d338083226304f6c603b8bdebb4610b5df14c52de364",
+      "pid": 32,
+      "protectedRoots": 7,
+      "checkedMutations": 0,
+      "protectedWriteAttempts": 0
+    }
+  ],
+  "protectedWriteAttempts": 0,
+  "scope": "Node children protect the prior seven dependency inputs. The newly installed Python inputs are separately exact-snapshotted."
+}

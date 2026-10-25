@@ -1,0 +1,46 @@
+{
+  "schema": "owned-integrated-pipeline-http-run-v1",
+  "started_at_utc": "2026-10-17T22:55:15.207085+00:00",
+  "source_commit": "c3e6a159f800c615088ccea7359c3cbf6b82e111",
+  "command": [
+    "bash",
+    "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+    "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/public_manga_writes-8f8ef7422023f8f7",
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "test_executable_sha256": "d08187493d9c48b1bbb624f76ba9ddb014c4fcc35b30fdefc8ce00b98bcba096",
+  "pass": false,
+  "diagnostic_previous_query": false,
+  "runner_sha256": "28371da73b6610785dbfdad683544a46c18cba9d09e17ea8deae3b2fd73ece43",
+  "disk_guard": {
+    "floor_bytes": 4294967296,
+    "cleanup_reserve_bytes": 134217728,
+    "min_observed_free_bytes": 5861109760,
+    "signalled": false,
+    "identity": "pidfd-owned guard child"
+  },
+  "exit_code": 101,
+  "test_executable_sha256_after": "d08187493d9c48b1bbb624f76ba9ddb014c4fcc35b30fdefc8ce00b98bcba096",
+  "executable_unchanged": true,
+  "ended_at_utc": "2026-10-17T22:55:17.994255+00:00",
+  "log_sha256": "1a5aa87487333aa44653a518dc2524bdde50c181c37912d25700d66b70047406",
+  "child_reaped": true,
+  "cleanup_receipt_sha256": "9174712386e0c8bff81b784654493e2889c5ba66f7d955b6b18948755eee27c7",
+  "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-t8msndt5/cleanup.json",
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 101,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": []
+  },
+  "receipt_error": {
+    "class": "AssertionError",
+    "message": ""
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "status": "native-tab-main-pages-and-context-pixels-cleared-selected-runtime-incomplete",
+  "source_commit": "11706deb4dce8ae374e05e878e7f06f0ecb9bae4",
+  "source_tree": "ef3034fa06a80b8ff096c9a7e5df6ed40e00285d",
+  "reviewed_utc": "2026-10-14T22:11:45.742953+00:00",
+  "frontend_manifest_sha256": "a322cdc64952731b4ef7e3d7a1f33b2b8addb29c2526136c5f0d03c07eef34bf",
+  "local_library_phase_passed": true,
+  "actual_local_library_steps_passed": 6,
+  "page_errors": 0,
+  "visual_step_passed": true,
+  "native_dialog_geometry_hit_test_dismissal_cases": 12,
+  "total_geometry_observations": 20,
+  "geometry_before_arrival_assertion_retained": true,
+  "independently_pixels_inspected": [
+    "relocation-desktop-library-settings.png",
+    "relocation-desktop-public-identity.png",
+    "relocation-mobile-library-settings.png",
+    "relocation-mobile-public-identity.png",
+    "relocation-mobile-title-comments.png",
+    "relocation-mobile-reader-discussion.png"
+  ],
+  "findings": [
+    "Native Settings navigation and concise Library/Public identity sections fit the existing shell/buttons/spacing.",
+    "Actual390px Library and Public identity headings remain fully visible below navigation; controls wrap within viewport.",
+    "No Settings accordions, routine raw identifiers or duplicate global management surfaces on inspected pages.",
+    "Title/chapter signed controls stay contextual and offer anonymous identity/setup links.",
+    "Initial reader media retains its separate unobstructed viewport capture and functional assertion."
+  ],
+  "screenshots": [
+    {
+      "name": "relocation-desktop-home.png",
+      "bytes": 173228,
+      "sha256": "6d90dc29894f3dd4d7d7cff0f4cfaffcafc7e2bc69307f339f9cf7740ea307e4",
+      "width": 1440,
+      "height": 1426,
+      "independently_pixels_inspected": false
+    },
+    {
+      "name": "relocation-desktop-library-settings.png",
+      "bytes": 91393,
+      "sha256": "8992789006e2f9bab14158b558cd7f1931d4a491a8809fdc18c142e851c85879",
+      "width": 1440,
+      "height": 1000,
+      "independently_pixels_inspected": true
+    },
+    {
+      "name": "relocation-desktop-public-identity.png",
+      "bytes": 68481,
+      "sha256": "00996a8c5eecdd0ab6b1c1f23ecb8ba4edb9d4476d0e5205859f1bba430b25a8",
+      "width": 1440,
+      "height": 1000,
+      "independently_pixels_inspected": true
+    },
+    {
+      "name": "relocation-desktop-reader-discussion.png",
+      "bytes": 45489,
+      "sha256": "3b9c231d83e92a2b1c2cd015a52ebcc6e60692f139d81370eed3f50be25d5041",
+      "width": 1440,
+      "height": 1000,
+      "independently_pixels_inspected": false
+    },
+    {
+      "name": "relocation-desktop-reader.png",
+      "bytes": 75662,
+      "sha256": "6886d6812a0b7981d6bf1756c01fcd1d006760dedc0e66606e35fcee568a168d",
+      "width": 1440,
+      "height": 1000,
+      "independently_pixels_inspected": false
+    },
+    {
+      "name": "relocation-desktop-search.png",
+      "bytes": 109151,
+      "sha256": "7726d9e9338db5920e580eab838abee54d9c5761d6a6edaaae11bc2c75d6fdfa",
+      "width": 1440,
+      "height": 1000,
+      "independently_pixels_inspected": false
+    },
+    {
+      "name": "relocation-desktop-title-comments.png",
+      "bytes": 96952,
+      "sha256": "0f0ed6033ea1d44322ba8882a71eae548e3855358a1846df8156826f05f7a9ef",
+      "width": 1440,
+      "height": 1000,
+      "independently_pixels_inspected": false
+    },
+    {
+      "name": "relocation-desktop-title.png",
+      "bytes": 6490,
+      "sha256": "4156019b50cd4c8f4e63389e9d5e48929e4888c60afaac02f02e98fe5da1f83a",
+      "width": 1440,
+      "height": 1000,
+      "independently_pixels_inspected": false
+    },
+    {
+      "name": "relocation-mobile-home.png",
+      "bytes": 124782,
+      "sha256": "d5bc6aee0dc17fc61eaa7d99813854f55f2c46237ce298363535c89fbc361878",
+      "width": 390,
+      "height": 1343,
+      "independently_pixels_inspected": false
+    },
+    {
+      "name": "relocation-mobile-library-settings.png",
+      "bytes": 56479,
+      "sha256": "e89df2498c03238ef75e8ab9c93e6da7471e175f78c94aaf6b1440d491d83c04",
+      "width": 390,
+      "height": 844,
+      "independently_pixels_inspected": true
+    },
+    {
+      "name": "relocation-mobile-public-identity.png",
+      "bytes": 48430,
+      "sha256": "98da4aa66664f784720bf97d0d4c9a4aa746879ea2a6627de7d6886713de1ad2",
+      "width": 390,
+      "height": 844,
+      "independently_pixels_inspected": true
+    },
+    {
+      "name": "relocation-mobile-reader-discussion.png",
+      "bytes": 35142,
+      "sha256": "a036b3579b4262fedbbb9e8f446840a0819e957d5ab075bf5eaa3ee907dc3e97",
+      "width": 390,
+      "height": 844,
+      "independently_pixels_inspected": true
+    },
+    {
+      "name": "relocation-mobile-reader.png",
+      "bytes": 4017,
+      "sha256": "5e75ec8892ea0eb591cf80a2593b6c979cc42a51f8b51431e9f675dd6fbd0475",
+      "width": 390,
+      "height": 844,
+      "independently_pixels_inspected": false
+    },
+    {
+      "name": "relocation-mobile-search.png",
+      "bytes": 92828,
+      "sha256": "cfb8c88eb085518ce3c9fe22e56604d3cfe66f1938f87d0818b0b4719eb58fbf",
+      "width": 390,
+      "height": 1064,
+      "independently_pixels_inspected": false
+    },
+    {
+      "name": "relocation-mobile-title-comments.png",
+      "bytes": 47515,
+      "sha256": "1c003126799a506819f6a69a891261edbc42446bac2ba946dccbe6599032b6c9",
+      "width": 390,
+      "height": 844,
+      "independently_pixels_inspected": true
+    },
+    {
+      "name": "relocation-mobile-title.png",
+      "bytes": 2741,
+      "sha256": "66441f6fdb29d4726426ee0c66f1e6794fbfb0ffb66568e61bb932d465817292",
+      "width": 390,
+      "height": 844,
+      "independently_pixels_inspected": false
+    }
+  ],
+  "full_suite_passed": false,
+  "remaining_failure": "Subsequent compact-feed phase failed unique sequential pages; no native-PG failure observed, root cause remains under investigation.",
+  "limits": [
+    "Signed-social/context and device-navigation/progress phases were not run after compact failure.",
+    "Task dialogs passed actual geometry/hit-test/dismissal checks; separate task-dialog pixels were not captured.",
+    "Only six named main/context screenshots independently inspected for pixels; all16 hashes/dimensions retained.",
+    "No full pixel parity or whole-suite acceptance is claimed."
+  ]
+}

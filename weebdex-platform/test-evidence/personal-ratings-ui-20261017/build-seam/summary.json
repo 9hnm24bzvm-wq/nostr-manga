@@ -1,0 +1,1 @@
+{"date":"2026-10-17","production_preparation":{"native":"passed","public":"passed","tests":2,"failed":0},"scope":"Real prepareFrontendIntegration, exact markup exception verifier and evidence writer against fresh copied canonical input; no Vite build, browser, install or original frontend write","rating_exceptions_public":3,"rating_exceptions_native":0,"canonical_unchanged":true}

@@ -1,0 +1,62 @@
+{
+  "schema": "replacement-product-validation-checkpoint-v1",
+  "at_utc": "2026-10-17T06:45:04.962647+00:00",
+  "source_commit": "e45052ca987a18d3be1fa9792c210e6840a78713",
+  "source_tree": "79979166528041d1560f1915cc6a8a6aa3041de1",
+  "frontend": {
+    "strict_default": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "strict_enabled": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "syntax_and_vite": "four sequential phases passed",
+    "default_artifact": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-artifacts/default-02",
+    "default_files": 427,
+    "enabled_artifact": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-artifacts/enabled-02",
+    "enabled_files": 432,
+    "enabled_total_bytes": 7170738,
+    "enabled_manifest_sha256": "36d0067138f1af475deafa24953879260eee21b6e18f37882effbbb8d3a119aa"
+  },
+  "backend": {
+    "compiled_test_source": "a9886def384bbd08bd25cfeaaa336c24a72bb78e",
+    "unchanged_308_backend_files_at_successor": true,
+    "four_named_pure_cases": "passed",
+    "replacement_http_application_test": "1/1 pass independently verified",
+    "replacement_http_outer_owner_pass": false,
+    "physical_teardown": "independently verified exact births and ports",
+    "matching_main_provisioner_build": "not performed for replacement source"
+  },
+  "preflight_failure_retained": "Initial owner preflight omitted required VM flag:50 passed/1 module-load failure; corrected52/52 passed without source change; source owner56 suite remains separate.",
+  "browser": "No positive replacement browser executed. Original browser03 escalation approval remains pending, with original456b source/artifacts/1167 pins preserved.",
+  "future_observer": "source-reviewed and12 extracted cases passed; no runtime rerun",
+  "pins": {
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-preview-reconcile-independent-postcommit-review-20261017.json": "591632d5ae0751e130b07ad827053b211243860977580e037e28aac14f1d8ed7",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-http01-independent-result-20261017.json": "e758b470faee9a41097f560ed5b91cd760f7cdb634602d1a8b0f82412f6cfa58",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-strict02-independent-result-20261017.json": "a8da99f30ca7b89c1782eb5251f7daa7f686b482b30aaaaa4ed94a4cb71a0559",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build02-independent-result-20261017.json": "a46aeb5081219c7745b21583828a75601a5b9c67c21b06f3b94a049ff611aaa0",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-http-future-listener-proof-independent-result-20261017.json": "ba060519ba468c827fe0a9b3d053b52089f7130c56b9b64e3a0b08c8e06ade60",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-validation-held-successor-20261017.json": "467b552d6f6a48a3f26eceaa4b2eb3f37e68f9683f1d3b5ed4f67e26db765149",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-validation-held-successor-reviewed-addendum-20261017.json": "b2e29e393dd2dc0f6919c453aa142a20c156f9b4fde1c4ec7614fd50d04587e9",
+    "/workspace/shared/nostr-manga-recovery-20261017/recovered-upload-browser03-held-approval-20261017.json": "0732178a0361237edf74313827e59c361f14c3256c67b437c856a59462c374e7",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/setup.json": "51d1f383a1e851e4ee08387782f891c6e1286189515fd9410b0386b9f98f7036",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/source-before.json": "fa0453f6dcdf7e5edae6e03b4eb5bef18da3b7a6d4ba2827b91088baa7d0f9dd",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/dependencies-before.json": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/dependency-preflight.json": "d4dab8c189f819a865576699b91a58305b5f575ff4552b155b13354fcb53338a",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/provenance-overlay-preflight.log": "4ece2e4be2c6ad3f2e344c3963130ccb86acd0d814130e6ff401e5bcc54df2b9",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/provenance-overlay-preflight-corrected.log": "2866ba78722467547fc4c6e566c72876823a339f32cbda48faf8585112563552",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/provenance-overlay-preflight-corrected-receipt.json": "efd0f8c8c130278bce8daa2387b1c7b523c321fb79bae5204d8627dc43ff2eba",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/strict-default-02-receipt.json": "5d28095f455d8131993630184dc845190d8c3dce3f96653d4b3c0217f3b6df5f",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/strict-enabled-02-receipt.json": "46d475e361c7644c3a672735a3118a360a7665523c64bbe5b717ede2b91691bf",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/syntax-default-02-receipt.json": "d55d9927e957e5976103fdd8329732b986d9d7fc74038b466bb39f3db1a949fd",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/syntax-enabled-02-receipt.json": "0f33e491df61caf685f74188280582776160466227f74e519d858b4511e8570e",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/vite-default-02-receipt.json": "d398310a9f21db1598751aac408ec47415d084e405dc713f0ccbd00aec65d14c",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/vite-enabled-02-receipt.json": "f21a262859d90bf139e794076beec53d39f70377df306fca0b1c110d9e0f6d07",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/vite-default-02-artifact-inventory.json": "bcdd58ec0e4f890beeb5ae60ddf7fd20629456ca61f7b7840eecc56a2ce8499c",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/vite-enabled-02-artifact-inventory.json": "a091256ae0586a4b15ad1f65efea678a30a9f1bb1102e42048b94ebae78d04e4",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-validation-02/enabled-browser-artifact-manifest.json": "36d0067138f1af475deafa24953879260eee21b6e18f37882effbbb8d3a119aa"
+  },
+  "free_bytes": 24840466432
+}

@@ -1,0 +1,70 @@
+{
+  "schema": "upload-lock-target-compile-pure-independent-review-v1",
+  "verdict": "compile_and_three_exact_pure_cases_verified",
+  "reviewed_at_utc": "2026-10-17T05:08:54.730310+00:00",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/backend-test-compile-05/receipt.json",
+      "sha256": "2b2594f77bd2e64f8f10313f60115cb81491b29446b5a79a6ee6fcda870118b1"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/backend-test-compile-05/cargo-test-no-run.log",
+      "sha256": "1d94e9f3c6ec4c0474c3ad60b82a40cd78dd2636d1a1e0f90ffbf84f049ce1e3"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-lock-target-pure-01/receipt.json",
+      "sha256": "d013c92110e02b89c4e268f221d6af3a678709b544b62e96857c49c474244c0f"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-lock-target-pure-01/case-1.log",
+      "sha256": "7af1ae89ced1dff68e717890366f4b1dc3982b718a5343bc9eff36ce5af08178"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-lock-target-pure-01/case-2.log",
+      "sha256": "0587c1d03bf5794e2c4b779f253dde5c6c05b410909151096154405975b6a4ba"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-lock-target-pure-01/case-3.log",
+      "sha256": "2d20d8b1298eb8117d52337e39204499a860495064b54f95c4ea23be5b0ed600"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-pending-target-independent-source-review-20261017.json",
+      "sha256": "fe57480d2c6ca4d8837f87985c6314c0892ae3028aaa9739d481db1c393b2f51"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-test-compile05-independent-plan-review-20261017.json",
+      "sha256": "49df44ba3f0f927f3861e2e72899ce27758839c148cc9561229cba2c5705453c"
+    }
+  ],
+  "current_source_pins_verified": 308,
+  "source_before_equals_after": true,
+  "artifacts": {
+    "unittests src/lib.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/cargo-target/debug/deps/weebdex_platform-e419a3fb27f0fabf",
+      "sha256": "e997081adc0f477b56ea44e607e95cf69340eb9f182ea86d5d77be3df53be857",
+      "bytes": 42183104,
+      "mode": 493
+    },
+    "tests/public_uploads.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/cargo-target/debug/deps/public_uploads-4987a247b7f72ece",
+      "sha256": "bd80c874f23e67e2a27bd8bb4148cfaa2f27e28138fc70f163feb813c09c31d1",
+      "bytes": 54115688,
+      "mode": 493
+    }
+  },
+  "compile": {
+    "exit_code": 0,
+    "child_reaped": true,
+    "terminal_errors": [],
+    "warning_scope": "14 library and 2 integration-test compiler warnings retained"
+  },
+  "pure": {
+    "cases": 3,
+    "passed": 3,
+    "database_started": false
+  },
+  "limits": [
+    "Actual database lock compatibility and full HTTP commit remain pending.",
+    "No reviewer execution of compiler, binaries, sockets or database."
+  ]
+}

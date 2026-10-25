@@ -1,0 +1,134 @@
+{
+  "attempts": [
+    {
+      "attempt": "01",
+      "completedMethodsBeforeTerminal": 0,
+      "detail": "Direct DNS failed before first byte; no proxy fallback used.",
+      "phase": "setup",
+      "physicalCleanup": {
+        "error": null,
+        "forced": false,
+        "ownedBirths": 1,
+        "remaining": [],
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawCleanupSha256": "34cbc709eebe4d899f8e17e0cba8ea8346f19cc4bc73424c03f1b63647753be0",
+      "rawOwnerSha256": "8310e8ae29b5a7c5846592f1377607fffeccf5600e4a1f2b71f0fbf5f93e094f",
+      "rawStderrSha256": "141d268881b2089e75db5e914c1576aab8ecb873c39cf587b8ed162ec042532f",
+      "rawStdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedOutputs": true,
+      "seconds": 0.132,
+      "success": false
+    },
+    {
+      "attempt": "02",
+      "completedMethodsBeforeTerminal": 0,
+      "detail": "Cross-invocation proxy port assertion refused; concurrent broad FD scan also hit EACCES; zero package bytes.",
+      "phase": "setup",
+      "physicalCleanup": {
+        "error": null,
+        "forced": false,
+        "ownedBirths": 1,
+        "remaining": [],
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawCleanupSha256": "34cbc709eebe4d899f8e17e0cba8ea8346f19cc4bc73424c03f1b63647753be0",
+      "rawOwnerSha256": "da05c0451369108417defeb05cf08935f54e7eca6663f2f33f772299f610c464",
+      "rawStderrSha256": "2190ebaa23331ba14d365f6fe86e411441872bf9ab709b953fa2ada12413eb6f",
+      "rawStdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedOutputs": true,
+      "seconds": 0.075,
+      "success": false
+    },
+    {
+      "attempt": "03",
+      "completedMethodsBeforeTerminal": 0,
+      "detail": "Invocation-bound normal proxy route; four exact packages and seven tool versions passed.",
+      "phase": "setup",
+      "physicalCleanup": {
+        "error": null,
+        "forced": false,
+        "ownedBirths": 19,
+        "remaining": [],
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawCleanupSha256": "b8f56803d120a909aa6dea3c3acb8b8619c9b12b624433a64bc3a6d444429472",
+      "rawOwnerSha256": "0e4ac302c00ebc43e6a9935e1bd8ff090ff31109427593130424cc78aaf2aee9",
+      "rawStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawStdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedOutputs": true,
+      "seconds": 16.237,
+      "success": true
+    },
+    {
+      "attempt": "01",
+      "completedMethodsBeforeTerminal": 0,
+      "detail": "Sampled allocation enumeration raced removal of initdb transient pg_internal.init; stopped before listener/SQL/tests.",
+      "phase": "runtime",
+      "physicalCleanup": {
+        "error": null,
+        "forced": false,
+        "ownedBirths": 9,
+        "remaining": [],
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawCleanupSha256": "1d682ff13bc544414b85c99db3ac40148a089fcb7ac8b367597d7aac66060d96",
+      "rawOwnerSha256": "3bfa3a2ade5cfe9c2d044e63c4e99f54b5a5d829a38ae75a15e03feaa85b76c1",
+      "rawStderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawStdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retainedOutputs": true,
+      "seconds": 0.716,
+      "success": false
+    },
+    {
+      "attempt": "02",
+      "completedMethodsBeforeTerminal": 2,
+      "detail": "Broad descendant FD sweep refused EACCES during timeout-probe startup; first two real methods completed before guard interruption.",
+      "phase": "runtime",
+      "physicalCleanup": {
+        "error": null,
+        "forced": false,
+        "ownedBirths": 37,
+        "remaining": [],
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawCleanupSha256": "a35d31e82ccc368d5458f249ada17d186d40dcdb7064dbadf1a709710f580d80",
+      "rawOwnerSha256": "b7017ff870c6ed6c07ea827c74628ff4d405deb1db886dcddce8d36944dc7fac",
+      "rawStderrSha256": "a184a38de77d73797a6d7eeb15b79d77c626c7b5d91b69d0a712abf01bb04fd3",
+      "rawStdoutSha256": "815f9697545cbdec22194f17f03c811d7b6f2a7ee58cd9b74145cdad1d357ff9",
+      "retainedOutputs": true,
+      "seconds": 1.177,
+      "success": false
+    },
+    {
+      "attempt": "03",
+      "completedMethodsBeforeTerminal": 17,
+      "detail": "Baseline/new-listener guard plus exact postmaster FD/inode proof; all17 unchanged methods passed.",
+      "phase": "runtime",
+      "physicalCleanup": {
+        "error": null,
+        "forced": false,
+        "ownedBirths": 84,
+        "remaining": [],
+        "unconfirmedBirths": [],
+        "verifiedStopped": true
+      },
+      "rawCleanupSha256": "a702b023149c6d75ed8b800a966c7ba3bf97d07038c845ed87a408b130269a48",
+      "rawOwnerSha256": "943a2293ce9543f193794f73b8f3b26454be141091e069b641ef4a930cc4c01b",
+      "rawStderrSha256": "334322c7d3b7b38e08c10e6b2462e61c30be630babd961d96fa0ec6c00166acc",
+      "rawStdoutSha256": "302635b8cee1dc01cc8a4776965ccbc9be5478be4549bcc4cc9d88086c6f2315",
+      "retainedOutputs": true,
+      "seconds": 11.516,
+      "success": true
+    }
+  ],
+  "cumulativeRuntimeSeconds": 13.409,
+  "cumulativeSetupSeconds": 16.444,
+  "noPriorFailureIsACompletedSuite": true,
+  "priorFailuresPreserved": true
+}

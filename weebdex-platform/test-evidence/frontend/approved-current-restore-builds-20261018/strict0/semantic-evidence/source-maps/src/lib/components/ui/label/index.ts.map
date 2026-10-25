@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "sources": [
+    "../../../../../../../production-composed/src/lib/components/ui/label/index.ts"
+  ],
+  "sourcesContent": [
+    "import Root from \"./label.svelte\";\n\nexport {\n\tRoot,\n\t//\n\tRoot as Label,\n};\n"
+  ],
+  "names": [],
+  "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;AAEjC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC;AACF,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC;",
+  "file": "../../../../../../../project/src/lib/components/ui/label/index.ts"
+}

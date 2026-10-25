@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "files": {
+    "README.md": {
+      "bytes": 3454,
+      "sha256": "d17ef1e6be054cfa28895219e2c35bc489b307b08fbed92c3307a3db98c45577"
+    },
+    "baseline-initial-path-error-owned.json": {
+      "bytes": 537,
+      "sha256": "0c51139dd531fa1f3193b59f9735577c2d22c7614063e52a1ad3dba4446b0755"
+    },
+    "baseline-initial-path-error.log.gz": {
+      "bytes": 595,
+      "sha256": "81a29b53ffea52c7064d225d0d7d31ac42fb9ea16d7288b9734bf41d0edf717e"
+    },
+    "baseline-owned.json": {
+      "bytes": 537,
+      "sha256": "205389f0cf6a26430ba16daa4252bf06d4ce86db90962634b6eb18cec5e1ed95"
+    },
+    "baseline-probe.py": {
+      "bytes": 1278,
+      "sha256": "172f8952aafb627813668f17531adbcbc17241d4e913cf1b44a0fee0715c84b8"
+    },
+    "baseline.log.gz": {
+      "bytes": 603,
+      "sha256": "89c655707b121e7f8732ace3d40d886ae2a187cdf88036cbf7f53e75821f2c26"
+    },
+    "native-owned.json": {
+      "bytes": 588,
+      "sha256": "ec8a29016dd135c3ba7d4b4ae971999a80f45a819505d9b1361ee49c168eaf24"
+    },
+    "native.log.gz": {
+      "bytes": 537,
+      "sha256": "167cd5e7ecb9743666957040f552819c92f1f9c562f9fcd7c4815ed62becdad4"
+    },
+    "raw-log-manifest.json": {
+      "bytes": 989,
+      "sha256": "761d580c35c35e4cc4b452da3627a1b2aaa7443e44481cf4229d9d35e4f056f5"
+    },
+    "result.json": {
+      "bytes": 1238,
+      "sha256": "46e9f3476ce1d3f8d823ed7477c621260557075c53f8921267930e4a986c1863"
+    },
+    "run-selected.py": {
+      "bytes": 556,
+      "sha256": "91686c3136265bec8f2530ab01802a246099ca0ef5211add00a12d5b0085d79d"
+    },
+    "selected-owned.json": {
+      "bytes": 535,
+      "sha256": "32b2e4a04e873c25b9fad691551c2ef778c2705dd25450533c175aa072c15acc"
+    },
+    "selected.log.gz": {
+      "bytes": 1635,
+      "sha256": "0a7d30ad4fa6c45421fabded1f198f2350450f815b58748a7727e104aff1fb24"
+    },
+    "source-pins-after.json": {
+      "bytes": 2441,
+      "sha256": "0cce6ea11b4bd92af34279191767280bfc91d1be45ea37293f0ad197bdc7ca1c"
+    },
+    "source-pins-before.json": {
+      "bytes": 2441,
+      "sha256": "0cce6ea11b4bd92af34279191767280bfc91d1be45ea37293f0ad197bdc7ca1c"
+    }
+  },
+  "excludesSelf": true,
+  "rawLogsRetainedViaGzip": true
+}

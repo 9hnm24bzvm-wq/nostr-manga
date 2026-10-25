@@ -1,0 +1,40 @@
+{
+  "status": "finite-qualified-hosted-retry-unrun",
+  "sourceCommit": "d57a1f0ba55b65c2d4f4927afc1b350712569c0e",
+  "baseCommit": "c75f0c9c4551fede33fa71092f5fd9d47b26c522",
+  "historicalHostedRun": 39144824203,
+  "historicalPublicArtifactZip": {
+    "bytes": 2313,
+    "sha256": "128c3366fc3def1a69606572239f77c6f7a6dd2d673ff7652b18d8e2a585bfe6"
+  },
+  "retainedObservation": {
+    "nativeGatePassed": true,
+    "fixtureReady": true,
+    "teardownVerified": true,
+    "actualSteps": 0,
+    "caughtHarnessError": true,
+    "fatalMonitor": "none",
+    "finalStage": "complete",
+    "launchOrCauseEstablished": false,
+    "defaultUploadCountsAreNotIndependentTrafficProof": true
+  },
+  "pythonMethods": 76,
+  "nodeLifecycleControls": 10,
+  "actorSourceAssociationRunnerCases": 2,
+  "theseCountsDescribeDistinctCommandScopes": true,
+  "failedOrSkipped": 0,
+  "guardSeconds": 8.492,
+  "deadlineSeconds": 30.0,
+  "cleanupVerified": true,
+  "sourcePins": 31,
+  "sourcePinsUnchanged": true,
+  "baselineCaughtStageLossReproduced": true,
+  "initialEvidenceDriverWrongParentErrorRetained": true,
+  "noBrowserServiceDatabaseBuildInstallNetworkOrCiRetry": true,
+  "sandboxEnabledPreserved": true,
+  "workflowUnchanged": true,
+  "productFrontendAndBackendUnchanged": true,
+  "nodeVersion": "v24.19.0",
+  "pythonVersion": "3.12.14",
+  "scope": "Closed caught-error/private-to-public diagnostics and existing finite hosted contracts only. Uses explicit preflight/browser stand-ins and harmless Node/Python process seams. No Chromium launch or third hosted run. Final current diagnostics require a separately approved hosted retry."
+}

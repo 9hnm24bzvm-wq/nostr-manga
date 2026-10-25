@@ -1,0 +1,1200 @@
+{
+  "records": 170,
+  "protectedWriteAttempts": 0,
+  "recordsByPhase": {
+    "finite": 162,
+    "strict": 8
+  },
+  "recordsManifest": [
+    {
+      "file": "cache-audit/finite/1004.json",
+      "sha256": "5b3ae25fa7510155cb95314c3c54d751cc6415cba78a6172a299d8d7cfca946b",
+      "pid": 1004,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1012.json",
+      "sha256": "e7adf4899a9075ad824a6be8c6f741ebc1d6abb715e87e984ceb54a38c53063e",
+      "pid": 1012,
+      "roots": 5,
+      "checkedMutations": 3352
+    },
+    {
+      "file": "cache-audit/finite/1020.json",
+      "sha256": "352d2863aefbd35917bdd9ae5b82d6d8bd552d96e3dcf4499337517314f7b4ae",
+      "pid": 1020,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1028.json",
+      "sha256": "759f45780fd71fdc5372089b90ba801c43a79d96a80ad36322190b2109d11964",
+      "pid": 1028,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1036.json",
+      "sha256": "b3b69906d627959a0a5161b449bcf241502ec9f15f3f70a64cd5b157c2fd54bc",
+      "pid": 1036,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1044.json",
+      "sha256": "240d6d54cd5e717910b39a5de158a636f9a255d728886a86d164c92a144ca04e",
+      "pid": 1044,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1052.json",
+      "sha256": "41f6c300923d4a03aa9418039e46464ac56d7bbb16e6a978fce81d0e05493691",
+      "pid": 1052,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/106.json",
+      "sha256": "f21791d875ff0fd5a2a9ad20d11f56e95c60e7bb51de9a09715277782706cd47",
+      "pid": 106,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1060.json",
+      "sha256": "8a54fddbdc9d71581bda2d5ca1b1d406f5daaa401504021ec35369e6e362292a",
+      "pid": 1060,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1068.json",
+      "sha256": "fd3f1b391819eda87770107dcd0a5f077fb5ae48a4d307fff7c16ae433ab9913",
+      "pid": 1068,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1076.json",
+      "sha256": "3d91623dc7f85b97061d452a01b6173a17a843286516d362bda9257c3b5646c9",
+      "pid": 1076,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1084.json",
+      "sha256": "f37772bbf7a5c853966e3d9b10dbbac82fae42fa52515aa12d17c45451b28380",
+      "pid": 1084,
+      "roots": 5,
+      "checkedMutations": 18
+    },
+    {
+      "file": "cache-audit/finite/1092.json",
+      "sha256": "32775d499ca080e5ae097ef4d28837fdb83fb234252282ca28ccb9278b92f283",
+      "pid": 1092,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/11.json",
+      "sha256": "6fd630b9df681ed2368d34358f992f7bea2b793a040c6a0a778be80116587646",
+      "pid": 11,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1104.json",
+      "sha256": "33c56b73480ccbf296656196fb6360d9d377b1c63b1a1f69969d313e1b153d1a",
+      "pid": 1104,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1112.json",
+      "sha256": "6a9d254d97d1b72e3f9ef2274cb9652d9f8c5acd27547f88d43f7af706dbdef4",
+      "pid": 1112,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1124.json",
+      "sha256": "ca819b64e91f4b06f2e317ab12413015ad43a288b9db9a5112dbbfd753010a81",
+      "pid": 1124,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1132.json",
+      "sha256": "f75307d32118bca61c43dcb5d338a42c8900841973259186a3ccf908036c74ee",
+      "pid": 1132,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/114.json",
+      "sha256": "5d1f763521713f4c27a090f072b02c92ee79f9fb257f80b4c5aef26d312ff96f",
+      "pid": 114,
+      "roots": 5,
+      "checkedMutations": 5
+    },
+    {
+      "file": "cache-audit/finite/1140.json",
+      "sha256": "f2e4bb61991f85ba3f4a48a4fca145b23dd9bdb2411a7f764d6ab7f808158115",
+      "pid": 1140,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1148.json",
+      "sha256": "f78aef80109869ecf3bc8c3c9102a20ee06f8c73a5529a678e3d5ae16c6ecbe9",
+      "pid": 1148,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1156.json",
+      "sha256": "368ae0907117256623f816c8f44123c2dc82b09752a9f6689aa3adaf98bfd7c7",
+      "pid": 1156,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1164.json",
+      "sha256": "604b503206e23eea93a1c06c50a6747701471d71d217bd499ac9ada7fb00b8d5",
+      "pid": 1164,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1172.json",
+      "sha256": "a746c97fe6329ee698fd03d9b1fd9fa0ba05ab53e4716b2d973624792420335a",
+      "pid": 1172,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1180.json",
+      "sha256": "e97df690eed37bf5f7e5a7aa925979c8a9b0f82bdcc0dd95a6f39f8f41a44b16",
+      "pid": 1180,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1188.json",
+      "sha256": "e215e9bb40ff1ad5f6597f5d78cb4eb3cb90772dcb37a83db7d6029734142f11",
+      "pid": 1188,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1196.json",
+      "sha256": "df0848f9195bb6a6ffbdb3d13558b2755d82864d420316be3da68c82fc3a069e",
+      "pid": 1196,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1204.json",
+      "sha256": "91e4cf425d8e990046089e38ffd29315d0a2e082f74161a34332d4906a924178",
+      "pid": 1204,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1212.json",
+      "sha256": "b68b8f6296020c40c31fbf5c0c71c3d80bf89bfeeaf8703576c681848fc66774",
+      "pid": 1212,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/122.json",
+      "sha256": "1d5ff72053b00747e916f12b1c6db8b2a16b5e7c04edf121acff67422338b749",
+      "pid": 122,
+      "roots": 5,
+      "checkedMutations": 10
+    },
+    {
+      "file": "cache-audit/finite/1220.json",
+      "sha256": "3655831f3e695c5817fd7cf96f66244255f055e54bd1123e676f82a6c314924b",
+      "pid": 1220,
+      "roots": 5,
+      "checkedMutations": 1
+    },
+    {
+      "file": "cache-audit/finite/1228.json",
+      "sha256": "c8015b9b3634822eb8411bae58bdda7c6f2690fc8f0a38f3e0059b1e3c5332f0",
+      "pid": 1228,
+      "roots": 5,
+      "checkedMutations": 1
+    },
+    {
+      "file": "cache-audit/finite/1236.json",
+      "sha256": "61ca11b034b4d7a024c8ea7463a692b3976aaf3f4f72ad67e0dabe2cf608b397",
+      "pid": 1236,
+      "roots": 5,
+      "checkedMutations": 1
+    },
+    {
+      "file": "cache-audit/finite/1244.json",
+      "sha256": "df7bc2228c474742690271c40537a048b80a1b8129f80e9bdcdc82e1e22acc6e",
+      "pid": 1244,
+      "roots": 5,
+      "checkedMutations": 2
+    },
+    {
+      "file": "cache-audit/finite/1252.json",
+      "sha256": "369f8a1e0b0fa8fc1d3011fa92d911465b1aadf2fa14f62bf81184f53113fa88",
+      "pid": 1252,
+      "roots": 5,
+      "checkedMutations": 2
+    },
+    {
+      "file": "cache-audit/finite/1260.json",
+      "sha256": "0b9306540479fb4b036126bce3bb5a3c9eba4cedafa9757c8df93824144f3f33",
+      "pid": 1260,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1268.json",
+      "sha256": "da524f6df3fa58947b514f9d37bda5b86d0b7ff8860f55e61d78233068f419f8",
+      "pid": 1268,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1280.json",
+      "sha256": "d86abc56a654ea575475d7405b1ac5fb82d4356d95bc2de56cb950f9fe25a6dd",
+      "pid": 1280,
+      "roots": 5,
+      "checkedMutations": 13
+    },
+    {
+      "file": "cache-audit/finite/1292.json",
+      "sha256": "9e512fe08bf6218f450d8e76489c6680d95c6e811a800e366df720e62dee6dbe",
+      "pid": 1292,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/130.json",
+      "sha256": "8e7be60754598993e2bbb8b7ef2c0e25492642ad876bdc3ebda3456dd56e1fff",
+      "pid": 130,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1300.json",
+      "sha256": "114245c570ade8045e12b8e30b4f387246ce8f3003f480df795972a1c25540c2",
+      "pid": 1300,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1308.json",
+      "sha256": "5b3629d554fb924f771047b957a8a46b1fae9db995e0652afa55af427e49e19c",
+      "pid": 1308,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/1316.json",
+      "sha256": "7210d2ccce6be6211f993c53f2ce5b0479a84ae87dec7362e6f1aad1bfd5a405",
+      "pid": 1316,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/138.json",
+      "sha256": "a7fd01ca9ddc17ee12568a6f39995f8997ce205a35b82f81855dfc0a4669bf3b",
+      "pid": 138,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/146.json",
+      "sha256": "8d494dffa91e2861479396033a5cd99b0b4b9d9a938d9f8176dd8c3d0669a993",
+      "pid": 146,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/154.json",
+      "sha256": "0577c015a27fabf381476c92975e40a5bcafd0775b6e81466a0b3ae3a49e3e10",
+      "pid": 154,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/162.json",
+      "sha256": "c15b12723b465386f4e1d5512110a2945fe63ca54f808c2bf0315063a628065d",
+      "pid": 162,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/170.json",
+      "sha256": "6ee47af923505634e51608874b63bd4042997d055521d93c20bb6707fdc7076c",
+      "pid": 170,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/178.json",
+      "sha256": "7ef6e01c0d98d9202a0f44bcff167981d311585d36a893a429d6457338d4ff67",
+      "pid": 178,
+      "roots": 5,
+      "checkedMutations": 28
+    },
+    {
+      "file": "cache-audit/finite/18.json",
+      "sha256": "67947fe37b88ccf43a4a92393bae537253ea5cd4e8892c67008a4aa125b2a40e",
+      "pid": 18,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/186.json",
+      "sha256": "4774c2b5659de03db68b2b1d342229ab0d4735870c1f5d4cfed92ae81a17f81f",
+      "pid": 186,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/194.json",
+      "sha256": "1e91c97260ecf5e4d9269da65f13f232276363cd412ea9549780c7ac37d650d7",
+      "pid": 194,
+      "roots": 5,
+      "checkedMutations": 9
+    },
+    {
+      "file": "cache-audit/finite/202.json",
+      "sha256": "bb16e53a6249ab7503f2307b172d5310776e7eb7acfe37f4e42181bee027f80e",
+      "pid": 202,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/210.json",
+      "sha256": "c20a2c6922fc23511106cf404229d3ff3a75d05c0f5c0a56cf4170038db47888",
+      "pid": 210,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/218.json",
+      "sha256": "e6601767d38996b2ed8b69073fbe2ee8cc571b447a58a21755b7385092fa0334",
+      "pid": 218,
+      "roots": 5,
+      "checkedMutations": 1676
+    },
+    {
+      "file": "cache-audit/finite/226.json",
+      "sha256": "0fd238508a148573fcc09e3d47ce077d4c45af416c384c6e4739317c4cfe8678",
+      "pid": 226,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/234.json",
+      "sha256": "40c7e31fda6b000f3421f178edc0962147b35dcd73526adce4d670b9dd6b0ee2",
+      "pid": 234,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/242.json",
+      "sha256": "f3b42b1e1948ee38de31308fd71587fb141574863990454399117ba6db67e46a",
+      "pid": 242,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/250.json",
+      "sha256": "4105aceb226f8579238e09b18ca2ece11975f6aa8955d32c02f6ac7d483db50d",
+      "pid": 250,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/258.json",
+      "sha256": "4c49621b2da15863341d5517970a12a68049290c21ba2635e7ab02555142cec2",
+      "pid": 258,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/26.json",
+      "sha256": "049a97b7a2d3af538940de1ce2d4e6788e9a6100e5f81bb8874d5f68c79c3040",
+      "pid": 26,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/266.json",
+      "sha256": "0c9206e103920a56ce4bfa00eaf749d53c96e5f8e95355c9a6f5c78626616c42",
+      "pid": 266,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/274.json",
+      "sha256": "34695391e04a3d9f92f0849566817dee98e3730b5793fb8c8f3c2dcb5ae00826",
+      "pid": 274,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/282.json",
+      "sha256": "0b761bc49b450634165322790b69608df5a0605daf6f84e3e01fcb3440735332",
+      "pid": 282,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/290.json",
+      "sha256": "42acbb4228b30810960e5a3097dbf57a6cd648bfbf3649f19adf947b280b670d",
+      "pid": 290,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/298.json",
+      "sha256": "cb4b2198f60d3da4fdb863065225a115a8e2ed0793eea5f262bc8f9274da6d69",
+      "pid": 298,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/306.json",
+      "sha256": "330e5b53cfcf592a2494aae755676bc4b7227e3215fced395064d20792a6a2fa",
+      "pid": 306,
+      "roots": 5,
+      "checkedMutations": 1
+    },
+    {
+      "file": "cache-audit/finite/314.json",
+      "sha256": "dd4e8379c6fe55d77a3c96a675c44cc593c4d5f9e3684f23a1a7337f06021379",
+      "pid": 314,
+      "roots": 5,
+      "checkedMutations": 6
+    },
+    {
+      "file": "cache-audit/finite/322.json",
+      "sha256": "00c4922bfa616d7c64aa0236ad0c197ffcd48ff374c27782dbb0e713737ca62d",
+      "pid": 322,
+      "roots": 5,
+      "checkedMutations": 6
+    },
+    {
+      "file": "cache-audit/finite/330.json",
+      "sha256": "67f1cbdb408d3eb14a16aeba0eb2a03ce09ac339d8da588eb0141e1fa7afc5a6",
+      "pid": 330,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/338.json",
+      "sha256": "e4eecfa45d78b5218cf84bca489d06bec50126e0a7ec4d21fb2320733551df3b",
+      "pid": 338,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/34.json",
+      "sha256": "1ce747ada633636e7ab5054674efe0c34ae8ba7fb5d760ae2ba49dd2f3104baa",
+      "pid": 34,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/346.json",
+      "sha256": "e3486e4c79159768314419b5eeb452fac90f6f3483eaab3ec92bdec83ee0418e",
+      "pid": 346,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/354.json",
+      "sha256": "422fb7d3ab47114c9ba448dd06b68914c44ee1dbd0ca01867eaaaa2911dc2368",
+      "pid": 354,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/362.json",
+      "sha256": "c63c0e84d6a08ded0e793ab2066d61f7a2cead52203a67ed2c0d886f4f9d301a",
+      "pid": 362,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/370.json",
+      "sha256": "2a0561aff42c8aa401f84de6709a0e1599b31c1df0bd6bb6804c0ae95be1b259",
+      "pid": 370,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/378.json",
+      "sha256": "149789483a1e0099b337d65d9f17a7b11a14560a91cb3b5af80c3bb0206d40fc",
+      "pid": 378,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/386.json",
+      "sha256": "c91ea1153205106988ca322eed96e87d55f6c956fb1b38d1fd2eb30e0ff6e1a5",
+      "pid": 386,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/394.json",
+      "sha256": "8d2352eeb7fad2a55009165678f2365d6ffcb3e122cc1135e906365f92f017c2",
+      "pid": 394,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/402.json",
+      "sha256": "6a0c35da620b8af66faa1ada4728ef14a5530acff86f37f261055a9bfcfc33ba",
+      "pid": 402,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/410.json",
+      "sha256": "7dc68d183cc08591d589e005d57a38e4f39c2d0909959e436dbe5e04b54f7419",
+      "pid": 410,
+      "roots": 5,
+      "checkedMutations": 6
+    },
+    {
+      "file": "cache-audit/finite/418.json",
+      "sha256": "41d98eee9b24bc8937367199bc89738338ea3747315e836545f3529d04bd536f",
+      "pid": 418,
+      "roots": 5,
+      "checkedMutations": 7
+    },
+    {
+      "file": "cache-audit/finite/42.json",
+      "sha256": "ecb59072030ed1585e347d0fd35b06cdace8a09c01b4b571d271325194297322",
+      "pid": 42,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/426.json",
+      "sha256": "d57b43a3fe6de0a754b2ec75325d5fd7e579b940d2c3c70abe5569e7f14263e1",
+      "pid": 426,
+      "roots": 5,
+      "checkedMutations": 6
+    },
+    {
+      "file": "cache-audit/finite/434.json",
+      "sha256": "84ae954b5c03a792633a4d22b8b2fae46183dfc9dc141248be7e36ede5414818",
+      "pid": 434,
+      "roots": 5,
+      "checkedMutations": 6
+    },
+    {
+      "file": "cache-audit/finite/442.json",
+      "sha256": "0ae5c0346d6a11ba145e1f81ecdd42b9d507442c88afc4f7b85101e070d384c8",
+      "pid": 442,
+      "roots": 5,
+      "checkedMutations": 15
+    },
+    {
+      "file": "cache-audit/finite/451.json",
+      "sha256": "2faa27a61644d3cf07e40e638dd1e8384812b2459e2f61840133f5f2431670e7",
+      "pid": 451,
+      "roots": 5,
+      "checkedMutations": 7
+    },
+    {
+      "file": "cache-audit/finite/460.json",
+      "sha256": "61b719f72546cdb8698b70049bf3c556e7ec11b6b7356ed5fa19e50a31263ff7",
+      "pid": 460,
+      "roots": 5,
+      "checkedMutations": 3
+    },
+    {
+      "file": "cache-audit/finite/468.json",
+      "sha256": "89a3f861b9402144401771ae0c91b85d164aa47d0535de3e9c59b61f59677459",
+      "pid": 468,
+      "roots": 5,
+      "checkedMutations": 3
+    },
+    {
+      "file": "cache-audit/finite/476.json",
+      "sha256": "71612d8e7f8ec9f3fc181bfd9a8d7117eed27874a74c9ffb43b78da99f41607d",
+      "pid": 476,
+      "roots": 5,
+      "checkedMutations": 3
+    },
+    {
+      "file": "cache-audit/finite/484.json",
+      "sha256": "718c55d2b6194f8d461d4c1077ba177ec224c0f98fb98cc9bc1b3c09272620a7",
+      "pid": 484,
+      "roots": 5,
+      "checkedMutations": 5
+    },
+    {
+      "file": "cache-audit/finite/492.json",
+      "sha256": "954190173af66835edc5a2e09acefa1b9192be394fe3cab9515155fd7e345c9c",
+      "pid": 492,
+      "roots": 5,
+      "checkedMutations": 3
+    },
+    {
+      "file": "cache-audit/finite/50.json",
+      "sha256": "f07bea49b52d3f5c79f5f56be18a22536229e2b539ae2b3dd12e32baa5fc0f4e",
+      "pid": 50,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/500.json",
+      "sha256": "cbd89749ee2a76c9d47d99cc01019b7df19c5784b4abdadb3694f71dcd1cccd1",
+      "pid": 500,
+      "roots": 5,
+      "checkedMutations": 8
+    },
+    {
+      "file": "cache-audit/finite/508.json",
+      "sha256": "fa9d208523f8afae4931e36ed7dacd0060c1ad442cdd061fc981400dc36027ac",
+      "pid": 508,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/516.json",
+      "sha256": "38a522cda8025c5e9cb97b2912eaddd02e1c9942e310b8d8b0d1c24616092162",
+      "pid": 516,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/524.json",
+      "sha256": "7219e9321bfcf05b7c1c759f6edfad2234011006289dc410d169cecd91aaaacc",
+      "pid": 524,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/532.json",
+      "sha256": "6bd43555e40fdcac65da6f46e73bf9d2c772c69f5474e3c5e5b5cc7997e08ef5",
+      "pid": 532,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/540.json",
+      "sha256": "dfb2f70fadb1ccb62e7d5d1c52e1f62d50cf90a127ffe09c79bc2ab1bcd3b632",
+      "pid": 540,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/548.json",
+      "sha256": "ed7401ed37f2e6af1c770351115f50fda3b94f4c8304b3a94a0eb1d69b1a1a51",
+      "pid": 548,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/556.json",
+      "sha256": "dea0f5a5b416fcb5edf6391f8bfcb6ef3842ff9822a87c918675673e211fbe14",
+      "pid": 556,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/564.json",
+      "sha256": "68f63f90a8e82bcc79eaa71a65f67930b44c02beeb5f8019ecd34613e831f795",
+      "pid": 564,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/572.json",
+      "sha256": "4f126d4b67d03dc5e4dcc192670ef9fcae88c84872c7a2e7bc93ec09f371174b",
+      "pid": 572,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/58.json",
+      "sha256": "f14cb17ca3ca784a745f7db2fa6f3b4adbb8bec3367854a9d2a079344e47c240",
+      "pid": 58,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/580.json",
+      "sha256": "268804a1ff5cb3182c377144d85ff8e7a95002fd3b67f29df381f349ac9cb6a0",
+      "pid": 580,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/588.json",
+      "sha256": "7615d336a028b90da525e85321da2b31cd8b8403afeb55d6796fd05fb085543c",
+      "pid": 588,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/596.json",
+      "sha256": "d136a0adf43bee0d9ce52b1b744022d16eb3efde662d9ed5d0a6a6990088f44a",
+      "pid": 596,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/604.json",
+      "sha256": "ca1b48d4556286403b02ecf523a01b136244c9a48cf6e31dff5f0c081c4aa37a",
+      "pid": 604,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/612.json",
+      "sha256": "613979746c44ec4610bfd5c4cac123044faac04535f52151ef5beea7187782d6",
+      "pid": 612,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/620.json",
+      "sha256": "3d560d0e1f57bfe71245f0747d9eefe9a37bcc34963d7fcb9456235d8962c617",
+      "pid": 620,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/628.json",
+      "sha256": "56fa4ecbf611d635458eb14268909f7b7890da0d72689ccee5346bdf75c430b7",
+      "pid": 628,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/636.json",
+      "sha256": "d1751961dc89ca7e84c6b6c909910b596afde0748a314fa9a4425cc04afc7187",
+      "pid": 636,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/644.json",
+      "sha256": "ef2bc64ba44a90875485a3f7d7b52d3e3a9b162ee6ab3bfc1fb31725dfc03e99",
+      "pid": 644,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/652.json",
+      "sha256": "9a94b26b346f86c01e5a5c616d5d3d0335a4a42fcc3c0e4e2827ce0f39b53d12",
+      "pid": 652,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/66.json",
+      "sha256": "0c7c709c760d3f67ef3039e845eb4b2c6192cbcc976a82a6adc0d83652df3fd9",
+      "pid": 66,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/660.json",
+      "sha256": "10a30763a421854f8d3b21b32d233a5622d2138c568419ac3861198fec70c615",
+      "pid": 660,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/668.json",
+      "sha256": "ce09d665e8cf765215465da0dd986d4fd345dd9004552fba86faa2b42086c836",
+      "pid": 668,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/676.json",
+      "sha256": "61b8be8802ec791045dd1b00e3ebc0fa9cf98728ac4c6a8823e7bf13fdc2b215",
+      "pid": 676,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/684.json",
+      "sha256": "427fbd7615700417ae62cab624577d14fd40f6a77504e80187e745e580b0daab",
+      "pid": 684,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/692.json",
+      "sha256": "bb22af180c3a65b2b9f8ef2a65d6b698ec85a666fc18599a56c66361f2487ba7",
+      "pid": 692,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/700.json",
+      "sha256": "95102e7a617d9300693d4709c41aecb16ef4d8e471bb8994d1ee3edfdea8f82f",
+      "pid": 700,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/708.json",
+      "sha256": "f5e91ca11cf53c2866c8f2ff355b0510f6e77f9b5d441bc28fb4cb1e56de8e6b",
+      "pid": 708,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/716.json",
+      "sha256": "dc433558a72a00a732d538d144ca92eee537b19f3caae91179734f6b4526b0d7",
+      "pid": 716,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/724.json",
+      "sha256": "d894efec9b2826d3d9f042a5344f5855ca8c524e8aec77dfe02d47ac1d17e03f",
+      "pid": 724,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/732.json",
+      "sha256": "e542c894897c1b0ce7b7b1247d0ce6724d203b5d66b188141c9a370a53174630",
+      "pid": 732,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/74.json",
+      "sha256": "60ae488828d82495f0bc8bfebd326973ae0afa5ac15bd5234c5bcf82140f0e98",
+      "pid": 74,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/740.json",
+      "sha256": "371927cfbbec044c633d981d5926892ac6be41722697e54c1ff82198aec167ab",
+      "pid": 740,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/748.json",
+      "sha256": "37dcb458f1e5f577492a3c984ed689b53028c10296519c96b555003267bc2d94",
+      "pid": 748,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/756.json",
+      "sha256": "b6db86fb94ff9f1e234dbc1e71681e1c793419e8ecef9ab0517317b02887b1e3",
+      "pid": 756,
+      "roots": 5,
+      "checkedMutations": 6
+    },
+    {
+      "file": "cache-audit/finite/764.json",
+      "sha256": "4c8651cae65c1304e2fafd294ed24bd4adf6f4a48a432fe526b086635d559ec5",
+      "pid": 764,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/772.json",
+      "sha256": "327d79cdd036e43942646309fa8f76cd78eacd186ae92fbe11a569f198804505",
+      "pid": 772,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/780.json",
+      "sha256": "b22c498d7f596336eec5d32dc737cecb09c86b6b33c41e3c9d9a56773745c3aa",
+      "pid": 780,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/788.json",
+      "sha256": "95f8435c465d3deda7958391f107bca1ab3a1afaa02635d3c2ecb1979fb86735",
+      "pid": 788,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/796.json",
+      "sha256": "54faa5325f59e14e3cc030f9ad25289934105c4ab7d508d32a3e7a4eea3e7c85",
+      "pid": 796,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/804.json",
+      "sha256": "52338a86154f2068b025a47ec7139919fd6c4507936d726f40b2b18c0d72d33c",
+      "pid": 804,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/812.json",
+      "sha256": "beeeedc4aef1470cefedb326b3cf37d9870850d84241ee27e942316ea4d3494f",
+      "pid": 812,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/82.json",
+      "sha256": "a70aa3727a18a7c7609bbba1c7c0bce9dd77724e9d1ab1c749e1bb7265582c19",
+      "pid": 82,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/820.json",
+      "sha256": "9d8d9b821700307ec9116cbe481f02cb6caa6a1c6d84577f668c9c5a1a0f04e9",
+      "pid": 820,
+      "roots": 5,
+      "checkedMutations": 18
+    },
+    {
+      "file": "cache-audit/finite/828.json",
+      "sha256": "d4874c6d3046a58fdcaadd80c4f8ae1c7342c115820523043ba604a5aac6d9bb",
+      "pid": 828,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/836.json",
+      "sha256": "e4e69939066e3383249ec8e142b4d4bb05db82018ee01552a9140aff04864cd8",
+      "pid": 836,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/844.json",
+      "sha256": "5decd5adbdfe9e1768bc356dcd048e744872febd379791c3ff044fdc3df48470",
+      "pid": 844,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/852.json",
+      "sha256": "d7950b8a6abc5e1c95ca46c2bcdb397c28764927d6ab84d9a49a5e336ee4702e",
+      "pid": 852,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/860.json",
+      "sha256": "eec3f119ddc5f5959a2870f21ff8d640bac225b56742d1c96a99dada0025e30c",
+      "pid": 860,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/868.json",
+      "sha256": "47a6111407177c581100b976eaea4f3843cc6912da85f5ac879c4da106b3ae59",
+      "pid": 868,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/876.json",
+      "sha256": "ea3b926695865ffff39aec246bb183fdd94e9a039cf7bc9121cf55ed810f3920",
+      "pid": 876,
+      "roots": 5,
+      "checkedMutations": 18
+    },
+    {
+      "file": "cache-audit/finite/884.json",
+      "sha256": "9be7a45116c3c69916291826ea4c335efeb80404a503bf82619ca9a3f97d160d",
+      "pid": 884,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/892.json",
+      "sha256": "3db0b09726005ac53242212063868be7927ffd9becc3a27301ff7fbf8afea6f9",
+      "pid": 892,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/90.json",
+      "sha256": "5a87704868c46a7fe9c1865dd9406673a91398aea5581982f0c49143d66c97cf",
+      "pid": 90,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/900.json",
+      "sha256": "3e75b3e2fc48f3c6bb7a3edce5c1884cba44e2081b337d0a64b0a08c9935b498",
+      "pid": 900,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/908.json",
+      "sha256": "f8629ad0f0e4220f3ecc3f59a7fb4f71eba795727a2da1a23dc845b3b4d57f74",
+      "pid": 908,
+      "roots": 5,
+      "checkedMutations": 2
+    },
+    {
+      "file": "cache-audit/finite/916.json",
+      "sha256": "c7732c71cd92ab92c385bd60e04207801eb6e9a05ba3d705992fe64e2b5bd9e0",
+      "pid": 916,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/924.json",
+      "sha256": "c3ca5b4e83ccb3dfe16084f6a20c93bb2fa0587e353fc94fa7548867e39491ee",
+      "pid": 924,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/932.json",
+      "sha256": "b6054b8da62934d5a3cb2310c32849cd85e5e54cfe10de45942864c95bf5a04a",
+      "pid": 932,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/940.json",
+      "sha256": "0bd2ed700c56989228054ff0119cb9fe77f8bfbf4a5b5874f02f2989f2ec48f2",
+      "pid": 940,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/948.json",
+      "sha256": "9cc832812a78f28a44e8e540ce79bc97b45e44645b56387f0b7f8c8020ee9424",
+      "pid": 948,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/956.json",
+      "sha256": "8e24338227765588c3bfc06c83f02d92ca6c2ac6a65b359e84fd997f2d074b91",
+      "pid": 956,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/964.json",
+      "sha256": "e27cc01186799e5145c6c082048ca2bf4aaafed418064a3becbb6bdadd5aa5f3",
+      "pid": 964,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/972.json",
+      "sha256": "380a6518498275d5f816d1127fb404a2ca913fbab57ad3c1c83795c6b343170f",
+      "pid": 972,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/98.json",
+      "sha256": "b250d0a917cf8bca6300ce30b4249ca0096117c0703e4c7350c68db190ada69d",
+      "pid": 98,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/980.json",
+      "sha256": "decce0efeb500ab7af475e591466e0b33e84ebc5db7bddcff04ea685c11915e6",
+      "pid": 980,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/988.json",
+      "sha256": "fe42203cffdc179be0676f5b34cbda7d743d4d43d42f365b58d07a5e1c489635",
+      "pid": 988,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/finite/996.json",
+      "sha256": "ba4d7ae726fd531943d99cbb4988ea08786ca200571c4a0acc4861a0af0a1bed",
+      "pid": 996,
+      "roots": 5,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/strict/115.json",
+      "sha256": "df21417682ff1e9531df0230bdd32ee0d1213e9a36140b7a1c7bb6f82ffea04f",
+      "pid": 115,
+      "roots": 4,
+      "checkedMutations": 141
+    },
+    {
+      "file": "cache-audit/strict/12.json",
+      "sha256": "d2f717aa389c71139494ab0b2f53fd7d2b608c5c0a7fd98b00d3bfd32f22a372",
+      "pid": 12,
+      "roots": 4,
+      "checkedMutations": 7672
+    },
+    {
+      "file": "cache-audit/strict/123.json",
+      "sha256": "a6eebe2546da7b2a5356008b8aa264c822659565243e96303d4aa5c04417b507",
+      "pid": 123,
+      "roots": 4,
+      "checkedMutations": 347
+    },
+    {
+      "file": "cache-audit/strict/160.json",
+      "sha256": "c8dc20f75a13aabb22dbf932c5d4223dee0351c3cf1ebd35cf007c3a1b54c1c1",
+      "pid": 160,
+      "roots": 4,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/strict/35.json",
+      "sha256": "1a0d1282eb400b676a0cbccf6a44a7a9fd09a0da01adbebbc18c045b85f0297a",
+      "pid": 35,
+      "roots": 4,
+      "checkedMutations": 141
+    },
+    {
+      "file": "cache-audit/strict/43.json",
+      "sha256": "800c081d75c297af4590018629c0a0b26177ce23212338aed987b77d3c0246e0",
+      "pid": 43,
+      "roots": 4,
+      "checkedMutations": 350
+    },
+    {
+      "file": "cache-audit/strict/79.json",
+      "sha256": "6c7c78f4442b0260c056e54cf821b3f5c1962cf938d92f4ae36426c07de1ff64",
+      "pid": 79,
+      "roots": 4,
+      "checkedMutations": 0
+    },
+    {
+      "file": "cache-audit/strict/92.json",
+      "sha256": "c566e5d6160bbfe52d5ab948aa8a2e6a2950e578c6d4451961119ccffcb00279",
+      "pid": 92,
+      "roots": 4,
+      "checkedMutations": 7876
+    }
+  ]
+}

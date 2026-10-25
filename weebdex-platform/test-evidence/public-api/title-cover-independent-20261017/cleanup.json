@@ -1,0 +1,160 @@
+{
+  "postgres_cleanup": "verified_stopped",
+  "exit": 0,
+  "forced": false,
+  "closed_port": true,
+  "remaining_owned_processes": [],
+  "cleanup_errors": [],
+  "error": null,
+  "test_timeout_seconds": 180,
+  "captured_births": [
+    {
+      "pid": 11,
+      "start_ticks": 7128147,
+      "group": 11,
+      "session": 11
+    },
+    {
+      "pid": 20,
+      "start_ticks": 7128160,
+      "group": 11,
+      "session": 11
+    },
+    {
+      "pid": 21,
+      "start_ticks": 7128160,
+      "group": 11,
+      "session": 11
+    },
+    {
+      "pid": 22,
+      "start_ticks": 7128167,
+      "group": 11,
+      "session": 11
+    },
+    {
+      "pid": 23,
+      "start_ticks": 7128168,
+      "group": 11,
+      "session": 11
+    },
+    {
+      "pid": 24,
+      "start_ticks": 7128208,
+      "group": 24,
+      "session": 24
+    },
+    {
+      "pid": 25,
+      "start_ticks": 7128209,
+      "group": 25,
+      "session": 25
+    },
+    {
+      "pid": 26,
+      "start_ticks": 7128209,
+      "group": 26,
+      "session": 26
+    },
+    {
+      "pid": 28,
+      "start_ticks": 7128209,
+      "group": 28,
+      "session": 28
+    },
+    {
+      "pid": 29,
+      "start_ticks": 7128209,
+      "group": 29,
+      "session": 29
+    },
+    {
+      "pid": 30,
+      "start_ticks": 7128209,
+      "group": 30,
+      "session": 30
+    },
+    {
+      "pid": 31,
+      "start_ticks": 7128213,
+      "group": 31,
+      "session": 31
+    },
+    {
+      "pid": 32,
+      "start_ticks": 7128214,
+      "group": 32,
+      "session": 32
+    },
+    {
+      "pid": 33,
+      "start_ticks": 7128214,
+      "group": 33,
+      "session": 33
+    },
+    {
+      "pid": 35,
+      "start_ticks": 7128218,
+      "group": 35,
+      "session": 35
+    },
+    {
+      "pid": 41,
+      "start_ticks": 7128219,
+      "group": 41,
+      "session": 41
+    },
+    {
+      "pid": 44,
+      "start_ticks": 7128261,
+      "group": 44,
+      "session": 44
+    },
+    {
+      "pid": 45,
+      "start_ticks": 7128261,
+      "group": 45,
+      "session": 45
+    },
+    {
+      "pid": 46,
+      "start_ticks": 7128261,
+      "group": 46,
+      "session": 46
+    },
+    {
+      "pid": 47,
+      "start_ticks": 7128261,
+      "group": 47,
+      "session": 47
+    },
+    {
+      "pid": 48,
+      "start_ticks": 7128261,
+      "group": 48,
+      "session": 48
+    },
+    {
+      "pid": 49,
+      "start_ticks": 7128261,
+      "group": 49,
+      "session": 49
+    },
+    {
+      "pid": 64,
+      "start_ticks": 7128379,
+      "group": 64,
+      "session": 35
+    }
+  ],
+  "unconfirmed_births": [],
+  "unconfirmed_child_pids": [],
+  "test_returncode": 0,
+  "postgres_returncode": 0,
+  "startup_timeout_seconds": 10,
+  "cleanup_phase_seconds": [
+    15,
+    5,
+    5
+  ]
+}

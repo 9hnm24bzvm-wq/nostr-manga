@@ -1,0 +1,329 @@
+{
+  "schema": "owned-exact-upload-backend-integration-v1",
+  "started_at_utc": "2026-10-17T04:39:33.819274+00:00",
+  "command": [
+    "/bin/bash",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+    "/usr/bin/python3",
+    "-B",
+    "/workspace/shared/nostr-manga-recovery-20261017/run-exact-upload-integration.py"
+  ],
+  "source_pins": {
+    "scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+    "tests/ci/test_auth_fixture_guard_recovery.py": "6aba040535e2e1fae354aa8ddb7095ddfe51c3d564f2a3000c7d1fda2eaa227c"
+  },
+  "probe_sha256": "8b337cc56b02f62e2b7da2b8dd680d2cb82d06f4fc1ba08f91643539dec3fc6e",
+  "free_before": 26971152384,
+  "pass": false,
+  "observed_births": [
+    {
+      "pid": 5,
+      "ppid": 2,
+      "group": 5,
+      "session": 5,
+      "start_ticks": 538406,
+      "state": "S"
+    },
+    {
+      "pid": 8,
+      "ppid": 5,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 538410,
+      "state": "D"
+    },
+    {
+      "pid": 11,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 538411,
+      "state": "S"
+    },
+    {
+      "pid": 12,
+      "ppid": 11,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 538411,
+      "state": "R"
+    },
+    {
+      "pid": 16,
+      "ppid": 15,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 538415,
+      "state": "R"
+    },
+    {
+      "pid": 15,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 538415,
+      "state": "S"
+    },
+    {
+      "pid": 17,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 538424,
+      "state": "S"
+    },
+    {
+      "pid": 18,
+      "ppid": 17,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 538424,
+      "state": "R"
+    },
+    {
+      "pid": 21,
+      "ppid": 5,
+      "group": 21,
+      "session": 21,
+      "start_ticks": 538492,
+      "state": "Z"
+    },
+    {
+      "pid": 22,
+      "ppid": 21,
+      "group": 22,
+      "session": 22,
+      "start_ticks": 538493,
+      "state": "R"
+    },
+    {
+      "pid": 23,
+      "ppid": 21,
+      "group": 23,
+      "session": 23,
+      "start_ticks": 538493,
+      "state": "S"
+    },
+    {
+      "pid": 25,
+      "ppid": 21,
+      "group": 25,
+      "session": 25,
+      "start_ticks": 538493,
+      "state": "S"
+    },
+    {
+      "pid": 26,
+      "ppid": 21,
+      "group": 26,
+      "session": 26,
+      "start_ticks": 538493,
+      "state": "S"
+    },
+    {
+      "pid": 27,
+      "ppid": 21,
+      "group": 27,
+      "session": 27,
+      "start_ticks": 538493,
+      "state": "S"
+    },
+    {
+      "pid": 28,
+      "ppid": 5,
+      "group": 28,
+      "session": 28,
+      "start_ticks": 538497,
+      "state": "Z"
+    },
+    {
+      "pid": 30,
+      "ppid": 5,
+      "group": 30,
+      "session": 30,
+      "start_ticks": 538500,
+      "state": "Z"
+    },
+    {
+      "pid": 31,
+      "ppid": 21,
+      "group": 31,
+      "session": 31,
+      "start_ticks": 538500,
+      "state": "R"
+    },
+    {
+      "pid": 32,
+      "ppid": 5,
+      "group": 32,
+      "session": 32,
+      "start_ticks": 538503,
+      "state": "Z"
+    },
+    {
+      "pid": 38,
+      "ppid": 21,
+      "group": 38,
+      "session": 38,
+      "start_ticks": 538512,
+      "state": "R"
+    },
+    {
+      "pid": 39,
+      "ppid": 21,
+      "group": 39,
+      "session": 39,
+      "start_ticks": 538513,
+      "state": "R"
+    },
+    {
+      "pid": 41,
+      "ppid": 21,
+      "group": 41,
+      "session": 41,
+      "start_ticks": 538565,
+      "state": "S"
+    }
+  ],
+  "direct_child_pid": 5,
+  "direct_child_birth_confirmed": true,
+  "direct_child_birth": {
+    "pid": 5,
+    "ppid": 2,
+    "group": 5,
+    "session": 5,
+    "start_ticks": 538406,
+    "state": "R"
+  },
+  "exit_code": 101,
+  "terminal_errors": [
+    {
+      "observation": "exact_test_summary",
+      "class": "AssertionError",
+      "message": ""
+    }
+  ],
+  "remaining_saved_births": [],
+  "new_fixture_directories": [
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-im3u8p7k"
+  ],
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 101,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "error": null,
+    "test_timeout_seconds": 180,
+    "captured_births": [
+      {
+        "pid": 8,
+        "start_ticks": 538410,
+        "group": 8,
+        "session": 8
+      },
+      {
+        "pid": 17,
+        "start_ticks": 538424,
+        "group": 8,
+        "session": 8
+      },
+      {
+        "pid": 18,
+        "start_ticks": 538424,
+        "group": 8,
+        "session": 8
+      },
+      {
+        "pid": 21,
+        "start_ticks": 538492,
+        "group": 21,
+        "session": 21
+      },
+      {
+        "pid": 22,
+        "start_ticks": 538493,
+        "group": 22,
+        "session": 22
+      },
+      {
+        "pid": 23,
+        "start_ticks": 538493,
+        "group": 23,
+        "session": 23
+      },
+      {
+        "pid": 25,
+        "start_ticks": 538493,
+        "group": 25,
+        "session": 25
+      },
+      {
+        "pid": 26,
+        "start_ticks": 538493,
+        "group": 26,
+        "session": 26
+      },
+      {
+        "pid": 27,
+        "start_ticks": 538493,
+        "group": 27,
+        "session": 27
+      },
+      {
+        "pid": 28,
+        "start_ticks": 538497,
+        "group": 28,
+        "session": 28
+      },
+      {
+        "pid": 30,
+        "start_ticks": 538500,
+        "group": 30,
+        "session": 30
+      },
+      {
+        "pid": 32,
+        "start_ticks": 538503,
+        "group": 32,
+        "session": 32
+      },
+      {
+        "pid": 38,
+        "start_ticks": 538512,
+        "group": 38,
+        "session": 38
+      },
+      {
+        "pid": 41,
+        "start_ticks": 538565,
+        "group": 41,
+        "session": 41
+      }
+    ],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": [],
+    "test_returncode": 101,
+    "postgres_returncode": 0,
+    "startup_timeout_seconds": 10,
+    "cleanup_phase_seconds": [
+      15,
+      5,
+      5
+    ]
+  },
+  "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-im3u8p7k/cleanup.json",
+  "cleanup_sha256": "9db2c7ba02bd864fcda8e9908f6264b3ebf9552bd2f119d2d4f0adca5114346e",
+  "captured_births_absent": true,
+  "saved_probe_births_absent": true,
+  "port_refused": true,
+  "source_unchanged": true,
+  "compiled_source_receipt_sha256": "b625e57072798ebf9aea6bc27743809702448f24ba5eb0dd4e733453f5faf843",
+  "test_summary": null,
+  "ended_at_utc": "2026-10-17T04:39:36.835730+00:00",
+  "free_after": 26914459648,
+  "log_sha256": "0df8e047b1c3d8071b6b38c8be79b52679ed5031a62e97ec06eb0a3af2145068",
+  "receipt_persisted": true
+}

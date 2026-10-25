@@ -1,0 +1,1 @@
+export function retainedMangaIsEmpty(manga:unknown,nativeEmpty:boolean):boolean {if(!manga||typeof manga!=='object'||!('public_api'in manga))return nativeEmpty;const provenance=manga.public_api;if(!provenance||typeof provenance!=='object'||!('chapter_count'in provenance))return true;return !Number.isSafeInteger(provenance.chapter_count)||Number(provenance.chapter_count)<=0;}

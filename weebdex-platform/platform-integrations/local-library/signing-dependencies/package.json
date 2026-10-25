@@ -1,0 +1,8 @@
+{
+  "name": "weebdex-browser-local-signing-encoding",
+  "private": true,
+  "version": "0.0.1",
+  "dependencies": {
+    "@scure/base": "2.0.0"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "path": "/workspace/shared/nostr-manga-recovery-20261018/fixture-mixed-union-validation-worktree/manga-protocol-lab/vendor/pydeps",
+  "target": "/workspace/shared/nostr-manga-recovery-20261018/finite-fixture-worktree/.build/fixture-python-recovery/owned/site-packages",
+  "mode": 511,
+  "mtimeNs": 1792338282721412157,
+  "kind": "symlink",
+  "reason": "Unchanged test_disk_guard child explicitly chooses vendor/pydeps; existing target reused without installation"
+}

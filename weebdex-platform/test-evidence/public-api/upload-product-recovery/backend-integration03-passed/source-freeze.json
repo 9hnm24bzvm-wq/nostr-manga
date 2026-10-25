@@ -1,0 +1,64 @@
+{
+  "schema": "recovered-upload-genuine-http-result-v1",
+  "parent_commit": "c2c60221c27f532c060df86ce9683acfcaca65bb",
+  "product_source": "unchanged from parent",
+  "source_files": [
+    {
+      "path": "docs/verification/public-upload-signed-http-recovery-result.md",
+      "bytes": 2272,
+      "sha256": "3e3d0d130561ba1c54606515c3cae8331d0f3931e7662658d3727c1b3b23be4c"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-integration03-passed/integration02-independent-result.json",
+      "bytes": 2088,
+      "sha256": "07a88e7b21b0b9390ead3125b53423c8a2fb3ebad42253e793097f6fdebb54f3"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-integration03-passed/integration02-no-test-receipt.json",
+      "bytes": 8444,
+      "sha256": "cf1968cb9df528f4fb7f5dc0e98cde7fd93f320a7e9bbb10ca351bc487c7eda3"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-integration03-passed/integration02-no-test.log",
+      "bytes": 12,
+      "sha256": "a3eabcead1e7d806ad5228ed078c37d4c471332557187a726c825d9c20c3e75a"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-integration03-passed/integration03-independent-result.json",
+      "bytes": 3820,
+      "sha256": "83e5eca7eb365fe13ad900d54d0d05a757bf152d60c1270ba505a5c1b08b2266"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-integration03-passed/integration03-passed-receipt.json",
+      "bytes": 8212,
+      "sha256": "fdc7ecbbba5c39f41832083e3a20149f887aa7e559c8e3014a8056befb3700dd"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/backend-integration03-passed/integration03-passed.log",
+      "bytes": 194,
+      "sha256": "db76d9ed1a59ea3f2ed7bef9ac61a43f041e001976af2dede917acf16586123b"
+    }
+  ],
+  "result": {
+    "integration02": "no application test; outer observer failed, normal verified cleanup",
+    "integration03": {
+      "pass": 1,
+      "fail": 0,
+      "exit_code": 0,
+      "commit_http_status": 200,
+      "publication_status": "accepted_pending_projection",
+      "is_unavailable": true,
+      "source_pins_unchanged": 308,
+      "physical_teardown": "verified"
+    }
+  },
+  "limits": [
+    "One real Rust HTTP/DB integration function; no browser result inferred.",
+    "Original module operator publication uses backend absent; positive managed-group projection remains separate.",
+    "No actual202 or full40 qualification.",
+    "Matching application/provisioner binary rebuild is a separate prerequisite."
+  ],
+  "closed_path_count": 8
+}

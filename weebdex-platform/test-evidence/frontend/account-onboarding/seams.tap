@@ -1,0 +1,751 @@
+TAP version 13
+# (node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: browsing, login and shared layouts never mount the account-creation guide
+ok 1 - browsing, login and shared layouts never mount the account-creation guide
+  ---
+  duration_ms: 12.611736
+  type: 'test'
+  ...
+# Subtest: opening signup leaves the familiar form and does not show a welcome or write anything
+ok 2 - opening signup leaves the familiar form and does not show a welcome or write anything
+  ---
+  duration_ms: 164.53401
+  type: 'test'
+  ...
+# Subtest: existing account visiting signup bypasses creation and the welcome
+ok 3 - existing account visiting signup bypasses creation and the welcome
+  ---
+  duration_ms: 26.045619
+  type: 'test'
+  ...
+# Subtest: resuming an unsubmitted registration flow never counts as new-account success
+ok 4 - resuming an unsubmitted registration flow never counts as new-account success
+  ---
+  duration_ms: 20.124836
+  type: 'test'
+  ...
+# Subtest: accepted new-account submission shows welcome only after authoritative refresh and Continue navigates once
+ok 5 - accepted new-account submission shows welcome only after authoritative refresh and Continue navigates once
+  ---
+  duration_ms: 25.482856
+  type: 'test'
+  ...
+# Subtest: unaccepted registration response never opens the guide: Synthetic registration rejection {"error":{"reason":"That email or username is unavailable"}}
+ok 6 - unaccepted registration response never opens the guide: Synthetic registration rejection {"error":{"reason":"That email or username is unavailable"}}
+  ---
+  duration_ms: 22.547106
+  type: 'test'
+  ...
+# Subtest: unaccepted registration response never opens the guide: {"status":200,"data":{"error":{"reason":"Try another username"}}}
+ok 7 - unaccepted registration response never opens the guide: {"status":200,"data":{"error":{"reason":"Try another username"}}}
+  ---
+  duration_ms: 17.671295
+  type: 'test'
+  ...
+# Subtest: unaccepted registration response never opens the guide: {"status":200,"data":null}
+ok 8 - unaccepted registration response never opens the guide: {"status":200,"data":null}
+  ---
+  duration_ms: 17.821307
+  type: 'test'
+  ...
+# Subtest: unaccepted registration response never opens the guide: {"status":202,"data":{"session":{"active":true,"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}},"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}}}
+ok 9 - unaccepted registration response never opens the guide: {"status":202,"data":{"session":{"active":true,"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}},"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}}}
+  ---
+  duration_ms: 21.62778
+  type: 'test'
+  ...
+# Subtest: unaccepted registration response never opens the guide: Synthetic registration rejection {"session":{"active":true,"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}},"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}}
+ok 10 - unaccepted registration response never opens the guide: Synthetic registration rejection {"session":{"active":true,"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}},"identity":{"id":"synthetic-new-account","username":"ReaderExample","is_verified":false}}
+  ---
+  duration_ms: 14.922987
+  type: 'test'
+  ...
+# Subtest: a same-flow validation error stays on the editable registration form
+ok 11 - a same-flow validation error stays on the editable registration form
+  ---
+  duration_ms: 15.40441
+  type: 'test'
+  ...
+# Subtest: leaving signup while its request is pending suppresses late welcome: back
+ok 12 - leaving signup while its request is pending suppresses late welcome: back
+  ---
+  duration_ms: 13.845272
+  type: 'test'
+  ...
+# Subtest: leaving signup during session refresh suppresses late welcome: back
+ok 13 - leaving signup during session refresh suppresses late welcome: back
+  ---
+  duration_ms: 8.601897
+  type: 'test'
+  ...
+# Subtest: a detached welcome Continue cannot override newer navigation: back
+ok 14 - a detached welcome Continue cannot override newer navigation: back
+  ---
+  duration_ms: 8.301938
+  type: 'test'
+  ...
+# Subtest: leaving signup while its request is pending suppresses late welcome: navigation-start
+ok 15 - leaving signup while its request is pending suppresses late welcome: navigation-start
+  ---
+  duration_ms: 7.875276
+  type: 'test'
+  ...
+# Subtest: leaving signup during session refresh suppresses late welcome: navigation-start
+ok 16 - leaving signup during session refresh suppresses late welcome: navigation-start
+  ---
+  duration_ms: 6.186076
+  type: 'test'
+  ...
+# Subtest: a detached welcome Continue cannot override newer navigation: navigation-start
+ok 17 - a detached welcome Continue cannot override newer navigation: navigation-start
+  ---
+  duration_ms: 9.043585
+  type: 'test'
+  ...
+# Subtest: leaving signup while its request is pending suppresses late welcome: destroy
+ok 18 - leaving signup while its request is pending suppresses late welcome: destroy
+  ---
+  duration_ms: 7.541912
+  type: 'test'
+  ...
+# Subtest: leaving signup during session refresh suppresses late welcome: destroy
+ok 19 - leaving signup during session refresh suppresses late welcome: destroy
+  ---
+  duration_ms: 7.805152
+  type: 'test'
+  ...
+# Subtest: a detached welcome Continue cannot override newer navigation: destroy
+ok 20 - a detached welcome Continue cannot override newer navigation: destroy
+  ---
+  duration_ms: 6.35787
+  type: 'test'
+  ...
+# Subtest: failed session refresh never announces a newly usable account
+ok 21 - failed session refresh never announces a newly usable account
+  ---
+  duration_ms: 6.778983
+  type: 'test'
+  ...
+# Subtest: signup and Continue preserve only safe browsing targets: local path
+ok 22 - signup and Continue preserve only safe browsing targets: local path
+  ---
+  duration_ms: 8.344991
+  type: 'test'
+  ...
+# Subtest: signup and Continue preserve only safe browsing targets: same-origin absolute path
+ok 23 - signup and Continue preserve only safe browsing targets: same-origin absolute path
+  ---
+  duration_ms: 6.023525
+  type: 'test'
+  ...
+# Subtest: signup and Continue preserve only safe browsing targets: foreign origin
+ok 24 - signup and Continue preserve only safe browsing targets: foreign origin
+  ---
+  duration_ms: 9.335718
+  type: 'test'
+  ...
+# Subtest: signup and Continue preserve only safe browsing targets: protocol-relative foreign origin
+ok 25 - signup and Continue preserve only safe browsing targets: protocol-relative foreign origin
+  ---
+  duration_ms: 6.362718
+  type: 'test'
+  ...
+# Subtest: signup and Continue preserve only safe browsing targets: auth loop
+ok 26 - signup and Continue preserve only safe browsing targets: auth loop
+  ---
+  duration_ms: 6.550926
+  type: 'test'
+  ...
+# Subtest: signup and Continue preserve only safe browsing targets: login loop
+ok 27 - signup and Continue preserve only safe browsing targets: login loop
+  ---
+  duration_ms: 7.892972
+  type: 'test'
+  ...
+# Subtest: signup and Continue preserve only safe browsing targets: backslash authority
+ok 28 - signup and Continue preserve only safe browsing targets: backslash authority
+  ---
+  duration_ms: 7.423066
+  type: 'test'
+  ...
+# Subtest: refreshing successful signup bypasses the ephemeral guide without replaying the consumed flow
+ok 29 - refreshing successful signup bypasses the ephemeral guide without replaying the consumed flow
+  ---
+  duration_ms: 13.38458
+  type: 'test'
+  ...
+# Subtest: logout or account switching changes welcome authority and disables the captured Continue
+ok 30 - logout or account switching changes welcome authority and disables the captured Continue
+  ---
+  duration_ms: 7.857109
+  type: 'test'
+  ...
+# Subtest: email verification is optional and driven by accepted account data: false
+ok 31 - email verification is optional and driven by accepted account data: false
+  ---
+  duration_ms: 8.145055
+  type: 'test'
+  ...
+# Subtest: email verification is optional and driven by accepted account data: true
+ok 32 - email verification is optional and driven by accepted account data: true
+  ---
+  duration_ms: 8.626127
+  type: 'test'
+  ...
+# Subtest: welcome uses native, reachable keyboard controls, focus transfer and mobile touch targets
+ok 33 - welcome uses native, reachable keyboard controls, focus transfer and mobile touch targets
+  ---
+  duration_ms: 2.867334
+  type: 'test'
+  ...
+# Subtest: verification and session-recovery links retain the browsing target under the real app query-prefix behavior
+ok 34 - verification and session-recovery links retain the browsing target under the real app query-prefix behavior
+  ---
+  duration_ms: 1.693867
+  type: 'test'
+  ...
+# Subtest: guide login link is consumed once and retains literal percent/query/hash: /library?title=100%25&literal=%252F\#reading
+ok 35 - guide login link is consumed once and retains literal percent/query/hash: /library?title=100%25&literal=%252F\#reading
+  ---
+  duration_ms: 8.755739
+  type: 'test'
+  ...
+# Subtest: guide login link is consumed once and retains literal percent/query/hash: /search?title=100%&literal=%2F\#reading
+ok 36 - guide login link is consumed once and retains literal percent/query/hash: /search?title=100%&literal=%2F\#reading
+  ---
+  duration_ms: 9.010837
+  type: 'test'
+  ...
+# Subtest: login redirect consumer rejects a foreign target and never mounts a signup welcome
+ok 37 - login redirect consumer rejects a foreign target and never mounts a signup welcome
+  ---
+  duration_ms: 7.949566
+  type: 'test'
+  ...
+# Subtest: guide verification link is consumed once and retains literal percent/query/hash: /library?title=100%25&literal=%252F\#reading
+ok 38 - guide verification link is consumed once and retains literal percent/query/hash: /library?title=100%25&literal=%252F\#reading
+  ---
+  duration_ms: 7.528773
+  type: 'test'
+  ...
+# Subtest: guide verification link is consumed once and retains literal percent/query/hash: /search?title=100%&literal=%2F\#reading
+ok 39 - guide verification link is consumed once and retains literal percent/query/hash: /search?title=100%&literal=%2F\#reading
+  ---
+  duration_ms: 7.262209
+  type: 'test'
+  ...
+# Subtest: verification redirect consumer rejects a foreign target and never mounts a signup welcome
+ok 40 - verification redirect consumer rejects a foreign target and never mounts a signup welcome
+  ---
+  duration_ms: 5.818491
+  type: 'test'
+  ...
+# Subtest: Continue recovers from a navigation failure without resubmitting account creation
+ok 41 - Continue recovers from a navigation failure without resubmitting account creation
+  ---
+  duration_ms: 8.501753
+  type: 'test'
+  ...
+# Subtest: creating an account preserves existing library mode and saved manga: device
+ok 42 - creating an account preserves existing library mode and saved manga: device
+  ---
+  duration_ms: 6.659527
+  type: 'test'
+  ...
+# Subtest: creating an account preserves existing library mode and saved manga: account
+ok 43 - creating an account preserves existing library mode and saved manga: account
+  ---
+  duration_ms: 6.627889
+  type: 'test'
+  ...
+# Subtest: abandoning signup during initial form loading cannot reveal a late welcome: back
+ok 44 - abandoning signup during initial form loading cannot reveal a late welcome: back
+  ---
+  duration_ms: 6.118256
+  type: 'test'
+  ...
+# Subtest: abandoning signup during initial form loading cannot reveal a late welcome: navigation-start
+ok 45 - abandoning signup during initial form loading cannot reveal a late welcome: navigation-start
+  ---
+  duration_ms: 6.285312
+  type: 'test'
+  ...
+# Subtest: abandoning signup during initial form loading cannot reveal a late welcome: destroy
+ok 46 - abandoning signup during initial form loading cannot reveal a late welcome: destroy
+  ---
+  duration_ms: 5.856688
+  type: 'test'
+  ...
+# Subtest: fixed receipts retain no inspected values and persist each transition
+ok 47 - fixed receipts retain no inspected values and persist each transition
+  ---
+  duration_ms: 4.381265
+  type: 'test'
+  ...
+# Subtest: failed receipt keeps its failure and later checks pending
+ok 48 - failed receipt keeps its failure and later checks pending
+  ---
+  duration_ms: 0.942635
+  type: 'test'
+  ...
+# Subtest: missing password input creates no response waiter
+ok 49 - missing password input creates no response waiter
+  ---
+  duration_ms: 0.320053
+  type: 'test'
+  ...
+# Subtest: proved old waiter crash is handled after the repaired click failure
+ok 50 - proved old waiter crash is handled after the repaired click failure
+  ---
+  duration_ms: 310.760159
+  type: 'test'
+  ...
+# Subtest: actual journey failed device precondition remains failed without a reset waiter
+ok 51 - actual journey failed device precondition remains failed without a reset waiter
+  ---
+  duration_ms: 19.269329
+  type: 'test'
+  ...
+# Subtest: actual journey keeps every recovery assertion and all eighteen checkpoints
+ok 52 - actual journey keeps every recovery assertion and all eighteen checkpoints
+  ---
+  duration_ms: 10.657384
+  type: 'test'
+  ...
+# {
+#   "schema": 1,
+#   "baseline_reproduction": {
+#     "error_class": "TypeError",
+#     "property": "LimitHeight",
+#     "source": "frontend/src/lib/stores/prefs.ts"
+#   },
+#   "preferences_only_reproduction": {
+#     "error_class": "ReferenceError",
+#     "source": "platform-integrations/local-library/library.ts",
+#     "binding": "Session"
+#   },
+#   "results": [
+#     {
+#       "entry": "frontend/src/lib/stores/index.ts",
+#       "composed_modules_evaluated": 87,
+#       "passed": true
+#     },
+#     {
+#       "entry": "frontend/src/lib/API/index.ts",
+#       "composed_modules_evaluated": 87,
+#       "passed": true
+#     },
+#     {
+#       "entry": "frontend/src/lib/stores/Session.ts",
+#       "composed_modules_evaluated": 87,
+#       "passed": true
+#     },
+#     {
+#       "entry": "frontend/src/lib/index.ts",
+#       "composed_modules_evaluated": 87,
+#       "passed": true
+#     },
+#     {
+#       "entry": "platform-integrations/local-library/library.ts",
+#       "composed_modules_evaluated": 87,
+#       "passed": true
+#     }
+#   ],
+#   "package_browser_apis": "explicit stand-ins",
+#   "browser_e2e": false,
+#   "network": false,
+#   "original_files_written": false
+# }
+# (node:14) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: weebdex-platform/tests/ci/test_frontend_bootstrap.mjs
+ok 3 - weebdex-platform/tests/ci/test_frontend_bootstrap.mjs
+  ---
+  duration_ms: 837.153367
+  type: 'test'
+  ...
+# {"status":"passed","cases":132,"boundary":"Actual anchored overlays and pure helper/script seams, using explicit UI/browser stand-ins; no real browser, network, database, service or package install."}
+# (node:15) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:15) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+# Subtest: weebdex-platform/tests/ci/test_frontend_semantic_contracts.mjs
+ok 4 - weebdex-platform/tests/ci/test_frontend_semantic_contracts.mjs
+  ---
+  duration_ms: 534.639223
+  type: 'test'
+  ...
+# Subtest: production native Settings tabs own management and preserve account/client protections
+ok 55 - production native Settings tabs own management and preserve account/client protections
+  ---
+  duration_ms: 2.636342
+  type: 'test'
+  ...
+# Subtest: real native Settings pages retain failed-scope backups without accordions or routine keys
+ok 56 - real native Settings pages retain failed-scope backups without accordions or routine keys
+  ---
+  duration_ms: 85.44255
+  type: 'test'
+  ...
+# Subtest: storage open failure never hides the mode, backup or recovery page
+ok 57 - storage open failure never hides the mode, backup or recovery page
+  ---
+  duration_ms: 9.831036
+  type: 'test'
+  ...
+# Subtest: home to title A to title B to reader keeps one context and clears drafts/reviews synchronously
+ok 58 - home to title A to title B to reader keeps one context and clears drafts/reviews synchronously
+  ---
+  duration_ms: 36.142664
+  type: 'test'
+  ...
+# Subtest: late source read cannot attach after target navigation or disclosure dismissal
+ok 59 - late source read cannot attach after target navigation or disclosure dismissal
+  ---
+  duration_ms: 28.639338
+  type: 'test'
+  ...
+# (node:21) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: real compiled source-only title and reader mount without native account discussion context
+ok 60 - real compiled source-only title and reader mount without native account discussion context
+  ---
+  duration_ms: 43.82274
+  type: 'test'
+  ...
+# Subtest: actual compiled task Close joins original durable signing/transport fence at worker
+ok 61 - actual compiled task Close joins original durable signing/transport fence at worker
+  ---
+  duration_ms: 206.029765
+  type: 'test'
+  ...
+# Subtest: actual compiled task Escape joins original durable signing/transport fence at snapshot
+ok 62 - actual compiled task Escape joins original durable signing/transport fence at snapshot
+  ---
+  duration_ms: 105.496152
+  type: 'test'
+  ...
+# Subtest: actual compiled task Close joins original durable signing/transport fence at proof
+ok 63 - actual compiled task Close joins original durable signing/transport fence at proof
+  ---
+  duration_ms: 126.641507
+  type: 'test'
+  ...
+# Subtest: actual compiled task Escape joins original durable signing/transport fence at final-read
+ok 64 - actual compiled task Escape joins original durable signing/transport fence at final-read
+  ---
+  duration_ms: 90.841125
+  type: 'test'
+  ...
+# Subtest: actual compiled task route joins original durable signing/transport fence at snapshot
+ok 65 - actual compiled task route joins original durable signing/transport fence at snapshot
+  ---
+  duration_ms: 80.965009
+  type: 'test'
+  ...
+# Subtest: actual compiled task task-switch joins original durable signing/transport fence at snapshot
+ok 66 - actual compiled task task-switch joins original durable signing/transport fence at snapshot
+  ---
+  duration_ms: 84.073907
+  type: 'test'
+  ...
+# Subtest: actual recovery task Close stops a held fresh proof before transport
+ok 67 - actual recovery task Close stops a held fresh proof before transport
+  ---
+  duration_ms: 64.924512
+  type: 'test'
+  ...
+# Subtest: actual recovery task Escape stops a held fresh proof before transport
+ok 68 - actual recovery task Escape stops a held fresh proof before transport
+  ---
+  duration_ms: 79.817663
+  type: 'test'
+  ...
+# Subtest: closed Lists held read cannot change mode or navigate: Close
+ok 69 - closed Lists held read cannot change mode or navigate: Close
+  ---
+  duration_ms: 22.137814
+  type: 'test'
+  ...
+# Subtest: closed Lists held read cannot change mode or navigate: Escape
+ok 70 - closed Lists held read cannot change mode or navigate: Escape
+  ---
+  duration_ms: 16.430076
+  type: 'test'
+  ...
+# Subtest: closed Lists held read cannot change mode or navigate: route-owner
+ok 71 - closed Lists held read cannot change mode or navigate: route-owner
+  ---
+  duration_ms: 11.114879
+  type: 'test'
+  ...
+# Subtest: current metadata read remains inspectable while routine action rows hide raw proof
+ok 72 - current metadata read remains inspectable while routine action rows hide raw proof
+  ---
+  duration_ms: 44.570838
+  type: 'test'
+  ...
+# (node:23) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: native handler consumes the old flow, returns fresh serialized successor and rotates cookie
+ok 73 - native handler consumes the old flow, returns fresh serialized successor and rotates cookie
+  ---
+  duration_ms: 2.194589
+  type: 'test'
+  ...
+# Subtest: old consumed-id guard reproduces accepted native reset with no forced session read
+ok 74 - old consumed-id guard reproduces accepted native reset with no forced session read
+  ---
+  duration_ms: 123.788359
+  type: 'test'
+  ...
+# Subtest: native successor reaches actual forced Session read while UI remains restricted until authority confirmed
+ok 75 - native successor reaches actual forced Session read while UI remains restricted until authority confirmed
+  ---
+  duration_ms: 94.779008
+  type: 'test'
+  ...
+# Subtest: stale update response cannot start normal Session refresh: navigate
+ok 76 - stale update response cannot start normal Session refresh: navigate
+  ---
+  duration_ms: 60.480315
+  type: 'test'
+  ...
+# Subtest: stale update response cannot start normal Session refresh: startNavigation
+ok 77 - stale update response cannot start normal Session refresh: startNavigation
+  ---
+  duration_ms: 57.464872
+  type: 'test'
+  ...
+# Subtest: stale update response cannot start normal Session refresh: destroy
+ok 78 - stale update response cannot start normal Session refresh: destroy
+  ---
+  duration_ms: 55.80168
+  type: 'test'
+  ...
+# Subtest: stale update response cannot start normal Session refresh: replaceFlow
+ok 79 - stale update response cannot start normal Session refresh: replaceFlow
+  ---
+  duration_ms: 38.682797
+  type: 'test'
+  ...
+# Subtest: stale update response cannot start normal Session refresh: replaceForm
+ok 80 - stale update response cannot start normal Session refresh: replaceForm
+  ---
+  duration_ms: 37.36985
+  type: 'test'
+  ...
+# Subtest: stale forced refresh cannot complete old reset UI: navigate
+ok 81 - stale forced refresh cannot complete old reset UI: navigate
+  ---
+  duration_ms: 29.155492
+  type: 'test'
+  ...
+# Subtest: stale forced refresh cannot complete old reset UI: startNavigation
+ok 82 - stale forced refresh cannot complete old reset UI: startNavigation
+  ---
+  duration_ms: 31.26252
+  type: 'test'
+  ...
+# Subtest: stale forced refresh cannot complete old reset UI: destroy
+ok 83 - stale forced refresh cannot complete old reset UI: destroy
+  ---
+  duration_ms: 29.313265
+  type: 'test'
+  ...
+# Subtest: stale forced refresh cannot complete old reset UI: replaceFlow
+ok 84 - stale forced refresh cannot complete old reset UI: replaceFlow
+  ---
+  duration_ms: 24.554843
+  type: 'test'
+  ...
+# Subtest: stale forced refresh cannot complete old reset UI: replaceForm
+ok 85 - stale forced refresh cannot complete old reset UI: replaceForm
+  ---
+  duration_ms: 26.175602
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: missing id
+ok 86 - invalid acknowledged successor cannot grant authority or replay: missing id
+  ---
+  duration_ms: 31.424991
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: empty id
+ok 87 - invalid acknowledged successor cannot grant authority or replay: empty id
+  ---
+  duration_ms: 26.939848
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: consumed id
+ok 88 - invalid acknowledged successor cannot grant authority or replay: consumed id
+  ---
+  duration_ms: 22.507232
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: API type
+ok 89 - invalid acknowledged successor cannot grant authority or replay: API type
+  ---
+  duration_ms: 20.303902
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: different return target
+ok 90 - invalid acknowledged successor cannot grant authority or replay: different return target
+  ---
+  duration_ms: 20.971098
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: foreign origin
+ok 91 - invalid acknowledged successor cannot grant authority or replay: foreign origin
+  ---
+  duration_ms: 17.958559
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: wrong path
+ok 92 - invalid acknowledged successor cannot grant authority or replay: wrong path
+  ---
+  duration_ms: 17.346564
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: wrong action id
+ok 93 - invalid acknowledged successor cannot grant authority or replay: wrong action id
+  ---
+  duration_ms: 15.529504
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: extra action query
+ok 94 - invalid acknowledged successor cannot grant authority or replay: extra action query
+  ---
+  duration_ms: 19.165471
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: action fragment
+ok 95 - invalid acknowledged successor cannot grant authority or replay: action fragment
+  ---
+  duration_ms: 22.631191
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: action credentials
+ok 96 - invalid acknowledged successor cannot grant authority or replay: action credentials
+  ---
+  duration_ms: 27.186642
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: missing action
+ok 97 - invalid acknowledged successor cannot grant authority or replay: missing action
+  ---
+  duration_ms: 18.454184
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: wrong method
+ok 98 - invalid acknowledged successor cannot grant authority or replay: wrong method
+  ---
+  duration_ms: 19.997667
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: reused CSRF
+ok 99 - invalid acknowledged successor cannot grant authority or replay: reused CSRF
+  ---
+  duration_ms: 19.11798
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: empty CSRF
+ok 100 - invalid acknowledged successor cannot grant authority or replay: empty CSRF
+  ---
+  duration_ms: 20.170554
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: non-string CSRF
+ok 101 - invalid acknowledged successor cannot grant authority or replay: non-string CSRF
+  ---
+  duration_ms: 21.60071
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: missing password
+ok 102 - invalid acknowledged successor cannot grant authority or replay: missing password
+  ---
+  duration_ms: 20.117124
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: broader account node
+ok 103 - invalid acknowledged successor cannot grant authority or replay: broader account node
+  ---
+  duration_ms: 22.959041
+  type: 'test'
+  ...
+# Subtest: invalid acknowledged successor cannot grant authority or replay: missing UI
+ok 104 - invalid acknowledged successor cannot grant authority or replay: missing UI
+  ---
+  duration_ms: 19.666859
+  type: 'test'
+  ...
+# Subtest: unaccepted response remains restricted with no Session refresh: same-id non-success
+ok 105 - unaccepted response remains restricted with no Session refresh: same-id non-success
+  ---
+  duration_ms: 23.317892
+  type: 'test'
+  ...
+# Subtest: unaccepted response remains restricted with no Session refresh: foreign non-success
+ok 106 - unaccepted response remains restricted with no Session refresh: foreign non-success
+  ---
+  duration_ms: 17.551747
+  type: 'test'
+  ...
+# Subtest: unaccepted response remains restricted with no Session refresh: non-200 success
+ok 107 - unaccepted response remains restricted with no Session refresh: non-200 success
+  ---
+  duration_ms: 17.746226
+  type: 'test'
+  ...
+# Subtest: unaccepted response remains restricted with no Session refresh: empty response
+ok 108 - unaccepted response remains restricted with no Session refresh: empty response
+  ---
+  duration_ms: 14.793275
+  type: 'test'
+  ...
+# Subtest: unaccepted response remains restricted with no Session refresh: same-id validation error
+ok 109 - unaccepted response remains restricted with no Session refresh: same-id validation error
+  ---
+  duration_ms: 18.677895
+  type: 'test'
+  ...
+# Subtest: unaccepted response remains restricted with no Session refresh: foreign validation error
+ok 110 - unaccepted response remains restricted with no Session refresh: foreign validation error
+  ---
+  duration_ms: 21.624757
+  type: 'test'
+  ...
+# Subtest: unaccepted response remains restricted with no Session refresh: broader validation error
+ok 111 - unaccepted response remains restricted with no Session refresh: broader validation error
+  ---
+  duration_ms: 18.828978
+  type: 'test'
+  ...
+# Subtest: acknowledgement alone cannot confirm a normal account: unauthorized
+ok 112 - acknowledgement alone cannot confirm a normal account: unauthorized
+  ---
+  duration_ms: 16.841085
+  type: 'test'
+  ...
+# Subtest: acknowledgement alone cannot confirm a normal account: still restricted
+ok 113 - acknowledgement alone cannot confirm a normal account: still restricted
+  ---
+  duration_ms: 21.359974
+  type: 'test'
+  ...
+# Subtest: acknowledgement alone cannot confirm a normal account: read failure
+ok 114 - acknowledgement alone cannot confirm a normal account: read failure
+  ---
+  duration_ms: 17.618066
+  type: 'test'
+  ...
+1..114
+# tests 114
+# suites 0
+# pass 114
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2767.34734

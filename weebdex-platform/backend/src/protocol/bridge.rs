@@ -121,6 +121,9 @@ pub async fn import_page(state: &AppState) -> ApiResult<ImportReport> {
         };
         tx.execute("INSERT INTO platform.protocol_import_status(event_id,source_version,source_visible,status,reason) VALUES($1,$2,$3,$4,$5) ON CONFLICT(event_id) DO UPDATE SET source_version=EXCLUDED.source_version,source_visible=EXCLUDED.source_visible,status=EXCLUDED.status,reason=EXCLUDED.reason,checked_at=clock_timestamp()",&[&source.event.id,&source.source_version,&source.visible,&status,&reason]).await?;
     }
+    // Parent/child source IDs are content hashes, not dependency order. Do this
+    // only after the whole page so a later parent can unblock an earlier child.
+    CatalogRepository::reconcile_protocol_upload_receipts(&tx).await?;
     let next = next_cursor(page.exhausted, page.next_after);
     tx.execute("UPDATE platform.protocol_import_cursor SET after_event=$1,completed_sweeps=completed_sweeps+$2,updated_at=clock_timestamp() WHERE singleton",&[&next,&i64::from(page.exhausted)]).await?;
     tx.commit().await?;
@@ -136,6 +139,9 @@ pub fn spawn_importer(state: AppState) -> JoinHandle<()> {
         loop {
             match import_page(&state).await {
                 Ok(report) => {
+                    if state.protocol.publication_runtime().await.is_ok() {
+                        if let Err(error) = super::list_aliases::import_page(&state).await { tracing::warn!(code=error.code,"public-library alias projection remains pending"); }
+                    }
                     if let Err(error) = super::covers::materialize_page(&state).await {
                         tracing::warn!(
                             code = error.code,

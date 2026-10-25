@@ -1,0 +1,80 @@
+{
+  "actual_synthetic_fixture_captures": 12,
+  "complete_desktop_captures": 8,
+  "partial_mobile_captures": 4,
+  "rows": [
+    {
+      "path": "screenshots/relocation-desktop-home.png",
+      "bytes": 168759,
+      "sha256": "b8556d6503d6e36b97cbbe9febf0d63034e232d26ed4118c193ef5251079e02b",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-desktop-home.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-library-settings.png",
+      "bytes": 91393,
+      "sha256": "8992789006e2f9bab14158b558cd7f1931d4a491a8809fdc18c142e851c85879",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-desktop-library-settings.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-public-identity.png",
+      "bytes": 68481,
+      "sha256": "00996a8c5eecdd0ab6b1c1f23ecb8ba4edb9d4476d0e5205859f1bba430b25a8",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-desktop-public-identity.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader-discussion.png",
+      "bytes": 45489,
+      "sha256": "3b9c231d83e92a2b1c2cd015a52ebcc6e60692f139d81370eed3f50be25d5041",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-desktop-reader-discussion.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader.png",
+      "bytes": 75661,
+      "sha256": "f34cfcdeff1b041633df56269c94a75c9376f7ad29ad861fbf0c0164afc914ac",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-desktop-reader.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-search.png",
+      "bytes": 109042,
+      "sha256": "2919672c94613b0fa36e29be40ac04508479a8683a78f6141b167079d96fad1c",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-desktop-search.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title-comments.png",
+      "bytes": 96952,
+      "sha256": "0f0ed6033ea1d44322ba8882a71eae548e3855358a1846df8156826f05f7a9ef",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-desktop-title-comments.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title.png",
+      "bytes": 90001,
+      "sha256": "e26b40b32bd140e07a5d89e9ad1da41cde3e1e1e85977471490ab70925c855f2",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-desktop-title.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-home.png",
+      "bytes": 123470,
+      "sha256": "9204b1b942a4b2f808118837c79ea46e78ed95dbb26e88573738efc2edab8f47",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-mobile-home.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-reader.png",
+      "bytes": 4017,
+      "sha256": "5e75ec8892ea0eb591cf80a2593b6c979cc42a51f8b51431e9f675dd6fbd0475",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-mobile-reader.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-search.png",
+      "bytes": 92865,
+      "sha256": "b4a28d845b5487bb4c372d3f0dfed5a97d2016756315a32059840e61a127b69d",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-mobile-search.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-title.png",
+      "bytes": 60328,
+      "sha256": "a85d7ad4c8fafa98f15dd0b8e6b99c4190af03cf7142a72fa753b6d981a8026e",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-4fe4ffa153a2-20261014/relocation-mobile-title.png"
+    }
+  ],
+  "separate_pixel_review_required": true
+}

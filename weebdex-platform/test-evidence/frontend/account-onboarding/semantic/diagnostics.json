@@ -1,0 +1,197 @@
+[
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ReportChapterCard.svelte",
+    "line": 7,
+    "column": 38,
+    "message": "This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/lib/components/ReportChapterCard.svelte",
+      "line": 7,
+      "column": 37,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ReportChapterCard.svelte",
+    "line": 8,
+    "column": 15,
+    "message": "This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/lib/components/ReportChapterCard.svelte",
+      "line": 8,
+      "column": 14,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ReportChapterCard.svelte",
+    "line": 9,
+    "column": 5,
+    "message": "This reference only captures the initial value of `chapter`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/lib/components/ReportChapterCard.svelte",
+      "line": 9,
+      "column": 4,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ui/toggle-group/toggle-group.svelte",
+    "line": 36,
+    "column": 3,
+    "message": "This reference only captures the initial value of `variant`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/lib/components/ui/toggle-group/toggle-group.svelte",
+      "line": 36,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ui/toggle-group/toggle-group.svelte",
+    "line": 37,
+    "column": 3,
+    "message": "This reference only captures the initial value of `size`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/lib/components/ui/toggle-group/toggle-group.svelte",
+      "line": 37,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ui/toggle-group/toggle-group.svelte",
+    "line": 38,
+    "column": 3,
+    "message": "This reference only captures the initial value of `spacing`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/lib/components/ui/toggle-group/toggle-group.svelte",
+      "line": 38,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/ChapterListFilter.svelte",
+    "line": 32,
+    "column": 59,
+    "message": "This reference only captures the initial value of `initialSearch`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/lib/components/ChapterListFilter.svelte",
+      "line": 32,
+      "column": 58,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/upload/UploadChapter.svelte",
+    "line": 33,
+    "column": 44,
+    "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/lib/components/upload/UploadChapter.svelte",
+      "line": 33,
+      "column": 43,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/lib/components/upload/UploadChapterEdit.svelte",
+    "line": 37,
+    "column": 46,
+    "message": "This reference only captures the initial value of `user`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/lib/components/upload/UploadChapterEdit.svelte",
+      "line": 37,
+      "column": 45,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/routes/(app)/group/[id]/Group.svelte",
+    "line": 47,
+    "column": 42,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/routes/(app)/group/[id]/Group.svelte",
+      "line": 47,
+      "column": 41,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/routes/(app)/title/MangaRelatedSection.svelte",
+    "line": 18,
+    "column": 49,
+    "message": "This reference only captures the initial value of `manga`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/routes/(app)/title/MangaRelatedSection.svelte",
+      "line": 18,
+      "column": 48,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+    "line": 12,
+    "column": 32,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "line": 12,
+      "column": 31,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+    "line": 13,
+    "column": 31,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a derived instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "line": 13,
+      "column": 30,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+    "line": 15,
+    "column": 61,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "line": 15,
+      "column": 60,
+      "name": null
+    }
+  },
+  {
+    "severity": "warning",
+    "projection_file": "src/routes/(app)/user/[id]/User.svelte",
+    "line": 45,
+    "column": 30,
+    "message": "This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?\nhttps://svelte.dev/e/state_referenced_locally",
+    "production_source_position": {
+      "source": "file:///workspace/scratch/3eafc9756ff3/account-onboarding-worktree/weebdex-platform/.build/onboarding-semantic-verified/production-composed/src/routes/(app)/user/[id]/User.svelte",
+      "line": 45,
+      "column": 29,
+      "name": null
+    }
+  }
+]

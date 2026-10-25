@@ -1,0 +1,79 @@
+{
+  "schema": "signed-title-metadata-frontend-v1",
+  "source_base": "62eafcdbfeebf8d1f0f9c3fd50ed50817d9b904a",
+  "backend_contract_review_target": "17dba08",
+  "finite": {
+    "total": 425,
+    "passed": 425,
+    "failed": 0,
+    "new_title_cases": 46,
+    "scope": "Finite explicit controller/transport stand-ins, actual composed-loader VM seam, public API/upload regressions, recipe ancestry and textual inventory; no feature-completeness count."
+  },
+  "strict": {
+    "initial": {
+      "exit_code": 1,
+      "errors": 4,
+      "warnings": 12,
+      "cause": "TS narrowing across never-returning const helper; fixed using an explicit never-returning function and captured stable request ID. No diagnostic suppression."
+    },
+    "intermediate": {
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 12
+    },
+    "final_enabled": {
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 12,
+      "canonical_files": 679,
+      "canonical_unchanged": true
+    },
+    "final_default": {
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 15,
+      "canonical_files": 679,
+      "canonical_unchanged": true
+    }
+  },
+  "initial_inventory_failure": {
+    "failed": 1,
+    "reason": "Five new exact signed-title route sources required explicit association with the retained 25-path original public manifest, preserving the two previously added group paths."
+  },
+  "direct_import_check": "Not qualification: Node direct import stopped at extensionless bundler module resolution; actual VM and composed compiler checks followed.",
+  "markup_preparation": {
+    "exit_code": 0,
+    "original_route_markup_unchanged": true,
+    "explicit_new_rendered_components": 3,
+    "global_rendered_parity_claimed": false,
+    "integration_manifest_sha256": "d460c5c934fb50e793bc3c1f93064b71b0e8f139dc3f692c82ec4527176372c8"
+  },
+  "limits": {
+    "json_request_bytes": 32768,
+    "unknown_mutation_replay": false,
+    "recovery_fence": "Per signer/service/catalogue/target sessionStorage marker; unknown creates also fence the new-draft key across route owners/reloads in that tab. No automatic reconciliation or browser-restart persistence claim."
+  },
+  "source_pins_sha256": "0f8f2b1a4633c592554ffa2027528d46c95573a1c16505535a37785d44f89a6f",
+  "initial_title_source_sha256": "2851419870f5582ccb4c1f548aa27b2b7831b2712b80655e7918c0feabfd206d",
+  "logs": {
+    "finite-initial.log": "3f073d153c73ee5a2b67989a2a8b4f9a738e1563a941ca40d3c79ad14e692a5e",
+    "finite-final.log": "38da841d3bd6fd2b294779fd87f2302409fccd516501b3bb8ef277b4fa35e3bd",
+    "api-manifest-initial.log": "e049fee12caf762dd0bafdd5d0ba64f647eb782dd1df0d23cc73912b1912af8d",
+    "strict-initial.log": "8340beaf2f61bc409afaba7ab7ba658f782416fece44d82695c6598852e711f6",
+    "strict-intermediate.log": "9e58d6d787c7d2cef0697aa195ebffb07ce873866e3b42d518ab11bf5fb25754",
+    "strict-enabled-final.log": "8b84b266e07a1fa63a7766091c1e1884eeb4e1c0ddc8d0002522f1819e48622d",
+    "strict-default-final.log": "94ea4c71cd8375cc58388fd70dfc98d7b5cd28f96a5e25e3f91f695b3ddeb5ea",
+    "direct-import-not-qualification.log": "97efacc36e75c99e96906b8422d387bb42e2478f136e3928840ef09b4bd528b5"
+  },
+  "browser_executed": false,
+  "live_http_executed": false,
+  "production_vite_build_executed_for_this_source": false,
+  "dependencies_downloaded": false,
+  "limitations": [
+    "Only metadata create/edit/submit/publish/reject are exposed. Cover/relationship/delete/lock controls remain absent.",
+    "Submission is disabled without an included same-language cover; only the server establishes actual original cover bytes.",
+    "Original accepted_pending_projection does not assert public readability.",
+    "Unknown mutation outcomes remain fenced; read-only reload does not pretend to reconcile them.",
+    "Private draft listing and the native navigation/administration surface remain separate work."
+  ]
+}

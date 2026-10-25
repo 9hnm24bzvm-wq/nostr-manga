@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "kind": "reviewed-public-language-composition-source-successor",
+  "reviewed_integration_commit": "9929324330a2da2b313c70a5130ce174e8e51080",
+  "historical_language_association": "language-source-successor.json",
+  "historical_language_association_sha256": "4f636eac0ba9a1598efbf24a4c59e2fb72295f2a8a0a73b5b37350a33ae1a402",
+  "prior_pinset_sha256": "d885d48f6816eb458566694c62fac617482ff4e757dd10a53a6e0e0693fd81cb",
+  "current_pinset_sha256": "0a9c9b85c074bd55a0587112b5b4aaa5cd6b2659b1d31c09a0caf6fe3c43ad8a",
+  "changes": [
+    {
+      "prior": {
+        "path": "weebdex-platform/platform-integrations/public-api/overlays.mjs",
+        "bytes": 9973,
+        "sha256": "a8e4d816b2733b11cbf0e82495a3fec369aca9c53ad748eef8867a8bb6b9c606"
+      },
+      "current": {
+        "path": "weebdex-platform/platform-integrations/public-api/overlays.mjs",
+        "bytes": 10784,
+        "sha256": "5d5eaeedfd462822091252b42b898ddd655a4534549e9b04a4d358be53e92bf0"
+      },
+      "reviewed_source_commit": "9929324330a2da2b313c70a5130ce174e8e51080",
+      "reason": "Bind the two exact reviewed public-language markup exception rows without permitting a general markup exception. No product behavior or execution receipt is substituted by this association.",
+      "reverse_edits": [
+        {
+          "successor": "// Exact reviewed ddb70e3 language selectors only; no general markup exception.\nconst publicLanguageScope={\"Public-only translated languages code entry preserves the native selector when disabled\":\"public_wire_translated_language_codes\",\"Public-only original languages code entry preserves the native selector when disabled\":\"public_wire_original_language_codes\"};\nexport const publicApiApprovedLanguageExceptions=patches.filter(entry=>Object.hasOwn(publicLanguageScope,entry.label)).map(entry=>({...entry,approved_public_language_exception:publicLanguageScope[entry.label]}));\n",
+          "predecessor": ""
+        },
+        {
+          "successor": "export function assertPublicApiExceptionScope(){if(publicApiApprovedLanguageExceptions.length!==2||hash(JSON.stringify(publicApiApprovedLanguageExceptions))!=='ac9258ef63975095fd13b567be619cc43ad4e5913244d2054f07312ce277c41d')throw Error('Public language exception scope changed');",
+          "predecessor": "export function assertPublicApiExceptionScope(){"
+        }
+      ]
+    }
+  ],
+  "browser_executed": false,
+  "hosted_executed": false,
+  "qualification_claim": "Source/evidence association only. Initial/workflow/integrated/language receipts and their execution claims remain historical. No current execution, binary, browser, HTTP, hosted-run or publication acceptance is established."
+}

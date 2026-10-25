@@ -1,0 +1,7 @@
+
+running 1 test
+test genuine_windows_uuid_views_dedup_visibility_rate_and_rollback ... Actual current-checkout popularity client: 18 observations, 22 requests, 16978 bytes, 252.578ms; explicit Node cookie jar, no browser claim
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.75s
+

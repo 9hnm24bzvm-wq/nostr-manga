@@ -1,0 +1,428 @@
+{
+  "schema": "reconstructed-public-upload-page-replacement-source-v1",
+  "base_commit": "456bcb039ef34ba95752a917ae1355ba733bd6cb",
+  "base_tree": "f4b915e2e86793af08360890b8fa74b09d77732c",
+  "source_basis": "New implementation on recovered e758 lineage; no lost-source byte-equivalence claim",
+  "source": [
+    {
+      "path": "backend/src/domains/uploads/sessions.rs",
+      "bytes": 72520,
+      "sha256": "5e55e9287ed4edcf3d20c8f2c5073ce8f59a0f8c3e55f468adb8268550ddc483",
+      "executable": false
+    },
+    {
+      "path": "backend/src/public_api/upload_extensions.rs",
+      "bytes": 19565,
+      "sha256": "e4c199e90d47ccd25966b586f9f5ee7b7b124c6d769a2b3f76938b27fbc9f87f",
+      "executable": false
+    },
+    {
+      "path": "backend/src/public_api/uploads.rs",
+      "bytes": 26184,
+      "sha256": "b7e5edcd1b194084cd4c3522b476a596d4192bcca5d5be01a27f69805e577585",
+      "executable": false
+    },
+    {
+      "path": "backend/src/router.rs",
+      "bytes": 27551,
+      "sha256": "be9ad36c15c4c2ed7b3b09b62d8ee053fabd3971dc322ef7375dc872240e0101",
+      "executable": false
+    },
+    {
+      "path": "backend/tests/public_uploads.rs",
+      "bytes": 54244,
+      "sha256": "c5dc225b21401a8b8c8c43c9df8af0a3c42c897e1bf26f3e0969bffc3126fa64",
+      "executable": false
+    },
+    {
+      "path": "platform-integrations/public-api/upload-anchors.json",
+      "bytes": 40679,
+      "sha256": "03c14c11efbbabbd6bdda98e6bf239c6c72c19e7b6d0bc7dece37d01a0e90c77",
+      "executable": false
+    },
+    {
+      "path": "platform-integrations/public-api/upload-client.ts",
+      "bytes": 65285,
+      "sha256": "3f4705526fe542f5631d35b57a5998c7376c8e924b8c7ccd5d69e9e7df24a7aa",
+      "executable": false
+    },
+    {
+      "path": "platform-integrations/public-api/upload-multipart.ts",
+      "bytes": 5322,
+      "sha256": "460b130db0e71ff98b85662129060e4a85c8ee9e502f161b9cd33873ffd6c7c0",
+      "executable": false
+    },
+    {
+      "path": "scripts/composed-upload-provenance.mjs",
+      "bytes": 3478,
+      "sha256": "1bd941913fd4f4d80784057ea7d531d73b9fb60e1a3abdce2e4b324971b09e00",
+      "executable": false
+    },
+    {
+      "path": "tests/ci/test_public_upload_adapter_recovery.mjs",
+      "bytes": 65879,
+      "sha256": "afb62f7c026b4f672b00e6faf174b931f7086c4a6160b1d1169b7202df6236ac",
+      "executable": false
+    },
+    {
+      "path": "tests/ci/test_public_upload_media_recovery.mjs",
+      "bytes": 25818,
+      "sha256": "b80f1c6394b6ce4aef04de28fbbd5fc17a67a81bbd0182ae30629ac6d23dbccc",
+      "executable": false
+    },
+    {
+      "path": "tests/ci/test_public_upload_overlay_recovery.mjs",
+      "bytes": 21335,
+      "sha256": "809b02a09756ff238b6c14cd02015b92fa5565f2ca16fbb894451bbd76c33ef6",
+      "executable": false
+    },
+    {
+      "path": "tests/ci/test_public_upload_provenance_recovery.mjs",
+      "bytes": 6396,
+      "sha256": "8a4905df4bb6aba5ee35dc85ed398f2155c9b04a18749eb06611b9330efcf98b",
+      "executable": false
+    },
+    {
+      "path": "tests/ci/test_public_upload_replacement_wire_recovery.mjs",
+      "bytes": 4723,
+      "sha256": "7a1787a62cdd7b99a10b193c72c2cf2c395531bb6fe3235c2cf8020385271cba",
+      "executable": false
+    },
+    {
+      "path": "docs/verification/public-upload-page-replacement-recovery.md",
+      "bytes": 5711,
+      "sha256": "a102b480a4c68fbb995eb71e0aca7eb5dfa461fb489e7bd7baf24e2a76fbe968",
+      "executable": false
+    }
+  ],
+  "evidence": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/adapter-final.log",
+      "bytes": 6414,
+      "sha256": "65523e63cf38af54b0399ce52eaacb00b7a02f296d9eb9a9dc1a51d29e8cf89f",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/adapter-result-review.json",
+      "bytes": 2306,
+      "sha256": "78416c4dcba018e2299126649d2b43b47afa88579c0b9689dafe4b238a406199",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/adapter-source-review.json",
+      "bytes": 4472,
+      "sha256": "7abf237027118c6676d1808255595bf2c798170d350faa5abc11d601cef8c0d0",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-compile-receipt.json",
+      "bytes": 79945,
+      "sha256": "809def827db838541385322c1be243f31a79de81618adcf880f84dcb31700b94",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-compile-result-review.json",
+      "bytes": 1591,
+      "sha256": "5ba0f97e68260526e3b7a8210390cedbbcab5bcb66a4719f5a128868bdf0ce13",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-compile.log",
+      "bytes": 33214,
+      "sha256": "75de556a15b0e84b602237a2a2646505248679dd37cea39546c8d02e23569ff4",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-four-pure-receipt.json",
+      "bytes": 3594,
+      "sha256": "fe011091a2a6d2c851bac6e6be763ac689675fee6c826bbbb6acf811f20b7867",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-four-pure-result-review.json",
+      "bytes": 2206,
+      "sha256": "2c6f2962f80f0af14826469519a20fb9d6274d5124a86e18e72afdf312b520b5",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-pure-01.log",
+      "bytes": 242,
+      "sha256": "c53b63e87b7a29e19d0035680fb5e5be53495265b223e0a5d5fbff744cba3649",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-pure-02.log",
+      "bytes": 217,
+      "sha256": "1fc4c83934130ab082883c7f452a4682ced9d3fee3201e7911c814a06c2f2c8b",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-pure-03.log",
+      "bytes": 211,
+      "sha256": "b193d0a7dfaaa1164c609ab236fbd62efeb8375a94ab8adb2bf38a12f19a5c09",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-pure-04.log",
+      "bytes": 215,
+      "sha256": "4cfec42dbdd7d81704924c76d674e7f79cf27f4139e4345bddd4d4d38c7fb037",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/backend-source-review.json",
+      "bytes": 3873,
+      "sha256": "dcadcd7279c41117bcdf2b8ad345b6ae1ab0b2fde0a2557b27343310f10236f7",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/bounded-lock-test_public_upload_adapter_recovery.mjs.retained",
+      "bytes": 65809,
+      "sha256": "65d968f594e277b2b6c69c73b65a2df835d1397e4194243ef9f0e447d1da66ed",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/bounded-lock-upload-client.ts.retained",
+      "bytes": 65259,
+      "sha256": "bb9003dfb24a7f567c9fa15bd90d7f59e2511528bde8968f722c2e27824da60c",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/media-wire-final.log",
+      "bytes": 4005,
+      "sha256": "126b6bac88f50100d4a7913fe0faab8d24ecc1fe8dc1a96909d9a059e5766a44",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/media-wire-result-review.json",
+      "bytes": 2168,
+      "sha256": "ec723ccc77a35e089a34e9115fc5fb1518949cd6cf682c414c6ee69b4bd09009",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/media-wire-source-review.json",
+      "bytes": 2762,
+      "sha256": "c173af08f31a1d49647c4bd583c7cfe017ce35f384d2f7da745b4832139f21e7",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/precompile-inventory-review.json",
+      "bytes": 1699,
+      "sha256": "bf180def6485620c5f47160ad087234b52fc4b7a3c214b2d9d7fcda304e63188",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/precompile-source-freeze.json.retained",
+      "bytes": 13307,
+      "sha256": "b9f9fb6e454ac459e27f8f303e28051cae64e63a056ed15e504f7440ff3e4b6d",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/prelock-test_public_upload_adapter_recovery.mjs.retained",
+      "bytes": 61036,
+      "sha256": "1a6cb32d0b5a875669ad1799200407ba7f4ee90f710dbe177a420c4a7034d4c8",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/prelock-upload-client.ts.retained",
+      "bytes": 63837,
+      "sha256": "6ed43e42c18aca7e6697af9bb31f511a0721acdbdd75ad1ec5b78b3e8dfeef3f",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/provenance-card-identity-final.log",
+      "bytes": 996,
+      "sha256": "0ae4cc03a1b3ce2ad9ce70f027ecb7ccea9cd3bc8546fba577eafe92b56a6f93",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/provenance-first.log",
+      "bytes": 993,
+      "sha256": "34c09b2e3f8d26220f02fb674368572d691a73cea28a0fa00ac9541cf96298f0",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/queued-lock-test_public_upload_adapter_recovery.mjs.retained",
+      "bytes": 65118,
+      "sha256": "e6abe7c9f73beea37a45bc82c47fe2fb8db596cfff31d8d28270989d2b3f65de",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/queued-lock-upload-client.ts.retained",
+      "bytes": 65121,
+      "sha256": "a671c14a34c33967d36f1b509e030e5c9b742b53d897ebeb8b08919c550225f9",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/ui-card-identity-final.log",
+      "bytes": 3905,
+      "sha256": "7660d675ca6aea52f2e6bf14362a9bae22b21d333d6cf007cf77181a18cc9e2f",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/ui-card-identity-result-review.json",
+      "bytes": 2107,
+      "sha256": "78d129fb0f0d0e796103bf1e13061d9e684f3d47b1f94f161be9aaacd8b54d8a",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/ui-card-identity-source-review.json",
+      "bytes": 2074,
+      "sha256": "52aa8de09a3228fcb7b4c74e73d8e3cff41fa2d3308315fd5d3943713afc2511",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/ui-first-overlay-test.mjs.retained",
+      "bytes": 21157,
+      "sha256": "e167de92e5ea61ddd45285c8cad8dc280bb905ff3ea6e8d1df367055234f1180",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/ui-first-result-review.json",
+      "bytes": 1652,
+      "sha256": "ddb2391956f6ece3ce77bfcec088467731f1ca734fb3c361582159ccd81fbf70",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/ui-first-source-review.json",
+      "bytes": 3251,
+      "sha256": "4e7ae1f0de4bd2c4d9e235c8b0e4cf2cc899606e5109054af29f12d910d0ee01",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/ui-first-upload-anchors.json.retained",
+      "bytes": 40546,
+      "sha256": "3c33f293d8d6892c4a3a05628bcc580df839d5f88a2798d1a93edffdfb5c3b4f",
+      "executable": false
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/page-replacement-source/ui-first.log",
+      "bytes": 3909,
+      "sha256": "5a24b169e3b7364528ed2bb321ae71affaa86b7cc539c481a123267dd60cb0e7",
+      "executable": false
+    }
+  ],
+  "protected_original_frontend": [
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapter.svelte",
+      "bytes": 9720,
+      "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "executable": false
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterPages.svelte",
+      "bytes": 17316,
+      "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "executable": false
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "bytes": 4915,
+      "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad",
+      "executable": false
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/upload/+page.svelte",
+      "bytes": 2204,
+      "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+      "executable": false
+    },
+    {
+      "path": "frontend/src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "bytes": 1671,
+      "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+      "executable": false
+    },
+    {
+      "path": "frontend/src/routes/(app)/title/[id]/upload/+layout.svelte",
+      "bytes": 469,
+      "sha256": "a6833f58f3069475244bedbeb29125540baca071c3e20a979321bc32f67b659c",
+      "executable": false
+    },
+    {
+      "path": "frontend/src/routes/(app)/chapter/[id]/edit/+layout.svelte",
+      "bytes": 205,
+      "sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+      "executable": false
+    },
+    {
+      "path": "frontend/src/lib/components/upload/UploadChapterGroups.svelte",
+      "bytes": 4673,
+      "sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a",
+      "executable": false
+    }
+  ],
+  "qualification": {
+    "final_source_mock_checks": 136,
+    "commands": [
+      {
+        "command": "node --test tests/ci/test_public_upload_overlay_recovery.mjs",
+        "tests": 35,
+        "exit_code": 0,
+        "log": "ui-card-identity-final.log"
+      },
+      {
+        "command": "node --test tests/ci/test_public_upload_provenance_recovery.mjs",
+        "tests": 12,
+        "exit_code": 0,
+        "log": "provenance-card-identity-final.log"
+      },
+      {
+        "command": "node --experimental-vm-modules --test tests/ci/test_public_upload_media_recovery.mjs tests/ci/test_public_upload_replacement_wire_recovery.mjs",
+        "tests": 32,
+        "exit_code": 0,
+        "log": "media-wire-final.log"
+      },
+      {
+        "command": "node --experimental-vm-modules --test tests/ci/test_public_upload_adapter_recovery.mjs",
+        "tests": 57,
+        "exit_code": 0,
+        "log": "adapter-final.log"
+      }
+    ],
+    "earlier_ui_and_provenance_35_plus_12": "Retained predecessor source/result only; not added to final136",
+    "backend_compile": {
+      "status": "PASS",
+      "exit_code": 0,
+      "command": [
+        "/workspace/shared/nostr-manga-recovery-20261017/toolchains/rustup/toolchains/1.90.0-x86_64-unknown-linux-gnu/bin/cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--manifest-path",
+        "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/backend/Cargo.toml",
+        "--lib",
+        "--test",
+        "public_uploads",
+        "--no-run",
+        "-j2"
+      ],
+      "receipt": "backend-compile-receipt.json",
+      "source_pins_unchanged": 308,
+      "separate_target": true,
+      "browser03_inputs_unchanged": true
+    },
+    "backend_four_pure_cases": {
+      "status": "PASS",
+      "tests": 4,
+      "exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "receipt": "backend-four-pure-receipt.json",
+      "scope": "Exact native/public version policy, canonical version parser, in-memory Axum multipart parser, exact public route selector. No DB/HTTP/browser fixture."
+    },
+    "actual_replacement_http_db": "Not run",
+    "new_frontend_strict_build_browser": "Not run",
+    "backend_compiled_ignored_integration": "exact_nostr_page_replacement_preserves_identity_order_and_authority_fences; authored and compiled, not executed"
+  },
+  "limits": [
+    "Exact-byte wire seam uses fake signer/fetch; no genuine NIP-98/network/decoder/browser/Web Lock result.",
+    "Backend authority recheck is source-reviewed; pre-request revocation assertions do not prove concurrent after-decode revocation.",
+    "Lost identical no-op without an original valid response remains unresolved and read-only.",
+    "Public chapter editing remains unavailable; no full40 or complete-parity claim.",
+    "Original083fb305 client was not saved and is not reconstructed as an exact historical blob.",
+    "Frozen browser03 source/output/approval are separate and unchanged."
+  ]
+}

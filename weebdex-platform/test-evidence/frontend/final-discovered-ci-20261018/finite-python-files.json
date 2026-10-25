@@ -1,0 +1,10 @@
+[
+  "weebdex-platform/tests/ci/test_auth_fixture_guard_recovery.py",
+  "weebdex-platform/tests/ci/test_browser_fixture_early_response_recovery.py",
+  "weebdex-platform/tests/ci/test_browser_fixture_pg_root_recovery.py",
+  "weebdex-platform/tests/ci/test_hosted_browser.py",
+  "weebdex-platform/tests/ci/test_journey_diagnostics.py",
+  "weebdex-platform/tests/ci/test_native_feed_diagnostics.py",
+  "weebdex-platform/tests/ci/test_public_upload_hosted_profile.py",
+  "weebdex-platform/tests/ci/test_runner_diagnostics.py"
+]

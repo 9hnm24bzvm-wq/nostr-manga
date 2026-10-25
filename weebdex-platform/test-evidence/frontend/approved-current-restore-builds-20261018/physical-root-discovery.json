@@ -1,0 +1,23 @@
+{
+  "roots": [
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/frontend/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/signer-host/weebdex-platform/.build/local-library-noble-2.0.1",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/signer-host/weebdex-platform/.build/local-signing-base-2.0.0"
+  ],
+  "primary_root_included": true,
+  "dependency_package_alias_roots": [
+    "@lucide/svelte",
+    "svelte-sonner",
+    "axios",
+    "http-status-codes",
+    "@noble/curves",
+    "@noble/hashes",
+    "@scure/base"
+  ],
+  "excluded_unexecuted_package_cache": [
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/yarn-bootstrap",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/yarn-cache",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/npm-cache"
+  ],
+  "source_config_sha256": "03a34343251e65b83fdc71388fcd2fabb1395d17f411182e0e56b766c8308160"
+}

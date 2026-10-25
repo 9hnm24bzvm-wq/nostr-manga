@@ -1,0 +1,28 @@
+{
+  "schema": "exact-public-chapter-volume-numbering-fix-v1",
+  "source_base": "0bbb4c00431c5b71f1d18151d4db6b13452076c8",
+  "before": {
+    "reproduced_cases": 4,
+    "transport_stand_in": true,
+    "problem": "Valid9.99999999999999999999 and10 both converted toNumber10, then wrong text ordering in both directions for chapter and volume."
+  },
+  "after": {
+    "finite_passed": 25,
+    "finite_failed": 0,
+    "preexisting_cases": 19,
+    "added_cases": 6,
+    "production_change": "Keep valid numbering as exact decimal strings and set the existing _sort_decimal metadata flag. Existing shared comparator already calls compareDecimal.",
+    "native_catalogue_module_changed": false,
+    "preserved": "Actual text secondary ties, stable public UUID ties, special/null keys after numerics in both directions, and existing gate-off orchestrator behavior."
+  },
+  "source_pins": {
+    "platform-integrations/public-api/library-catalogue.ts": "8127da1de74382e0a701f408917de951a47bf32b7be88d5b1e638bdb30de258b",
+    "platform-integrations/local-library/catalog.ts": "c43467046ba3010af1fefb56e7cc0661d2468fc62882f0c8725e3af627445676",
+    "tests/ci/test_public_library_catalogue.mjs": "14cb3ed3f9b74cd8e46dda25cf7726680da423ad68c3c98652a53ccaf7148cbc"
+  },
+  "finite_log_sha256": "e1d4ec73a1fcc5bf7ca3d358fc9f5d662bbd23e920bf3bb020c535fe02474512",
+  "browser_executed": false,
+  "live_http_executed": false,
+  "combined_strict_or_build_claimed": false,
+  "limitation": "Isolated source/finite regression fix atop the library worker branch; no combined integration, browser or live HTTP acceptance is inferred."
+}

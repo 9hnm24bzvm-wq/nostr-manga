@@ -1,0 +1,12 @@
+{
+  "command": [
+    "python3",
+    "weebdex-platform/tests/ci/test_hosted_browser.py",
+    "HostedBrowserSeams.test_recovery_browser_launch_requires_explicit_chromium_sandbox"
+  ],
+  "source": "1782ad19c3f6a79397efd5f8de2b6314a6b91a25",
+  "exit": 0,
+  "elapsedSeconds": 0.058,
+  "timeout": false,
+  "browserLaunched": false
+}

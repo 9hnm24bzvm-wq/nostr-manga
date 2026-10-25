@@ -1,0 +1,6133 @@
+{
+  "contract_version": 1,
+  "upstream_api_version": "5.13.1",
+  "openapi": "3.0.3",
+  "source_url": "https://gitlab.com/mangadex-pub/mangadex-api-docs/-/raw/60a3bb3c9f25675435a479c925d857015201739e/static/api.yaml",
+  "source_sha256": "004031ccdfc4b66727dd1f85d09b5300cf60235bbab2de6f6ea4816094bd6d33",
+  "source_bytes": 195189,
+  "public_base": "/api/v1",
+  "path_count": 80,
+  "operation_count": 113,
+  "schema_count": 102,
+  "reconstruction_state": "Reconstructed and unverified; all operation coverage pending until fresh implementation/tests",
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/ping",
+      "operation_id": "get-ping",
+      "tags": [
+        "Infrastructure"
+      ],
+      "parameters": [],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga",
+      "operation_id": "get-search-manga",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "title",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "authorOrArtist",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "authors[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "artists[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "year",
+          "in": "query",
+          "required": false,
+          "schema": {}
+        },
+        {
+          "name": "includedTags[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "includedTagsMode",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "AND",
+              "OR"
+            ],
+            "default": "AND"
+          }
+        },
+        {
+          "name": "excludedTags[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "excludedTagsMode",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "AND",
+              "OR"
+            ],
+            "default": "OR"
+          }
+        },
+        {
+          "name": "status[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ongoing",
+                "completed",
+                "hiatus",
+                "cancelled"
+              ]
+            }
+          }
+        },
+        {
+          "name": "originalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "excludedOriginalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "availableTranslatedLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "publicationDemographic[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "shounen",
+                "shoujo",
+                "josei",
+                "seinen",
+                "none"
+              ]
+            }
+          }
+        },
+        {
+          "name": "ids[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "contentRating[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "default": [
+              "safe",
+              "suggestive",
+              "erotica"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "safe",
+                "suggestive",
+                "erotica",
+                "pornographic"
+              ]
+            }
+          }
+        },
+        {
+          "name": "createdAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "updatedAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "default": {
+              "latestUploadedChapter": "desc"
+            },
+            "properties": [
+              "title",
+              "year",
+              "createdAt",
+              "updatedAt",
+              "latestUploadedChapter",
+              "followedCount",
+              "relevance",
+              "rating"
+            ]
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionManga",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "cover_art",
+                "author",
+                "artist",
+                "tag",
+                "creator"
+              ]
+            }
+          }
+        },
+        {
+          "name": "hasAvailableChapters",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1",
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "hasUnavailableChapters",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1",
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "group",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/manga",
+      "operation_id": "post-manga",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "schema_ref": "MangaCreate"
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/aggregate",
+      "operation_id": "get-manga-aggregate",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "translatedLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "groups[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "minLength": 36,
+              "maxLength": 36
+            }
+          }
+        },
+        {
+          "name": "includeUnavailable",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/recommendation",
+      "operation_id": "get-manga-recommendation",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionMangaRecommendation",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga"
+              ]
+            }
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "default": {
+              "score": "desc"
+            },
+            "properties": [
+              "score"
+            ]
+          }
+        },
+        {
+          "name": "contentRating[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "default": [
+              "safe",
+              "suggestive",
+              "erotica"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "safe",
+                "suggestive",
+                "erotica",
+                "pornographic"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}",
+      "operation_id": "get-manga-id",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionManga",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "cover_art",
+                "author",
+                "artist",
+                "tag",
+                "creator"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "PUT",
+      "path": "/manga/{id}",
+      "operation_id": "put-manga-id",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {}
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/manga/{id}",
+      "operation_id": "delete-manga-id",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "operation_id": "post-auth-login",
+      "tags": [
+        "Authentication"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "Login",
+          "properties": [
+            "username",
+            "email",
+            "password"
+          ],
+          "required": [
+            "password"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "401"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Nostr original admitted capability; no MangaDex OAuth. /auth/check must verify the real principal, never no-op."
+    },
+    {
+      "method": "GET",
+      "path": "/auth/check",
+      "operation_id": "get-auth-check",
+      "tags": [
+        "Authentication"
+      ],
+      "parameters": [],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Nostr original admitted capability; no MangaDex OAuth. /auth/check must verify the real principal, never no-op."
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "operation_id": "post-auth-logout",
+      "tags": [
+        "Authentication"
+      ],
+      "parameters": [],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "503"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Nostr original admitted capability; no MangaDex OAuth. /auth/check must verify the real principal, never no-op."
+    },
+    {
+      "method": "POST",
+      "path": "/auth/refresh",
+      "operation_id": "post-auth-refresh",
+      "tags": [
+        "Authentication"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "RefreshToken",
+          "properties": [
+            "token"
+          ],
+          "required": [
+            "token"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "401",
+        "403"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Nostr original admitted capability; no MangaDex OAuth. /auth/check must verify the real principal, never no-op."
+    },
+    {
+      "method": "GET",
+      "path": "/client",
+      "operation_id": "get-list-apiclients",
+      "tags": [
+        "ApiClient"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "state",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "requested",
+              "approved",
+              "rejected",
+              "autoapproved"
+            ]
+          }
+        },
+        {
+          "name": "name",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionApiClient",
+            "items": {
+              "type": "string",
+              "enum": [
+                "creator"
+              ]
+            }
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "default": {
+              "createdAt": "desc"
+            },
+            "properties": [
+              "name",
+              "createdAt",
+              "updatedAt"
+            ]
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/client",
+      "operation_id": "post-create-apiclient",
+      "tags": [
+        "ApiClient"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "ApiClientCreate",
+          "properties": [
+            "name",
+            "description",
+            "profile",
+            "version"
+          ],
+          "required": [
+            "name",
+            "profile"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/client/{id}",
+      "operation_id": "get-apiclient",
+      "tags": [
+        "ApiClient"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionApiClient",
+            "items": {
+              "type": "string",
+              "enum": [
+                "creator"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/client/{id}",
+      "operation_id": "post-edit-apiclient",
+      "tags": [
+        "ApiClient"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "ApiClientEdit",
+          "properties": [
+            "description",
+            "version"
+          ],
+          "required": [
+            "version"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/client/{id}",
+      "operation_id": "delete-apiclient",
+      "tags": [
+        "ApiClient"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "version",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/client/{id}/secret",
+      "operation_id": "get-apiclient-secret",
+      "tags": [
+        "ApiClient"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/client/{id}/secret",
+      "operation_id": "post-regenerate-apiclient-secret",
+      "tags": [
+        "ApiClient"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object"
+        }
+      },
+      "response_codes": [
+        "200",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/group",
+      "operation_id": "get-search-group",
+      "tags": [
+        "ScanlationGroup"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "ids[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "name",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "focusedLanguage",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionScanlationGroup",
+            "items": {
+              "type": "string",
+              "enum": [
+                "leader",
+                "member"
+              ]
+            }
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "default": {
+              "latestUploadedChapter": "desc"
+            },
+            "properties": [
+              "name",
+              "createdAt",
+              "updatedAt",
+              "followedCount",
+              "relevance"
+            ]
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/group",
+      "operation_id": "post-group",
+      "tags": [
+        "ScanlationGroup"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "CreateScanlationGroup",
+          "properties": [
+            "name",
+            "website",
+            "ircServer",
+            "ircChannel",
+            "discord",
+            "contactEmail",
+            "description",
+            "twitter",
+            "mangaUpdates",
+            "inactive",
+            "publishDelay"
+          ],
+          "required": [
+            "name"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/group/{id}",
+      "operation_id": "get-group-id",
+      "tags": [
+        "ScanlationGroup"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionScanlationGroup",
+            "items": {
+              "type": "string",
+              "enum": [
+                "leader",
+                "member"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "PUT",
+      "path": "/group/{id}",
+      "operation_id": "put-group-id",
+      "tags": [
+        "ScanlationGroup"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "ScanlationGroupEdit",
+          "properties": [
+            "name",
+            "leader",
+            "members",
+            "website",
+            "ircServer",
+            "ircChannel",
+            "discord",
+            "contactEmail",
+            "description",
+            "twitter",
+            "mangaUpdates",
+            "focusedLanguages",
+            "inactive",
+            "locked",
+            "publishDelay",
+            "version"
+          ],
+          "required": [
+            "version"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/group/{id}",
+      "operation_id": "delete-group-id",
+      "tags": [
+        "ScanlationGroup"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/group/{id}/follow",
+      "operation_id": "post-group-id-follow",
+      "tags": [
+        "ScanlationGroup"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/group/{id}/follow",
+      "operation_id": "delete-group-id-follow",
+      "tags": [
+        "ScanlationGroup"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/list",
+      "operation_id": "post-list",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "CustomListCreate",
+          "properties": [
+            "name",
+            "visibility",
+            "manga",
+            "version"
+          ],
+          "required": [
+            "name"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/list/{id}",
+      "operation_id": "get-list-id",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "PUT",
+      "path": "/list/{id}",
+      "operation_id": "put-list-id",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "CustomListEdit",
+          "properties": [
+            "name",
+            "visibility",
+            "manga",
+            "version"
+          ],
+          "required": [
+            "version"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/list/{id}",
+      "operation_id": "delete-list-id",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/list/{id}/follow",
+      "operation_id": "follow-list-id",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object"
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/list/{id}/follow",
+      "operation_id": "unfollow-list-id",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object"
+        }
+      },
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{id}/list/{listId}",
+      "operation_id": "post-manga-id-list-listId",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "listId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/manga/{id}/list/{listId}",
+      "operation_id": "delete-manga-id-list-listId",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "listId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/list",
+      "operation_id": "get-user-list",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/{id}/list",
+      "operation_id": "get-user-id-list",
+      "tags": [
+        "CustomList"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user",
+      "operation_id": "get-user",
+      "tags": [
+        "User"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "ids[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "username",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "properties": [
+              "username"
+            ]
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/{id}",
+      "operation_id": "get-user-id",
+      "tags": [
+        "User"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/user/{id}",
+      "operation_id": "delete-user-id",
+      "tags": [
+        "User"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/user/delete/{code}",
+      "operation_id": "post-user-delete-code",
+      "tags": [
+        "User"
+      ],
+      "parameters": [
+        {
+          "name": "code",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/chapter",
+      "operation_id": "get-chapter",
+      "tags": [
+        "Chapter"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "ids[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "title",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "groups[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "uploader",
+          "in": "query",
+          "required": false,
+          "schema": {}
+        },
+        {
+          "name": "manga",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "volume[]",
+          "in": "query",
+          "required": false,
+          "schema": {}
+        },
+        {
+          "name": "chapter",
+          "in": "query",
+          "required": false,
+          "schema": {}
+        },
+        {
+          "name": "translatedLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "originalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "excludedOriginalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "contentRating[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "default": [
+              "safe",
+              "suggestive",
+              "erotica"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "safe",
+                "suggestive",
+                "erotica",
+                "pornographic"
+              ]
+            }
+          }
+        },
+        {
+          "name": "excludedGroups[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "excludedUploaders[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "includeFutureUpdates",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "default": "1"
+          }
+        },
+        {
+          "name": "includeEmptyPages",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeFuturePublishAt",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeExternalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "externalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "excludeExternalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "includeUnavailable",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "default": "0"
+          }
+        },
+        {
+          "name": "createdAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "updatedAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "publishAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "properties": [
+              "createdAt",
+              "updatedAt",
+              "publishAt",
+              "readableAt",
+              "volume",
+              "chapter"
+            ]
+          }
+        },
+        {
+          "name": "includes",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "scanlation_group",
+                "user"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/chapter/{id}",
+      "operation_id": "get-chapter-id",
+      "tags": [
+        "Chapter"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionChapter",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "scanlation_group",
+                "user"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "PUT",
+      "path": "/chapter/{id}",
+      "operation_id": "put-chapter-id",
+      "tags": [
+        "Chapter"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "schema_ref": "ChapterEdit"
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/chapter/{id}",
+      "operation_id": "delete-chapter-id",
+      "tags": [
+        "Chapter"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/manga/feed",
+      "operation_id": "get-user-follows-manga-feed",
+      "tags": [
+        "Feed"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "default": 100
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "translatedLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "originalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "excludedOriginalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "contentRating[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "default": [
+              "safe",
+              "suggestive",
+              "erotica"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "safe",
+                "suggestive",
+                "erotica",
+                "pornographic"
+              ]
+            }
+          }
+        },
+        {
+          "name": "excludedGroups[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "excludedUploaders[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "includeFutureUpdates",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "default": "1"
+          }
+        },
+        {
+          "name": "externalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "excludeExternalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "createdAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "updatedAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "publishAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "properties": [
+              "createdAt",
+              "updatedAt",
+              "publishAt",
+              "readableAt",
+              "volume",
+              "chapter"
+            ]
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionChapter",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "scanlation_group",
+                "user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "includeEmptyPages",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeFuturePublishAt",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeExternalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeUnavailable",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "default": "0"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/list/{id}/feed",
+      "operation_id": "get-list-id-feed",
+      "tags": [
+        "Feed"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "default": 100
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "translatedLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "originalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "excludedOriginalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "contentRating[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "default": [
+              "safe",
+              "suggestive",
+              "erotica"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "safe",
+                "suggestive",
+                "erotica",
+                "pornographic"
+              ]
+            }
+          }
+        },
+        {
+          "name": "excludedGroups[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "excludedUploaders[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "includeFutureUpdates",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "default": "1"
+          }
+        },
+        {
+          "name": "externalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "excludeExternalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "createdAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "updatedAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "publishAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "properties": [
+              "createdAt",
+              "updatedAt",
+              "publishAt",
+              "readableAt",
+              "volume",
+              "chapter"
+            ]
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionChapter",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "scanlation_group",
+                "user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "includeEmptyPages",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeFuturePublishAt",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeExternalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeUnavailable",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "default": "0"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "401",
+        "403",
+        "404"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/manga/{id}/follow",
+      "operation_id": "delete-manga-id-follow",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{id}/follow",
+      "operation_id": "post-manga-id-follow",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/cover",
+      "operation_id": "get-cover",
+      "tags": [
+        "Cover"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "manga[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "ids[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "uploaders[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "locales[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "properties": [
+              "createdAt",
+              "updatedAt",
+              "volume"
+            ]
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionCoverArt",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "user"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/cover/{mangaOrCoverId}",
+      "operation_id": "upload-cover",
+      "tags": [
+        "Cover"
+      ],
+      "parameters": [
+        {
+          "name": "mangaOrCoverId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "multipart/form-data"
+          }
+        }
+      ],
+      "request_schemas": {
+        "multipart/form-data": {
+          "type": "object",
+          "properties": [
+            "file",
+            "volume",
+            "description",
+            "locale"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/cover/{mangaOrCoverId}",
+      "operation_id": "get-cover-id",
+      "tags": [
+        "Cover"
+      ],
+      "parameters": [
+        {
+          "name": "mangaOrCoverId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionCoverArt",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "user"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "PUT",
+      "path": "/cover/{mangaOrCoverId}",
+      "operation_id": "edit-cover",
+      "tags": [
+        "Cover"
+      ],
+      "parameters": [
+        {
+          "name": "mangaOrCoverId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "CoverEdit",
+          "properties": [
+            "volume",
+            "description",
+            "locale",
+            "version"
+          ],
+          "required": [
+            "version",
+            "volume"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/cover/{mangaOrCoverId}",
+      "operation_id": "delete-cover",
+      "tags": [
+        "Cover"
+      ],
+      "parameters": [
+        {
+          "name": "mangaOrCoverId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/author",
+      "operation_id": "get-author",
+      "tags": [
+        "Author"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "ids[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "name",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "properties": [
+              "name"
+            ]
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionAuthor",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/author",
+      "operation_id": "post-author",
+      "tags": [
+        "Author"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "AuthorCreate",
+          "properties": [
+            "name",
+            "biography",
+            "twitter",
+            "pixiv",
+            "melonBook",
+            "fanBox",
+            "booth",
+            "nicoVideo",
+            "skeb",
+            "fantia",
+            "tumblr",
+            "youtube",
+            "weibo",
+            "naver",
+            "website"
+          ],
+          "required": [
+            "name"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/author/{id}",
+      "operation_id": "get-author-id",
+      "tags": [
+        "Author"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionAuthor",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "PUT",
+      "path": "/author/{id}",
+      "operation_id": "put-author-id",
+      "tags": [
+        "Author"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "AuthorEdit",
+          "properties": [
+            "name",
+            "biography",
+            "twitter",
+            "pixiv",
+            "melonBook",
+            "fanBox",
+            "booth",
+            "nicoVideo",
+            "skeb",
+            "fantia",
+            "tumblr",
+            "youtube",
+            "weibo",
+            "naver",
+            "website",
+            "version"
+          ],
+          "required": [
+            "version"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/author/{id}",
+      "operation_id": "delete-author-id",
+      "tags": [
+        "Author"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/legacy/mapping",
+      "operation_id": "post-legacy-mapping",
+      "tags": [
+        "Legacy"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "MappingIdBody",
+          "properties": [
+            "type",
+            "ids"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/feed",
+      "operation_id": "get-manga-id-feed",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "externalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "excludeExternalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "default": 100
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "translatedLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "originalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "excludedOriginalLanguage[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "name": "contentRating[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "default": [
+              "safe",
+              "suggestive",
+              "erotica"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "safe",
+                "suggestive",
+                "erotica",
+                "pornographic"
+              ]
+            }
+          }
+        },
+        {
+          "name": "excludedGroups[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "excludedUploaders[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "includeFutureUpdates",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "default": "1"
+          }
+        },
+        {
+          "name": "createdAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "updatedAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "publishAtSince",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "properties": [
+              "createdAt",
+              "updatedAt",
+              "publishAt",
+              "readableAt",
+              "volume",
+              "chapter"
+            ]
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionChapter",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "scanlation_group",
+                "user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "includeEmptyPages",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeFuturePublishAt",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeExternalUrl",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "name": "includeUnavailable",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "default": "0"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/read",
+      "operation_id": "get-manga-chapter-readmarkers",
+      "tags": [
+        "ReadMarker"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{id}/read",
+      "operation_id": "post-manga-chapter-readmarkers",
+      "tags": [
+        "ReadMarker"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "updateHistory",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "ChapterReadMarkerBatch",
+          "properties": [
+            "chapterIdsRead",
+            "chapterIdsUnread"
+          ]
+        }
+      },
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/read",
+      "operation_id": "get-manga-chapter-readmarkers-2",
+      "tags": [
+        "ReadMarker"
+      ],
+      "parameters": [
+        {
+          "name": "ids[]",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "grouped",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "boolean"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/random",
+      "operation_id": "get-manga-random",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionManga",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "cover_art",
+                "author",
+                "artist",
+                "tag",
+                "creator"
+              ]
+            }
+          }
+        },
+        {
+          "name": "contentRating[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "default": [
+              "safe",
+              "suggestive",
+              "erotica"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "safe",
+                "suggestive",
+                "erotica",
+                "pornographic"
+              ]
+            }
+          }
+        },
+        {
+          "name": "includedTags[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "includedTagsMode",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "AND",
+              "OR"
+            ],
+            "default": "AND"
+          }
+        },
+        {
+          "name": "excludedTags[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        {
+          "name": "excludedTagsMode",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "AND",
+              "OR"
+            ],
+            "default": "OR"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/at-home/server/{chapterId}",
+      "operation_id": "get-at-home-server-chapterId",
+      "tags": [
+        "AtHome"
+      ],
+      "parameters": [
+        {
+          "name": "chapterId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "forcePort443",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/tag",
+      "operation_id": "get-manga-tag",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/me",
+      "operation_id": "get-user-me",
+      "tags": [
+        "User"
+      ],
+      "parameters": [],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/group",
+      "operation_id": "get-user-follows-group",
+      "tags": [
+        "Follows"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionScanlationGroup",
+            "items": {
+              "type": "string",
+              "enum": [
+                "leader",
+                "member"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/group/{id}",
+      "operation_id": "get-user-follows-group-id",
+      "tags": [
+        "Follows"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/user",
+      "operation_id": "get-user-follows-user",
+      "tags": [
+        "Follows"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/user/{id}",
+      "operation_id": "get-user-follows-user-id",
+      "tags": [
+        "Follows"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/manga",
+      "operation_id": "get-user-follows-manga",
+      "tags": [
+        "Follows"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionManga",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "cover_art",
+                "author",
+                "artist",
+                "tag",
+                "creator"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/manga/{id}",
+      "operation_id": "get-user-follows-manga-id",
+      "tags": [
+        "Follows"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/list",
+      "operation_id": "get-user-follows-list",
+      "tags": [
+        "Follows"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/list/{id}",
+      "operation_id": "get-user-follows-list-id",
+      "tags": [
+        "Follows"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/status",
+      "operation_id": "get-manga-status",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "reading",
+              "on_hold",
+              "plan_to_read",
+              "dropped",
+              "re_reading",
+              "completed"
+            ]
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/status",
+      "operation_id": "get-manga-id-status",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{id}/status",
+      "operation_id": "post-manga-id-status",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "UpdateMangaStatus",
+          "properties": [
+            "status"
+          ],
+          "required": [
+            "status"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/draft/{id}",
+      "operation_id": "get-manga-id-draft",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionManga",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "cover_art",
+                "author",
+                "artist",
+                "tag",
+                "creator"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/manga/draft/{id}/commit",
+      "operation_id": "commit-manga-draft",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "properties": [
+            "version"
+          ]
+        }
+      },
+      "response_codes": [
+        "201",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/draft",
+      "operation_id": "get-manga-drafts",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "state",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "submitted",
+              "rejected"
+            ]
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "default": {
+              "createdAt": "desc"
+            },
+            "properties": [
+              "title",
+              "year",
+              "createdAt",
+              "updatedAt"
+            ]
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionManga",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga",
+                "cover_art",
+                "author",
+                "artist",
+                "tag",
+                "creator"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/captcha/solve",
+      "operation_id": "post-captcha-solve",
+      "tags": [
+        "Captcha"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "properties": [
+            "captchaChallenge"
+          ],
+          "required": [
+            "captchaChallenge"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Provider-specific; local abuse-challenge adapter decision pending. Not exempt or implemented."
+    },
+    {
+      "method": "GET",
+      "path": "/report/reasons/{category}",
+      "operation_id": "get-report-reasons-by-category",
+      "tags": [
+        "Report"
+      ],
+      "parameters": [
+        {
+          "name": "category",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "manga",
+              "chapter",
+              "scanlation_group",
+              "user",
+              "author"
+            ]
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/report",
+      "operation_id": "get-reports",
+      "tags": [
+        "Report"
+      ],
+      "parameters": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        {
+          "name": "category",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "manga",
+              "chapter",
+              "scanlation_group",
+              "user",
+              "author"
+            ]
+          }
+        },
+        {
+          "name": "reasonId",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          }
+        },
+        {
+          "name": "objectId",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "minLength": 36,
+            "maxLength": 36
+          }
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "waiting",
+              "accepted",
+              "refused",
+              "autoresolved"
+            ]
+          }
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "default": {
+              "createdAt": "desc"
+            },
+            "properties": [
+              "createdAt"
+            ]
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionReport",
+            "items": {
+              "type": "string",
+              "enum": [
+                "user",
+                "reason"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/report",
+      "operation_id": "post-report",
+      "tags": [
+        "Report"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "properties": [
+            "category",
+            "reason",
+            "objectId",
+            "details"
+          ]
+        }
+      },
+      "response_codes": [
+        "201",
+        "400",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/upload",
+      "operation_id": "get-upload-session",
+      "tags": [
+        "Upload"
+      ],
+      "parameters": [],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/upload/begin",
+      "operation_id": "begin-upload-session",
+      "tags": [
+        "Upload"
+      ],
+      "parameters": [
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "BeginUploadSession",
+          "properties": [
+            "groups",
+            "manga"
+          ],
+          "required": [
+            "manga",
+            "groups"
+          ]
+        }
+      },
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/upload/begin/{chapterId}",
+      "operation_id": "begin-edit-session",
+      "tags": [
+        "Upload"
+      ],
+      "parameters": [
+        {
+          "name": "chapterId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "BeginEditSession",
+          "properties": [
+            "version"
+          ],
+          "required": [
+            "version"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "401"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/upload/{uploadSessionId}",
+      "operation_id": "put-upload-session-file",
+      "tags": [
+        "Upload"
+      ],
+      "parameters": [
+        {
+          "name": "uploadSessionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "multipart/form-data": {
+          "type": "object",
+          "properties": [
+            "file"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "400"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/upload/{uploadSessionId}",
+      "operation_id": "abandon-upload-session",
+      "tags": [
+        "Upload"
+      ],
+      "parameters": [
+        {
+          "name": "uploadSessionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/upload/{uploadSessionId}/commit",
+      "operation_id": "commit-upload-session",
+      "tags": [
+        "Upload"
+      ],
+      "parameters": [
+        {
+          "name": "uploadSessionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "schema_ref": "CommitUploadSession",
+          "properties": [
+            "chapterDraft",
+            "pageOrder",
+            "termsAccepted"
+          ]
+        }
+      },
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/upload/{uploadSessionId}/{uploadSessionFileId}",
+      "operation_id": "delete-uploaded-session-file",
+      "tags": [
+        "Upload"
+      ],
+      "parameters": [
+        {
+          "name": "uploadSessionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "uploadSessionFileId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/upload/{uploadSessionId}/batch",
+      "operation_id": "delete-uploaded-session-files",
+      "tags": [
+        "Upload"
+      ],
+      "parameters": [
+        {
+          "name": "uploadSessionId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid",
+            "minItems": 1
+          }
+        }
+      },
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/upload/check-approval-required",
+      "operation_id": "upload-check-approval-required",
+      "tags": [
+        "Upload"
+      ],
+      "parameters": [],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "properties": [
+            "manga",
+            "locale"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{mangaId}/relation",
+      "operation_id": "get-manga-relation",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "mangaId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "includes[]",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "array",
+            "schema_ref": "ReferenceExpansionMangaRelation",
+            "items": {
+              "type": "string",
+              "enum": [
+                "manga"
+              ]
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "400"
+      ],
+      "security": [],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{mangaId}/relation",
+      "operation_id": "post-manga-relation",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "mangaId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "Content-Type",
+          "in": "header",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "default": "application/json"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "schema_ref": "MangaRelationCreate"
+        }
+      },
+      "response_codes": [
+        "200",
+        "400",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/manga/{mangaId}/relation/{id}",
+      "operation_id": "delete-manga-relation-id",
+      "tags": [
+        "Manga"
+      ],
+      "parameters": [
+        {
+          "name": "mangaId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/rating",
+      "operation_id": "get-rating",
+      "tags": [
+        "Rating"
+      ],
+      "parameters": [
+        {
+          "name": "manga",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "POST",
+      "path": "/rating/{mangaId}",
+      "operation_id": "post-rating-manga-id",
+      "tags": [
+        "Rating"
+      ],
+      "parameters": [
+        {
+          "name": "mangaId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "properties": [
+            "rating"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/rating/{mangaId}",
+      "operation_id": "delete-rating-manga-id",
+      "tags": [
+        "Rating"
+      ],
+      "parameters": [
+        {
+          "name": "mangaId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/chapter/{uuid}",
+      "operation_id": "get-statistics-chapter-uuid",
+      "tags": [
+        "Statistics"
+      ],
+      "parameters": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/chapter",
+      "operation_id": "get-statistics-chapters",
+      "tags": [
+        "Statistics"
+      ],
+      "parameters": [
+        {
+          "name": "chapter[]",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/group/{uuid}",
+      "operation_id": "get-statistics-group-uuid",
+      "tags": [
+        "Statistics"
+      ],
+      "parameters": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/group",
+      "operation_id": "get-statistics-groups",
+      "tags": [
+        "Statistics"
+      ],
+      "parameters": [
+        {
+          "name": "group[]",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/manga/{uuid}",
+      "operation_id": "get-statistics-manga-uuid",
+      "tags": [
+        "Statistics"
+      ],
+      "parameters": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/manga",
+      "operation_id": "get-statistics-manga",
+      "tags": [
+        "Statistics"
+      ],
+      "parameters": [
+        {
+          "name": "manga[]",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": []
+    },
+    {
+      "method": "GET",
+      "path": "/settings/template",
+      "operation_id": "get-settings-template",
+      "tags": [
+        "Settings"
+      ],
+      "parameters": [],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Native preferences through explicit bound Nostr capability; upstream JSON schema semantics still required."
+    },
+    {
+      "method": "POST",
+      "path": "/settings/template",
+      "operation_id": "post-settings-template",
+      "tags": [
+        "Settings"
+      ],
+      "parameters": [],
+      "request_schemas": {
+        "application/json": {
+          "type": "object"
+        }
+      },
+      "response_codes": [
+        "200",
+        "403"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Native preferences through explicit bound Nostr capability; upstream JSON schema semantics still required."
+    },
+    {
+      "method": "GET",
+      "path": "/settings/template/{version}",
+      "operation_id": "get-settings-template-version",
+      "tags": [
+        "Settings"
+      ],
+      "parameters": [
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Native preferences through explicit bound Nostr capability; upstream JSON schema semantics still required."
+    },
+    {
+      "method": "GET",
+      "path": "/settings",
+      "operation_id": "get-settings",
+      "tags": [
+        "Settings"
+      ],
+      "parameters": [],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Native preferences through explicit bound Nostr capability; upstream JSON schema semantics still required."
+    },
+    {
+      "method": "POST",
+      "path": "/settings",
+      "operation_id": "post-settings",
+      "tags": [
+        "Settings"
+      ],
+      "parameters": [],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "properties": [
+            "settings",
+            "updatedAt"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Native preferences through explicit bound Nostr capability; upstream JSON schema semantics still required."
+    },
+    {
+      "method": "GET",
+      "path": "/user/history",
+      "operation_id": "get-reading-history",
+      "tags": [
+        "ReadMarker"
+      ],
+      "parameters": [],
+      "request_schemas": {},
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Original signed graph has no trustworthy per-read timestamp; do not invent history dates."
+    },
+    {
+      "method": "POST",
+      "path": "/forums/thread",
+      "operation_id": "forums-thread-create",
+      "tags": [
+        "Forums"
+      ],
+      "parameters": [],
+      "request_schemas": {
+        "application/json": {
+          "type": "object",
+          "properties": [
+            "type",
+            "id"
+          ]
+        }
+      },
+      "response_codes": [
+        "200",
+        "403",
+        "404"
+      ],
+      "security": [
+        {
+          "Bearer": []
+        }
+      ],
+      "coverage": "pending",
+      "evidence": [],
+      "intentional_adaptation": "Explicit native forum companion; native thread IDs are separate from upstream numeric forum IDs."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "source_commit": "11706deb4dce8ae374e05e878e7f06f0ecb9bae4",
+  "source_tree": "ef3034fa06a80b8ff096c9a7e5df6ed40e00285d",
+  "frontend_files": 425,
+  "pins": {
+    "index": "9951c0cc2dcb77f773261bf6ec878d3ff76cd9543fcdb4272df18f06b319bbc8",
+    "manifest": "a322cdc64952731b4ef7e3d7a1f33b2b8addb29c2526136c5f0d03c07eef34bf",
+    "normal": "276669a2c3dcb7827efce17cb627cb1b0e6cca74e6b662a2d2f43a88b8a18424",
+    "provisioner": "b0982ff2f08f325c60d502d206ef809340ae3d31450c9c180d7cc00cd439de12"
+  },
+  "sandbox_requested": true,
+  "full_suite_passed": false,
+  "receipt_hash_roles": [
+    {
+      "path": "runtime/result.json",
+      "sha256": "2e6e0df3aaaa30a3a9c89d8af531eb5f095a015491f440155b765a44f8a0ac3b"
+    },
+    {
+      "path": "runtime/offline-build.json",
+      "sha256": "ded793113d441350f97de2dc3ff34b0ef14d451cceeb2aded999c45bd0d19ce5"
+    },
+    {
+      "path": "runtime/stage.json",
+      "sha256": "7dc3a3e8e1328e941fb422abe977c9a91c1ce62d8f8f894bc9417a5ea0ba5b7f"
+    },
+    {
+      "path": "runtime/source-security-delta.json",
+      "sha256": "4ea7db7e210261c9968e9949c18e7a6805fbca1d61d17dbd5152e24fd08bd6c9"
+    },
+    {
+      "path": "runtime/desktop-preflight.json",
+      "sha256": "e6d329029407924df7eb2763cb3ad9245de7723de740379a9dfa83433ba847c4"
+    },
+    {
+      "path": "runtime/frozen-preparation-spec.json",
+      "sha256": "b474efec7b391aab05c17cc90032622db11c5f2d9c1fddf2c0693076f06558b7"
+    }
+  ]
+}

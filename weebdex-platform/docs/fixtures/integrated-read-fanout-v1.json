@@ -1,0 +1,659 @@
+{
+  "schema": "integrated-read-fanout-plan-v1",
+  "sourceCommit": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+  "status": "source-derived-plan-not-executed-app-load",
+  "dispatch_ready": false,
+  "browser_measured": false,
+  "capacity_qualified": false,
+  "default_api_calls_per_page": null,
+  "scope": "Request recipes under explicit finite fixture state. No rates, weight distribution, production origins or integrated pageview multiplier are inferred. Counts exclude conditional lanes unless explicitly included.",
+  "accounting": {
+    "one_permit_per_actual_http_attempt": true,
+    "read_only_post_queries_consume_permit": true,
+    "read_query_is_not_state_mutation": true,
+    "retry_attempts_consume_permit": true,
+    "redirects_must_not_escape_budget": true,
+    "default_device_progress_http_writes": 0,
+    "response_byte_caps_required_before_dispatch": true,
+    "byte_caps_and_latencies": "Must be explicit scenario admission inputs/actual observations, not invented from these source counts."
+  },
+  "endpoints": {
+    "chapter": {
+      "method": "GET",
+      "path": "/api/v1/chapter/{chapterUuid}",
+      "effect": "read",
+      "lane": "reader"
+    },
+    "manga_candidates": {
+      "method": "GET",
+      "path": "/api/v1/manga",
+      "effect": "read",
+      "query": "exact ids[] in batches<=100; includes[]=cover_art,author,artist",
+      "lane": "catalogue"
+    },
+    "forum_context": {
+      "method": "POST",
+      "path": "/api/v1/nostr/native-forum/contexts",
+      "effect": "read",
+      "body": "exact typed resources<=100; this POST is a read query",
+      "lane": "catalogue"
+    },
+    "at_home": {
+      "method": "GET",
+      "path": "/api/v1/at-home/server/{chapterUuid}",
+      "effect": "read",
+      "lane": "reader"
+    },
+    "aggregate": {
+      "method": "GET",
+      "path": "/api/v1/manga/{mangaUuid}/aggregate",
+      "effect": "read",
+      "lane": "reader"
+    },
+    "selector_page": {
+      "method": "GET",
+      "path": "/api/v1/chapter",
+      "effect": "read",
+      "query": "manga exact UUID; limit100; offset; actual selector language/group/preferences/includes",
+      "lane": "reader"
+    },
+    "manga_search": {
+      "method": "GET",
+      "path": "/api/v1/manga",
+      "effect": "read",
+      "query": "translated actual search filters, limit/offset/includes",
+      "lane": "catalogue"
+    },
+    "manga_tags": {
+      "method": "GET",
+      "path": "/api/v1/manga/tag",
+      "effect": "read",
+      "query": "limit100; page translated to offset",
+      "lane": "catalogue"
+    },
+    "original_image": {
+      "method": "GET",
+      "path": "{verifiedAtHomeBase}/data/{hash}/{filename}",
+      "effect": "media-read",
+      "urlSource": "actual validated atHomePages.public_url; do not synthesize hash/name",
+      "lane": "media"
+    },
+    "data_saver_image": {
+      "method": "GET",
+      "path": "{verifiedAtHomeBase}/data-saver/{hash}/{filename}",
+      "effect": "media-read",
+      "urlSource": "actual validated optimized page URL only",
+      "lane": "media"
+    },
+    "chapter_view": {
+      "method": "POST",
+      "path": "/api/v1/analytics/chapter/{chapterUuid}/views",
+      "effect": "analytics-write",
+      "lane": "analytics"
+    },
+    "scope": {
+      "method": "GET",
+      "path": "/api/protocol/capabilities",
+      "effect": "read",
+      "lane": "setup"
+    },
+    "session": {
+      "method": "GET",
+      "path": "/api/auth/check",
+      "effect": "read",
+      "lane": "setup"
+    },
+    "native_chapter": {
+      "method": "GET",
+      "path": "/api/chapter/{nativeId}",
+      "effect": "read",
+      "lane": "reader"
+    },
+    "native_aggregate": {
+      "method": "GET",
+      "path": "/api/manga/{nativeId}/aggregate",
+      "effect": "read",
+      "lane": "reader"
+    }
+  },
+  "scenarios": [
+    {
+      "id": "uuid-chapter-detail",
+      "entrypoint": "API.Chapter.Get(uuid)",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "visible embedded chapter; canonical UUID; successful responses; no ID alias lookup"
+      ],
+      "steps": [
+        {
+          "endpoint": "chapter",
+          "attempts": 1
+        },
+        {
+          "endpoint": "manga_candidates",
+          "attempts": 1
+        },
+        {
+          "endpoint": "forum_context",
+          "attempts": 1
+        },
+        {
+          "endpoint": "at_home",
+          "attempts": 1
+        }
+      ],
+      "expected_http_attempts": 4,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "Adapter core only; external/unavailable detail omits at_home and has 3 attempts.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-reader-cold-three-chapters",
+      "entrypoint": "/chapter/{uuid}/1",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "detail preconditions; fresh mounted reader, aggregate re-read required; same title has 3 matching chapters in one full page; standard tlang query; comments/media/analytics/bootstrap accounted separately"
+      ],
+      "steps": [
+        {
+          "endpoint": "chapter",
+          "attempts": 1
+        },
+        {
+          "endpoint": "manga_candidates",
+          "attempts": 1
+        },
+        {
+          "endpoint": "forum_context",
+          "attempts": 1
+        },
+        {
+          "endpoint": "at_home",
+          "attempts": 1
+        },
+        {
+          "endpoint": "aggregate",
+          "attempts": 1
+        },
+        {
+          "endpoint": "selector_page",
+          "attempts": 1
+        },
+        {
+          "endpoint": "manga_candidates",
+          "attempts": 1
+        },
+        {
+          "endpoint": "forum_context",
+          "attempts": 1
+        }
+      ],
+      "expected_http_attempts": 8,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "Successful source-derived eight-request recipe, not a measured mounted-browser count.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-reader-cold-101-chapters",
+      "entrypoint": "/chapter/{uuid}/1",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "detail preconditions; fresh mounted reader, aggregate re-read required; 101 matching chapters returned as 100+1; one parent; standard query; conditional lanes separate"
+      ],
+      "steps": [
+        {
+          "endpoint": "chapter",
+          "attempts": 1
+        },
+        {
+          "endpoint": "manga_candidates",
+          "attempts": 1
+        },
+        {
+          "endpoint": "forum_context",
+          "attempts": 1
+        },
+        {
+          "endpoint": "at_home",
+          "attempts": 1
+        },
+        {
+          "endpoint": "aggregate",
+          "attempts": 1
+        },
+        {
+          "endpoint": "selector_page",
+          "attempts": 1
+        },
+        {
+          "endpoint": "manga_candidates",
+          "attempts": 1
+        },
+        {
+          "endpoint": "forum_context",
+          "attempts": 1
+        },
+        {
+          "endpoint": "selector_page",
+          "attempts": 1
+        },
+        {
+          "endpoint": "manga_candidates",
+          "attempts": 1
+        },
+        {
+          "endpoint": "forum_context",
+          "attempts": 1
+        }
+      ],
+      "expected_http_attempts": 11,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-reader-same-title-new-mount",
+      "entrypoint": "next chapter route creates a new Reader.Provider mount on the same title",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "visible embedded chapter; new reader mount on same title; 3 matching selector chapters in one page; successful canonical UUID responses; conditional lanes separate"
+      ],
+      "steps": [
+        {
+          "endpoint": "chapter",
+          "attempts": 1
+        },
+        {
+          "endpoint": "manga_candidates",
+          "attempts": 1
+        },
+        {
+          "endpoint": "forum_context",
+          "attempts": 1
+        },
+        {
+          "endpoint": "at_home",
+          "attempts": 1
+        },
+        {
+          "endpoint": "aggregate",
+          "attempts": 1
+        },
+        {
+          "endpoint": "selector_page",
+          "attempts": 1
+        },
+        {
+          "endpoint": "manga_candidates",
+          "attempts": 1
+        },
+        {
+          "endpoint": "forum_context",
+          "attempts": 1
+        }
+      ],
+      "expected_http_attempts": 8,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "The mounted overlay removes canonical lastMangaId/module aggregate caching. Every new reader mount rechecks current selector; browser/image cache behavior is separate.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-reader-loaded-page-turn",
+      "entrypoint": "mounted reader next already-loaded page",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "same chapter already loaded; next page already has loaded Blob; preload explicitly 0 so no new neighbour is queued; do not navigate across chapters; no new comments/analytics/control action"
+      ],
+      "steps": [],
+      "expected_http_attempts": 0,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "URL/current-page change plus local debounced save adds no REST call.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-reader-one-image",
+      "entrypoint": "mounted reader loads one selected page",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "preload 0 explicitly selected; one uncached page; existing chapter DTO/at-home; no data-saver switch; no error/retry"
+      ],
+      "steps": [
+        {
+          "endpoint": "original_image",
+          "attempts": 1
+        }
+      ],
+      "expected_http_attempts": 1,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "Default prefetch is not assumed; each queued image and retry consumes its own permit.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-reader-image-failure-cycle",
+      "entrypoint": "one selected image cycle",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "preload 0 explicitly selected; one failed page; no manual retry; no navigation; initial attempt plus 3 automatic retries"
+      ],
+      "steps": [
+        {
+          "endpoint": "original_image",
+          "attempts": 4
+        }
+      ],
+      "expected_http_attempts": 4,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-image-failure",
+      "notes": "Source maxAttempts3 counts retries after initial attempt; all four errors remain failures.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-search-warm-tags",
+      "entrypoint": "one admitted /search onSearch callback",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "nonempty tag cache already ready; one explicit search; no stale callback/rerun/retry; covers/bootstrap separate"
+      ],
+      "steps": [
+        {
+          "endpoint": "manga_search",
+          "attempts": 1
+        }
+      ],
+      "expected_http_attempts": 1,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-search-cold-101-tags",
+      "entrypoint": "/search with cold filter tags",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "one admitted search; 101 actual tags returned 100+1; no concurrent populateTagList; successful pages; covers/bootstrap separate"
+      ],
+      "steps": [
+        {
+          "endpoint": "manga_tags",
+          "attempts": 2
+        },
+        {
+          "endpoint": "manga_search",
+          "attempts": 1
+        }
+      ],
+      "expected_http_attempts": 3,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "Tag/search reads may overlap in time; steps encode counts, not a total temporal order.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-library-empty",
+      "entrypoint": "one admitted /library MangaFollow.Search callback",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "verified device scope already ready; zero saved matching series; tag cache ready; no account mode"
+      ],
+      "steps": [],
+      "expected_http_attempts": 0,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "No global catalogue query is substituted for the empty saved set.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "uuid-library-101-saved",
+      "entrypoint": "one admitted /library MangaFollow.Search callback",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "verified device scope; 101 unique saved matching UUIDs; all visible; full ID query pages; tag cache ready; display limit 20"
+      ],
+      "steps": [
+        {
+          "endpoint": "manga_candidates",
+          "attempts": 2
+        }
+      ],
+      "expected_http_attempts": 2,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "All 101 candidates are hydrated before global sort/page; display 20 does not limit hydration to 20.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "device-progress-many-local-saves",
+      "entrypoint": "mounted reader local progress",
+      "profile": "public-uuid-device",
+      "preconditions": [
+        "device mode; verified or admitted cached UUID scope; changes coalesced 350 ms; no explicit publication; no account mode"
+      ],
+      "steps": [],
+      "expected_http_attempts": 0,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "Logical device saves are IndexedDB transactions, not HTTP writes or relay sync.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    },
+    {
+      "id": "native-reader-cold",
+      "entrypoint": "native /chapter/{nativeId}/1",
+      "profile": "native-device",
+      "preconditions": [
+        "native gate-off profile; visible chapter; fresh mounted reader with aggregate re-read; comments/media/analytics/bootstrap accounted separately"
+      ],
+      "steps": [
+        {
+          "endpoint": "native_chapter",
+          "attempts": 1
+        },
+        {
+          "endpoint": "native_aggregate",
+          "attempts": 1
+        }
+      ],
+      "expected_http_attempts": 2,
+      "expected_server_progress_writes": 0,
+      "outcome": "expected-success",
+      "notes": "Native API DTOs are already normalized; do not reuse this count for UUID profile.",
+      "logical_actions": 1,
+      "conditional_lanes_separate": true
+    }
+  ],
+  "conditional_lanes": [
+    {
+      "id": "shell-session",
+      "count": "one initialize call per fresh imported Session module; later explicit account refreshes separate",
+      "endpoints": [
+        "session"
+      ],
+      "source": "frontend/src/lib/stores/Session.ts"
+    },
+    {
+      "id": "catalogue-scope",
+      "count": "one coalesced in-flight capabilities check at openLibrary; online/manual re-verification may issue another",
+      "endpoints": [
+        "scope"
+      ],
+      "source": "platform-integrations/local-library/library.ts"
+    },
+    {
+      "id": "legacy-link",
+      "count": "non-UUID link: lazy native capabilities lookup plus POST/api/v1/legacy/resolve; canonical UUID recipes avoid it",
+      "source": "platform-integrations/public-api/site-client.ts"
+    },
+    {
+      "id": "tag-selector",
+      "count": "cold or empty cached tag groups: actual100-row pages, at least1, max100pages/10000tags; warm nonempty groups0; simultaneous calls are not promised single-flight",
+      "endpoints": [
+        "manga_tags"
+      ],
+      "source": "platform-integrations/frontend-overlays.mjs"
+    },
+    {
+      "id": "reader-selector",
+      "count": "optional standard aggregate1 plus each actual selector page1 plus ceil(unique parents on page/100) hydration GETs plus ceil(rows on page/100) forum POST queries; empty selector page1 with0 hydration; total budget10000chapters; every reader mount rechecks, with no cross-mount aggregate cache",
+      "source": "platform-integrations/public-api/site-client.ts"
+    },
+    {
+      "id": "reader-media",
+      "count": "one XHR per queued not-loaded/not-failed page, current and up to preload neighbours both directions; parallel preference bounds concurrency; each failure cycle permits initial+3 automatic retries, manual Retry starts a separate cycle; data-saver/layout/cache/disposal change actual demand",
+      "endpoints": [
+        "original_image",
+        "data_saver_image"
+      ],
+      "source": "frontend/src/lib/components/reader/reader-queue.svelte + frontend-overlays/public-api overlays"
+    },
+    {
+      "id": "view-observation",
+      "count": "at most1 attempted chapter-view POST per eligible mounted timer firing after1000ms when typed session marker absent and not bot; successful204 marks session, unconfirmed failure may be retried only by later remount",
+      "endpoints": [
+        "chapter_view"
+      ],
+      "source": "platform-integrations/public-api/anchors.json"
+    },
+    {
+      "id": "native-comments",
+      "count": "only actual native forum thread + mounted Comments: thread statistics GET once per changed successful thread cache; replies pages; signed-in own vote GET; explicit interactions separate",
+      "source": "frontend/src/lib/components/comments and public-api availability overlay"
+    },
+    {
+      "id": "cover-and-static-assets",
+      "count": "actual card ImageLoader covers, font/JS/CSS/document/service-worker requests depend on visibility/browser/cache/profile; byte and request observations must be recorded separately",
+      "source": "frontend/src/lib/components/MangaSearchEntryCard.svelte + public-api/media.ts"
+    },
+    {
+      "id": "account-or-relay",
+      "count": "gate-on account-library default is fenced; explicit bound-account Follow/status/rating or reviewed public publication are separately opted-in read/write workflows, never logical device progress fanout",
+      "source": "platform-integrations/public-api/library-staging.ts + local-library/publication.ts"
+    }
+  ],
+  "sourcePins": {
+    "weebdex-platform/platform-integrations/public-api/site-client.ts": "cd6379824dfa6218c5b5b373a36be80129f611bb235f81225bc62aab6f67ed00",
+    "weebdex-platform/platform-integrations/public-api/client.ts": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad",
+    "weebdex-platform/platform-integrations/public-api/query.ts": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193",
+    "weebdex-platform/platform-integrations/public-api/normalize.ts": "2e7aebbf1e1d7b090410598500356a75eefd819abb5c0efe8e39134975f6e39b",
+    "weebdex-platform/platform-integrations/public-api/media.ts": "85791b87e3703b80ed22b985946421c4a8830330c2ba402b6d558fbd33cca513",
+    "weebdex-platform/platform-integrations/public-api/library-catalogue.ts": "8127da1de74382e0a701f408917de951a47bf32b7be88d5b1e638bdb30de258b",
+    "weebdex-platform/platform-integrations/public-api/library-staging.ts": "b9418ece73a23f64580aa017013397a74a440f9d315070e70b9ffbe6bd810169",
+    "weebdex-platform/platform-integrations/public-api/overlays.mjs": "d84c9df12bd54bb78b076e4d753030768d11850e9823b455655eba2e73425b9c",
+    "weebdex-platform/platform-integrations/public-api/anchors.json": "f03ea5f6c0dd9fbac409211aaebae472d8f68909a93c06ab4c14d5a01c80edfa",
+    "weebdex-platform/platform-integrations/public-api/source-hashes.json": "151e2bee2232916a2446621a35379e2658bf273b12cecb0f2fcea2323e680844",
+    "weebdex-platform/platform-integrations/public-api/upload-overlays.mjs": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
+    "weebdex-platform/platform-integrations/frontend-overlays.mjs": "9afd0fb8e3ab74ba093ec036a245dc67f711fbaaf62d01a28310a4d300f7513b",
+    "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs": "ca00368c31284cf3e6a8733198de9b2e411883236be810cacff8ec501474f801",
+    "weebdex-platform/platform-integrations/local-library/overlays.mjs": "8ddfff15a60f1fe8d4921c654fee2eab4625b0fb7f37dcd7b8cfb288eab5f46d",
+    "weebdex-platform/platform-integrations/local-library/library.ts": "7a731e22f8242e278068779393ff1b3b75e3e9306d608598bdb066d5e18a3eef",
+    "weebdex-platform/platform-integrations/local-library/MangaFollow.ts": "c6b26e09d33ce9ef0dbc77593bfa9d87e27d6a24b2f5949452ce1f73e304e89a",
+    "weebdex-platform/platform-integrations/local-library/ChapterHistory.ts": "99fef1dedee26c196350aafe23496480512d75704f4a25bc3f72e22a1f4b78bf",
+    "weebdex-platform/platform-integrations/local-library/catalog.ts": "c43467046ba3010af1fefb56e7cc0661d2468fc62882f0c8725e3af627445676",
+    "weebdex-platform/platform-integrations/local-library/LibraryRuntime.svelte": "13e4f2677623ce83723cc49d5d5cc08f9319c60e0f047cca1627f108cae75fd8",
+    "weebdex-platform/frontend/src/lib/components/reader/reader-provider.svelte": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+    "weebdex-platform/frontend/src/lib/components/reader/reader-queue.svelte": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+    "weebdex-platform/frontend/src/lib/components/reader/reader-history.svelte": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "weebdex-platform/frontend/src/lib/components/reader/reader-analytics.svelte": "9df6d3c94b6f4908e4c3a8ea9d277c58fdc8dc3dff531dd11101fc285ef86917",
+    "weebdex-platform/frontend/src/lib/components/MangaSearch.svelte": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+    "weebdex-platform/frontend/src/lib/components/MangaSearchFilter.svelte": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+    "weebdex-platform/frontend/src/lib/stores/global.ts": "cb8a1eda7fae685c3fd62164080e3852a074406e98d1477acd494f76f0483671",
+    "weebdex-platform/frontend/src/lib/stores/Session.ts": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+    "weebdex-platform/frontend/src/lib/API/Auth.ts": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+    "weebdex-platform/frontend/src/routes/(app)/search/+page.svelte": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+    "weebdex-platform/frontend/src/routes/(app)/library/+page.svelte": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "weebdex-platform/frontend/src/routes/(app)/chapter/[id]/[page]/+page.ts": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
+    "weebdex-platform/frontend/src/routes/(app)/chapter/[id]/[page]/+page@.svelte": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+    "weebdex-platform/frontend/src/lib/components/reader/context.svelte.ts": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "weebdex-platform/platform-integrations/frontend-behavior/reader-navigation.ts": "58120d8cc91c0c80344b933db97e8e30cd412e1583db59c2f5cc427ea1e8967f",
+    "weebdex-platform/scripts/build-frontend.mjs": "631dda7e5764001c599d28faa3351fc8852356d4bc02375d7f2679f2c0dc8a7e",
+    "weebdex-platform/platform-integrations/public-api/reader-order.ts": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279",
+    "weebdex-platform/platform-integrations/public-api/search-reads.ts": "240a79aa1389de673e8de403ebc8c8680db2cf9175effab3bf6f2aaa04b85f52"
+  },
+  "sourceUpdates": [
+    {
+      "date": "2026-10-19",
+      "baseline_commit": "e494290",
+      "reason": "Reader page-history ownership/query preservation and aggregate volume/chapter exact-decimal ordering repairs. No extra HTTP request or recipe count changes. No application/browser/load measurement is inferred.",
+      "pins": {
+        "weebdex-platform/platform-integrations/public-api/site-client.ts": {
+          "before_sha256": "74533241f24ad64391cbe0d9bfb8cca002d0a90cd755261c4857a5c271f6e110",
+          "after_sha256": "39c4a2ae60e092691d7b42b151901a711d964b4b33bf95a54f685de509fea6a9"
+        },
+        "weebdex-platform/platform-integrations/public-api/reader-order.ts": {
+          "before_sha256": null,
+          "after_sha256": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279"
+        },
+        "weebdex-platform/platform-integrations/frontend-overlays.mjs": {
+          "before_sha256": "fbb077b5751f50d08e114c1e80a9fe28c42aeebf6ab464a35bbd63ed338fb169",
+          "after_sha256": "86484b47c2beace9ee55032503256f8d1abac99dab8c02cd7979c522a5ec1a78"
+        }
+      }
+    },
+    {
+      "date": "2026-10-19",
+      "baseline_commit": "13d82606ae5d764d59d58c4a820693062a0fcaac",
+      "reason": "Reader edition scoring matches existing group IDs before display names; legacy records missing IDs retain name fallback. No additional requests, no recipe count changes and no browser/load measurement.",
+      "pins": {
+        "weebdex-platform/platform-integrations/frontend-overlays.mjs": {
+          "before_sha256": "86484b47c2beace9ee55032503256f8d1abac99dab8c02cd7979c522a5ec1a78",
+          "after_sha256": "46d2c8ba0897c15f0928748bf6c48b717f4a066db52820778d3475937b1b5836"
+        }
+      }
+    },
+    {
+      "date": "2026-10-20",
+      "baseline_commit": "20f2d3ee78b4ac65b7d561c411c3833a575e52f8",
+      "reason": "Public search maps explicit no-rating selection and implicit ascending default sort; retained tag pagination slices actual complete queryless snapshots locally. Existing nonempty scenario request counts remain unchanged. Each tag subpage fetches the complete bounded catalogue, so response bytes must be observed independently. No app/browser/load run is inferred.",
+      "pins": {
+        "weebdex-platform/platform-integrations/public-api/site-client.ts": {
+          "before_sha256": "39c4a2ae60e092691d7b42b151901a711d964b4b33bf95a54f685de509fea6a9",
+          "after_sha256": "cd6379824dfa6218c5b5b373a36be80129f611bb235f81225bc62aab6f67ed00"
+        },
+        "weebdex-platform/platform-integrations/public-api/search-reads.ts": {
+          "before_sha256": null,
+          "after_sha256": "240a79aa1389de673e8de403ebc8c8680db2cf9175effab3bf6f2aaa04b85f52"
+        }
+      }
+    },
+    {
+      "date": "2026-10-20",
+      "baseline_commit": "96b9b459d5a30b7291e786f375f8a092c76a1bbd",
+      "reason": "Compose reviewed public chapter edit route admission and guarded device backup restore. These changes do not alter the existing reader/search/library read recipes or attempt counts. The four source pins are reconciled to the combined source; no application/browser/build/load measurement is inferred.",
+      "pins": {
+        "weebdex-platform/platform-integrations/public-api/overlays.mjs": {
+          "before_sha256": "1d001de81da56f4399c5618c971ed7d3dbb82b260cc24810859275b876139916",
+          "after_sha256": "d84c9df12bd54bb78b076e4d753030768d11850e9823b455655eba2e73425b9c"
+        },
+        "weebdex-platform/platform-integrations/public-api/anchors.json": {
+          "before_sha256": "e6dd74da63dbb23a571aa775a65f0709d6fb638d0737f3bdd92193e543f9f1c2",
+          "after_sha256": "f03ea5f6c0dd9fbac409211aaebae472d8f68909a93c06ab4c14d5a01c80edfa"
+        },
+        "weebdex-platform/platform-integrations/public-api/source-hashes.json": {
+          "before_sha256": "822477b547f98e0241d439cce91a817f0a4d7186031a12fd99d13e70b4a87f33",
+          "after_sha256": "151e2bee2232916a2446621a35379e2658bf273b12cecb0f2fcea2323e680844"
+        },
+        "weebdex-platform/platform-integrations/local-library/library.ts": {
+          "before_sha256": "2c093421cbeeb368b681f09cd1ae7cb3319316979e4c3304ab3de8fabbd23c76",
+          "after_sha256": "7a731e22f8242e278068779393ff1b3b75e3e9306d608598bdb066d5e18a3eef"
+        }
+      }
+    }
+  ]
+}

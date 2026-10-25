@@ -1,0 +1,44 @@
+{
+  "status": "finite-harness-qualified-browser-unrun",
+  "sourceCommit": "3a7ef1f149baa4200234ec15e91f796495eb84ac",
+  "priorSourceCommit": "ed21d6421dff98553470cdd58d401d74877821c3",
+  "priorEvidenceCommit": "1a683bae7b2d3f7b554a04347c69f0890b5b3a69",
+  "affectedNodeFiles": 7,
+  "nodeRunnerCases": 78,
+  "passed": 78,
+  "failures": 0,
+  "skipped": 0,
+  "newRunnerCasesSincePriorReceipt": 3,
+  "newCases": {
+    "composedLibraryPredecessorTitleArrival": 1,
+    "emptySecretOrClipboardRedactionRefusals": 2
+  },
+  "guardedSeconds": 0.97,
+  "deadlineSeconds": 20.0,
+  "cleanupVerified": true,
+  "nodeVersion": "v24.19.0",
+  "pythonVersion": "3.12.14",
+  "redControls": {
+    "actualPredecessorThenContinuity": {
+      "sourceCommit": "ed21d6421dff98553470cdd58d401d74877821c3",
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "reason": "Inherited /library route contradicts the exact required title route."
+    },
+    "identityHelper": {
+      "sourceCommit": "ed21d6421dff98553470cdd58d401d74877821c3",
+      "executed": 17,
+      "passed": 15,
+      "failed": 2,
+      "reason": "Unexpected empty private input or clipboard became an empty error-redaction token."
+    }
+  },
+  "canonicalFrontendGitTree": "c90f53f5018f8eda8613ccff97bf4a209b0e33f0",
+  "canonicalFrontendDiffFromBaseEmpty": true,
+  "browser": false,
+  "clipboard": false,
+  "indexedDB": false,
+  "applicationDatabaseNetwork": false,
+  "scope": "Actual E2E driver bodies with explicit finite route/locator/clipboard/storage stand-ins only. Adds no hosted batch, changes no product component or phase inventory. One-public-upload hosted proposal does not run these ordinary account/local-library helpers. Prior75/75 receipt remains historical."
+}

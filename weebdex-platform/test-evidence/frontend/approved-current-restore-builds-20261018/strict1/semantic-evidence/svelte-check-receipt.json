@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/frontend/node_modules/svelte-check/bin/svelte-check",
+    "--tsconfig",
+    "./tsconfig.semantic.json",
+    "--output",
+    "machine"
+  ],
+  "exit_code": 0,
+  "signal": null,
+  "elapsed_ms": 14717
+}

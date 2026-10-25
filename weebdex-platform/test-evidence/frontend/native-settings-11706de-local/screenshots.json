@@ -1,0 +1,103 @@
+{
+  "actual_synthetic_fixture_captures": 16,
+  "rows": [
+    {
+      "path": "screenshots/relocation-desktop-home.png",
+      "bytes": 173228,
+      "sha256": "6d90dc29894f3dd4d7d7cff0f4cfaffcafc7e2bc69307f339f9cf7740ea307e4",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-desktop-home.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-library-settings.png",
+      "bytes": 91393,
+      "sha256": "8992789006e2f9bab14158b558cd7f1931d4a491a8809fdc18c142e851c85879",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-desktop-library-settings.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-public-identity.png",
+      "bytes": 68481,
+      "sha256": "00996a8c5eecdd0ab6b1c1f23ecb8ba4edb9d4476d0e5205859f1bba430b25a8",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-desktop-public-identity.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader-discussion.png",
+      "bytes": 45489,
+      "sha256": "3b9c231d83e92a2b1c2cd015a52ebcc6e60692f139d81370eed3f50be25d5041",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-desktop-reader-discussion.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-reader.png",
+      "bytes": 75662,
+      "sha256": "6886d6812a0b7981d6bf1756c01fcd1d006760dedc0e66606e35fcee568a168d",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-desktop-reader.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-search.png",
+      "bytes": 109151,
+      "sha256": "7726d9e9338db5920e580eab838abee54d9c5761d6a6edaaae11bc2c75d6fdfa",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-desktop-search.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title-comments.png",
+      "bytes": 96952,
+      "sha256": "0f0ed6033ea1d44322ba8882a71eae548e3855358a1846df8156826f05f7a9ef",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-desktop-title-comments.png"
+    },
+    {
+      "path": "screenshots/relocation-desktop-title.png",
+      "bytes": 6490,
+      "sha256": "4156019b50cd4c8f4e63389e9d5e48929e4888c60afaac02f02e98fe5da1f83a",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-desktop-title.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-home.png",
+      "bytes": 124782,
+      "sha256": "d5bc6aee0dc17fc61eaa7d99813854f55f2c46237ce298363535c89fbc361878",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-mobile-home.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-library-settings.png",
+      "bytes": 56479,
+      "sha256": "e89df2498c03238ef75e8ab9c93e6da7471e175f78c94aaf6b1440d491d83c04",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-mobile-library-settings.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-public-identity.png",
+      "bytes": 48430,
+      "sha256": "98da4aa66664f784720bf97d0d4c9a4aa746879ea2a6627de7d6886713de1ad2",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-mobile-public-identity.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-reader-discussion.png",
+      "bytes": 35142,
+      "sha256": "a036b3579b4262fedbbb9e8f446840a0819e957d5ab075bf5eaa3ee907dc3e97",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-mobile-reader-discussion.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-reader.png",
+      "bytes": 4017,
+      "sha256": "5e75ec8892ea0eb591cf80a2593b6c979cc42a51f8b51431e9f675dd6fbd0475",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-mobile-reader.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-search.png",
+      "bytes": 92828,
+      "sha256": "cfb8c88eb085518ce3c9fe22e56604d3cfe66f1938f87d0818b0b4719eb58fbf",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-mobile-search.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-title-comments.png",
+      "bytes": 47515,
+      "sha256": "1c003126799a506819f6a69a891261edbc42446bac2ba946dccbe6599032b6c9",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-mobile-title-comments.png"
+    },
+    {
+      "path": "screenshots/relocation-mobile-title.png",
+      "bytes": 2741,
+      "sha256": "66441f6fdb29d4726426ee0c66f1e6794fbfb0ffb66568e61bb932d465817292",
+      "source_path": "weebdex-platform/test-evidence/frontend/browser/local-library-cloud-ui-11706deb4dce-20261014/relocation-mobile-title.png"
+    }
+  ],
+  "task_dialogs": "actual geometry/hit-test/dismissal covered, no separate dialog pixels",
+  "pixel_review": "independently cleared main native desktop/mobile Settings and contextual surfaces; not overall suite clearance"
+}

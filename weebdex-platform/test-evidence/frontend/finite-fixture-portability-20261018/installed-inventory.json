@@ -1,0 +1,207 @@
+[
+  {
+    "path": "_cbor2.cpython-312-x86_64-linux-gnu.so",
+    "bytes": 857256,
+    "sha256": "9dcd4b9bc024e34b8e38416fc8d5e937f2ead8a9e5374a8d87e15d6adfb451b2"
+  },
+  {
+    "path": "bin/cbor2",
+    "bytes": 214,
+    "sha256": "3ec90151850ae43189024038d5377531342948f3422722b6985232942ce3e915"
+  },
+  {
+    "path": "cbor2/__init__.py",
+    "bytes": 3190,
+    "sha256": "46ead3978652fec8927092dca701df9a048ee21e295a7f9bbb8d4899aaac7326"
+  },
+  {
+    "path": "cbor2/_decoder.py",
+    "bytes": 30140,
+    "sha256": "fe5e1f879ef6adef45bdc9b4a8bd75214236cd9f6c8a5c6d3a6429d57d99974b"
+  },
+  {
+    "path": "cbor2/_encoder.py",
+    "bytes": 29760,
+    "sha256": "966153a904a9b492854c90d9df723cac8c37c03c5327f5eb7e99bc08816831e0"
+  },
+  {
+    "path": "cbor2/_types.py",
+    "bytes": 6260,
+    "sha256": "09ab728159676c482e3ed4fb21e986e61880f7cc222d42d92507d58ee57d1247"
+  },
+  {
+    "path": "cbor2/decoder.py",
+    "bytes": 249,
+    "sha256": "e00d99d894f8e3bfb519b24d4e3d11053157dc6e02fbea70938c249d38291a3f"
+  },
+  {
+    "path": "cbor2/encoder.py",
+    "bytes": 317,
+    "sha256": "1b07ccd7a8ad7b78fce3936bbaab76842b407e0d40315b88247bd121de8abab0"
+  },
+  {
+    "path": "cbor2/py.typed",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "cbor2/tool.py",
+    "bytes": 6829,
+    "sha256": "094502296c76ada3015a135b4e30a53f7f469df67c452d2ad428298310e03dc5"
+  },
+  {
+    "path": "cbor2/types.py",
+    "bytes": 706,
+    "sha256": "d9e3b0c131a35551eaa22914fb964c4740c9899f9261c0d8d661aab3e9f2192b"
+  },
+  {
+    "path": "cbor2-5.6.5.dist-info/INSTALLER",
+    "bytes": 4,
+    "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+  },
+  {
+    "path": "cbor2-5.6.5.dist-info/LICENSE.txt",
+    "bytes": 1081,
+    "sha256": "a6afd126d8f545a15166a22f25fadff4b9fb4978bbdd17e97d97d950b66d2fef"
+  },
+  {
+    "path": "cbor2-5.6.5.dist-info/METADATA",
+    "bytes": 6045,
+    "sha256": "f3f44982d4d7cb94e151b0bbe477a30c1a3797ce286aa0954bdf74ef2584ae03"
+  },
+  {
+    "path": "cbor2-5.6.5.dist-info/RECORD",
+    "bytes": 1573,
+    "sha256": "e32cee82ab4af62c650ea35b9dcdfb2aa9529744c734a319f48591ce6fadbbee"
+  },
+  {
+    "path": "cbor2-5.6.5.dist-info/REQUESTED",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "cbor2-5.6.5.dist-info/WHEEL",
+    "bytes": 151,
+    "sha256": "ec1e279c8775e134e8407b802a9c5b0cb0896cd722a81b15fa6bd71368552c97"
+  },
+  {
+    "path": "cbor2-5.6.5.dist-info/direct_url.json",
+    "bytes": 379,
+    "sha256": "96ed05c9ddeb8b8da7157df0118a426aa8a14592b6075ed8a096feb29fc05198"
+  },
+  {
+    "path": "cbor2-5.6.5.dist-info/entry_points.txt",
+    "bytes": 42,
+    "sha256": "39dddbd230480a6f060e3762d65a05f64430de7f84eb50e458812b0568c5294f"
+  },
+  {
+    "path": "cbor2-5.6.5.dist-info/top_level.txt",
+    "bytes": 13,
+    "sha256": "b1a5a2bce3ea5af5df40284dbe1a9e5949dd5838d260c1eaf47f5f0bcb75c430"
+  },
+  {
+    "path": "coincurve/__init__.py",
+    "bytes": 320,
+    "sha256": "d39fbf8fbeea25b1eeac8152ae7b26ec6899d5172cffc33f322695fe2e674227"
+  },
+  {
+    "path": "coincurve/_cffi_backend.cpython-312-x86_64-linux-gnu.so",
+    "bytes": 1114632,
+    "sha256": "f9f2bad1b902b9dafab63007b78740df1fc21da396815b3f2dbd89d0918edcfa"
+  },
+  {
+    "path": "coincurve/_libsecp256k1.cpython-312-x86_64-linux-gnu.so",
+    "bytes": 1353912,
+    "sha256": "f216ea315a3dfec5d4ea9875209a93115cd3976cd6c076a66b69a626743dfc28"
+  },
+  {
+    "path": "coincurve/context.py",
+    "bytes": 1192,
+    "sha256": "708e2097f3923f37417a786999325354bbf35c9f2cf215c1f308b527612b3cc4"
+  },
+  {
+    "path": "coincurve/der.py",
+    "bytes": 8626,
+    "sha256": "3081dd12a5d7c9b10ee3e72dc31c13f7a707a2afd2962c214c50d715ca3e8a02"
+  },
+  {
+    "path": "coincurve/ecdsa.py",
+    "bytes": 4274,
+    "sha256": "d56bf5de5340688d0b39ff6ad9252633888445650a9b0da17153066610fad90f"
+  },
+  {
+    "path": "coincurve/flags.py",
+    "bytes": 478,
+    "sha256": "ff644e3877522b9c90a6d7d8e772c420b138ed261d3e5a61b38224289fc5e93c"
+  },
+  {
+    "path": "coincurve/keys.py",
+    "bytes": 27015,
+    "sha256": "a867c8e067ce364366cb782e74489e99bfed469f5447b4b1829ba391077ae067"
+  },
+  {
+    "path": "coincurve/py.typed",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "coincurve/types.py",
+    "bytes": 192,
+    "sha256": "62669e9a70ec23818b4a3cbb3010cf063b6d07877a6c0c4b53f60d57009ddae8"
+  },
+  {
+    "path": "coincurve/utils.py",
+    "bytes": 4527,
+    "sha256": "a56684f72b11b3b75a77af74a6f0051ee015cfd18a40106a906f5b4558b72087"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/INSTALLER",
+    "bytes": 4,
+    "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/METADATA",
+    "bytes": 3970,
+    "sha256": "5ea4f63a5042b5c684acf95808ad327e5fa3bd235d6eacfafba02ee896b78923"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/RECORD",
+    "bytes": 1831,
+    "sha256": "fdbc4dd5785697bff0fcaed7b2f1404a64118357b58f90691d18f72c9e25b0ed"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/REQUESTED",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/WHEEL",
+    "bytes": 147,
+    "sha256": "8433dbb00aaf25f01b1b4d2963b1b5f87edb7867fb2f06f28896160847ea2d6d"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/direct_url.json",
+    "bytes": 384,
+    "sha256": "14d8b844c2e5d948cdacc3484620530a22adc701a32baa035bfae517418c82f5"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/licenses/LICENSE-APACHE",
+    "bytes": 9748,
+    "sha256": "cebfb5eab4eff50df87c3c5e7eb11a634d0fa32bb4b6380800f82fae606599ae"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/licenses/LICENSE-MIT",
+    "bytes": 1065,
+    "sha256": "d502748a33db7ade1318e37f0b5f219f478330ed74a673e387756e53fb516715"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/licenses/LICENSE-cffi",
+    "bytes": 1294,
+    "sha256": "04b80f5b077bbed68808cfebadeb5e3523f2a8c9a96495c587bd96df1eac2a33"
+  },
+  {
+    "path": "coincurve-21.0.0.dist-info/licenses/NOTICE",
+    "bytes": 455,
+    "sha256": "837aeffd05b5fa469939392e4edf9012b5c83c94e7a91417be7e78b48772fd5b"
+  }
+]

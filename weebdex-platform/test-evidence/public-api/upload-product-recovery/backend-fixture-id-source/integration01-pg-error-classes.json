@@ -1,0 +1,12 @@
+{
+  "schema": "retained-pg-error-class-inspection-v1",
+  "source_log_sha256": "5d438e4c27856800dcd5aee8c7aa018e792908f849eae5b9ad908d913b6d71bd",
+  "matching_rows": [
+    {
+      "severity": "ERROR",
+      "message": "new row for relation \"protocol_publication_commands\" violates check constraint \"protocol_publication_commands_catalog_id_check\""
+    }
+  ],
+  "sql_statements_parameters_omitted": true,
+  "cluster_started": false
+}

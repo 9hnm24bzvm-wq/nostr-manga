@@ -1,0 +1,146 @@
+✖ fresh blank begin does not invent a save new (3.922109ms)
+✖ fresh blank begin does not invent a save edit (2.02115ms)
+✔ retained-language state seam for cancel remains dirty and saves (1.816142ms)
+✔ retained-language state seam for add-another remains dirty and saves (0.752011ms)
+✖ server baseline does not acknowledge differing local metadata false (0.842527ms)
+✖ server baseline does not acknowledge differing local metadata true (1.385594ms)
+✔ newer local edit remains dirty after held save false (0.963008ms)
+✔ newer local edit remains dirty after held save true (1.659877ms)
+✔ original save refusal preserves dirty baseline/version 409/false (1.172514ms)
+✔ original save refusal preserves dirty baseline/version 409/true (1.191282ms)
+✔ original save refusal preserves dirty baseline/version 503/false (0.761144ms)
+✔ original save refusal preserves dirty baseline/version 503/true (1.121817ms)
+✖ empty language keeps edits without invalid staging write false (1.135378ms)
+✖ empty language keeps edits without invalid staging write true (1.455979ms)
+✔ late save cannot acknowledge a retired context dispose (1.046795ms)
+✔ late save cannot acknowledge a retired context different-session (0.56575ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 10
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 109.865958
+
+✖ failing tests:
+
+test at tests/ci/test_upload_begin_autosave_recovery.mjs:23:32
+✖ fresh blank begin does not invent a save new (3.922109ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_upload_begin_autosave_recovery.mjs:23:168)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ci/test_upload_begin_autosave_recovery.mjs:23:32
+✖ fresh blank begin does not invent a save edit (2.02115ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_upload_begin_autosave_recovery.mjs:23:168)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ci/test_upload_begin_autosave_recovery.mjs:25:32
+✖ server baseline does not acknowledge differing local metadata false (0.842527ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + ''
+  - '{"draft":{"title":"server","language":"en"},"page_order":[]}'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_upload_begin_autosave_recovery.mjs:25:240)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: '{"draft":{"title":"server","language":"en"},"page_order":[]}',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ci/test_upload_begin_autosave_recovery.mjs:25:32
+✖ server baseline does not acknowledge differing local metadata true (1.385594ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + ''
+  - '{"draft":{"title":"server","language":"en"},"page_order":[]}'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_upload_begin_autosave_recovery.mjs:25:240)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: '{"draft":{"title":"server","language":"en"},"page_order":[]}',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ci/test_upload_begin_autosave_recovery.mjs:28:32
+✖ empty language keeps edits without invalid staging write false (1.135378ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_upload_begin_autosave_recovery.mjs:28:221)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ci/test_upload_begin_autosave_recovery.mjs:28:32
+✖ empty language keeps edits without invalid staging write true (1.455979ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_upload_begin_autosave_recovery.mjs:28:221)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

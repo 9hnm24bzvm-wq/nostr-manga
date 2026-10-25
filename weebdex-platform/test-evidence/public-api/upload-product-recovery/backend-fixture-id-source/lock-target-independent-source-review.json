@@ -1,0 +1,62 @@
+{
+  "schema": "upload-account-lock-and-pending-target-independent-source-review-v1",
+  "verdict": "source_clear_for_guarded_compile_and_bounded_successor_tests",
+  "source_sha256": {
+    "backend/src/public_api/auth.rs": "af140bc5bc0038af8c2436a82e4d3be9a85ca9f4cb3e3e8c32889a3e70facdf9",
+    "backend/src/public_api/uploads.rs": "048d4710f620db1435104bf8b391a08a133053a6f39445499a13f3bc3d5c699b",
+    "backend/tests/public_uploads.rs": "c34b6ba0b670ca8b782ace7fc5457422d5ff4bccb7ec349b640412dcdeb4f22d"
+  },
+  "references": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-account-lock-seam02-independent-result-20261017.json",
+      "sha256": "5c9cb9e28fc00a875262c87fd7c26fbadba9e7da0c0b7e2cc459516768cbec57"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/src/domains/catalog/protocol_bridge.rs",
+      "sha256": "0379ee1b0de666890ab5b09f4330f7ada1909a5899e99231180b3b15a5f2495d"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/src/domains/uploads/sessions.rs",
+      "sha256": "46e18b24e89514e0d2d7ceba99395355d2ed2bf83fc9dd546c421cd8e5b8a8d6"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/src/public_api/catalogue_dto.rs",
+      "sha256": "57cbdf44e9226b9ad980a02661f61fa046a009bdc89c3cb721e15217be3421c5"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/migrations/0089_public_resource_ids.sql",
+      "sha256": "006b525c995f5c0dd8968168fe275603d93ec5c324233b48b0c1377a53d49f93"
+    }
+  ],
+  "lock_change": [
+    "Compared to exact tested old lock, only FOR UPDATE OF u changes to FOR NO KEY UPDATE OF u plus explanatory comment. Binding SHARE, original capability recheck and actor policy remain unchanged.",
+    "Same exact actual-schema concurrency seam is retained byte-identically; success must now establish FK insertion while six authority/write probes remain blocked and final rollback/state assertions execute."
+  ],
+  "pending_target_change": [
+    "Only explicit accepted_pending_projection or pending_projection receipts use the new path.",
+    "Current chapter and parent rows are queried in the caller transaction with FOR SHARE OF c,m, nondeleted chapter/parent and published parent; preferred manga UUID comes from actual persisted alias.",
+    "Saved manga_id or existing native relationship may confirm actual binding, never supply a conflicting target. Missing row/alias, malformed UUID or mismatch yields optional None; SQL errors propagate.",
+    "Public relationship has only actual UUID and manga type. No title/profile/readability is fabricated; pending status and isUnavailable remain explicit.",
+    "Existing AliasIndex loading and chapter alias failure handling are unchanged; exact-session API can retain committed facts with receiptStatus unavailable."
+  ],
+  "tests": {
+    "new_pure": [
+      "public_api::uploads::tests::pending_receipt_target_is_actual_id_only_and_does_not_imply_readability",
+      "public_api::uploads::tests::pending_receipt_target_mismatches_and_missing_aliases_fail_closed"
+    ],
+    "existing_pure": "catalog_fixture_identifiers_match_publication_schema",
+    "exact_database_seam": "account_write_lock_allows_publication_fk_and_excludes_authority_changes",
+    "integration_additions": "Direct commit must have exactly one ID-only manga relation equal to f.manga; exact-session recovery must retain identical relationships and exact mangaId."
+  },
+  "pending": [
+    "Actual Rust compile of changed product/test source",
+    "Two pure mapper cases and existing ID case",
+    "Fresh exact-schema success seam and then full HTTP integration on separate owned disposable fixtures"
+  ],
+  "limits": [
+    "Source review does not establish the expected success or application publication",
+    "Original invalid-ID503, syntax failure, observer setup failure and real old-lock55P03 remain retained",
+    "Pending target is an authenticated receipt linkage, not public chapter availability"
+  ],
+  "review_method": "Read-only diffs, authoritative call path and existing source/evidence inspection, exact held hashes and unchanged seam comparison; no tests/build/database executed by reviewer."
+}

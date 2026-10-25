@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "scope": "Independent corrected signed/context/device lifecycle scope; prior compact failure explicitly remains outside this scope; not full suite",
+  "actual_browser": true,
+  "mocked_services": false,
+  "status": "complete",
+  "selected_scope_passed": false,
+  "full_suite_passed": false,
+  "prior_compact_failure_retained": true,
+  "known_compact_failure_not_retested": true,
+  "phases": [
+    {
+      "phase": "startup",
+      "status": "passed",
+      "actual_steps": 19,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    },
+    {
+      "phase": "signed-social",
+      "status": "passed",
+      "actual_steps": 9,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    },
+    {
+      "phase": "signed-context",
+      "status": "passed",
+      "actual_steps": 9,
+      "failed_steps": [],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": true
+    },
+    {
+      "phase": "ui11-device-navigation",
+      "status": "failed",
+      "actual_steps": 7,
+      "failed_steps": [
+        {
+          "index": 2,
+          "status": "failed"
+        },
+        {
+          "index": 3,
+          "status": "failed"
+        },
+        {
+          "index": 6,
+          "status": "failed"
+        }
+      ],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": false
+    }
+  ],
+  "cleanup": {
+    "cleanup": {
+      "verified_stopped": true,
+      "ports_closed": true,
+      "keys_removed": true,
+      "remaining_owned_process_count": 0,
+      "final_teardown_clean": true,
+      "lifecycle_clean": false,
+      "expected_port_roles": [
+        "platform",
+        "mail",
+        "postgres",
+        "original"
+      ]
+    },
+    "outer_cleanup": {
+      "forced": false,
+      "verified_stopped": true,
+      "remaining_owned_process_count": 0
+    },
+    "supervisor_terminal": true,
+    "supervisor_exit_zero": false
+  },
+  "raw_receipt_hash_role": {
+    "role": "owned-relocation-independent-result",
+    "sha256": "abd5519bacd806a044ca85aa9a9d698c815a6ab816a5e2723a146857fcb18281"
+  },
+  "raw_messages_exported": false
+}

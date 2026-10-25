@@ -1,0 +1,19 @@
+2026-10-17 21:49:22.434 EDT [171] LOG:  starting PostgreSQL 17.11 (Debian 17.11-0+deb13u1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-17 21:49:22.434 EDT [171] LOG:  listening on IPv4 address "127.0.0.1", port 58623
+2026-10-17 21:49:22.435 EDT [174] LOG:  database system was shut down at 2026-10-17 21:49:22 EDT
+2026-10-17 21:49:22.437 EDT [171] LOG:  database system is ready to accept connections
+2026-10-17 21:49:23.151 EDT [190] ERROR:  synthetic status rollback
+2026-10-17 21:49:23.151 EDT [190] CONTEXT:  PL/pgSQL function platform.status_fixture_rollback() line 1 at RAISE
+	SQL statement "INSERT INTO platform.library_reading_status_revisions(user_id,manga_id,status,followed,version,updated_at)
+	 VALUES(owner_id,target_id,status_value,TG_OP<>'DELETE',1,clock_timestamp())
+	 ON CONFLICT(user_id,manga_id) DO UPDATE SET status=EXCLUDED.status,followed=EXCLUDED.followed,
+	 version=platform.library_reading_status_revisions.version+1,updated_at=EXCLUDED.updated_at"
+	PL/pgSQL function platform.record_library_reading_status_revision() line 8 at SQL statement
+2026-10-17 21:49:23.151 EDT [190] STATEMENT:  UPDATE platform.library_manga_follows SET reading_status=$3,updated_at=clock_timestamp() WHERE user_id=$1 AND manga_id=$2
+2026-10-17 21:49:23.242 EDT [171] LOG:  received fast shutdown request
+2026-10-17 21:49:23.242 EDT [171] LOG:  aborting any active transactions
+2026-10-17 21:49:23.243 EDT [171] LOG:  background worker "logical replication launcher" (PID 177) exited with exit code 1
+2026-10-17 21:49:23.243 EDT [172] LOG:  shutting down
+2026-10-17 21:49:23.244 EDT [172] LOG:  checkpoint starting: shutdown immediate
+2026-10-17 21:49:23.250 EDT [172] LOG:  checkpoint complete: wrote 979 buffers (47.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.001 s, total=0.007 s; sync files=0, longest=0.000 s, average=0.000 s; distance=8678 kB, estimate=8678 kB; lsn=0/1D84648, redo lsn=0/1D84648
+2026-10-17 21:49:23.254 EDT [171] LOG:  database system is shut down

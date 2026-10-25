@@ -47,3 +47,28 @@ community_http.rs scenario uses only an owned disposable loopback database and
 synthetic accounts; it has not been run unless the progress/evidence receipts
 say so. Original frontend HTML/CSS/TypeScript files were not edited by this
 implementation.
+
+## Signed native-user discussion adapter
+
+`GET/POST /api/v1/nostr/user/{publicUuid}/discussion` is an explicit
+instance-account adapter, not a publisher discussion or browser-session bridge.
+It resolves only native public-user IDs and locks the actual active user's stored
+thread relation. NIP-98 admission, service, bound native account and persisted
+permissions are rechecked in the same transaction as every mutation. Cookie-only
+requests confer no authority. Reads are private/no-store and contain the native
+thread, a fixed 20-reply page, personal vote state and operation capabilities.
+
+Commands capture canonical account/user UUIDs and the actual thread ID. Reply
+changes require the current reply version; votes require the captured personal
+vote, and reply votes also require the reply version. Duplicate, unknown, null
+and irrelevant fields fail closed. Bodies use native Unicode trimming and the
+actual persisted 50000-byte UTF-8 limit. Both authenticated native routes and this
+adapter call `mutations.rs`, preserving moderator/owner permissions, tombstone
+privacy, thread locking, dense reply ordinals and native audit provenance. Native
+unvote/removal permissions remain unchanged, including clearing votes after a
+thread is locked. Signed success does not authorize replay of an uncertain write.
+
+The synthetic TCP test target is `public_native_user_discussion`; it must run in
+the owned disposable PostgreSQL runner. Existing `community_http` remains the
+native compatibility regression gate. Source-only checks do not establish that
+either HTTP/PostgreSQL gate passed.

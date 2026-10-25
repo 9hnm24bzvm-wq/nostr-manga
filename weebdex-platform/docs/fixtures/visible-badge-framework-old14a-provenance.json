@@ -1,0 +1,3085 @@
+{
+  "schema": 1,
+  "purpose": "Historical old-source negative-control attribution; no new generation, execution or admission.",
+  "originalDescriptor": {
+    "name": "source-inputs.old14a.recovered.json",
+    "bytes": 119235,
+    "sha256": "703cafdf521c425191acb01f4060d69001dc549c7e157d577cb879ce9c5330f8"
+  },
+  "historicalProjection": {
+    "revision": "14a7bab8a925928f658fbd8ebd160b3388e4b540",
+    "claim": "source-comparison-only-unqualified",
+    "files": [
+      {
+        "path": "weebdex-platform/docs/verification/visible-chapter-badges-source-20261023.md",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 7719,
+        "sha256": "683f6bc5ea07abd72cd198d1cb9b13bb1f9f777085aa6b67a8c5fd150ef672af",
+        "checkpointSource": "weebdex-platform/docs/verification/visible-chapter-badges-source-20261023.md"
+      },
+      {
+        "path": "weebdex-platform/frontend/package.json",
+        "authority": "git",
+        "gitBlob": "567b37b8919c7ae0516d08644d2933384724c741",
+        "mode": 420,
+        "bytes": 2605,
+        "sha256": "33e586c5daaac84481220565f53319ef1f3a9dd21104087018523bc2c137f2b9"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/@types/Upload.d.ts",
+        "authority": "git",
+        "gitBlob": "af9f110e247efae7322a1eb3a16aad41c5230496",
+        "mode": 420,
+        "bytes": 731,
+        "sha256": "a5579edd66f0af5efe63f226e00912fbbd996fbae52b1ea30a09a70b9358db83"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Analytics.ts",
+        "authority": "git",
+        "gitBlob": "f123d35995817ed05aaa3229f69e3749c897b013",
+        "mode": 420,
+        "bytes": 372,
+        "sha256": "4f74b65eae53929329a4d8f1b4dd6fc3a12f0c108d4f85c18e3d284291f730fa"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Auth.ts",
+        "authority": "git",
+        "gitBlob": "b47599b0663723439239b54280ac224e3c4638d1",
+        "mode": 420,
+        "bytes": 253,
+        "sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Author.ts",
+        "authority": "git",
+        "gitBlob": "7dc0f9496182460c45cf2835d611d01ce6a0dee6",
+        "mode": 420,
+        "bytes": 1214,
+        "sha256": "48a8f9f7aaac6a5562044118a5242e72f1ba05e057ebf371bd08251e87192360"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Chapter.ts",
+        "authority": "git",
+        "gitBlob": "273e54505d76cda6e507aac2235f255f4d1139a6",
+        "mode": 420,
+        "bytes": 2440,
+        "sha256": "9ace62d770d644ce7b8255a7e6fd3a9bb2f98f296046cf3a3f3d474194428d20"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Client.ts",
+        "authority": "git",
+        "gitBlob": "606a983946fc5c975c64150362ffe8a85f3396d2",
+        "mode": 420,
+        "bytes": 965,
+        "sha256": "011d557b6998176b61a260ca7c2b580181d18c7bbb88b589ce290f324d29a662"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Cover.ts",
+        "authority": "git",
+        "gitBlob": "fcfe48869695545fa7f200879ac17e1773557a18",
+        "mode": 420,
+        "bytes": 1100,
+        "sha256": "3af93906c6013d76d04a1cae33d85cdea7e0191624cc093ab8542eb4610bdb98"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Group.ts",
+        "authority": "git",
+        "gitBlob": "32ac1102c76af64cfe0cf34113288fbfb1696824",
+        "mode": 420,
+        "bytes": 2327,
+        "sha256": "34a3cdff780916df8e4f500ce6aa0e1ff6eedc6e728514de6f364605fd6433ff"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Manga.ts",
+        "authority": "git",
+        "gitBlob": "a684e21211c9166ee674c3c730065362aabca7a9",
+        "mode": 420,
+        "bytes": 4904,
+        "sha256": "774f88cdb48ae17ddd08dfc532082ce59069b3263525db9ee21b8e5ab4466193"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/MangaFollow.ts",
+        "authority": "git",
+        "gitBlob": "0a23bab6e657f12d21a8e03a2dd0f4867c33e417",
+        "mode": 420,
+        "bytes": 1667,
+        "sha256": "f97aa38ea7465c95a9e0667b41c3cc85df7e5ba3483c121c2a99e2f971df357b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Report.ts",
+        "authority": "git",
+        "gitBlob": "3c268006ee04cb015bb4b2c13aa08d410086ec29",
+        "mode": 420,
+        "bytes": 1532,
+        "sha256": "469d4ecec0ae2ab0229b57c5e0e59e9c176d5fe6ebce0c3a73c5f449d3d951d8"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Settings.ts",
+        "authority": "git",
+        "gitBlob": "e905844a9fa3bb1d1fdf4f1c49cc41be09395db7",
+        "mode": 420,
+        "bytes": 628,
+        "sha256": "c44c225d9bf9b3a7b17836dfbe100daa1bf533e6a9d09b4055887222175b956e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Statistics.ts",
+        "authority": "git",
+        "gitBlob": "262af6547dbf256a8ef3373eb1303c605f1ab73e",
+        "mode": 420,
+        "bytes": 840,
+        "sha256": "cd6faf267238897bd991c68c9f6ccbb9b3d930d52beaae0b0d87740a1413d973"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Tag.ts",
+        "authority": "git",
+        "gitBlob": "7e428f88a025bd6592364cecc4895044a48be0c5",
+        "mode": 420,
+        "bytes": 270,
+        "sha256": "14762c1cc63805aee3a188b091a1b3e31a9772b69271b649630311dfae995195"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/Thread.ts",
+        "authority": "git",
+        "gitBlob": "8f028a66468dcaa3eb2db19d0487b186fee9a0ad",
+        "mode": 420,
+        "bytes": 2769,
+        "sha256": "aeaecc40d17e2d8111423e41a6c9c11f0665e01990b205747c7b5b91139844c4"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/UploadSession.ts",
+        "authority": "git",
+        "gitBlob": "dd2bc7112a33eb6caec202b969aaa0bb057b780f",
+        "mode": 420,
+        "bytes": 1790,
+        "sha256": "cba4ff41e2098df2e3668c9d726387c9fba774e71e2ecdd656c50e364dcd734e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/User.ts",
+        "authority": "git",
+        "gitBlob": "2b2be5d1f6a36b6e074935451242a670c08ea4c8",
+        "mode": 420,
+        "bytes": 1541,
+        "sha256": "b4762d35d1b4033e2550641a64c9fd6ab565fa6fc374eaf326415732c5593f90"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/API/index.ts",
+        "authority": "git",
+        "gitBlob": "4557830a9c1b9d4bf508feeeb3865789b343e523",
+        "mode": 420,
+        "bytes": 1551,
+        "sha256": "12e056cb32ac7402c699925690cf88091a8083963f821070d2fa0a1f35c572aa"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/AuthorLink.ts",
+        "authority": "git",
+        "gitBlob": "204032327d179a8439492ef4f30ca51d7b962d2c",
+        "mode": 420,
+        "bytes": 2374,
+        "sha256": "c981f655576ae6a7af9ccad8016f05e9366560f9eef3ae4062000f1c6c845bca"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/Context.ts",
+        "authority": "git",
+        "gitBlob": "9faba0d242f4e6837e22385de72da3ee32fc5931",
+        "mode": 420,
+        "bytes": 947,
+        "sha256": "495880efb4a4ad735a1cd0486d1160b14b8f304d7b8f091d4aa1ed3e5c04a203"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/ExternalLink.ts",
+        "authority": "git",
+        "gitBlob": "a3d86c089cd8d7243ccb18e46164f5e3b04cbad4",
+        "mode": 420,
+        "bytes": 4278,
+        "sha256": "7039aa5793172295165e6ecbcf6f84ec67c037d6280f6cae65f5bede121a0fe0"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/GroupLink.ts",
+        "authority": "git",
+        "gitBlob": "39e4c5cc1775ff81ee0aa61d4cb9ed67c4d5ad68",
+        "mode": 420,
+        "bytes": 2107,
+        "sha256": "cd29d8e0e25931385b6c06d96071037ded91618096b7891edc11e945831060f1"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/HTTP.ts",
+        "authority": "git",
+        "gitBlob": "6cfd3ebdbcef17223f30edd22f1d15d05366f86e",
+        "mode": 420,
+        "bytes": 4239,
+        "sha256": "765a7ee6804ec81472c945e83a24b0b4343c0d58e8dbb2a2ab2421b681ba2fd1"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/Kratos.ts",
+        "authority": "git",
+        "gitBlob": "be3328e7a91f5e5a3a30059fda3582294a664219",
+        "mode": 420,
+        "bytes": 778,
+        "sha256": "49738b13d0cd339e3c51a845e5bc4b74d4ad75206e1bb9137889d11eda2edb05"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/Locale.ts",
+        "authority": "git",
+        "gitBlob": "c532ea4baf1b86906d6f1967f0f1bb6e201d8673",
+        "mode": 420,
+        "bytes": 2431,
+        "sha256": "24683b1d2e4490108de376ef1afee3891e2a04994670f661f57dc753f1dbd214"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/MarkedExtensions.ts",
+        "authority": "git",
+        "gitBlob": "9c8cdb3472257c7a60c7883dc4d1e5144e6eecc5",
+        "mode": 420,
+        "bytes": 4486,
+        "sha256": "93ae0a174d82dfc79576136ed698cddbe2870872832ce5257cce2f063a97ec28"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/Mutex.ts",
+        "authority": "git",
+        "gitBlob": "1d934978eb81e186d15e14d4ce06de1b39d2bb68",
+        "mode": 420,
+        "bytes": 1708,
+        "sha256": "e2b96e03790cba7460ed48e023264e75f3924250b097799837bb57ff8df9f3c3"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/Typography.svelte.ts",
+        "authority": "git",
+        "gitBlob": "75f7638fa5a7780adb9c682c1f5854e57393f46a",
+        "mode": 420,
+        "bytes": 2235,
+        "sha256": "1dc7edac971d75c774672a81b17253277972ddd2b00dfd47c5effea51d123603"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/UserLink.ts",
+        "authority": "git",
+        "gitBlob": "237d68677f0b55bb484c269ef01c6a85748c6aff",
+        "mode": 420,
+        "bytes": 1573,
+        "sha256": "7d86b33632b271b5545b5d0870b0116fa2d99f334e995390a167ebc57d727239"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/Utils.ts",
+        "authority": "git",
+        "gitBlob": "b6824f85940029cfe486e4c304c4e1e4d1b1f409",
+        "mode": 420,
+        "bytes": 4794,
+        "sha256": "0ef4b28ddd201f595dc6e1ae6a4900c562359800c5f0c935322a4b079f44f54f"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/AppHeader.svelte",
+        "authority": "git",
+        "gitBlob": "278b9ffa2b0501f2704ac9a9dc9112aa6f5a8e94",
+        "mode": 420,
+        "bytes": 3097,
+        "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/AppSidebar.svelte",
+        "authority": "git",
+        "gitBlob": "1717a1b2d92a7092241c2a28603eefa8d103516b",
+        "mode": 420,
+        "bytes": 8511,
+        "sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ChapterFeed.svelte",
+        "authority": "git",
+        "gitBlob": "7b15c821d63294795cd219391064deb8d1abf530",
+        "mode": 420,
+        "bytes": 6690,
+        "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ChapterFeedChapterEntry.svelte",
+        "authority": "git",
+        "gitBlob": "a64d9a8b9480ebc0bd99409f2b876e583bb309c1",
+        "mode": 420,
+        "bytes": 6034,
+        "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ChapterFeedMangaEntry.svelte",
+        "authority": "git",
+        "gitBlob": "15536520196e96a558595f6243ad1411b463b3ed",
+        "mode": 420,
+        "bytes": 2938,
+        "sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ChapterList.svelte",
+        "authority": "git",
+        "gitBlob": "aa8c8cceaa30afb13dae63c658b86e69293915c5",
+        "mode": 420,
+        "bytes": 3882,
+        "sha256": "b786687f95242c96487b94114600b36da724366eed18bb6c4a850b53427d8c15"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ChapterListEntry.svelte",
+        "authority": "git",
+        "gitBlob": "392b3a89bab1170b677dab4605868e2fe5e4d3a7",
+        "mode": 420,
+        "bytes": 7813,
+        "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ChapterListFilter.svelte",
+        "authority": "git",
+        "gitBlob": "83ff47fed0ab08369d667ecfcb61c9113aff71dd",
+        "mode": 420,
+        "bytes": 4425,
+        "sha256": "2f38ac6741bb02cff665ec0885929ce721082eae1afbc05ce8a3f1bd6f3db6fa"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/EntitySearchDialog.svelte",
+        "authority": "git",
+        "gitBlob": "1dd3ae2eb8262cb4e749fae52a5a9e948af28d29",
+        "mode": 420,
+        "bytes": 2927,
+        "sha256": "924445fe539f874b355a7e20c134e4df8f52b29442b24119c1857f31ed41e4e2"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ErrorComponent.svelte",
+        "authority": "git",
+        "gitBlob": "0e32d45882799f6c9bcfbb58070164885e3db76e",
+        "mode": 420,
+        "bytes": 356,
+        "sha256": "d2e2689f45b9b544a00ceab733f2ed74684657bf9f0c8ee09c3ab5845b26e401"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/GenericPagination.svelte",
+        "authority": "git",
+        "gitBlob": "7a4eb852c0da0223466595567f303995eeb66094",
+        "mode": 420,
+        "bytes": 1983,
+        "sha256": "4ec32fada4391b4df9a1e432d40fd2bb6919f5b7de1394e9122772e959f28efe"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/LatestUpdatesGrid.svelte",
+        "authority": "git",
+        "gitBlob": "a1ec3ef6585356c9b3df77e4cf3ea3cf7f61203b",
+        "mode": 420,
+        "bytes": 4969,
+        "sha256": "a8c52cc549ac4d7b32521104fdbeb27f53d61f55323bc047365f2056e2ebe481"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/Lightbox.svelte",
+        "authority": "git",
+        "gitBlob": "562d734139c0b66934cbd8c617746b137839b6a8",
+        "mode": 420,
+        "bytes": 3469,
+        "sha256": "0d3f2f488e7d73b8a5d0b84ab3f2c7ea3c0e60d11fa86abe559efe7333a17d76"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/MangaSearch.svelte",
+        "authority": "git",
+        "gitBlob": "09da33b92b387d04bec96cf2c9a310f5910b929a",
+        "mode": 420,
+        "bytes": 2616,
+        "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/MangaSearchEntryCard.svelte",
+        "authority": "git",
+        "gitBlob": "4dcf01b0bc52a34c2251692dae3177ed003b5196",
+        "mode": 420,
+        "bytes": 9750,
+        "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/MangaSearchFilter.svelte",
+        "authority": "git",
+        "gitBlob": "b695b12eda27f1ddd31582c5c742011a043bcc2c",
+        "mode": 420,
+        "bytes": 18700,
+        "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/MangaSearchPagination.svelte",
+        "authority": "git",
+        "gitBlob": "d6f7a33dcb9ec02f1ad41234b630c84f5541f66e",
+        "mode": 420,
+        "bytes": 2072,
+        "sha256": "fdcdc1c9e185a494b55b1fc2af721f54546f698b72432478f31ee30163684111"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/MostReadCarousel.svelte",
+        "authority": "git",
+        "gitBlob": "95d3e2edc4b67bbe4a91b442956bd1bb8d7f3e92",
+        "mode": 420,
+        "bytes": 2222,
+        "sha256": "2749143dcd46dc9b7292aea1713d0752a0e75ca5ebbcc43e1a570aa03e07f86c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/MyUpdatesCarousel.svelte",
+        "authority": "git",
+        "gitBlob": "8ed665d6603b978cf2f1ad5e387a624ac5f95278",
+        "mode": 420,
+        "bytes": 3194,
+        "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/RecentlyAddedCarousel.svelte",
+        "authority": "git",
+        "gitBlob": "a90b9bc478f3efc759918786cbffd4584eb4cba6",
+        "mode": 420,
+        "bytes": 2155,
+        "sha256": "88b01e9d3bd52280ebfe6fdb01d5bd533f71d7fc0198c1d20f482eada24653cf"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ReportAuthorCard.svelte",
+        "authority": "git",
+        "gitBlob": "6f26d29eec13854dc77a93e2061f6ed8838fcb55",
+        "mode": 420,
+        "bytes": 668,
+        "sha256": "577d736356fb1405645e9aaa6ce3062ad36fdae0338b67525e30b28af8e90b7a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ReportChapterCard.svelte",
+        "authority": "git",
+        "gitBlob": "7a68318242ef74740c714f5c97f9a8e50e7bef15",
+        "mode": 420,
+        "bytes": 3404,
+        "sha256": "a95a9731ab3c6aca8c37c5d7365a1531ffc05af5020a9882bc666613858fb163"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ReportDialog.svelte",
+        "authority": "git",
+        "gitBlob": "262846e3ab77693b16e9226a9e2cd32d11e3243e",
+        "mode": 420,
+        "bytes": 8038,
+        "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ReportGroupCard.svelte",
+        "authority": "git",
+        "gitBlob": "6ec8e57710f8d25413645adada766ce250fcd2c9",
+        "mode": 420,
+        "bytes": 618,
+        "sha256": "b7207564175b3f9c2a5408b3c087da39af159ed939b8d6f060fcc3b3272c9341"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ReportMangaCard.svelte",
+        "authority": "git",
+        "gitBlob": "730a7209cc00f3b664151fb628666750e12d934b",
+        "mode": 420,
+        "bytes": 669,
+        "sha256": "11a6d691f4dba4eafaf49195bfd839d87e6ceaa63f06c161f23c0da2e8c36ccb"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ReportReplyCard.svelte",
+        "authority": "git",
+        "gitBlob": "76e76ba97233b4563130d28c855c68cb00b6af1e",
+        "mode": 420,
+        "bytes": 396,
+        "sha256": "f4596e4b4d8478f601e887418a81a66323efbaf38243a69b8cdd37d0f5690231"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ReportSearch.svelte",
+        "authority": "git",
+        "gitBlob": "6a25a281cce5620c8d7bf5e674b8538e8f3831ce",
+        "mode": 420,
+        "bytes": 1795,
+        "sha256": "f94201eb8724cd15ee05401376549896f4698a5853206faf6c375b6177f25edd"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ReportSearchEntry.svelte",
+        "authority": "git",
+        "gitBlob": "3f24dc15e2549daa8fd5a8310469bb2d0f7de14d",
+        "mode": 420,
+        "bytes": 15128,
+        "sha256": "dcbb141a5dbb92d29f15996544b4e02070ef32d1200aaf84392487ae32961e2d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ReportUserCard.svelte",
+        "authority": "git",
+        "gitBlob": "bffbff39cff2112822a255f546e5764759abaf1a",
+        "mode": 420,
+        "bytes": 598,
+        "sha256": "9bfb1b249549b8caabc9ba69c2ab796d7394a1f0da8a32f3ba3b6e1bec1836f8"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/SearchDialog.svelte",
+        "authority": "git",
+        "gitBlob": "c2ebc0f9c39b4f481492a144ec04cfff64e49bf2",
+        "mode": 420,
+        "bytes": 6678,
+        "sha256": "5c85175c8fb0a34e31e975ea22dbe6f89cbcf0868ea80c72e6d37474e813ba9a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/comments/comments-create.svelte",
+        "authority": "git",
+        "gitBlob": "de950d409f422007d44f60dd7b0efb74c1a4b3ce",
+        "mode": 420,
+        "bytes": 9437,
+        "sha256": "df005e448d2fddc2741024d421d31c20c89160ff05fd8dd70979ff93b8d28db1"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/comments/comments-edit-dialog.svelte",
+        "authority": "git",
+        "gitBlob": "18ee6230d1e9482f2fb1620dc6f7fd76464aeb4f",
+        "mode": 420,
+        "bytes": 9329,
+        "sha256": "a2fdd2c5d036caded65638461b17fa95c3d8b1da55b4b0ef7dedf902e38972ac"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/comments/comments-entry.svelte",
+        "authority": "git",
+        "gitBlob": "c554ea6ee8cd9b928b2c2ba7eeeb4460094d8e9f",
+        "mode": 420,
+        "bytes": 15869,
+        "sha256": "1bc293dfc50ca3456ffa25ed37348302e538f96876d0e1b88c58b61443b05b36"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/comments/comments-feed.svelte",
+        "authority": "git",
+        "gitBlob": "aa55a3177c73400fe0135000a188c8924a0d394a",
+        "mode": 420,
+        "bytes": 2449,
+        "sha256": "d698d665298f64fb076715779fe998a38556c67f63564a635cc2a05ce08831cd"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/comments/comments-provider.svelte",
+        "authority": "git",
+        "gitBlob": "a094c781930a04311481be60d6e03b499ef2ea31",
+        "mode": 420,
+        "bytes": 1197,
+        "sha256": "741c156112cb90a69b090ad8e3a4f2c1ec7f5ba47d43331ad7f8caabef9e6b41"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/comments/comments-votes.svelte",
+        "authority": "git",
+        "gitBlob": "4aa78e9588552b0305facc01b8be7aa5cec5c4f6",
+        "mode": 420,
+        "bytes": 4841,
+        "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/comments/comments.svelte",
+        "authority": "git",
+        "gitBlob": "22c6b56b36d9ee339ce66f46ba729707966abb60",
+        "mode": 420,
+        "bytes": 3296,
+        "sha256": "09c5e198006e3e6f6b12821edb467e8446b29de8fe0c4e2a0627846335a8648f"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/comments/context.svelte.ts",
+        "authority": "git",
+        "gitBlob": "ecba9ad2fc5d34ffc08ae76a4d68bb474eb71bd5",
+        "mode": 420,
+        "bytes": 2350,
+        "sha256": "4a89adcfd64a02938626298baf56ef7230f3323fcc8124ee38367f29a082d452"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/draft/manga/DraftSearch.svelte",
+        "authority": "git",
+        "gitBlob": "4dd1e147414802e0e250da1b9ac21fdf6867e2f7",
+        "mode": 420,
+        "bytes": 1822,
+        "sha256": "8fb57e167d33566febc60403cc5ad7667257c395c2cead532e74530333ee99bb"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/draft/manga/MangaCreate.svelte",
+        "authority": "git",
+        "gitBlob": "71101809cba6fff2093481255c50674dad34ccfe",
+        "mode": 420,
+        "bytes": 11214,
+        "sha256": "bf404bbe81ddc28e529c88692af18310bdf0b433b4f29b23ff19b7e8660a8149"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/draft/manga/MangaEdit.svelte",
+        "authority": "git",
+        "gitBlob": "f8690620909eef3dc73e6747c679bf44d54093c4",
+        "mode": 420,
+        "bytes": 27240,
+        "sha256": "e1f8b3a97bc414eab974258ee1e529fa0a7df5b0841573f778868770e44b3782"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/draft/manga/MetadataSection.svelte",
+        "authority": "git",
+        "gitBlob": "f87b38816545d414564aec920bb3831462ed859c",
+        "mode": 420,
+        "bytes": 12124,
+        "sha256": "d0b045bb394261124b66a8e387f8e6215000de77e1fea2d831833515c2776041"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/context.svelte.ts",
+        "authority": "git",
+        "gitBlob": "14adc2b923c3c98b41160a53550cac925b76e5b3",
+        "mode": 420,
+        "bytes": 8577,
+        "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-chapter-selector.svelte",
+        "authority": "git",
+        "gitBlob": "fa4c3033e8a178b433227ab4dc75c2f7c06205b4",
+        "mode": 420,
+        "bytes": 4337,
+        "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-history.svelte",
+        "authority": "git",
+        "gitBlob": "69a5256705e7cf5e749fa04170b2fb8576655d2c",
+        "mode": 420,
+        "bytes": 410,
+        "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-keyboard-listener.svelte",
+        "authority": "git",
+        "gitBlob": "c92c50aec8267f36235959cdea3c796e313e73f3",
+        "mode": 420,
+        "bytes": 3619,
+        "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-last-page.svelte",
+        "authority": "git",
+        "gitBlob": "cd201c175c6c70626ad26bedce6845a1ee852e5a",
+        "mode": 420,
+        "bytes": 11383,
+        "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-page-image.svelte",
+        "authority": "git",
+        "gitBlob": "7fe0e81281ce359706cc4d15fab1315de9237bd8",
+        "mode": 420,
+        "bytes": 3349,
+        "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-page-selector.svelte",
+        "authority": "git",
+        "gitBlob": "8f831d46e1c8759b21a7cab85b241a892da8bb65",
+        "mode": 420,
+        "bytes": 3722,
+        "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-pages-double.svelte",
+        "authority": "git",
+        "gitBlob": "3b936e590e66bbce3b53b8a0b6c7c601aa796a88",
+        "mode": 420,
+        "bytes": 2809,
+        "sha256": "8442a0b86a9b99d2e47b7fa2b9cf9c1e7ae0cc673c06745929e7c6762eaaa9bf"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-pages-single.svelte",
+        "authority": "git",
+        "gitBlob": "51f3ddf5b37596b17f0746dffa4cddcbed2e54f3",
+        "mode": 420,
+        "bytes": 2682,
+        "sha256": "0d93d109e1fdb772bf4b1b61e4c9246cbda19bfcb4c154a004219c139cda65aa"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-pages.svelte",
+        "authority": "git",
+        "gitBlob": "fc06a9eb21438a18131ada5d30969e9117a7e2cc",
+        "mode": 420,
+        "bytes": 1260,
+        "sha256": "b9afbee090ec3e6d6b17b77718add83310833ba7ea8ac610228e420d021a5012"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-pagination.svelte",
+        "authority": "git",
+        "gitBlob": "e28835fa50d3242f8b3a6b19bddc79a154001b50",
+        "mode": 420,
+        "bytes": 4389,
+        "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-panel.svelte",
+        "authority": "git",
+        "gitBlob": "35451d57ce59a7f55363c38d004900456bd3c248",
+        "mode": 420,
+        "bytes": 6924,
+        "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-provider.svelte",
+        "authority": "git",
+        "gitBlob": "b6e3ddc83b7aa6306633d9db77d7b7c5d173c94e",
+        "mode": 420,
+        "bytes": 4127,
+        "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-queue.svelte",
+        "authority": "git",
+        "gitBlob": "7982c0480f97e4fc6d76038280b7165eaf22526f",
+        "mode": 420,
+        "bytes": 4417,
+        "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader-settings.svelte",
+        "authority": "git",
+        "gitBlob": "85972898258f180014e2759635fcf53d34c932bb",
+        "mode": 420,
+        "bytes": 12483,
+        "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/reader/reader.svelte",
+        "authority": "git",
+        "gitBlob": "157307cbfd5b63a841dfc8d4dc74b4fdd9aa8b71",
+        "mode": 420,
+        "bytes": 3881,
+        "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/Forbidden.svelte",
+        "authority": "git",
+        "gitBlob": "2cf747970d279a10f86b8f67ec8bec761a7e5b05",
+        "mode": 420,
+        "bytes": 439,
+        "sha256": "5aa187b47005c641145501ce50938759f173c421cb556ee571c2a280e0d83577"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/ImageLoader.svelte",
+        "authority": "git",
+        "gitBlob": "72296bad858f2e5df9245077a151970afa7b8f41",
+        "mode": 420,
+        "bytes": 1339,
+        "sha256": "c951142f2aa6758c14958744ba4cde0069624261317106a93037ef70b323d15b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/LoginRequired.svelte",
+        "authority": "git",
+        "gitBlob": "5b15b0c5e9d8031eb88256c8a2521e0f53be2296",
+        "mode": 420,
+        "bytes": 970,
+        "sha256": "e91c9f335536b875239f499aee9289d3cf28700c5e1abce0876515f865d9b259"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/Protected.svelte",
+        "authority": "git",
+        "gitBlob": "7d7cd2bc7c21a2d8f6c15d83353e99b3e31020b5",
+        "mode": 420,
+        "bytes": 692,
+        "sha256": "aadbbe2e337e3729864b78c4036f0da976d72e1fb79c968ad280aeebe16ce60b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/ProtectedCondition.svelte",
+        "authority": "git",
+        "gitBlob": "3213e9e4d3c5ac5c722dee0b31cbf085288c92d3",
+        "mode": 420,
+        "bytes": 844,
+        "sha256": "449eb55a846b8b374c83d720a42fb85d5fe4e0c5f85a887c7003beafbe32e22d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/RichTextarea.svelte",
+        "authority": "git",
+        "gitBlob": "7237aafb2c692898b36f20322d7b57e4ab545a49",
+        "mode": 420,
+        "bytes": 6550,
+        "sha256": "ed7a0573680a285cc64a8a7ee90ccbda7358fe1c734eb5487d327e6acb099fd6"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/button-group/button-group-separator.svelte",
+        "authority": "git",
+        "gitBlob": "9e6929b33e815a7bcb795aab1593336591de4a1c",
+        "mode": 420,
+        "bytes": 512,
+        "sha256": "a7b56e1e0fe97b3e8b58e3c48343ef8007fd0bdad7d797c7b843822fa33f9c8a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/button-group/button-group-text.svelte",
+        "authority": "git",
+        "gitBlob": "8b975b468799d4bb10d87a4afb2a4ba95bd91eb4",
+        "mode": 420,
+        "bytes": 778,
+        "sha256": "bc4e27921bd886ae520dfa3c997e60ea9bccd20c21b37370eca23376ae0debbe"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/button-group/button-group.svelte",
+        "authority": "git",
+        "gitBlob": "7e1777d7db366cc76fb585f11066cf61353cf439",
+        "mode": 420,
+        "bytes": 1479,
+        "sha256": "33de27c893d090bffe3619d531bdf3ce0b78831af508a98ae02af19e1d0a649b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/button-group/index.ts",
+        "authority": "git",
+        "gitBlob": "7f706e3e17d6713b0eea71ae9822df417d1f2646",
+        "mode": 420,
+        "bytes": 273,
+        "sha256": "ef117b8757649900b54007caf5400004985885b31297eba6e184b3b30eeb65ac"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/button/button.svelte",
+        "authority": "git",
+        "gitBlob": "bcafff6235cc7fc2eb1d1e079efa6f7d81f0f934",
+        "mode": 420,
+        "bytes": 2819,
+        "sha256": "62b5d7b85b9d6085b8e6d99a4b2fbbd8eee4def8a3b973054162e03679590d55"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/button/index.ts",
+        "authority": "git",
+        "gitBlob": "fb585d7688e11d20a6ca051ebe4d58b35c3c5de7",
+        "mode": 420,
+        "bytes": 260,
+        "sha256": "0f6b6f040d92b4153821d3f9b4d6b9cbc567247e4fda913e64c1d0fcc4a2f386"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/collapsible/collapsible-content.svelte",
+        "authority": "git",
+        "gitBlob": "bdabb559c944d8d51059928b269d84d95180847a",
+        "mode": 420,
+        "bytes": 276,
+        "sha256": "8af85ac6ed50471ad32a4e90fb0c54b0fbe0b0700cd3fc5a91b85de70bf22554"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/collapsible/collapsible-trigger.svelte",
+        "authority": "git",
+        "gitBlob": "ece7ad68ec1321c462b94abb50a0076184e427c3",
+        "mode": 420,
+        "bytes": 276,
+        "sha256": "e74d7c62176b48d8f5a7282fd0491fbab4dcfb0f23690b6cfae3f3d08b630e3a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/collapsible/collapsible.svelte",
+        "authority": "git",
+        "gitBlob": "39cdd4e4e008b65f806a7046a5fb2aba2736f180",
+        "mode": 420,
+        "bytes": 304,
+        "sha256": "1d48e117ac1b8fef1af070c56237a04e5ad1d4bafd4372852a0e9d10e9f4afc2"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/collapsible/index.ts",
+        "authority": "git",
+        "gitBlob": "169b4791d3e18efcc8d15d86e54a08f909d856f0",
+        "mode": 420,
+        "bytes": 275,
+        "sha256": "b3388337d932c594443568a5494a3ab2740ed803df9c1d0ebb68ed74036fa399"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/combobox/combobox-content.svelte",
+        "authority": "git",
+        "gitBlob": "23c1153d1fc405de5629f4ffec222a151dbcc9ba",
+        "mode": 420,
+        "bytes": 1911,
+        "sha256": "af4f65f1ca70eab7e15e11bd0baa3e34eeff24853824ee268a23786ee55a60bf"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/combobox/combobox-item.svelte",
+        "authority": "git",
+        "gitBlob": "590a1a57f89870c3342927fd3a4bbfbdb0826721",
+        "mode": 420,
+        "bytes": 1570,
+        "sha256": "68b9a156913ffb3271193e72606ff66d4129ed4e0e7440d9968c0cf3fbf39986"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/combobox/index.ts",
+        "authority": "git",
+        "gitBlob": "4622d5b2af11a3f86319bd890f4227e3745bac56",
+        "mode": 420,
+        "bytes": 1253,
+        "sha256": "410f2953b04b85fa8ab0133099e2da563ecd2b9dd3f2361b794a1ed0e3c00024"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-dialog.svelte",
+        "authority": "git",
+        "gitBlob": "652766919cf94e6638892cdd39bd5f652fa35062",
+        "mode": 420,
+        "bytes": 1502,
+        "sha256": "f22825401d46489307b9c5a4e820cfb9effec52e66fd9ef12d678e5aa1708ff4"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-empty.svelte",
+        "authority": "git",
+        "gitBlob": "7e15acc591eaf30cbe41be3ebaa35d4b224ea331",
+        "mode": 420,
+        "bytes": 356,
+        "sha256": "1e06fd8f65b8aa6aca6a7e464d31b758fedc3b81340d3a0236e4fe85a0f79ede"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-group.svelte",
+        "authority": "git",
+        "gitBlob": "048daf89384416f12732c494ef38e2d84bc7e366",
+        "mode": 420,
+        "bytes": 721,
+        "sha256": "1d29949a9384a624ebd8411f17d602804d20d7a12e1b81349086e07de6f63bf1"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-input.svelte",
+        "authority": "git",
+        "gitBlob": "75dfd7ef570b6363c4ca164be997ca4eca965b6f",
+        "mode": 420,
+        "bytes": 744,
+        "sha256": "972f45905457dba1b52b189624fd6be71aba0470a35515dc4931bde0087b9256"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-item.svelte",
+        "authority": "git",
+        "gitBlob": "df41a18fe544794086206affa81634158e5caf51",
+        "mode": 420,
+        "bytes": 701,
+        "sha256": "345b8fb0970721c8411b99ee2ab08572dcfa9563c21f4a9b577b43920f2b37d2"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-link-item.svelte",
+        "authority": "git",
+        "gitBlob": "afc3c9fcb90a117fbe3497487adb8c14559fdd3d",
+        "mode": 420,
+        "bytes": 717,
+        "sha256": "02797ddef7059d9411a4d86b888d48302337c4d6278c66ec44ad55f5ae9d0fd6"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-list.svelte",
+        "authority": "git",
+        "gitBlob": "dc089b37461feb6beaa893afe2473162e6f4160d",
+        "mode": 420,
+        "bytes": 388,
+        "sha256": "3d73650b1a311742f7d6cc3218d85cb8445599d4d540da9dd682142c96e70b3c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-loading.svelte",
+        "authority": "git",
+        "gitBlob": "19dd298559f6acb4dc595191136638361ac9bddc",
+        "mode": 420,
+        "bytes": 228,
+        "sha256": "f3512497277a540ed8e365cd2d85084394172896131f555b631a1d57f7487fbf"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-separator.svelte",
+        "authority": "git",
+        "gitBlob": "fe3f7fe53ec40d9c26f0815565c46f32a0d4bcfe",
+        "mode": 420,
+        "bytes": 364,
+        "sha256": "2489dcf1f64872d753bebe58f2194df87494a367d58621c5f256bd32915a2c3f"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command-shortcut.svelte",
+        "authority": "git",
+        "gitBlob": "57ba3608c00d1a08f3a5899a1e8e263b27930922",
+        "mode": 420,
+        "bytes": 468,
+        "sha256": "30d9dafde3dbde47c9e97646e61056c236213aca48761888eb5199f802bb8298"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/command.svelte",
+        "authority": "git",
+        "gitBlob": "13dee2d11de4b896add5caa78cf3251edf1047e4",
+        "mode": 420,
+        "bytes": 591,
+        "sha256": "9452d31d65af4425544801543a8ffdf8df191c9338a49ef53e236ab85168e0d0"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/command/index.ts",
+        "authority": "git",
+        "gitBlob": "5435fbe82fabdbf16ac57b34658498a1c1a45442",
+        "mode": 420,
+        "bytes": 895,
+        "sha256": "871d1e139dc7d39054498e965cd1abb382269e9e51004523c83d7f9a7567fd01"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog-close.svelte",
+        "authority": "git",
+        "gitBlob": "840b2f68b1d8c178b4671d1bb9999a2d03a3a436",
+        "mode": 420,
+        "bytes": 245,
+        "sha256": "98ab26760ad57170737cc6aad8d378c8d96b3dbd8a7db4067d80c199cc364de2"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog-content.svelte",
+        "authority": "git",
+        "gitBlob": "55a1c42143fc1127d66015256f6357ccb1d72bae",
+        "mode": 420,
+        "bytes": 1494,
+        "sha256": "ad82d499e129116cfa9fa15985f7e852a87a8a6d98ff287b02f3e7e34924c660"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog-description.svelte",
+        "authority": "git",
+        "gitBlob": "1371e05a61f376cb221bc4018452e6f81eba6ba0",
+        "mode": 420,
+        "bytes": 374,
+        "sha256": "84d8e22e55edee13926f1c6ba1e22824c598df434635e7dcd50b38b531e6681b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog-footer.svelte",
+        "authority": "git",
+        "gitBlob": "a8d857d81a6df31b3d8b0491203288865ae81edc",
+        "mode": 420,
+        "bytes": 463,
+        "sha256": "169b8349b1cf39a4a73199fddbbdd6f652361c9eff7502a47282a1102802a42f"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog-header.svelte",
+        "authority": "git",
+        "gitBlob": "eb92a71068b1256ceab557b3a8d8a1a9f778ec17",
+        "mode": 420,
+        "bytes": 454,
+        "sha256": "b4e443c68373ca0352ad77a9229a457bafa5321c790e1be93a782fdf454d7ac3"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog-overlay.svelte",
+        "authority": "git",
+        "gitBlob": "74b86dadfb6abc5afa28c2c4899a7751f24c752a",
+        "mode": 420,
+        "bytes": 363,
+        "sha256": "97ae0a6ebc075f57bc8404968e4e968843a386332e12763e7b205a68ba7b0478"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog-portal.svelte",
+        "authority": "git",
+        "gitBlob": "ccfa79caf3c3f8b9ea33419ebb386c3a725ce760",
+        "mode": 420,
+        "bytes": 190,
+        "sha256": "718c0b6672a2911d7f9398e4ef14813cceabcf0be02b7920f10028d213a674b6"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog-title.svelte",
+        "authority": "git",
+        "gitBlob": "714ac99968dde2a507dbcc662c5f48622e06033e",
+        "mode": 420,
+        "bytes": 361,
+        "sha256": "3b83f9abf285deb6393ed93e7b923a72b895a34db0baf869bb5c9d04dc741bd4"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog-trigger.svelte",
+        "authority": "git",
+        "gitBlob": "9d1e80110a7a9d214696306e32faf83de79611aa",
+        "mode": 420,
+        "bytes": 251,
+        "sha256": "e8caaa81a4c31e5467accae7a5df9e9f7efa6760015ea7cff9c477fff5e848b7"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/dialog.svelte",
+        "authority": "git",
+        "gitBlob": "211672c6d1c812933a3a39c7a30c89f0299afe61",
+        "mode": 420,
+        "bytes": 221,
+        "sha256": "cc60100e895410b9b5f17b6071c933dfc950e5dbf4d00b261edec1e443008a27"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/dialog/index.ts",
+        "authority": "git",
+        "gitBlob": "076cef5283010dac66695cac4c8fbf58d3e04e85",
+        "mode": 420,
+        "bytes": 818,
+        "sha256": "9f5e95e83b0752b0795a21237de3fe2eed0f25c7d4d9eef528c7b321c84b7a0e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/empty/empty-content.svelte",
+        "authority": "git",
+        "gitBlob": "048dbe41919d6a0251100ca229e5e337743767cc",
+        "mode": 420,
+        "bytes": 486,
+        "sha256": "2a2d8a5d609d0e86282a2ea65833ca13f26765c67405cb7bf5784a2802831641"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/empty/empty-description.svelte",
+        "authority": "git",
+        "gitBlob": "6217ed484e815c2786cab2f458fb0905baa824c5",
+        "mode": 420,
+        "bytes": 523,
+        "sha256": "7c6aab2dce2c50cffc22657aa63dd9ce742af1fdd70fa295e9fd3bebe6d8b7f5"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/empty/empty-header.svelte",
+        "authority": "git",
+        "gitBlob": "9efbac3c5ef8310eacf4d83eee0bd180fffd833a",
+        "mode": 420,
+        "bytes": 461,
+        "sha256": "40ebb2be5ba09c5fcc39d356126e508fd5dbf5cedfb0886bb6722dccf56bf09d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/empty/empty-media.svelte",
+        "authority": "git",
+        "gitBlob": "527d808c8b75cd77f0b5c416de5065b0d8f5672b",
+        "mode": 420,
+        "bytes": 1099,
+        "sha256": "eb613b937fc5b9d0d9d0b221d7782c4cbf7b717de81ae08801fbb61073730db3"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/empty/empty-title.svelte",
+        "authority": "git",
+        "gitBlob": "dec2328d2d465b68b1c4766b5aeb0d10d6aee850",
+        "mode": 420,
+        "bytes": 436,
+        "sha256": "9d460932a097998ca94d0cabd3292998b978b4153cba15fad63d010c31b7fe8d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/empty/empty.svelte",
+        "authority": "git",
+        "gitBlob": "6aa8b7c4f57acee54bf2e99c6117804318a49625",
+        "mode": 420,
+        "bytes": 532,
+        "sha256": "6f80c28023be3ef82cfc113428242537bff29e52cc3d72f34250ef38aa862f86"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/empty/index.ts",
+        "authority": "git",
+        "gitBlob": "ae4c106ee5fc058769da35a628a39edb4999bedb",
+        "mode": 420,
+        "bytes": 480,
+        "sha256": "42353c628663f6cbc7744a8aae60fd5ff26d6e1356629ce51ccc01dda87d7c62"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/index.ts",
+        "authority": "git",
+        "gitBlob": "a769899d05464461e9ce45bad42474798e19cb44",
+        "mode": 420,
+        "bytes": 842,
+        "sha256": "9330d5c60644e81866e80edaacadc1489e8705215d1afa2275897acd2eb642c2"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/pagination-content.svelte",
+        "authority": "git",
+        "gitBlob": "903819e7ec037ddafeee7034fa718f3243a1c5d6",
+        "mode": 420,
+        "bytes": 446,
+        "sha256": "14d1571daf608009d25768083540b4a622022844b50de068ddac9bb260183084"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/pagination-ellipsis.svelte",
+        "authority": "git",
+        "gitBlob": "c4179813341aaffaeffdf9a81317a3e4d7917cc8",
+        "mode": 420,
+        "bytes": 602,
+        "sha256": "85ed2d41cead852cd9d85617d21fdf76af63aacc1be5d9a1c5e121cba72bb985"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/pagination-item.svelte",
+        "authority": "git",
+        "gitBlob": "5c04abe5d1738cdc61aced8b75cd81527ee54f3a",
+        "mode": 420,
+        "bytes": 335,
+        "sha256": "8fd9136817dfd6ac2edfab0935418158e422e8fdeb0fdc020f6007e66bd0e175"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/pagination-link.svelte",
+        "authority": "git",
+        "gitBlob": "117fc768c4cb30de5cd68caf943d8108a840383e",
+        "mode": 420,
+        "bytes": 759,
+        "sha256": "667e50e0508f7caa177080fbada26f6d1a7f10fb1bbcbff1f5c6e1dd3e577c40"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/pagination-next-button.svelte",
+        "authority": "git",
+        "gitBlob": "2f3facf9d7956235bcd75f6c8ab6121618db5137",
+        "mode": 420,
+        "bytes": 723,
+        "sha256": "9c505ac623f4e747078bcccf119def062c00c11dc599a56c9c2b3fed7ae42e0e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/pagination-next.svelte",
+        "authority": "git",
+        "gitBlob": "c5e6d30d553596d0b2de02a454d28a57a39616e3",
+        "mode": 420,
+        "bytes": 679,
+        "sha256": "f529c2fd9b69c174246327b78a6fe9291b1e9227b0e950d3d8f38bcf5295658a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/pagination-prev-button.svelte",
+        "authority": "git",
+        "gitBlob": "f1781574017f623ee2e4e4970bf7005638d9b60b",
+        "mode": 420,
+        "bytes": 729,
+        "sha256": "05dfcdfb749ffeb924d6c67cf10a3f976a0ca6aea188c8aff9dc90a39a649070"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/pagination-previous.svelte",
+        "authority": "git",
+        "gitBlob": "529fffbe350adaed3ef0d7fad60121ed50fb061d",
+        "mode": 420,
+        "bytes": 685,
+        "sha256": "f6e71213946de589a7db6cde81ad67dc268a2b0d4aeb7776624c8523d3c90f09"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/pagination/pagination.svelte",
+        "authority": "git",
+        "gitBlob": "b1c7fdf5e2a1399f0d824e004db83897b41337ea",
+        "mode": 420,
+        "bytes": 544,
+        "sha256": "cda713912cd54f4d15a2073e706a5ad30d52f3002c8adf51d5c5328bd859a6c8"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/scroll-area/index.ts",
+        "authority": "git",
+        "gitBlob": "e86a25b21372ec2fe9c569b1647358ce50b3d3f6",
+        "mode": 420,
+        "bytes": 190,
+        "sha256": "9b88919b9751aa6bcc575ce5f848c4f1098336867d2a4c982a7d9071712dc26e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/scroll-area/scroll-area-scrollbar.svelte",
+        "authority": "git",
+        "gitBlob": "f33cfc0864ac263a68d1c4e00277990fafeccc1f",
+        "mode": 420,
+        "bytes": 818,
+        "sha256": "02c7d8e1c75e8ece1b38e1a44eee211ad44f86fed5fef6a6e90b60e6d044c7ab"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/scroll-area/scroll-area.svelte",
+        "authority": "git",
+        "gitBlob": "e6b8e381e5f48004559f4b00eea4bf6540bcb349",
+        "mode": 420,
+        "bytes": 1370,
+        "sha256": "a7bd487010901691250abc1db913b39b68dde083a3e1fb3b5013fc75835d5327"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/index.ts",
+        "authority": "git",
+        "gitBlob": "4dec358b1381a1d7dcc4ad43a8da919297bb179b",
+        "mode": 420,
+        "bytes": 997,
+        "sha256": "ae5104f0aa7f71c97c75f3bad67c91147c94749c19461873c5164bb04043405a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-content.svelte",
+        "authority": "git",
+        "gitBlob": "f409a5d46703fc33f302c9bb611762b35b930cb5",
+        "mode": 420,
+        "bytes": 1549,
+        "sha256": "88473e3c38a57253167bcfbd36faba4527f09ffaed8faeaf6ec6ee81d3c84275"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-group-heading.svelte",
+        "authority": "git",
+        "gitBlob": "2e934209e66edc864c9f9900a5b76cb650094566",
+        "mode": 420,
+        "bytes": 529,
+        "sha256": "3e4a8617fa3a2643fd7060837961eb96a7246ee8c57b820ff875dd833369d99e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-group.svelte",
+        "authority": "git",
+        "gitBlob": "a1f43bf3d04684562a957daae4e32c4dd6cffcd6",
+        "mode": 420,
+        "bytes": 245,
+        "sha256": "c2262052614f8336a904b8f3503ff6c668745d0209c770e55c429210691d0917"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-item.svelte",
+        "authority": "git",
+        "gitBlob": "34bdba3e71bc044af724f680192d0c7dceed386d",
+        "mode": 420,
+        "bytes": 1276,
+        "sha256": "803a61e3e34687a1b2529468814f8e9992f50458deeba208da9ef5c5b1251553"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-label.svelte",
+        "authority": "git",
+        "gitBlob": "26ccc799561f90b5eb78cd57163d41e22c359264",
+        "mode": 420,
+        "bytes": 454,
+        "sha256": "90087db8a45f8eee22c6866148b7f8e7e9f2ef3c106bfc8b6fd3bd2e614b912e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-portal.svelte",
+        "authority": "git",
+        "gitBlob": "424bcddccce6f69280eaedbab287699d51d6ef86",
+        "mode": 420,
+        "bytes": 190,
+        "sha256": "3ad1139eaca3b9c989495982493c99f42893d1aafbbf2f4aaab6fd117fbab742"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-scroll-down-button.svelte",
+        "authority": "git",
+        "gitBlob": "6efeae5a62e464d94c3aa62815e209a892b5430d",
+        "mode": 420,
+        "bytes": 596,
+        "sha256": "970a859d5559de6a9bdc709963f199da62bc380a635ae244eda11c1906dbc4e0"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-scroll-up-button.svelte",
+        "authority": "git",
+        "gitBlob": "20b2699d1f3174ca0fefdeeebb4269d7d8594c30",
+        "mode": 420,
+        "bytes": 584,
+        "sha256": "6e831aac555c6c8952f0a539e62a37188f99c146c5600491f94cd56b24803e9a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-separator.svelte",
+        "authority": "git",
+        "gitBlob": "74df66d06fd601f545b4255a7098e5aec2701951",
+        "mode": 420,
+        "bytes": 445,
+        "sha256": "bdfa1131ba335ace6fc737a29906cce38717017322dd4670d7d11e6f062ac02c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select-trigger.svelte",
+        "authority": "git",
+        "gitBlob": "2e673bbfd6d89fe43ff6ecce59c4493325791ba5",
+        "mode": 420,
+        "bytes": 1406,
+        "sha256": "5814cd7efcb266201adef46d90b068c35fbeb64a26e5aead0354517b512f34f9"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/select/select.svelte",
+        "authority": "git",
+        "gitBlob": "05eb6634e6a1f79971c1c7f299c77eb917b8bf13",
+        "mode": 420,
+        "bytes": 277,
+        "sha256": "4a7062d01d4cd23edfb5667f3da7a829626c169dff46846d713af524ebf30704"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/separator/index.ts",
+        "authority": "git",
+        "gitBlob": "82442d2cdc5988d5b4622664004a23e8226f474c",
+        "mode": 420,
+        "bytes": 83,
+        "sha256": "beeaaaab286f1aeff1e43a8ef1c02a60de5e6349780d12af73e9646c6db98bf6"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/separator/separator.svelte",
+        "authority": "git",
+        "gitBlob": "ce2912a2b008cfae39d4cfbc9088f2495c0c313f",
+        "mode": 420,
+        "bytes": 548,
+        "sha256": "e9992f6dc84660165bfc72e94b51f3b277c624f1f2ae9bf9d7c8c3a8a3aca530"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/spinner/index.ts",
+        "authority": "git",
+        "gitBlob": "f8b1ceddeee9e7e14066626156bec27288813231",
+        "mode": 420,
+        "bytes": 55,
+        "sha256": "ce8a9f311c7abdc8773e2ce6439c89f0c8a9edbc273f5ff44e3f31cd380420c6"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/spinner/spinner.svelte",
+        "authority": "git",
+        "gitBlob": "bc2971cc6e895a4bffd7b38af7e4cdf4df72ab9a",
+        "mode": 420,
+        "bytes": 358,
+        "sha256": "62c4bb1d5d383836b2c7ca06d80cdb95c402a36e64d45800af6e088c937546bb"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/textarea/index.ts",
+        "authority": "git",
+        "gitBlob": "ace797a895e1610565d1695b66473e84db303ad4",
+        "mode": 420,
+        "bytes": 81,
+        "sha256": "3b5f25dfd5d1d9b5305f613f7544a7e39362cd4b0a9c3250414cd5ff02e45398"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/ui/textarea/textarea.svelte",
+        "authority": "git",
+        "gitBlob": "2a42c0e592cd9ad2a17f7c0fe9410f8010868a40",
+        "mode": 420,
+        "bytes": 917,
+        "sha256": "6b91db839b0a52335809c9b1de84a2e78ac87028cd8a35efebdcf7529db0f1b4"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/upload/UploadChapter.svelte",
+        "authority": "git",
+        "gitBlob": "9fa62d5c4416284297bd06caa8d9f493934cc2ce",
+        "mode": 420,
+        "bytes": 9720,
+        "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/upload/UploadChapterEdit.svelte",
+        "authority": "git",
+        "gitBlob": "19fcdd155ee7a4b07bd9f21084672501c961267f",
+        "mode": 420,
+        "bytes": 17172,
+        "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/upload/UploadChapterGroups.svelte",
+        "authority": "git",
+        "gitBlob": "d49c397b7207467c38124e53896c02c6835a04e6",
+        "mode": 420,
+        "bytes": 4673,
+        "sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/upload/UploadChapterMetadata.svelte",
+        "authority": "git",
+        "gitBlob": "8707d0983b3ac72e6f6f5910f0a64c96b140cbcf",
+        "mode": 420,
+        "bytes": 3293,
+        "sha256": "c94de7465c23c046f6277dae37266b845b62ba8c5097980a3629014f6f3d7ff9"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/upload/UploadChapterPages.svelte",
+        "authority": "git",
+        "gitBlob": "9398b0c16bad8be6a27daa7c653b80395e1aa0ec",
+        "mode": 420,
+        "bytes": 17316,
+        "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/components/upload/UploadChapterPagesEntry.svelte",
+        "authority": "git",
+        "gitBlob": "5bc349f93a3f9e79454a7d8037d53d13cb3b2e2f",
+        "mode": 420,
+        "bytes": 4915,
+        "sha256": "87bce9e9394fd6301e81821ea4aa78e661b14aae6f5616db249a938f11879fad"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/constants/Error.ts",
+        "authority": "git",
+        "gitBlob": "9dc115cea4e788f991a29ebf633ea47258ecb882",
+        "mode": 420,
+        "bytes": 584,
+        "sha256": "a1a45c45acec60f4f432844183decee07589f0779ad31785b6484fa001904a61"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/constants/Manga.ts",
+        "authority": "git",
+        "gitBlob": "c162b57baf3f957746d955d8e9ee351e967b6c05",
+        "mode": 420,
+        "bytes": 4320,
+        "sha256": "f57770327de2f1cbe8a5261b8ed9022823773e84affc91ed4db071c08d348331"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/constants/MangaFollow.ts",
+        "authority": "git",
+        "gitBlob": "37fee64b6a055bfe9872322cdbc9fe0cd509d0b1",
+        "mode": 420,
+        "bytes": 679,
+        "sha256": "aa21347271f11f569083c14769ed32b8d7c59ac32656de929c86358f2b609ce7"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/constants/Reader.ts",
+        "authority": "git",
+        "gitBlob": "6367ea966ef427fe530eeacd297c8a5cf3c56b9e",
+        "mode": 420,
+        "bytes": 529,
+        "sha256": "c64886cb93cf495969713232ac0313e38f14fb6f3b46af2e09baee981c8f75a9"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/constants/Report.ts",
+        "authority": "git",
+        "gitBlob": "cf31fd54d65c6b4075d402366f6ca741a0092c09",
+        "mode": 420,
+        "bytes": 330,
+        "sha256": "9168a935c7d52af4d19a9d26d465b04e2b9f882de96d32aaeff38d1ac44d9a65"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/constants/Tag.ts",
+        "authority": "git",
+        "gitBlob": "10f5d85cb6757d5e592151f3f8a462332f2adc6c",
+        "mode": 420,
+        "bytes": 358,
+        "sha256": "7b6a201ce8c3405aa4cd84f2846c48026301ee9bc31b55079052185f613c8ee6"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/constants/Thread.ts",
+        "authority": "git",
+        "gitBlob": "1bb312dcce5b8beae31508fc5d7a4a5e8dae9979",
+        "mode": 420,
+        "bytes": 595,
+        "sha256": "362fa2fdc3dcc4ee15d4abda019d54f10e3e3aba2177446c00aaf241d4b3bf97"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/constants/User.ts",
+        "authority": "git",
+        "gitBlob": "d4feb77a68bed2876572cbe76f9a18fded0c17af",
+        "mode": 420,
+        "bytes": 1068,
+        "sha256": "9ba081b27c8042817188e8d9ec215efef309345cbac2bc309ea7429218b822a5"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/constants/index.ts",
+        "authority": "git",
+        "gitBlob": "725ee6ddd87d6c079ff3efb4ae6335c5a0bcb43b",
+        "mode": 420,
+        "bytes": 1969,
+        "sha256": "95a874eb922385b8689da7fe96808eab2ad63483e786fa8633879987cbb893fc"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/hooks/index.ts",
+        "authority": "git",
+        "gitBlob": "25ca5818cf7225bf2e82c291758d8d586987a82b",
+        "mode": 420,
+        "bytes": 81,
+        "sha256": "f474711585ba4f4131aa4dca2d184eb224ede63d30ce0a0fa1dbddbeedb113a9"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/hooks/is-mobile.svelte.ts",
+        "authority": "git",
+        "gitBlob": "dc748b6738a1d7a0d6435494dbad3571da8448c2",
+        "mode": 420,
+        "bytes": 302,
+        "sha256": "01e7c596011479eeda88418faca95e5625be3b74eda0b93f22ea338c9d66e4d5"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/hooks/persistent-store.svelte.ts",
+        "authority": "git",
+        "gitBlob": "3f6641ea80d56de6acb881e1ced8ce186f8aea7c",
+        "mode": 420,
+        "bytes": 864,
+        "sha256": "60a856fb50feba335c96517c5a8e419038b758ff12a15aeb73f0bc3bbde810fc"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/index.ts",
+        "authority": "git",
+        "gitBlob": "4d583df96f09da027c612d14c32c3739b292548d",
+        "mode": 420,
+        "bytes": 556,
+        "sha256": "8d74c9e6801bcc478e77e1273967007a2348c34157038a81f050e715aa0caf87"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/author.ts",
+        "authority": "git",
+        "gitBlob": "da1d08110cd5a1dbd265b3f91c118c8992797d33",
+        "mode": 420,
+        "bytes": 621,
+        "sha256": "b8000cdbe5ace8c27558c6d79a19cd96b33a6be8a4febdac1c0380f4320b4476"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/chapter.ts",
+        "authority": "git",
+        "gitBlob": "34956141d14226dd47edf3b880a8a72b8d6e1980",
+        "mode": 420,
+        "bytes": 2102,
+        "sha256": "554acd02f45a8e0e95b624f1288936f26ee4425ef00d6719e666b622ba521a3a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/client.ts",
+        "authority": "git",
+        "gitBlob": "465a0f021f7a8ed5d206448ba2f6207202c1d4c8",
+        "mode": 420,
+        "bytes": 250,
+        "sha256": "6c4bb2345323602db2357f7d8692a77dfcc9b4f1b53f553b0230dad9fe5d8371"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/cover.ts",
+        "authority": "git",
+        "gitBlob": "f635dd9d4369964c206996e8a3cb2f71b4b458ce",
+        "mode": 420,
+        "bytes": 213,
+        "sha256": "6e75220cdcbf04fcd5f2d2bd48c424af0eceed7de6b1c6f543105e92f2ce7f99"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/group.ts",
+        "authority": "git",
+        "gitBlob": "4fa1dbd7005208f8d3a775d05a9b73de29f1cbe8",
+        "mode": 420,
+        "bytes": 982,
+        "sha256": "6ea0ab938bba2214429cbbc5b12bb343c30665e5591acff82a7a8f05ffc5b2c0"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/index.ts",
+        "authority": "git",
+        "gitBlob": "8690e6219694f351681239751dfe8c42ecc264ac",
+        "mode": 420,
+        "bytes": 360,
+        "sha256": "576ac48ab04945436996a01d81b6cd3be012ca2f673f679b44b137056d087fd0"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/manga.ts",
+        "authority": "git",
+        "gitBlob": "33e5ca75d72ca9d96f41447cac6cc8c120de6695",
+        "mode": 420,
+        "bytes": 4511,
+        "sha256": "fdf62a1220d8e13f446f4fc070788c78aded93baeef360ae88cee2b67827e799"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/reply.ts",
+        "authority": "git",
+        "gitBlob": "7698339da8fd9bcef767148b4a0d03eceee088d5",
+        "mode": 420,
+        "bytes": 906,
+        "sha256": "6b53cf02fe13023d30cc3749edfe3819a5da3d80993c945ea8a7fafcbb706446"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/report.ts",
+        "authority": "git",
+        "gitBlob": "791f82cc22d301d6e46f2056e9d3d0cd22cc8b6d",
+        "mode": 420,
+        "bytes": 411,
+        "sha256": "f075edf105bffa2ee65719d89673e35a636fc5170cd9f2b6631349cfc85b11db"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/upload.ts",
+        "authority": "git",
+        "gitBlob": "04ffa103c3dea809ab9d2016df12ab5f15b9bc9f",
+        "mode": 420,
+        "bytes": 263,
+        "sha256": "e54f7c6e0608906443f12f1f8d66b6eb828137ddad1372ce939bb56e912f64a1"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/permission/user.ts",
+        "authority": "git",
+        "gitBlob": "3d3090a7349206c6d490604e204c6ffaa6f2ea36",
+        "mode": 420,
+        "bytes": 362,
+        "sha256": "5db30043bcaa9687f89c8c949466ec731266606615ff18d6991aa5e35463cb41"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/stores/Session.ts",
+        "authority": "git",
+        "gitBlob": "814ddf0fe0672175d8602863ebfade3291eea15a",
+        "mode": 420,
+        "bytes": 1223,
+        "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/stores/global.ts",
+        "authority": "git",
+        "gitBlob": "5dfd295b3f453cb420f4a833c6938bece6c8104a",
+        "mode": 420,
+        "bytes": 1087,
+        "sha256": "cb8a1eda7fae685c3fd62164080e3852a074406e98d1477acd494f76f0483671"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/stores/index.ts",
+        "authority": "git",
+        "gitBlob": "7bd28b89570a355a33bbed18a092736cf84afdfe",
+        "mode": 420,
+        "bytes": 102,
+        "sha256": "aaf4932b81dc634f56e81123cd76906d53ef4cd044ab59608817ae881bd6f7cb"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/lib/stores/prefs.ts",
+        "authority": "git",
+        "gitBlob": "728b6dc0d53e948548cd87e98a440a5594a54e29",
+        "mode": 420,
+        "bytes": 2984,
+        "sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/+layout.svelte",
+        "authority": "git",
+        "gitBlob": "7acea8314da17b9f182f85c6d2fc5beb9f8255df",
+        "mode": 420,
+        "bytes": 475,
+        "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/+page.svelte",
+        "authority": "git",
+        "gitBlob": "b08e3cd81fca06f33b645f67ca78582d494d50e1",
+        "mode": 420,
+        "bytes": 1359,
+        "sha256": "9829b73f4767505d3187c913b95e645c6af6f34884684463f2210a296efb205d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/auth/+layout.svelte",
+        "authority": "git",
+        "gitBlob": "f2b392f752e2031a7e3db6d9fb780327f422abda",
+        "mode": 420,
+        "bytes": 220,
+        "sha256": "dddbb202e26095ba9f348e2892d67366b570f40c4e84e0e4062128cc0cbd59b2"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/auth/login/+page.svelte",
+        "authority": "git",
+        "gitBlob": "803c51a5ac454be184cf67b9c441fe060254241b",
+        "mode": 420,
+        "bytes": 9470,
+        "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/auth/logout/+page.svelte",
+        "authority": "git",
+        "gitBlob": "7a93862d8ac51c8419c13c326acbeabaf84ff43d",
+        "mode": 420,
+        "bytes": 1703,
+        "sha256": "fa75f6f66212865d2fe460c5160a33f22c35a9168401161bcdbcd04bf5c3e1e7"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/auth/recovery/+page.svelte",
+        "authority": "git",
+        "gitBlob": "b249da86731b9f82422bb4dcdc2d911870b43824",
+        "mode": 420,
+        "bytes": 7091,
+        "sha256": "20ba760776b71854e74c17aef228abd234dd5bded650c4fe863a1a94e1115fcf"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/auth/register/+page.svelte",
+        "authority": "git",
+        "gitBlob": "f4833665feedd7f3440b1ab2af85962628381b50",
+        "mode": 420,
+        "bytes": 12198,
+        "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/auth/verification/+page.svelte",
+        "authority": "git",
+        "gitBlob": "774f40b730484a6ffc62f5a295dd46a0409a36ab",
+        "mode": 420,
+        "bytes": 7210,
+        "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/chapter/[id]/+page@.svelte",
+        "authority": "git",
+        "gitBlob": "4b132c5744aba847b53b557d0b68c3114cd91b55",
+        "mode": 420,
+        "bytes": 498,
+        "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+        "authority": "git",
+        "gitBlob": "4b132c5744aba847b53b557d0b68c3114cd91b55",
+        "mode": 420,
+        "bytes": 498,
+        "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/chapter/[id]/edit/+page.svelte",
+        "authority": "git",
+        "gitBlob": "112d062b383d9dabf2bc0d2068909bd181b3f981",
+        "mode": 420,
+        "bytes": 1671,
+        "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/drafts/title/+page.svelte",
+        "authority": "git",
+        "gitBlob": "2e7adfcaa90729c37be3930df64c2943e69c1a7b",
+        "mode": 420,
+        "bytes": 3031,
+        "sha256": "495a4e72a3c9098d6b67f9dbb0cdbb01bf3692bb2849430f2547cad02fda22fd"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/forums/threads/[id]/Thread.svelte",
+        "authority": "git",
+        "gitBlob": "fc89ada12b2285bceca47c765e653333df89284f",
+        "mode": 420,
+        "bytes": 9358,
+        "sha256": "31d385f93ec915026be432686bd211af76df1301314e17349ae55af76cb1f3bf"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/group/[id]/Group.svelte",
+        "authority": "git",
+        "gitBlob": "ae6254a0f413f4481457d2281e1f87dd395d329b",
+        "mode": 420,
+        "bytes": 8911,
+        "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/group/[id]/GroupClaimDialog.svelte",
+        "authority": "git",
+        "gitBlob": "dc17289ad78c55d4cec52bb40248600fa17d32ea",
+        "mode": 420,
+        "bytes": 8395,
+        "sha256": "46723e0f934c3070727a9e1398918b977abab55ea8209648c5c279d7c1192f30"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/group/[id]/settings/+page.svelte",
+        "authority": "git",
+        "gitBlob": "2c06e282ebf195e1d915053da19cee1c1ba70f3b",
+        "mode": 420,
+        "bytes": 18293,
+        "sha256": "9d7319ce7ccae8203e4b79c01453257cb009db0696e9c85080188e26e41a4a98"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/history/+layout.svelte",
+        "authority": "git",
+        "gitBlob": "7695cb572374935c0239e6cb7cb1d17fcd85dc0d",
+        "mode": 420,
+        "bytes": 173,
+        "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/history/+page.svelte",
+        "authority": "git",
+        "gitBlob": "65dce5d4c00abd8f35ad80c07bde6a6817dd6f7d",
+        "mode": 420,
+        "bytes": 722,
+        "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/library/+layout.svelte",
+        "authority": "git",
+        "gitBlob": "7695cb572374935c0239e6cb7cb1d17fcd85dc0d",
+        "mode": 420,
+        "bytes": 173,
+        "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/library/+page.svelte",
+        "authority": "git",
+        "gitBlob": "d6786b88e9f92f2090f8c4087bbdb95cdec4afa7",
+        "mode": 420,
+        "bytes": 1957,
+        "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/library/updates/+page.svelte",
+        "authority": "git",
+        "gitBlob": "ebaa58e13d0a1ac3faf04d171215021387066034",
+        "mode": 420,
+        "bytes": 725,
+        "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/my/reports/+page.svelte",
+        "authority": "git",
+        "gitBlob": "cf8dfe71ae720f88e85237ba7d3a2430b77fb234",
+        "mode": 420,
+        "bytes": 1770,
+        "sha256": "8a5ddb5387ecf78a376d2cffe6d5b0214ea8359895e7c438730156b811363f5a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/search/+page.svelte",
+        "authority": "git",
+        "gitBlob": "6221e0b5e62d8b9f032ce449270a2872f22a9e3f",
+        "mode": 420,
+        "bytes": 1982,
+        "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/settings/+layout.svelte",
+        "authority": "git",
+        "gitBlob": "2fb448c81ae0dd9e747bfcf7039ea88af0a3fb51",
+        "mode": 420,
+        "bytes": 2025,
+        "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/settings/account/+page.svelte",
+        "authority": "git",
+        "gitBlob": "318749362e3e5e9e5c6a28678eb474fc1158eab9",
+        "mode": 420,
+        "bytes": 11807,
+        "sha256": "ff92851ff500757d698401a06c0f213092bbb853219bd7992546cae427d3646c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+        "authority": "git",
+        "gitBlob": "7e12b1f34b847d696b5aa9b0c44881f944f3210a",
+        "mode": 420,
+        "bytes": 2927,
+        "sha256": "ca292670a485d3bd8ffdcf720e563a418c018b52e5d97e74c37dbe3a682fbda1"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/settings/client/ClientEntry.svelte",
+        "authority": "git",
+        "gitBlob": "829b741408bba1ad04ec34fc3a5a88416faef4b5",
+        "mode": 420,
+        "bytes": 4569,
+        "sha256": "cc119d9bd6ce9ee00809e83b5d9292d53704953695459b82e08bc931647415da"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/settings/library/+layout.svelte",
+        "authority": "git",
+        "gitBlob": "7695cb572374935c0239e6cb7cb1d17fcd85dc0d",
+        "mode": 420,
+        "bytes": 173,
+        "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/settings/library/+page.svelte",
+        "authority": "git",
+        "gitBlob": "17804d129e8d865f630872713d1d86fcb0ff35c8",
+        "mode": 420,
+        "bytes": 6626,
+        "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/settings/preferences/+page.svelte",
+        "authority": "git",
+        "gitBlob": "cb046cdf699c0d93261148fa6ed24b4c50b9fee3",
+        "mode": 420,
+        "bytes": 16634,
+        "sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/Manga.svelte",
+        "authority": "git",
+        "gitBlob": "5a1498d0bda538d6349331597fac592921493fe7",
+        "mode": 420,
+        "bytes": 16276,
+        "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/MangaActions.svelte",
+        "authority": "git",
+        "gitBlob": "5a5554d8860ba4a5ebfd8ca53cd6278bf72d4711",
+        "mode": 420,
+        "bytes": 12126,
+        "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/MangaChapterListSection.svelte",
+        "authority": "git",
+        "gitBlob": "dbfce43cfd9a15d001682cc0e9acee721af57648",
+        "mode": 420,
+        "bytes": 2385,
+        "sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/MangaCoversSection.svelte",
+        "authority": "git",
+        "gitBlob": "b802969656d284795f8b7174396ea95c093410ff",
+        "mode": 420,
+        "bytes": 5066,
+        "sha256": "04250e110b499b5652b06005380993043455c02ba6bbe60888b91efea2ea371b"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/MangaRecommendationsSection.svelte",
+        "authority": "git",
+        "gitBlob": "ea8663283a100cd1b825ba7729785f301ef1a47d",
+        "mode": 420,
+        "bytes": 2345,
+        "sha256": "26b2d29077bf3a8b05593bf8a9abe0d4e30920b3824f42ef9a0c41af816bc7e4"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/[id]/edit/+page.svelte",
+        "authority": "git",
+        "gitBlob": "c543f4397ad774bb6f041afb6defe0dd2471e572",
+        "mode": 420,
+        "bytes": 2645,
+        "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/[id]/edit/+page.ts",
+        "authority": "git",
+        "gitBlob": "63acc9910fe5bfab41c8ab5d47763932c583b513",
+        "mode": 420,
+        "bytes": 723,
+        "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/[id]/upload/+layout.svelte",
+        "authority": "git",
+        "gitBlob": "3c163728d91b15d7428db8245bae7c879f219edb",
+        "mode": 420,
+        "bytes": 469,
+        "sha256": "a6833f58f3069475244bedbeb29125540baca071c3e20a979321bc32f67b659c"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/[id]/upload/+page.svelte",
+        "authority": "git",
+        "gitBlob": "6ee294a0b855ebfcf7cc013bb0ceffac5413dbb2",
+        "mode": 420,
+        "bytes": 2204,
+        "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/title/[id]/upload/+page.ts",
+        "authority": "git",
+        "gitBlob": "c16f8fef70991770e5127d7793119e536d4a63c2",
+        "mode": 420,
+        "bytes": 342,
+        "sha256": "861dd8ef4f908b988334787a74652cda308697a94ef767821fe97bbdd801ef7f"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/user/[id]/User.svelte",
+        "authority": "git",
+        "gitBlob": "98d587c118a96e83b15cf9be1c62eb31e3148bdb",
+        "mode": 420,
+        "bytes": 9225,
+        "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/(app)/user/[id]/uploads/+page.svelte",
+        "authority": "git",
+        "gitBlob": "3f5200e1398e424d2248e68c16df81532254d6c8",
+        "mode": 420,
+        "bytes": 2837,
+        "sha256": "28ffd1d4de746e4db28b466a0b1e2d5e85d77b8210aa0bb8f31845b7116b5cc4"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/+layout.svelte",
+        "authority": "git",
+        "gitBlob": "20d96d65aa9aba3fdc6601cd4b6c3f590e87cbfd",
+        "mode": 420,
+        "bytes": 1514,
+        "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/routes/+layout.ts",
+        "authority": "git",
+        "gitBlob": "8c63e481cb5f72aaaa2e42af4dd46313cd5c2eb6",
+        "mode": 420,
+        "bytes": 3511,
+        "sha256": "8e56aba992c24f457df79e2345a62fc9a819d31976290ee8a5fb8fbf9ce14c65"
+      },
+      {
+        "path": "weebdex-platform/frontend/src/service-worker.ts",
+        "authority": "git",
+        "gitBlob": "ae119d4335dfda4609813a4080aee060e8a75598",
+        "mode": 420,
+        "bytes": 1814,
+        "sha256": "9176298fc05fb1d60c9281ea67f0927abe41ee95c9eed7558346614819ab7cbc"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/EditionPage.svelte",
+        "authority": "git",
+        "gitBlob": "122623c293f8e51ca929c83753ae66745cce661a",
+        "mode": 420,
+        "bytes": 1481,
+        "sha256": "46c0e0b16e23db4f5a401e6facdfcab8882711c9b0c27301d198254ac0f57326"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/Status.svelte",
+        "authority": "git",
+        "gitBlob": "20796bafdc127a0c7feb87a81c50da562b5050ea",
+        "mode": 420,
+        "bytes": 1133,
+        "sha256": "9d286ed3e637e06ac073e1b3df7445f49d94af086c3ea70a798c4f75a95e9623"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/TitleReadingActions.svelte",
+        "authority": "git",
+        "gitBlob": "526486ecf3b20dd96f53f21feaec6424fb8ea146",
+        "mode": 420,
+        "bytes": 3969,
+        "sha256": "dc565d75d52cd9fa6ddb845c9a9cb4a3d09a37b8eaebee16eb2ccf1ab0544199"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/anchors.json",
+        "authority": "git",
+        "gitBlob": "fd0ecd44aa2ef092db15451a512ae4d516c73151",
+        "mode": 420,
+        "bytes": 48213,
+        "sha256": "57a4c1020b4afcb7f66c345d3d0ff070d24cb649a90623a3b3ccd504d56d3e23"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/client.ts",
+        "authority": "git",
+        "gitBlob": "e4d6afd957f5d054dcd9670f3d8f0a086ea8a270",
+        "mode": 420,
+        "bytes": 7202,
+        "sha256": "7877d612236ccd80387c8d54ab9d662deaf92d4ee582b8fd8b7de5c744c81b44"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/completion-contract.ts",
+        "authority": "git",
+        "gitBlob": "1276b41ca1e9e486be8e7078ad0dc4f2fec3f43c",
+        "mode": 420,
+        "bytes": 2495,
+        "sha256": "61c6bce982bfa8f357b7328c6c1846f6a8c1a81fe1099ce02cadf9b37a84d263"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/contract.ts",
+        "authority": "git",
+        "gitBlob": "7baa21eaa4916402ddbf3774ee195310703a5ee6",
+        "mode": 420,
+        "bytes": 8841,
+        "sha256": "9bc977b5e4b581d00c15b8e61722fbeb65addaa48add69887bfd2916b6a65539"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/controller.ts",
+        "authority": "git",
+        "gitBlob": "2400a8acc86719ff574ab5baf514eb367bde2f7a",
+        "mode": 420,
+        "bytes": 27402,
+        "sha256": "ece9cf49e2636e2486d808c483ce25c90c9b8adbed44ea51e9af58d0caef5cbf"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/endpoint.ts",
+        "authority": "git",
+        "gitBlob": "093304943275d57c585b2c920257e1c6d57864c6",
+        "mode": 420,
+        "bytes": 1791,
+        "sha256": "0c6c950c765dc43979d835ecef90a5bc7982a391ba8287df971d6601a151a6ae"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/history.ts",
+        "authority": "git",
+        "gitBlob": "cf3ff2aa388b10f49392bca9c9402e3769806faf",
+        "mode": 420,
+        "bytes": 5916,
+        "sha256": "34b090f3b875aabde35a208755971bd9538526d952196b7be29f2d56b45c4d5f"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/native-continue-contract.ts",
+        "authority": "git",
+        "gitBlob": "033468ecfaba64e8695c3b04f5299f79a6a9798f",
+        "mode": 420,
+        "bytes": 5965,
+        "sha256": "3c6d4fcbb447854b901542e875d829e33df5330d92873c03af4381da57dc0bcd"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/native-continue.ts",
+        "authority": "git",
+        "gitBlob": "99a0f1fcfd5a096b0a5d830767fa4180537a2297",
+        "mode": 420,
+        "bytes": 3841,
+        "sha256": "04cbae3742c3aa0efd76cf14f051fd834eb360cd8d196db797fe1c21377c8921"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/native-history.ts",
+        "authority": "git",
+        "gitBlob": "63f389b69de1d1d504fa623dd8c3dd5a9b7c8235",
+        "mode": 420,
+        "bytes": 3731,
+        "sha256": "8ee1bffe1043caa6e945e221710743700fa257d30fb1e9f7256b5a291557098a"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/overlays.mjs",
+        "authority": "git",
+        "gitBlob": "405a8e48e3d18efb18586a8eb4cf91dd9d4d2f29",
+        "mode": 420,
+        "bytes": 4220,
+        "sha256": "d66b48dab0c2febe5809ad5ebecf57a6fbd0ee17fbd06efe9a240faa60eedd0a"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/presentation.ts",
+        "authority": "git",
+        "gitBlob": "4979feab1482f0610161a53bccffdc0974846e42",
+        "mode": 420,
+        "bytes": 1455,
+        "sha256": "f609e06d87da8529b40c7f21ceddcf8165ca47158161d769f1f125c6e11f4d39"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/runtime.svelte.ts",
+        "authority": "git",
+        "gitBlob": "a8fb1fb1b30e4b0ad1ef32eaff0c1844f23c5b9f",
+        "mode": 420,
+        "bytes": 7868,
+        "sha256": "ac795cf4d48aee5148175a83e0a74c3fb33b9d18eaec12a89100529a0d52d3a6"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/bounded-reader/title-query.ts",
+        "authority": "git",
+        "gitBlob": "812bbcada0dc2ee52b58d9ce9cf8652036d174fd",
+        "mode": 420,
+        "bytes": 617,
+        "sha256": "59ea076ddf1f9540f6e31eb7e8fd5f9628686d547fae07ed3eda7e80b41f957c"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-behavior/authenticated-mutation.ts",
+        "authority": "git",
+        "gitBlob": "914136be4acbac4d6ef18bf30557e9cd86e49be2",
+        "mode": 420,
+        "bytes": 3483,
+        "sha256": "feba7952eb231940a3f0cfd5223baee1873c96a923818291c6c91b2694f95fdd"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-behavior/client-name.ts",
+        "authority": "git",
+        "gitBlob": "6fdd2d08e4ce2d5bbddc7d3d061c8ec88d0c67d0",
+        "mode": 420,
+        "bytes": 758,
+        "sha256": "6234aff995b2c9bf07770da8a728129750773d1bf19f08acddf1552b525cdf2f"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-behavior/latest-search.ts",
+        "authority": "git",
+        "gitBlob": "e7b08f36cda654db16e1bc7f84ccfa6131da2be4",
+        "mode": 420,
+        "bytes": 2122,
+        "sha256": "74e655e622d2503deb70ff495ac57f8ef14051954efd179d00e15dced4db5571"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-behavior/mutation-authority.ts",
+        "authority": "git",
+        "gitBlob": "181504dcd18b5436cd77ac5e21a72d3553942350",
+        "mode": 420,
+        "bytes": 2200,
+        "sha256": "f96ef67b0dc4e74539e382db0ef3bcf57001a373db2c262a47a43b77a09c2f14"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-behavior/mutation-feedback.ts",
+        "authority": "git",
+        "gitBlob": "8b5e5f571a6ea56de319b36cb84301d57f8c2ad4",
+        "mode": 420,
+        "bytes": 3160,
+        "sha256": "4241f752c978f4681aed346ab987f7713b3f603d97d08f3b19614fec098a9b3f"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-behavior/navigation-authority.ts",
+        "authority": "git",
+        "gitBlob": "7c5dcb767738aa42c7a312d3825de121f3a0078e",
+        "mode": 420,
+        "bytes": 359,
+        "sha256": "aa8a2c99e5ebce309fc7673d3d380d3d39d4dda924f99ccbbd07acfeab30d8f2"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-behavior/reader-navigation.ts",
+        "authority": "git",
+        "gitBlob": "12f0ea4d0e77952cb2bfc378d4acff691a47e63d",
+        "mode": 420,
+        "bytes": 1619,
+        "sha256": "58120d8cc91c0c80344b933db97e8e30cd412e1583db59c2f5cc427ea1e8967f"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-behavior/thread-read.ts",
+        "authority": "git",
+        "gitBlob": "78234ab7313674d1861e6e71b95885c6eb02a22a",
+        "mode": 420,
+        "bytes": 2167,
+        "sha256": "b0dbb2500c65cbce75066825c126536a512efffa4288775644bb3bb51eca13f9"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-overlays.mjs",
+        "authority": "git",
+        "gitBlob": "106bd95eab8bb98a43726dd1295f3d0d21fe2a56",
+        "mode": 420,
+        "bytes": 510676,
+        "sha256": "9afd0fb8e3ab74ba093ec036a245dc67f711fbaaf62d01a28310a4d300f7513b"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs",
+        "authority": "git",
+        "gitBlob": "fc535dcb533cda079af5cc800446da66f428933f",
+        "mode": 420,
+        "bytes": 8812,
+        "sha256": "ca00368c31284cf3e6a8733198de9b2e411883236be810cacff8ec501474f801"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/integration-utility-sources.mjs",
+        "authority": "git",
+        "gitBlob": "c6b3799cf1f74c5019feab1a1939f6f4e999c3d4",
+        "mode": 420,
+        "bytes": 663,
+        "sha256": "18546d27b604acd548ca41463a8afa240acbf8d0b8de86070114c989f57d9759"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/ChapterHistory.ts",
+        "authority": "git",
+        "gitBlob": "550d991a0f0d470148f23f75c98ac2972f636bec",
+        "mode": 420,
+        "bytes": 3831,
+        "sha256": "33b3c827629ac09b87cf4c30d29bb2b3ae19204b3aae5d77786e11069b9dc41e"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/MangaFollow.ts",
+        "authority": "git",
+        "gitBlob": "eea6ecb3ec6852dadb98922a11006ffee09ecc67",
+        "mode": 420,
+        "bytes": 10177,
+        "sha256": "3c555b7a2fcafcf9a56007e0af9e85460741ee4493df03daf7175930a1352cf3"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/action-owner.ts",
+        "authority": "git",
+        "gitBlob": "b7175be59e51cadcbbd3d77fcf5a26a33c67f812",
+        "mode": 420,
+        "bytes": 1627,
+        "sha256": "c623b27a489eb45dd92f46e47e95622d2c015c07254375fd74ca37b4b9a5fd3d"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/catalog.ts",
+        "authority": "git",
+        "gitBlob": "51953c71eaded84d9f15e964471faf5237873cf4",
+        "mode": 420,
+        "bytes": 3608,
+        "sha256": "c43467046ba3010af1fefb56e7cc0661d2468fc62882f0c8725e3af627445676"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/device-list-name.ts",
+        "authority": "git",
+        "gitBlob": "f6da0e98a2a780c7526f7a7cadf85cc296ac2c8d",
+        "mode": 420,
+        "bytes": 3445,
+        "sha256": "9957bf7898a000738ad6d9c97a05b00b3e30914d9f54b01001b1fd6fbfb80fb1"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/device-store.ts",
+        "authority": "git",
+        "gitBlob": "d4abb5ae5edafab4102aadf67fd97d42d12aaab6",
+        "mode": 420,
+        "bytes": 21628,
+        "sha256": "aedc80e3cb1a529f46643b02a7bb4998c6e5f2f1bb4e5b7f2b2a3a43453014ff"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/device-time.ts",
+        "authority": "git",
+        "gitBlob": "283a37919547cc4838b271ca1e755f45e2de3311",
+        "mode": 420,
+        "bytes": 916,
+        "sha256": "ada6ac3e482306ae29b9a96c95f1d59bb3389693cec5e36b63fc52c919f5bbfc"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/graph-transfer.ts",
+        "authority": "git",
+        "gitBlob": "3448cb8f6c36fd3ed73e83f6377c231b2b8988c1",
+        "mode": 420,
+        "bytes": 581,
+        "sha256": "0cbee4047d8bc0d1c3d6c7632e27ef98b2ce18bdc869dccb4df11d669275f669"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/history-feed.ts",
+        "authority": "git",
+        "gitBlob": "ef731f603598f0d64e88b4b8ebe43a7204c90d1e",
+        "mode": 420,
+        "bytes": 3649,
+        "sha256": "e50936687390cf32fd52e0aa6eb39c53f1880779a1fe42761f845858d0b48692"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/history-pagination.ts",
+        "authority": "git",
+        "gitBlob": "ee98cea1664f4637ef4976432b1494d55be0cde9",
+        "mode": 420,
+        "bytes": 12136,
+        "sha256": "6a7e27f2a33f49691b978314c0952bd293430a7f4a2763e1f6367a36d7c3e201"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/history-transport.ts",
+        "authority": "git",
+        "gitBlob": "c1926dd4831229955a0432b9d56788a78712d16a",
+        "mode": 420,
+        "bytes": 5180,
+        "sha256": "748f22ba6602152125243e00b3bfc156d5773694e58b86cbad69ffd49216bd46"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/library-relay-support.ts",
+        "authority": "git",
+        "gitBlob": "ebc0e79995b8592f2d21199872b6310d9a300038",
+        "mode": 420,
+        "bytes": 2822,
+        "sha256": "1b7ca0e4492c5bd86df8e331a38ed22aec1214442ffc0e420e0e852bb020278a"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/library.ts",
+        "authority": "git",
+        "gitBlob": "ae615bd474d7439f0fb30cfcac9f0064da0e2c7f",
+        "mode": 420,
+        "bytes": 37875,
+        "sha256": "aba0286cf8cb386d703fa2580f937722fe4e68f383a14b73f3a5ebd5830e1838"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/overlays.mjs",
+        "authority": "git",
+        "gitBlob": "7db998207ace9e913bb1156c12bcf20df2150de7",
+        "mode": 420,
+        "bytes": 137707,
+        "sha256": "da6800f42a482e3107d09db772883b53fcb598344b88c945f98a0541282b1fe2"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/projection-worker.ts",
+        "authority": "git",
+        "gitBlob": "5f41ea2712d3ab054ad7ceab6904b99491e0e754",
+        "mode": 420,
+        "bytes": 5185,
+        "sha256": "e291ffd92eb7ae4c75f43dd848ecbc029056e3a280ba63dee11ec6bfe18118dc"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol-scope.ts",
+        "authority": "git",
+        "gitBlob": "6158b2d7119ede31e08c1ef48289c063a2d1871d",
+        "mode": 420,
+        "bytes": 3365,
+        "sha256": "9cdb35a9cebc111a17856f8133908552af345da0746b71231f17bd85fd4db998"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/backup.js",
+        "authority": "git",
+        "gitBlob": "30201c1a5ebf167c801b79b21737e4050c89d003",
+        "mode": 420,
+        "bytes": 9051,
+        "sha256": "77e6e9626557dd7b87134d518beab3e8cdb7d8f2e0c9c7c051e9a7f03a792c53"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/codec.js",
+        "authority": "git",
+        "gitBlob": "e737d87c845ebd01863ab6124eba245f564e704c",
+        "mode": 420,
+        "bytes": 16914,
+        "sha256": "b899dc54a81099038cbed3ccbec7eaa2ddef38c7cf5cee4a2355d5a31f04a9c5"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/indexeddb.js",
+        "authority": "git",
+        "gitBlob": "a2b66830760fcef66dadd9d88f8a741234132c36",
+        "mode": 420,
+        "bytes": 1839,
+        "sha256": "2383b25505953ce79e8c204ba482b2eee2268f3b66ddb420de87e40d60025908"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/limits.js",
+        "authority": "git",
+        "gitBlob": "4ef1df73cefbb74c5863c733902d8397626c0767",
+        "mode": 420,
+        "bytes": 184,
+        "sha256": "c23e71d1e01380f25f450963bd531d38c817196a2decc748d7256e10f5c8e540"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/nostr.js",
+        "authority": "git",
+        "gitBlob": "34b7b90e797cec86708be2d062bc6956e662e465",
+        "mode": 420,
+        "bytes": 9219,
+        "sha256": "1e71954b97415c36cb42b432148bfa32129be521d57e6ba125b2bce736c63603"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/outbox.js",
+        "authority": "git",
+        "gitBlob": "a88b97b7794370e92c14ceeb368278f245734f86",
+        "mode": 420,
+        "bytes": 8837,
+        "sha256": "97c272cf60023915686347cc19d3a4ba655f02fc2fb96f151cbf831efdb46902"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/publishing.js",
+        "authority": "git",
+        "gitBlob": "e28aa405790ac492b21efdf15ba2c6eae488a421",
+        "mode": 420,
+        "bytes": 13974,
+        "sha256": "2d261514ea23d215d8cf201c49c7eb3b2910727af4f54b6516951b2845e73cb4"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/store.js",
+        "authority": "git",
+        "gitBlob": "e1f7eafe75cc7432318b2321c9f43f1cd40b8147",
+        "mode": 420,
+        "bytes": 14244,
+        "sha256": "1aa41728148c566b84716937385fc5daf05b8c61c0f14ba0a383b8792120ccf7"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/types.d.ts",
+        "authority": "git",
+        "gitBlob": "72791adc0fd370be4d2f96040db107af5e1e8dcb",
+        "mode": 420,
+        "bytes": 3103,
+        "sha256": "cf4ffcfd7cc7f2173d3cbb7855f0c3b0d0287600fd0bf855302f52bf8118eaca"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/worker.js",
+        "authority": "git",
+        "gitBlob": "b4c80f6c57cf0176dca366c78573a0a36614ee3d",
+        "mode": 420,
+        "bytes": 666,
+        "sha256": "fa2e0a9f8f34b508469932421c9364aafd905f30ae99b6b6ed53334ef5a9046c"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/public-device-projection.ts",
+        "authority": "git",
+        "gitBlob": "1f7c1586124bcb946c693e69d654fbb25fe3468d",
+        "mode": 420,
+        "bytes": 2391,
+        "sha256": "e2585b394cc430e8b4718c4b3eca585d08481f6c8554cd4419fbe084f271b9e7"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/publication.ts",
+        "authority": "git",
+        "gitBlob": "5d37b51840c3fc7aba52d9e024202e352062cb0f",
+        "mode": 420,
+        "bytes": 29791,
+        "sha256": "d59cccb7b6f298824e7ad430b9186cb474af497c4bd9e2738b38f21a9777ad65"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/title-feed.ts",
+        "authority": "git",
+        "gitBlob": "a651a47474a3c0f6ea60d228243691788156f641",
+        "mode": 420,
+        "bytes": 5049,
+        "sha256": "89b740fd9bf3cc9a27802d7a90dc0e7e45e0f76f3dc6034f6a18080b815a8b03"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/title-index.ts",
+        "authority": "git",
+        "gitBlob": "4b8ec466dec2462db24ef4ccb3a9bd0fcef582f4",
+        "mode": 420,
+        "bytes": 12561,
+        "sha256": "fdfd152cb9ab8fdcbe5c1023c9716c4d99f86c58241284a92dd40c82bb413fd1"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/title-order.ts",
+        "authority": "git",
+        "gitBlob": "b1986bd946e31921e626fa082f9035e964b10d4d",
+        "mode": 420,
+        "bytes": 2866,
+        "sha256": "6b9900cd1c4b8436d78488f33fbe3b834fc9203a0be1a958ec68ca005f52c989"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/title-pagination.ts",
+        "authority": "git",
+        "gitBlob": "a2ce6b925d82ec92e2bbb309821ea0efa13ac892",
+        "mode": 420,
+        "bytes": 8581,
+        "sha256": "dfdd257818203014a17cd4408dc91e417b45ff811b4b96f4f8187367b3470603"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/updates-feed.ts",
+        "authority": "git",
+        "gitBlob": "92fb004a9e7856535a18e5ea920493e6f7e0e06a",
+        "mode": 420,
+        "bytes": 4940,
+        "sha256": "26ad74d2ad39dd8639160e6f6caa3001da72456a9f88f12cea3849fb7dcd5112"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/updates-pagination.ts",
+        "authority": "git",
+        "gitBlob": "821b10436bd4fef2dc1e4e0958625936cd0bd41b",
+        "mode": 420,
+        "bytes": 8895,
+        "sha256": "1720b43efb44410cd661ff82defbd5bbebdac8a1b16c50c7ee2b28941940009c"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/AccountFollow.svelte",
+        "authority": "git",
+        "gitBlob": "f035b4073d399b2ca5b8fa291e92a997ce96e473",
+        "mode": 420,
+        "bytes": 8345,
+        "sha256": "ba55863a9824552a4b44c762abe748eb8ea237b50eb7dcfafb36da42d9883933"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/PersonalRating.svelte",
+        "authority": "git",
+        "gitBlob": "eefc0d74b1aaa34c16b8c85a2860e482e0213482",
+        "mode": 420,
+        "bytes": 4617,
+        "sha256": "0bcc0554005ff2500da769f7296a2f3e5deb8356f591fdbaea84b80cdd1ba3ef"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/PublicReportForm.svelte",
+        "authority": "git",
+        "gitBlob": "61b6f893efe5560ca3562914a4e96e0d54a28555",
+        "mode": 420,
+        "bytes": 6101,
+        "sha256": "c56ae9dc6ebeaa6196574d119974dc2e9dd77d6cff8c03805f56fbd346580e10"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/PublicTitleGroupFilter.svelte",
+        "authority": "git",
+        "gitBlob": "88d5d5c65c176389d9153f73448e671c41cbc29e",
+        "mode": 420,
+        "bytes": 5519,
+        "sha256": "0120e43fa18394e462c6754408dabf80d8e664e87aac298a7b808f279764a7d5"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/account-follow-client.ts",
+        "authority": "git",
+        "gitBlob": "b98895e91e6d2ad35669b285192899b091b049c0",
+        "mode": 420,
+        "bytes": 3967,
+        "sha256": "bd410d4df7e32f76a3e252dceaa3d78711471480e09f1e8f63cd6c7b2cb4a380"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/account-reading-status-client.ts",
+        "authority": "git",
+        "gitBlob": "9b1d3d8941e562de536b18e2a8d7e959599ad085",
+        "mode": 420,
+        "bytes": 4753,
+        "sha256": "e59d6dd7199afec248c923ee70e3b221db14677591a8b28dbcbed996250b4d00"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/anchors.json",
+        "authority": "git",
+        "gitBlob": "73c6d43ca7225daed518b2b4b92dd3f7444c1576",
+        "mode": 420,
+        "bytes": 86903,
+        "sha256": "c1bc6645627810fb1191cce59443b7921dd0826af7c58550f27f270e1b89598f"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/author-chapter-feed.ts",
+        "authority": "git",
+        "gitBlob": "912399d63045ffeeeae550927901497445fd97f2",
+        "mode": 420,
+        "bytes": 6187,
+        "sha256": "38828c187518ae88e4061bb3c723468ec953a7c9b5c3d3dcf687e10e61768a27"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/bound-account-request.ts",
+        "authority": "git",
+        "gitBlob": "5a037b94b938aa7734c4ef0759a179fd2e058f5a",
+        "mode": 420,
+        "bytes": 3779,
+        "sha256": "54d5176b5ec86c9f26148b77962cd4163c267e7ae27d550330dc621c4b38a31c"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/catalogue-edges.ts",
+        "authority": "git",
+        "gitBlob": "a6c6d276e96122163bb4fe46b957509f5ea290c3",
+        "mode": 420,
+        "bytes": 11928,
+        "sha256": "dab0693492d0f849d39515f4cc1a1b30bdb2ad55c7a4b0958e19596cc0ab6e1e"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/client.ts",
+        "authority": "git",
+        "gitBlob": "e4d8812413da863352cad105062fc629719e233f",
+        "mode": 420,
+        "bytes": 11645,
+        "sha256": "6974b5c6a2787a731091c12e27cf68877cc05312d762063f8f6e4f37c9aaa882"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/device-id-migration.ts",
+        "authority": "git",
+        "gitBlob": "7e62342bb651bdfa09df85309f2a9df281f99852",
+        "mode": 420,
+        "bytes": 23733,
+        "sha256": "df44157598490637bae67c921e79ac1b02570f11c5582067468c0c8327312d5d"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/device-id-state.ts",
+        "authority": "git",
+        "gitBlob": "b9b5547b4d55679962dfe11be099de3f11ffd521",
+        "mode": 420,
+        "bytes": 13896,
+        "sha256": "fcfe071a89174f33f684cfb2790d8d2f709a3ed12eb3a158d2980c387b55441b"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/device-id-transport.ts",
+        "authority": "git",
+        "gitBlob": "c484f5b792383b5610cba940a2d7c60de9f8912e",
+        "mode": 420,
+        "bytes": 6063,
+        "sha256": "bd1d01fddad7abbf819260ef39d496e6396f59382d1012301380b49304f8c292"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/device-write-v2.ts",
+        "authority": "git",
+        "gitBlob": "046c68d64fdcd2b1609e7e35c0716a349fbe3cda",
+        "mode": 420,
+        "bytes": 7768,
+        "sha256": "1ad5c60c4fabe332e3a4220ed7e5f7b7c3a8fe488675beba3c76c883da544eef"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/editor-fields.ts",
+        "authority": "git",
+        "gitBlob": "7d212d25e38721b8caa1aeb9482e3a3a16759588",
+        "mode": 420,
+        "bytes": 13920,
+        "sha256": "0c81b625643013527522e68df4a1dbcf5ce732bcb11b143746d520840b68ae94"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/exact-order.ts",
+        "authority": "git",
+        "gitBlob": "77199553552dfdef71d8d43567098c76d6219bb5",
+        "mode": 420,
+        "bytes": 1517,
+        "sha256": "6ae20ae1b209b9c6614434ce6504808b3c46a5f894aeeee4b7d738f94d81ec17"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/history-catalogue.ts",
+        "authority": "git",
+        "gitBlob": "a3d36c4f5b5fa7b06cd97504f0515129ac50848d",
+        "mode": 420,
+        "bytes": 4255,
+        "sha256": "15f5be9b9b7b75adc3b7a80dc79fc1f00c2572e540a5c13e481243a8e09693dc"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/import-mappings.ts",
+        "authority": "git",
+        "gitBlob": "ad8bd849480bd43442228aa61a6f00360eb36279",
+        "mode": 420,
+        "bytes": 2669,
+        "sha256": "6ad6714f621938f0105158e05e9afa7facfc8006060e0aeeb3f426946687a36c"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/language.ts",
+        "authority": "git",
+        "gitBlob": "fbcad3dd892ecfed218eeb1286cf09340553ea2d",
+        "mode": 420,
+        "bytes": 1557,
+        "sha256": "277af04bf0eb0e6da55ef44e26d20138b9f74bba7d0f955bd14bac57711dc2da"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/library-catalogue.ts",
+        "authority": "git",
+        "gitBlob": "1054a350c4a83609a9d35723c5706fd535fd8811",
+        "mode": 420,
+        "bytes": 6637,
+        "sha256": "8127da1de74382e0a701f408917de951a47bf32b7be88d5b1e638bdb30de258b"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/library-staging.ts",
+        "authority": "git",
+        "gitBlob": "851623f9d021478cc8a3552b726afc4f1bc1dba0",
+        "mode": 420,
+        "bytes": 926,
+        "sha256": "b9418ece73a23f64580aa017013397a74a440f9d315070e70b9ffbe6bd810169"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/normalize.ts",
+        "authority": "git",
+        "gitBlob": "960b35fa68ad42a409fd104902c6941ecfb331ba",
+        "mode": 420,
+        "bytes": 9134,
+        "sha256": "138a1f42dad37c60651629558f59ec9e6f7c04d1ba95af1220bb685b2ac84360"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts",
+        "authority": "git",
+        "gitBlob": "b7f807b36b27f46d2c803dccfc4e1e484132139e",
+        "mode": 420,
+        "bytes": 20569,
+        "sha256": "03ffe025cadb09194022b6e8ac496a4e089b5ec44a5e512fce83f528bac74eb8"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/overlays.mjs",
+        "authority": "git",
+        "gitBlob": "6b07a4fb1beea6168ba4d657f531c3ceab52d975",
+        "mode": 420,
+        "bytes": 11480,
+        "sha256": "af9741e4f7c0643055e8073035b554b72fdcb68e970dd1f7e2ed9d16fec4976b"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/owned-json.ts",
+        "authority": "git",
+        "gitBlob": "140fbb340fb533b420a2d338db286033862d8027",
+        "mode": 420,
+        "bytes": 16458,
+        "sha256": "afe757c8eb7391fdb8b77d74bcf885c56849d782559efdb9625976724f5b1b71"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/popularity.ts",
+        "authority": "git",
+        "gitBlob": "f984881822675e7410208108bbce4ec9941a0ccc",
+        "mode": 420,
+        "bytes": 4292,
+        "sha256": "5ebc5ae60c8aa71c120bd07349dd91dd7cad3ef2984022321074654e9ad6fa8b"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/presentation.ts",
+        "authority": "git",
+        "gitBlob": "184b783babb97ec5cd3f6a3b5526a800734083b8",
+        "mode": 420,
+        "bytes": 378,
+        "sha256": "5f045c1c3cefa7126b4e325787938094c62afcd8967eb9c439a40ec8b9655328"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/query.ts",
+        "authority": "git",
+        "gitBlob": "115225bafceae4664ad82023f9e4a3210f2a74b2",
+        "mode": 420,
+        "bytes": 10220,
+        "sha256": "84acbaac169fb467d3dff72d195a5b091cfac23b38856170635f04fa73eae2bb"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/random-manga.ts",
+        "authority": "git",
+        "gitBlob": "9ffa71e3121b815814ca46816cfd62ae047454b3",
+        "mode": 420,
+        "bytes": 2302,
+        "sha256": "9edb6bbffb27281a8b145330f3bf9a934a784667b8662fcbf267c69c37ca3602"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/rating-client.ts",
+        "authority": "git",
+        "gitBlob": "d688cddde512ae17f50c97aaf6ae42e0c5e993f0",
+        "mode": 420,
+        "bytes": 7121,
+        "sha256": "1044bd96d3072adf646f1d1ef4bfb2def400901d414ce2299385af84f24c5342"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/reader-order.ts",
+        "authority": "git",
+        "gitBlob": "bf1d32b4ac4834d3726071ff32bdfa8400793983",
+        "mode": 420,
+        "bytes": 1037,
+        "sha256": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/report-client.ts",
+        "authority": "git",
+        "gitBlob": "d4c1a8915ca86763a571c0a81c9c3736b35d5ed7",
+        "mode": 420,
+        "bytes": 4904,
+        "sha256": "3ff76fb6b972991bd73cb56c6fa67669c0ea3ea802193149d9a64d4c032a10d1"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/report-inspection.ts",
+        "authority": "git",
+        "gitBlob": "0da408275cbfc4b03c3a06e9676a2b6103a03030",
+        "mode": 420,
+        "bytes": 7046,
+        "sha256": "8548e94e5ab1f807fabd746bc37a5ee01bc2ee3040a72696b23dc9d6ec8babcf"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/resource-mappings.ts",
+        "authority": "git",
+        "gitBlob": "28dc323cbf10d2414c41df7237bba0257668a042",
+        "mode": 420,
+        "bytes": 5461,
+        "sha256": "cbdecd061057197ae1f68056a3b219071c3928bf9323a66f8aa578fbc5cfe999"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/search-reads.ts",
+        "authority": "git",
+        "gitBlob": "d6283d01c5603fc9aa05fc0410da358e72546ae7",
+        "mode": 420,
+        "bytes": 3345,
+        "sha256": "240a79aa1389de673e8de403ebc8c8680db2cf9175effab3bf6f2aaa04b85f52"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/signed-account-scope.ts",
+        "authority": "git",
+        "gitBlob": "86e3d10d46e7bf1e2347fc4c0521b7a12da1886a",
+        "mode": 420,
+        "bytes": 6045,
+        "sha256": "96520f09d7a151be24f2bba8f1c111a7e6365b8c5a5e897423ff3e0c7af96e64"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/site-client.ts",
+        "authority": "git",
+        "gitBlob": "db240a1100fd421a230556e1a40a88df00ff1b70",
+        "mode": 420,
+        "bytes": 19944,
+        "sha256": "6c49b67a4c994ea15746708bd5d0e8136abf6fe30d26c1e24adbf34829bc24df"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/source-hashes.json",
+        "authority": "git",
+        "gitBlob": "ee45c74b7e9b68a1d848a927d3b4485cf6783907",
+        "mode": 420,
+        "bytes": 7034,
+        "sha256": "6b8d76491fa767bed3e9e17a7c2d2ecea58b5a936d6c151e35a6b59b31feb17d"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/title-catalogue.ts",
+        "authority": "git",
+        "gitBlob": "be46de8d12ce0c043f7ff05fb527d046953e9884",
+        "mode": 420,
+        "bytes": 1527,
+        "sha256": "20c9ac85aed50758ac5d57c1ab1e2051aa52daf6e4b8f788abf8c070f7132d53"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/title-client.ts",
+        "authority": "git",
+        "gitBlob": "db23a3bf66e5bce0ef8f188c83eb27250119271b",
+        "mode": 420,
+        "bytes": 23593,
+        "sha256": "e0be384f3996ff3e3aeb7c6da0ec5207e13572479fe40f710aa571ec80233575"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/title-group-options.ts",
+        "authority": "git",
+        "gitBlob": "5f6463860e6671c831e4e4e6449a62da7c9ad1a2",
+        "mode": 420,
+        "bytes": 3312,
+        "sha256": "218ddfd240056f043546521bedea07c8842fd634838821c33135e832763befda"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/types.ts",
+        "authority": "git",
+        "gitBlob": "cd5046155733833766ad536b9a176fc021a8aab1",
+        "mode": 420,
+        "bytes": 4439,
+        "sha256": "ddb5209dc67047998af0f1c8f4d7ac117b3857b48ce798bfe79c978e093555db"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/updates-catalogue.ts",
+        "authority": "git",
+        "gitBlob": "a2edd0bdd34662eded91009cd95c50555782d845",
+        "mode": 420,
+        "bytes": 6353,
+        "sha256": "f32f48fcaf26bba3cb0465afab9f2b6c808e0946629b9259c721584a367aad20"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/upload-anchors.json",
+        "authority": "git",
+        "gitBlob": "8e80627ee1111595e4fbdd882b8e028458ed0806",
+        "mode": 420,
+        "bytes": 51073,
+        "sha256": "1fc819c9fc941cbd9f0d9079b5627c9eb9672095178576060803c16ae007ee03"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/upload-client.ts",
+        "authority": "git",
+        "gitBlob": "2843eda941e888baaa594047fa7d2228a634c979",
+        "mode": 420,
+        "bytes": 89092,
+        "sha256": "04d9c29cd44b554fe474ced74854cbd165a828ee0355a262780063f3d1bccf16"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/upload-overlays.mjs",
+        "authority": "git",
+        "gitBlob": "764214b5e8edcf1f4dc9627565b6c56fa754ce73",
+        "mode": 420,
+        "bytes": 2042,
+        "sha256": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/user-directory.ts",
+        "authority": "git",
+        "gitBlob": "e7a7e91c5bbee2f8e93b2ec188d637c792e749fd",
+        "mode": 420,
+        "bytes": 4982,
+        "sha256": "6923607545d250d1d5ef7c2d1c5a8c25a8095bae78fbac53250593821ae06002"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/user-profile.ts",
+        "authority": "git",
+        "gitBlob": "06aee2632e92c5f8864aa116198a6915844ab7c7",
+        "mode": 420,
+        "bytes": 2917,
+        "sha256": "bb216ee2c32be75318a1a4d46b5b54d2af6042dd7cfa4cd6dded8e5bde4cd244"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/validation.ts",
+        "authority": "git",
+        "gitBlob": "3a22b7f3c091b33ad11f82abf65adede3c7c1505",
+        "mode": 420,
+        "bytes": 2001,
+        "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce"
+      },
+      {
+        "path": "weebdex-platform/scripts/integrated-load/badge-framework-generate.py",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 27511,
+        "sha256": "1bf531bc8045b95c1c1c86e43e40340c843ec8c8db826bda068d3efa9bde916e",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/qualification-preimages/badge-framework-generate.py.txt"
+      },
+      {
+        "path": "weebdex-platform/scripts/integrated-load/visible-badge-mounted-cases.mjs",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 17664,
+        "sha256": "4f1ff05e24f009ed9fc985ef661efef705ccec5b27bdfabb5a511a7b45984e35",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/qualification-preimages/visible-badge-mounted-cases.mjs.txt"
+      },
+      {
+        "path": "weebdex-platform/scripts/integrated-load/visible-badge-mounted.mjs",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 11953,
+        "sha256": "b047c4d8f454794a668e2e9e02313ba113bb590f1cd1b512da97fe69a2107c4f",
+        "checkpointSource": "weebdex-platform/scripts/integrated-load/visible-badge-mounted.mjs"
+      },
+      {
+        "path": "weebdex-platform/scripts/public-upload-refusal-qa.mjs",
+        "authority": "git",
+        "gitBlob": "b1de226837f3fe3051523583a12af862c963736d",
+        "mode": 420,
+        "bytes": 9241,
+        "sha256": "19b6bbb04add4276c24e9918c52e29f951e1450e0f2bb0b6db0683e9be15896f"
+      },
+      {
+        "path": "weebdex-platform/scripts/vite.platform.config.mjs",
+        "authority": "git",
+        "gitBlob": "5a215a6b509fe9e7478f76df62d07e6bdb4face3",
+        "mode": 420,
+        "bytes": 4887,
+        "sha256": "3db39b8947976409beb6bfb46432af4633aba02f0d951b51a2ffccc4250dd67e"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/VisibleBadgeHarness.svelte",
+        "authority": "git",
+        "gitBlob": "8b347aa6c09faf0cd4acb5afcddecc005aa3749c",
+        "mode": 420,
+        "bytes": 868,
+        "sha256": "65600032aadbf5f70b2949f5f47522d7821c5fc3d4fa064cf6933223ae298595"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/badge-framework-dom-driver.mjs",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 58990,
+        "sha256": "a01644e7bcf3fd1c71fa070ebd873699961d2fc32cf8c7ee5ea7c2a61c962ced",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/qualification-preimages/badge-framework-dom-driver.mjs.txt"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/badge-mounted-fixture.mjs",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 81831,
+        "sha256": "a461021cde2dd2b6862cdaf02c754467a5792a6aef2dbff2de4cf7145e98aab0",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/qualification-preimages/badge-mounted-fixture.mjs.txt"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/package.json",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 242,
+        "sha256": "19907c030c1805041eb1faefc1f644e6980885c64158f7bc7358c75c8a01ba0c",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/package.json"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/app.html",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 304,
+        "sha256": "7c8c4768f90571b9c840a686a69766dc348dc42272bb3f9d42398a2dcdb88a8b",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/app.html"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/lib/fixture-route-data.ts",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 1185,
+        "sha256": "5a002d9918b0f9dded0a0d70edb2d265a899f43a7355500595fb01181e743f7c",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/lib/fixture-route-data.ts"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/+layout.svelte",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 705,
+        "sha256": "7ac7df0e69a378f09faaac780f1c15b186d989937358da64a3504d3484dfd08b",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/+layout.svelte"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/chapter/[id]/[page]/+page.svelte",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 238,
+        "sha256": "bb8db9c2cd8b49cf18de86e9e44cebc5ec59821026f583297a53f724d5caa051",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/chapter/[id]/[page]/+page.svelte"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/chapter/[id]/[page]/+page.ts",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 176,
+        "sha256": "17b22a656257fd39c99a2f277787dd0606bf09f0b3e8c1b2063031ffda79066a",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/chapter/[id]/[page]/+page.ts"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/title/[id]/+page.svelte",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 698,
+        "sha256": "6fdeff74e23c03eb93cafda1aa50401115d22b3f5730800a90d0cc9ef19c9d2b",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/title/[id]/+page.svelte"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/title/[id]/+page.ts",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 174,
+        "sha256": "7f9d58938dfe8ee6ed4c5a5223d8245fd9c7159d8c1bc817c09a39d9a2b47f19",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/(badge)/title/[id]/+page.ts"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/+layout.svelte",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 5805,
+        "sha256": "6bf1b22cce3df4c7f77033c5f7b46f62b8dbcc4d02cf843cd5ac7a59dd4d26cd",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/+layout.svelte"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/+layout.ts",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 3511,
+        "sha256": "8e56aba992c24f457df79e2345a62fc9a819d31976290ee8a5fb8fbf9ce14c65",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/+layout.ts"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/__badge_outside/+page.svelte",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 115,
+        "sha256": "1cf601eaad1f62759bc5bcd3d80ddb0e949ec338f1b9953c873626a0d4c9f919",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/src/routes/__badge_outside/+page.svelte"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/svelte.config.js",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 2123,
+        "sha256": "579d2df66f09f40e58ede63c85d18f486f7c456d7c665f8110bed15f52579fca",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/svelte.config.js"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/tsconfig.json",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 181,
+        "sha256": "16fad23ba93d7403e7ce4ed6eeef98b613f354b7836ef5c70af93641c3b92b8c",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/tsconfig.json"
+      },
+      {
+        "path": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/vite.config.mjs",
+        "authority": "postimage",
+        "mode": 420,
+        "bytes": 9323,
+        "sha256": "3419410d3ad5ffd1007649751dbb0d1ddc0371f6d88535c4fc9aaf8ba9b024cb",
+        "checkpointSource": "weebdex-platform/tests/fixtures/bounded-reader/sveltekit-app/vite.config.mjs"
+      }
+    ]
+  },
+  "postimageMapping": "checkpointSource identifies exact retained source bytes; Git rows resolve exact gitBlob objects in this local repository. Final runtime overlays do not replace historical source identities.",
+  "exclusions": [
+    "generated assets",
+    "runtime package trees",
+    "portable complete invocation"
+  ]
+}

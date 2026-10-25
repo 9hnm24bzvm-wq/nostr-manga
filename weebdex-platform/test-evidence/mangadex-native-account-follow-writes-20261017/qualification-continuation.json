@@ -1,0 +1,58 @@
+{
+  "utc": "2026-10-17T20:00:11.939689+00:00",
+  "qualified_current_commit": "b05e4397594eab968bb1cfd70ecb8b1254d05d53",
+  "runtime_source_equivalent_to": "265804862294a9fa82dcaeabdd3843779be047b2",
+  "checks": [
+    {
+      "name": "seventh_catalogue_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.59s",
+      "output_sha256": "ad1e395079dcbef2b5d899f7065f2d44886e6a9882efe7dfa6e5553d5ac16ec5"
+    },
+    {
+      "name": "baseline_successor_account_http",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.95s",
+      "output_sha256": "4e374376c81de9995c3b8ee7802391aab60e1f4c6a55129089e8e1d61ffdbc87"
+    }
+  ],
+  "baseline_successor_compile": {
+    "result": "passed with1 build job on existing verified warm offline toolchain/cache",
+    "output_sha256": "ec11ff1206274131d60fdb131a22ce642f1cccb858ad0e1c459ea09f32251fec"
+  },
+  "postgres_fixture_cleanup": [
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    }
+  ],
+  "source_sha256": {
+    "weebdex-platform/backend/tests/public_account_reads.rs": "0bcfb2d02609e6d390b945f8e1e6c5dd7256e5d3dd95a5cdb7d89eeb7561b87e"
+  },
+  "test_binary_sha256": {
+    "public_account_reads-55dde832bbd6c52c": "adac9b4194f9b3ed2f0fa250ddb481727b2a8b53f4e11258696b3ba55c770ec3",
+    "public_catalogue_reads-99a3bf88daacfe81": "23200df4afa6badd4f8f9e633ff2124558ce3e214c7f599e3484501ae638824b"
+  },
+  "resolution": [
+    "The deliberately held seventh catalogue HTTP regression now passes after the separately approved narrow database cleanup.",
+    "The test-only forward-compatible migration baseline successor now compiles and passes the real account/settings/rating/follow HTTP fixture.",
+    "Backend runtime source/migrations are unchanged from the prior123-library-test/six-HTTP-suite qualification; these checks close the remaining explicitly recorded boundary."
+  ],
+  "limits": [
+    "Current isolated source only; no combined integration, browser, load or production-readiness claim.",
+    "No broader cleanup approval inferred; newer fixture database files and all other workers outputs/caches/source remain untouched.",
+    "Cleanup retained258 log/evidence files with identical hashes; no further deletion is planned."
+  ]
+}

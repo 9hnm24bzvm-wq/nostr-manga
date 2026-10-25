@@ -1,0 +1,49 @@
+{
+  "started_at_utc": "2026-10-18T01:33:02.474426+00:00",
+  "approval_at_utc": "2026-10-18T01:31:24Z",
+  "inventory_sha256": "31d7456e4e9d42b1c164fbb4a8e880f9cb7d89ddd0e059baedcc3bd522821c32",
+  "validation_sha256": "56b6c1f19381703e8551c872be70de40a41bb55206d752ebffad1bd49eaca068",
+  "action": "delete_only_exact8_approved_stopped_synthetic_postgres_data_directories",
+  "free_before_bytes": 4585512960,
+  "deleted": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/relation-write-worktree/weebdex-platform/test-runtime/auth-7pj59apx/data",
+      "allocated_bytes": 78577664
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/relation-write-worktree/weebdex-platform/test-runtime/auth-dveb7459/data",
+      "allocated_bytes": 78725120
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/relation-write-worktree/weebdex-platform/test-runtime/auth-pak_w3j7/data",
+      "allocated_bytes": 55812096
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/relation-write-worktree/weebdex-platform/test-runtime/auth-qt_i7yfk/data",
+      "allocated_bytes": 78733312
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-1emb1xxe/data",
+      "allocated_bytes": 56139776
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-2_o95vby/data",
+      "allocated_bytes": 56139776
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-rx_qq3ur/data",
+      "allocated_bytes": 89387008
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/title-cover-prerequisite-worktree/weebdex-platform/test-runtime/auth-t8msndt5/data",
+      "allocated_bytes": 56074240
+    }
+  ],
+  "pass": true,
+  "retained_files_verified": 10928,
+  "retained_hashes_unchanged": true,
+  "approved_bytes_removed": 549588992,
+  "ended_at_utc": "2026-10-18T01:33:04.714109+00:00",
+  "free_after_bytes": 5135101952,
+  "observed_free_delta_bytes": 549588992
+}

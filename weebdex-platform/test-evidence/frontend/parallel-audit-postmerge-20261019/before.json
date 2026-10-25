@@ -1,0 +1,215 @@
+{
+  "source": "e34845688bdc279e9f0393ff57b39738b9c40a95",
+  "files": {
+    "weebdex-platform/backend/src/public_api/title_disposition.rs": {
+      "bytes": 13879,
+      "sha256": "859adf8f7eea76ab3f6f71686c83c17a1bf34e52afc0c73e5878d1392eb334e0"
+    },
+    "weebdex-platform/backend/tests/public_manga_writes.rs": {
+      "bytes": 69515,
+      "sha256": "c78673bfbe0008231f9d82a72a82f9d271f875b6319329bd05732b6e3acb6022"
+    },
+    "weebdex-platform/docs/account-onboarding.md": {
+      "bytes": 5408,
+      "sha256": "32eceb9183400e8ba0e2d469ebe38d85a8dcd6d13a0c016e2d0fb4e4b0ef3abd"
+    },
+    "weebdex-platform/docs/fixtures/integrated-read-fanout-v1.json": {
+      "bytes": 25686,
+      "sha256": "b778c74e7872606997cfaaa0bff89c5f2870047a5e905368aa9f59d0b71566e1"
+    },
+    "weebdex-platform/docs/integrated-read-fanout-20261018.md": {
+      "bytes": 5868,
+      "sha256": "3ad3063c7f5be47cf25965893ae89fe5321012725e2d37443f2aa939c811e60c"
+    },
+    "weebdex-platform/docs/verification/public-title-disposition.md": {
+      "bytes": 9400,
+      "sha256": "024709cf84476c144f7c18ad317a230db60af7a30d9c0721bd1635eb60c84291"
+    },
+    "weebdex-platform/platform-integrations/frontend-overlays.mjs": {
+      "bytes": 507048,
+      "sha256": "46d2c8ba0897c15f0928748bf6c48b717f4a066db52820778d3475937b1b5836"
+    },
+    "weebdex-platform/platform-integrations/local-library/IdentitySetup.svelte": {
+      "bytes": 18180,
+      "sha256": "1adede24df8b99cafafe7af39ee85fac300934bce31674e62ed530cd13c7e0cc"
+    },
+    "weebdex-platform/platform-integrations/public-api/reader-order.ts": {
+      "bytes": 1037,
+      "sha256": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279"
+    },
+    "weebdex-platform/platform-integrations/public-api/site-client.ts": {
+      "bytes": 18402,
+      "sha256": "39c4a2ae60e092691d7b42b151901a711d964b4b33bf95a54f685de509fea6a9"
+    },
+    "weebdex-platform/test-evidence/frontend/offline-local-key-20261019/attachment-parity.json": {
+      "bytes": 239,
+      "sha256": "f222f2b3bb57e3aab334e503970a172cef004bd7703e4af619f1475a74135583"
+    },
+    "weebdex-platform/test-evidence/frontend/offline-local-key-20261019/baseline-negative.txt": {
+      "bytes": 10541,
+      "sha256": "322f734328cd6e2bba0831f750fcf5f0d7c815b4fe9f36fd56978e77921fdf22"
+    },
+    "weebdex-platform/test-evidence/frontend/offline-local-key-20261019/focused-tests.txt": {
+      "bytes": 10523,
+      "sha256": "1f646b2e51f9c21bad78e173938978630eef2f462bc64a1a6dc595eb07d1b72e"
+    },
+    "weebdex-platform/test-evidence/frontend/offline-local-key-20261019/summary.json": {
+      "bytes": 2795,
+      "sha256": "e10a812cfbad2cd44ddea6b2d9741daa8f0470c9a1cd3221f0b5a5518c7db465"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-group-identity-20261019/baseline-regressions.exit": {
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-group-identity-20261019/baseline-regressions.tap": {
+      "bytes": 5214,
+      "sha256": "9877d5c397a9c32ff7a54b1477449a9f4e3af1114ba3872baaab04aaea65d334"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-group-identity-20261019/final-regressions.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-group-identity-20261019/final-regressions.tap": {
+      "bytes": 7860,
+      "sha256": "7dd00c1cfc9b168a56b6c1b9c8ae6cbe02a8c772243402f88edf63e3a6ed64d1"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-group-identity-20261019/result.json": {
+      "bytes": 2334,
+      "sha256": "ba0000369bf9e392c1e1faa45075e999ed86aff57f2fc6506cae369dcab94729"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-group-identity-20261019/source-preparation.json": {
+      "bytes": 573,
+      "sha256": "e3ba39cd98aadeb3fad2ca70ae03ce69ee7723965898e7238bbc57f9acbe90af"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-navigation-audit-20261019/baseline-regressions.exit": {
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-navigation-audit-20261019/baseline-regressions.tap": {
+      "bytes": 25959,
+      "sha256": "b86747d3da0b010d9b0e6057c397345814a5cd3f4086284bf75efee397290358"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-navigation-audit-20261019/final-regressions.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-navigation-audit-20261019/final-regressions.tap": {
+      "bytes": 17294,
+      "sha256": "d5ecee379bdaa24630a01e9ee640f824b7bd765bd8ee268fbf0552bc9fa3214b"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-navigation-audit-20261019/pre-pin-refresh-regressions.exit": {
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-navigation-audit-20261019/pre-pin-refresh-regressions.tap": {
+      "bytes": 18452,
+      "sha256": "2e58a0ce11ea1c9d52a09de0b88cbee82609817befc1c945b97f8c8d0c2078b1"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-navigation-audit-20261019/result.json": {
+      "bytes": 3407,
+      "sha256": "fa7a64dfdf97d5092d45ccb062257d6ded33fa669fc83c8e69895488c1dc83ce"
+    },
+    "weebdex-platform/test-evidence/frontend/reader-navigation-audit-20261019/source-preparation.json": {
+      "bytes": 645,
+      "sha256": "9a308b6df6c537e6d6c058617f69e79bce9023f0ac11dc3b9d7004890bafb45f"
+    },
+    "weebdex-platform/test-evidence/public-title-command-duplicates-20261019/report.json": {
+      "bytes": 6260,
+      "sha256": "76a75afbcb9eedc0fdbf0f7b350157cfe4b630ad995b0d550535d1fc14bdb68f"
+    },
+    "weebdex-platform/test-evidence/public-title-command-duplicates-20261019/title-client-baseline.txt": {
+      "bytes": 7300,
+      "sha256": "495a50480277987114053717065fd8ff3bc755d81d7aaaab5a7dea77395428db"
+    },
+    "weebdex-platform/test-evidence/public-title-command-duplicates-20261019/title-client-successor.txt": {
+      "bytes": 7302,
+      "sha256": "6873966ef36c09056eb20b07b52bf5382c8ba955626661eb5af831d1f13e21c9"
+    },
+    "weebdex-platform/test-evidence/public-title-command-duplicates-20261019/toolchain-probe.json": {
+      "bytes": 253,
+      "sha256": "8b1e815658e7081dda87f55b8354eb49b5b348c0372e81d6e6842760c1d422ca"
+    },
+    "weebdex-platform/tests/ci/public-api-recovery.test.mjs": {
+      "bytes": 54519,
+      "sha256": "a15041f83a67ebc8289bacc905b775d2ee60e5b5f8e13d8fa73f1bedd0c82a40"
+    },
+    "weebdex-platform/tests/ci/test_account_onboarding_seams.mjs": {
+      "bytes": 32094,
+      "sha256": "a7e380ccbbe03e146c4ee2399f049ed1ae3ad3c736f91a658a8655531c9322bc"
+    },
+    "weebdex-platform/tests/ci/test_browser_identity_key_controls.mjs": {
+      "bytes": 6059,
+      "sha256": "a4d1a727854e9a15de64ead852bbfa3454335c0f711356e4c33727ceb93144cd"
+    },
+    "weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs": {
+      "bytes": 24505,
+      "sha256": "a68d4467e86513e8528c0bb103efcaedca2053049be98da2abd52e3c4ba9a0f7"
+    },
+    "weebdex-platform/tests/ci/test_continue_reading_last_completed.mjs": {
+      "bytes": 9130,
+      "sha256": "0b547f78aeaac38e091f3b3f7ffd60daaf034f342700e0c8b83bf1a2aa0aa8fe"
+    },
+    "weebdex-platform/tests/ci/test_enrollment_policy.mjs": {
+      "bytes": 4211,
+      "sha256": "eec8686711434c8d70534debfe601759edd72058091fd107cde26e1bff500e47"
+    },
+    "weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs": {
+      "bytes": 8342,
+      "sha256": "283b18b3e52976259b254adafb557b272caaee3f1505220c084b819ccaceab27"
+    },
+    "weebdex-platform/tests/ci/test_integrated_read_fanout_plan.mjs": {
+      "bytes": 6447,
+      "sha256": "e2cd9b8155b888e3c0092caa57a237fda97afcf1c0d7811aff8bc974951b5f4a"
+    },
+    "weebdex-platform/tests/ci/test_public_library_catalogue.mjs": {
+      "bytes": 15658,
+      "sha256": "14cb3ed3f9b74cd8e46dda25cf7726680da423ad68c3c98652a53ccaf7148cbc"
+    },
+    "weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs": {
+      "bytes": 8306,
+      "sha256": "12b69a137d2172fac764a0c5c0c0cad4ac9ec3b4432b4603bfe981128f8239f2"
+    },
+    "weebdex-platform/tests/ci/test_public_title_commands.mjs": {
+      "bytes": 34835,
+      "sha256": "07998112594d6b8b257f167c764d094388f629987b522a6d88baecea15509f6d"
+    },
+    "weebdex-platform/tests/ci/test_reader_accessible_controls.mjs": {
+      "bytes": 4867,
+      "sha256": "8b7d05ab9e02672937e3b07431e2ceda51792498e64a99d63663a9810081ca84"
+    },
+    "weebdex-platform/tests/ci/test_reader_group_identity.mjs": {
+      "bytes": 3595,
+      "sha256": "c83c5c27d57fe17daa5242f89d4a9d3c95b907951327d5548f77bf70d1fab23d"
+    },
+    "weebdex-platform/tests/ci/test_reader_history_ownership.mjs": {
+      "bytes": 5549,
+      "sha256": "3a6da7cf016e39941d23a2a407ecb412c4c1c11974b4635e20c24c6a0f0d6e29"
+    },
+    "weebdex-platform/tests/ci/test_reader_modified_shortcuts.mjs": {
+      "bytes": 5202,
+      "sha256": "ba49e115d984e6b8d98e6006954c8fefe50b8df4ad655902ca38f0fd4f41100b"
+    },
+    "weebdex-platform/tests/ci/test_reader_navigation_edges.mjs": {
+      "bytes": 6052,
+      "sha256": "43ab84d858d6467b4594cb884396fa3f0dbdf205b3bbc767b959a64ebf7424cf"
+    }
+  },
+  "selectedFiles": [
+    "weebdex-platform/tests/ci/test_reader_history_ownership.mjs",
+    "weebdex-platform/tests/ci/test_public_reader_aggregate_order.mjs",
+    "weebdex-platform/tests/ci/test_reader_navigation_edges.mjs",
+    "weebdex-platform/tests/ci/test_reader_modified_shortcuts.mjs",
+    "weebdex-platform/tests/ci/test_reader_accessible_controls.mjs",
+    "weebdex-platform/tests/ci/test_continue_reading_last_completed.mjs",
+    "weebdex-platform/tests/ci/public-api-recovery.test.mjs",
+    "weebdex-platform/tests/ci/test_public_library_catalogue.mjs",
+    "weebdex-platform/tests/ci/test_integrated_read_fanout_plan.mjs",
+    "weebdex-platform/tests/ci/test_reader_group_identity.mjs",
+    "weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs",
+    "weebdex-platform/tests/ci/test_enrollment_policy.mjs",
+    "weebdex-platform/tests/ci/test_account_onboarding_seams.mjs",
+    "weebdex-platform/tests/ci/test_browser_identity_key_controls.mjs",
+    "weebdex-platform/tests/ci/test_browser_signed_signer_setup.mjs",
+    "weebdex-platform/tests/ci/test_public_title_commands.mjs"
+  ]
+}

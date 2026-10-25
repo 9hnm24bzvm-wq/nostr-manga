@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "baseline_commit": "0ee583e53a698975c17d19c679736146a1cea5f2",
+  "baseline_tree": "6ab0b95f672175d3aecf7dfd255924c56f566537",
+  "baseline_browser_run": 38502322656,
+  "observed_scope": {
+    "ui12-compact-feed": "Native seed-pagination and Spanish-preferences passed. The combined fixture-total check failed; all later feed checkpoints stayed pending. Closed artifact supplies no HTTP status, runtime count, per-check duration, response body or exception text.",
+    "ui11-device-progress": "Unexecuted because navigation finished its seven controls but the preceding runner failed while closing the browser. No progress behavior is changed."
+  },
+  "established_source_contracts": [
+    "ui_regressions.rs publishes505 Spanish chapters on a safe Japanese-original parent. The10000 search-only manga add no chapters. Reader activation adds one Spanish bilingual chapter, explaining the permitted506 total.",
+    "chapter_latest uses mapped=true and updates=false. tlang applies to chapter language; lang applies separately to original manga language. The feed total counts all matched chapters before LIMIT100, with DISTINCT-per-manga confined to the separate chapter/updates endpoint.",
+    "The original seed checkpoint checks the stored descriptor total/language, while fixture status separately computes current_total. A passing descriptor check alone does not prove the current visible row count. No actual stale descriptor or count drift is established."
+  ],
+  "unproven_performance_hypothesis": "The100 selected chapter projections each embed a complete parent projection, with sibling/group/count subqueries, and mapped output projects the parent again. The shared database statement timeout is5 seconds. This could cause a non200 failure, but no HTTP status, SQLSTATE or timing evidence establishes that it did.",
+  "repair": "Diagnostic-only: five nested fixed-status boundaries around the same single API request and exact original compound fixture-total assertion, plus a closed HTTP/transport/JSON outcome. No application, fixture, route, row target, request timeout or retry change.",
+  "nested_check_ids": [
+    "compact-feed-fixture-response-received",
+    "compact-feed-fixture-http-200",
+    "compact-feed-fixture-total-integer",
+    "compact-feed-fixture-total-at-least-seeded",
+    "compact-feed-fixture-total-within-known-scenarios"
+  ],
+  "diagnostic_check_counts": {
+    "ui11-device-progress": 37,
+    "ui12-compact-feed": 21
+  },
+  "assertion_wait_preservation": {
+    "insist": {
+      "original_calls": 102,
+      "candidate_calls": 106,
+      "original_ordered_calls_retained": true,
+      "ordered_normalized_identical": false,
+      "comparison": "complete calls"
+    },
+    "until": {
+      "original_calls": 43,
+      "candidate_calls": 43,
+      "original_ordered_calls_retained": true,
+      "ordered_normalized_identical": true,
+      "comparison": "complete calls"
+    },
+    "stable": {
+      "original_calls": 10,
+      "candidate_calls": 10,
+      "original_ordered_calls_retained": true,
+      "ordered_normalized_identical": true,
+      "comparison": "complete calls"
+    },
+    "step": {
+      "original_calls": 26,
+      "candidate_calls": 26,
+      "original_ordered_calls_retained": true,
+      "ordered_normalized_identical": true,
+      "comparison": "labels only"
+    }
+  },
+  "checks": [
+    {
+      "command": "node tests/ci/test_browser_compact_fixture_diagnostics.mjs",
+      "status": "passed",
+      "cases": 33,
+      "boundary": "Actual nested compact preflight and recorder, explicit HTTP transport and browser preference stand-ins; original505/506 predicate equivalence, fetch/timeout/JSON rejection identity, HTTP errors, absent/noninteger/under/over totals, terminal statuses, pending descendants, no retries, exact request bounds, listener cleanup and no private values in recorder. Closed HTTP classifier additionally covers all500 status integers100..599 and11 malformed synthetic values; settled outcomes persist while the request checkpoint is still running.",
+      "classification_cases": 511
+    },
+    {
+      "command": "node tests/ci/test_browser_library_diagnostics.mjs",
+      "status": "passed",
+      "cases": 61,
+      "boundary": "Actual outer wiring/cleanup and nested preflight with explicit inner-action/browser/HTTP stand-ins."
+    },
+    {
+      "command": "node --experimental-vm-modules tests/ci/test_frontend_semantic_contracts.mjs",
+      "status": "passed",
+      "cases": 132
+    },
+    {
+      "command": "WEEBDEX_SELECT_SOURCE_NODE_MODULES=<verified existing cache> node tests/ci/test_browser_select_controls.mjs",
+      "status": "passed",
+      "cases": 18
+    },
+    {
+      "command": "python scripts/verify-frontend-parity.py",
+      "status": "passed",
+      "original_files": 676
+    },
+    {
+      "command": "node --check scripts/browser-ui11-16-journeys.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "status": "passed"
+    },
+    {
+      "command": "node --check scripts/compact-feed-http-outcome.mjs",
+      "status": "passed"
+    }
+  ],
+  "source_sha256": {
+    "scripts/browser-ui11-16-journeys.mjs": "40705f9ed0f5f95c326b010d9a3978fc03d7868d5d3e35bafbab82a507a46b02",
+    "scripts/compact-feed-http-outcome.mjs": "d397e8f2e837c98f728b415de4061bad81f5a758908a01ab99cbb4a98daffc1d",
+    "tests/ci/test_browser_library_diagnostics.mjs": "591d61f67d634b84a95b2d3f57fd5a6220a0fb65776202b0a74325abf2455918",
+    "tests/ci/test_browser_compact_fixture_diagnostics.mjs": "a6f6b0a20bb4756f2158cfff140e3d70ab8e1d517eee57a26cec429b8e660e28"
+  },
+  "shared_projection_schema": "Exact inventory integration and omission/duplicate/pending false-success gate review are coordinated separately by the browser runner owner.",
+  "real_browser_rerun": "Required after independent review and central schema integration. Existing failed run remains failed; no application repair or acceptance claim.",
+  "browser_started": false,
+  "services_started": false,
+  "databases_started": false,
+  "network_requests_made": false,
+  "public_writes_made": false,
+  "http_outcome": {
+    "acceptance_field": "compact_feed_http_outcome",
+    "values": [
+      "success200",
+      "rate-limited429",
+      "unavailable503",
+      "other4xx",
+      "other5xx",
+      "otherstatus",
+      "transportfailure",
+      "invalidJSON"
+    ],
+    "not_entered_or_unsettled": "Field absent; fixed checkpoint statuses remain pending/running as appropriate.",
+    "decode_failure": "invalidJSON takes precedence over the HTTP category and rethrows the original failure.",
+    "privacy": "Only a fixed enum is saved, without numeric status, total, response body, URL or exception text.",
+    "scope": "Only the compact preflight opts into the observer; all other API callers retain the existing decode path."
+  }
+}

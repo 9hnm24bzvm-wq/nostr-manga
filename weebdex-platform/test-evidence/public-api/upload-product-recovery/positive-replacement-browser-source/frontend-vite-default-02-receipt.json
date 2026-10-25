@@ -1,0 +1,40 @@
+{
+  "schema": "replacement-frontend-build-owned-v1",
+  "label": "vite-default-02",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/scripts/build-frontend.mjs"
+  ],
+  "source_commit": "e45052ca987a18d3be1fa9792c210e6840a78713",
+  "source_map_sha256": "fa0453f6dcdf7e5edae6e03b4eb5bef18da3b7a6d4ba2827b91088baa7d0f9dd",
+  "dependencies_map_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "strict_receipt_pins": {
+    "strict-default-02": "5d28095f455d8131993630184dc845190d8c3dce3f96653d4b3c0217f3b6df5f",
+    "strict-enabled-02": "46d475e361c7644c3a672735a3118a360a7665523c64bbe5b717ede2b91691bf"
+  },
+  "environment": {
+    "NODE_OPTIONS": "--max-old-space-size=2048",
+    "WEEBDEX_SEMANTIC_NODE_MODULES": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules",
+    "WEEBDEX_QA_BUILD_RESOURCE_PROFILE": "serial-terser",
+    "PUBLIC_MANGADEX_CATALOGUE": "0",
+    "WEEBDEX_FRONTEND_ROOT": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-default-02"
+  },
+  "started_at_utc": "2026-10-17T06:41:57.841264+00:00",
+  "pass": true,
+  "exit_code": 0,
+  "timed_out": false,
+  "terminal_errors": [],
+  "receipt_persisted": true,
+  "pid": 57,
+  "child_reaped": true,
+  "source_dependencies_and_browser03_unchanged": true,
+  "pipeline_evidence_sha256": "fd4d31f5b0f7fa96ae88643ea2854b86e3d59880badc7457126ad62835609715",
+  "pipeline_pass": true,
+  "artifact_directory": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-artifacts/default-02",
+  "artifact_files": 427,
+  "artifact_inventory_sha256": "bcdd58ec0e4f890beeb5ae60ddf7fd20629456ca61f7b7840eecc56a2ce8499c",
+  "artifact_retained": true,
+  "free_after": 24870785024,
+  "log_sha256": "50356ce34ce86facfbc10672e15faa3061c5d27dd15f8a52a958e9855c670c55",
+  "ended_at_utc": "2026-10-17T06:42:47.600536+00:00"
+}

@@ -5,17 +5,17 @@
     {
       "source": "manga-protocol-lab/browser-client/src/backup.js",
       "target": "weebdex-platform/platform-integrations/local-library/protocol/backup.js",
-      "sha256": "1523359dd73fe16f2b245b1bd77545ff065f97bd495399a1c3e6b601a2389f8f"
+      "sha256": "77e6e9626557dd7b87134d518beab3e8cdb7d8f2e0c9c7c051e9a7f03a792c53"
     },
     {
       "source": "manga-protocol-lab/browser-client/src/codec.js",
       "target": "weebdex-platform/platform-integrations/local-library/protocol/codec.js",
-      "sha256": "73610f21767c733fe9945604960413666c851f061cd61efaf789172c0754d24f"
+      "sha256": "b899dc54a81099038cbed3ccbec7eaa2ddef38c7cf5cee4a2355d5a31f04a9c5"
     },
     {
       "source": "manga-protocol-lab/browser-client/src/indexeddb.js",
       "target": "weebdex-platform/platform-integrations/local-library/protocol/indexeddb.js",
-      "sha256": "098639a2a7c546adafd6419310e86554f633f12bcdecfc372bbb55ef77c826b7"
+      "sha256": "2383b25505953ce79e8c204ba482b2eee2268f3b66ddb420de87e40d60025908"
     },
     {
       "source": "manga-protocol-lab/browser-client/src/limits.js",
@@ -25,27 +25,32 @@
     {
       "source": "manga-protocol-lab/browser-client/src/nostr.js",
       "target": "weebdex-platform/platform-integrations/local-library/protocol/nostr.js",
-      "sha256": "6fb879046de20efa265afba47000804446c3f728dfb47f3d4d568cde26ce7135"
+      "sha256": "1e71954b97415c36cb42b432148bfa32129be521d57e6ba125b2bce736c63603"
     },
     {
       "source": "manga-protocol-lab/browser-client/src/outbox.js",
       "target": "weebdex-platform/platform-integrations/local-library/protocol/outbox.js",
-      "sha256": "b065cd96b0e374887d3a7f4f22abe6fe74e63f663cac006a629fa9c2db2216fd"
+      "sha256": "97c272cf60023915686347cc19d3a4ba655f02fc2fb96f151cbf831efdb46902"
     },
     {
       "source": "manga-protocol-lab/browser-client/src/publishing.js",
       "target": "weebdex-platform/platform-integrations/local-library/protocol/publishing.js",
-      "sha256": "dde8414497727c2654e5449db4bdd63e8554a6522f72cc3130846954dd46579f"
+      "sha256": "0d589492e970ff9f8a1a72d1f0300aa696def080bc708337ae3f9a4a3004c69f"
     },
     {
       "source": "manga-protocol-lab/browser-client/src/store.js",
       "target": "weebdex-platform/platform-integrations/local-library/protocol/store.js",
-      "sha256": "4d722b95e24bf6af756b2513e83d79ead5f788a6a1362d27b6c8da6204a77bf0"
+      "sha256": "1aa41728148c566b84716937385fc5daf05b8c61c0f14ba0a383b8792120ccf7"
     },
     {
       "source": "manga-protocol-lab/browser-client/src/worker.js",
       "target": "weebdex-platform/platform-integrations/local-library/protocol/worker.js",
-      "sha256": "21e6bbda67f432332fc4b2e7fa1cbb79b949325989c5af3d527b011ade7a4fa3"
+      "sha256": "fa2e0a9f8f34b508469932421c9364aafd905f30ae99b6b6ed53334ef5a9046c"
+    },
+    {
+      "source": "manga-protocol-lab/browser-client/src/types.d.ts",
+      "target": "weebdex-platform/platform-integrations/local-library/protocol/types.d.ts",
+      "sha256": "cf4ffcfd7cc7f2173d3cbb7855f0c3b0d0287600fd0bf855302f52bf8118eaca"
     }
   ],
   "dependencies": {

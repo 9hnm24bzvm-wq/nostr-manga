@@ -1,0 +1,45 @@
+(node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ one original PNG becomes exact multipart bytes with original filename, MIME, size and explicit boundary (2.273409ms)
+✔ replacement has exactly one canonical plain expectedVersion followed by one exact original file (0.561385ms)
+✔ replacement rejects noncanonical and out-of-range versions before reading image bytes (1.380917ms)
+✔ serializer snapshots original metadata and copies original bytes without rebuilding FormData (0.454233ms)
+✔ canonical image MIME format guards preserve each supplied byte sequence (0.668586ms)
+✔ filename bounds count original UTF-8 bytes and reject header injection before reading the file (1.049228ms)
+✔ MIME and nonempty 25 MiB bounds reject invalid metadata before reading (154.385896ms)
+✔ actual byte count, ArrayBuffer and MIME signature must agree with original metadata (3.323828ms)
+✔ multipart boundary is bounded/canonical and cannot collide with original image bytes (1.282599ms)
+✔ current local thumbnail remains until a validated signed Blob replaces it; transferred cleanup happens once (1.027435ms)
+✔ borrowed local thumbnail is never revoked by its borrowing lease (0.266802ms)
+✔ same exact key and owner are idempotent while loading and after readiness (0.294543ms)
+✔ a preview read failure is visible, preserves a current local thumbnail, resolves without a fake upload failure and never retries (0.379611ms)
+✔ stable-key change sessionId discards a late fulfilled preview without assigning it (0.298268ms)
+✔ stable-key change fileId discards a late fulfilled preview without assigning it (0.209976ms)
+✔ stable-key change fileHash discards a late fulfilled preview without assigning it (0.15967ms)
+✔ stable-key change fileSize discards a late fulfilled preview without assigning it (0.151357ms)
+✔ stable-key change mimeType discards a late fulfilled preview without assigning it (0.209095ms)
+✔ same file with a different owner invalidates the original load and ignores its late rejection (0.33222ms)
+✔ owner/document invalidation before signed GET invocation prevents the read and releases owned thumbnails (0.1469ms)
+✔ owner/document invalidation during GET discards the Blob and emits no stale readiness or failure (0.158659ms)
+✔ a URL created at the exact owner-loss boundary is revoked and never assigned (0.199971ms)
+✔ unmount disposes local resources and ignores late preview resolve (0.136255ms)
+✔ unmount disposes local resources and ignores late preview reject (0.062865ms)
+✔ legitimate context replacement releases the previous signed URL and clear releases the replacement exactly once (0.194582ms)
+✔ a second live lease may borrow a URL but cannot steal or revoke its original ownership (0.272891ms)
+✔ non-Blob, wrong-size and wrong-MIME signed preview results remain truthful errors with no object URL (0.209305ms)
+✔ invalid preview context or implicit local URL ownership never starts a request (0.428424ms)
+✔ cleanup dispatcher releases a lease-owned URL once and declines native, borrowed or already-released URLs (0.223466ms)
+✔ cleanup dispatcher targets the owning live lease and cannot release another lease by a stale URL (0.209545ms)
+✔ confirmed replacement with same stable file ID and new hash releases the old preview lease and rejects its late Blob (0.194863ms)
+(node:13) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ replacement expectedVersion and file bytes are bound to one fake NIP98 payload and exact credential-free dispatch (63.638404ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 300.24941

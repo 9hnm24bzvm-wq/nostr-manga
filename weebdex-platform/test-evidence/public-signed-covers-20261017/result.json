@@ -1,0 +1,78 @@
+{
+  "schema": "signed-public-cover-qualification-v1",
+  "utc": "2026-10-17T18:53:07.569834+00:00",
+  "source_commit": "a7a0186b7d7d2df1766574509ea7eec30f3e28a6",
+  "backend_core_commit": "ed3a2448b8c9017a030135b66bd3585c8f5233b4",
+  "backend_corrections_commit": "710a92395956dd519e3a946ddaaf07eb1c8a23ca",
+  "source_sha256": {
+    "backend/src/public_api/cover_writes.rs": "a374fa246751d500013606760b7d52b1ae676b96a44ee4df6b583eefe0e52963",
+    "backend/src/domains/catalog/repository.rs": "8b96664dba51d59cc98cde6f6b88ce1b729c8da1bed6a252bbb6668b6b4cf0ed",
+    "backend/tests/public_manga_writes.rs": "2c83e09533eaa456fd2e546278d75da4e7fb71ae47d4b2c54dcb2cfa45a026bd",
+    "platform-integrations/public-api/cover-client.ts": "a81e83505f7368554d037b34bdd357e220b184b7471a0a10ad19ba83067201c7",
+    "platform-integrations/public-api/cover-multipart.ts": "6c73d14a4654bd3630d5928c5e2d3788f07afc9ae1873c0dadf183207ee95c21",
+    "platform-integrations/public-api/PublicCoverEditor.svelte": "e975dcb98ec0aa4a760a82a4be36f8d292098aabbb39fa38f383be95f989d7dd",
+    "platform-integrations/public-api/PublicTitleEditor.svelte": "08f18d2f810c57d8a9a88584213e1cb4e86bf45b6046b9aa0537231e18ebc052",
+    "scripts/prepare-frontend-integration.mjs": "bc8c07225ee188069d5830ed29c59dd4cfa7f0b31d50f20228e1e7a3ec747156",
+    "tests/ci/test_public_cover_commands.mjs": "626ca72107862aacc0aa6dbe98bcc702353dbcf78c94cbd63ec297218d84dfd1"
+  },
+  "rust": {
+    "unit_passed": 119,
+    "unit_ignored_preexisting": 2,
+    "fixture_identifier_passed": 1,
+    "owned_http_passed": 1,
+    "owned_http_seconds": 1.96,
+    "executable_sha256": "958bfe72845f12ce4a87fe2627a1e0e4ea7d6d7e30bcc377203c797105af2ecc",
+    "cleanup": "verified_stopped"
+  },
+  "independent_review": {
+    "source_pins_unchanged": 420,
+    "owned_http_passed": 1,
+    "owned_http_seconds": 2.52,
+    "cleanup": "verified_stopped"
+  },
+  "frontend": {
+    "node": "v24.19.0",
+    "cover_finite_passed": 47,
+    "combined_finite_passed": 118,
+    "strict_enabled": {
+      "errors": 0,
+      "warnings": 12
+    },
+    "strict_default": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "canonical_files_preserved": 679,
+    "exact_source_projection_sha256_match": true,
+    "browser_executed": false,
+    "real_relay_broadcast": false,
+    "production_build": {
+      "pass": true,
+      "artifact_files": 434,
+      "artifact_bytes": 7133179,
+      "artifact_manifest_sha256": "21609716a6b88463bb4e4eaa02a5dc0d1139c5db1ad8594782d8a9991e485942",
+      "index_sha256": "b178bb07b9dd3e84c893020969447e7c6f20a29d229053dd54459e17f5642929",
+      "source_unchanged": true,
+      "dependencies_unchanged": true,
+      "cleanup_verified": true,
+      "remaining_bytes": 4692185088
+    }
+  },
+  "scope": [
+    "exact signed account-bound multipart original upload",
+    "signed metadata-only cover CAS",
+    "explicit moderator-approved local cover removal",
+    "typed UUID parent/source visibility",
+    "implicit main-cover version/audit CAS",
+    "rollback object/alias/audit/version retention",
+    "required signed account intent and early/final actor equality",
+    "privacy headers including503/refusals",
+    "unknown-outcome session fence and no automatic replay",
+    "verified original byte previews"
+  ],
+  "limitations": [
+    "Finite frontend tests use explicit HTTP/signature primitives and real SHA-256, not a browser or real signer.",
+    "Real browser cover selection/rendering, user key devices, external relays and publication visibility in a deployed instance were not tested.",
+    "Unknown cover delivery outcomes remain read-only pending operator confirmation; reads do not clear the marker."
+  ]
+}

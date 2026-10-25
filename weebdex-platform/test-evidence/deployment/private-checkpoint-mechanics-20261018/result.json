@@ -1,0 +1,185 @@
+{
+  "assertions": {
+    "allThreeOriginalStorageRootsExactAndUnchanged": true,
+    "defaultDryRunsCreateNoBundleOrRestoreRoots": true,
+    "nonemptyDatabaseRefusedWithoutRootOrSentinelMutation": true,
+    "privateModes": true,
+    "realCustomPgDumpVerified": true,
+    "realTransactionalPgRestoreExactTableValueParity": true,
+    "releaseHashContinuity": true
+  },
+  "cleanupSha256": "c4f115a2bd1cd370195001ff6c1cb03b108a31004fa6c9484f9df533d52a0167",
+  "dataParitySha256": "0b6bf977aa56c7086c8f05e35c1fa345696ab7c675bd7dc01e7bf642534413a5",
+  "databaseDumpBytes": 2863,
+  "databaseDumpSha256": "8c9136da771bebeb7fe38d4ce1cb165051208c204888c4f0dd6726f00963002c",
+  "databaseRowCounts": {
+    "pending_publication": 1,
+    "source_events": 2
+  },
+  "driverSha256": "7ddefc8aa5d62c024cd899d9adfb7ad843e8d165e00eb17523e345af7859d96c",
+  "endFreeBytes": 4536954880,
+  "limits": {
+    "hostAvailableBytes": 1073741824,
+    "liveFreeBytes": 4429185024,
+    "newAllocatedBytes": 134217728,
+    "rssBytes": 536870912,
+    "seconds": 180,
+    "startFreeBytes": 4563402752
+  },
+  "maximumFreshAllocatedBytes": 79585280,
+  "maximumOwnedRssBytes": 88911872,
+  "minimumFreeBytes": 4539355136,
+  "minimumFreeBytesScope": "sampled during active owned commands; endFreeBytes is the subsequent post-cleanup observation",
+  "officialToolSha256": {
+    "createdb": "6fff0a0a8c0209c51c098a872fc24d7876aeefa88d76d2c2e83e74743308d5b8",
+    "initdb": "a0363354125bc00f25075bb47fc32a2838fa7668c008326227f5bc04d628ca1d",
+    "pg_dump": "b5f14f509728e44d97ff876b570c85c9d641fc22898b394ec0f5a923ec6ef793",
+    "pg_restore": "6a5c329542ccbb58957edbc8c0aa08e103cb32f8257c1f2d3b8dad19ce947692",
+    "postgres": "6468a969338215cb3912cf9c0b894bdbbd37b9a709926db078e9a5bf8bdc3e16",
+    "psql": "3c94c29652ea7ff8803ab1ca35e48c38a39c8a94a8c8eeadbb1d87c68494506c"
+  },
+  "ownershipHelperSha256": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+  "physicalCleanup": {
+    "error": null,
+    "forced": false,
+    "ownedBirthCount": 33,
+    "portClosed": true,
+    "remaining": [],
+    "sourceAndDataRetained": true,
+    "unconfirmedBirths": [],
+    "verifiedStopped": true
+  },
+  "postgresVersion": "postgres (PostgreSQL) 17.11 (Debian 17.11-0+deb13u1)",
+  "rawResultSha256": "5a053e9483d2ee9fa38fa970b869acd798478605c6a169b86d3bccd0fee8f2ef",
+  "runtimeSourceBase": "716933de9e536eaf88ef90573aadfe1bd8729f6c",
+  "schema": "synthetic-checkpoint-mechanics-v1",
+  "scope": "Fresh synthetic PostgreSQL17 schemas and three tiny storage roots; no full-platform/production recovery claim",
+  "scriptPath": "weebdex-platform/scripts/private-checkpoint.py",
+  "scriptSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+  "seconds": 2.641,
+  "startFreeBytes": 4618428416,
+  "steps": [
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "bff7373d2309d3b3cdff08f03dfe8fed4fe20c3039a5e11d14526964b2fcca39",
+      "name": "version",
+      "seconds": 0.052
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "3220c6323c22872d0d8e7d4b4be15498e2717a4bb3cdf0045689986a611291f9",
+      "name": "initdb",
+      "seconds": 0.648
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "create-checkpoint_source",
+      "seconds": 0.065
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "create-checkpoint_empty",
+      "seconds": 0.067
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "create-checkpoint_nonempty",
+      "seconds": 0.069
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "seed-source",
+      "seconds": 0.07
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "seed-refusal",
+      "seconds": 0.071
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "e33900ebf92b340c1699064c69f3c1f94f0bc280a27729aecbfd6a89d214ab1d",
+      "name": "baseline-source",
+      "seconds": 0.072
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "773c62503f7d5aa075c11f25a216d0c6be0cc2ae982670379ab980a01adfd1e9",
+      "name": "backup-default-dry-run",
+      "seconds": 0.072
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "b698662156508b29608746d284a34e8e264510977346153133a25f2ac89c887d",
+      "name": "backup-real-pg-dump",
+      "seconds": 0.197
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "ab2520e82ad08ece4812165c1412af5360c035165f2d3e3fd81f136449c456e6",
+      "name": "verify-real-bundle",
+      "seconds": 0.072
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "90534fa2c9304f427b38e1f8443cba560c1acaf1110c0b9af89147d20c8a49fd",
+      "name": "restore-default-dry-run",
+      "seconds": 0.073
+    },
+    {
+      "exit": 1,
+      "expectedExit": 1,
+      "logSha256": "6e00ca9cab02380cb9ffbf99082a26197959cfe0771058b63ac8ff8a737249cb",
+      "name": "restore-nonempty-refusal",
+      "seconds": 0.196
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "dd578d380ffae52b83ea6b3fed5d0e1950b5865a6855cb5f95fa99c2d972c05c",
+      "name": "refusal-sentinel-unchanged",
+      "seconds": 0.075
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "e4863a8c9bf24d322cde24b445e96f1d22c41765c9db077b404e02fd4fc247ea",
+      "name": "restore-real-pg-restore",
+      "seconds": 0.325
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "e33900ebf92b340c1699064c69f3c1f94f0bc280a27729aecbfd6a89d214ab1d",
+      "name": "restored-database-exact",
+      "seconds": 0.074
+    },
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "e33900ebf92b340c1699064c69f3c1f94f0bc280a27729aecbfd6a89d214ab1d",
+      "name": "source-database-unchanged",
+      "seconds": 0.076
+    }
+  ],
+  "storageBytes": 87040,
+  "storageFiles": 3,
+  "success": true
+}

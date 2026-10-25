@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "scope": "Exact comparison-only additive moderator composition successor. No runtime/build substitution or historical browser/HTTP relabelling.",
+  "candidate_base": "c262a21",
+  "predecessor": "c477fc1",
+  "browser_executed": false,
+  "http_executed": false,
+  "rows": [
+    {
+      "path": "weebdex-platform/scripts/prepare-frontend-integration.mjs",
+      "current_bytes": 29891,
+      "current_sha256": "bdb676c70e3d9eb4a5488b602ad6a778cc25be3b0a196a95fa87d4642fa10543",
+      "previous_bytes": 29847,
+      "previous_sha256": "38011a1d691495466ac05ba441cf9cdc0bbe5d4b743569bf72539d6687344aba",
+      "literal_reversals": [
+        {
+          "current": "\tconst externalComponents = [\"frontend-behavior/AccountClosure.svelte\", \"frontend-behavior/AccountOnboarding.svelte\", \"frontend-behavior/MangaEditBoundary.svelte\", \"frontend-behavior/RecoveryBoundary.svelte\", \"local-library/LocalLibraryPanel.svelte\", \"local-library/ProtocolIdentityPanel.svelte\", \"local-library/LibraryProtected.svelte\", \"local-library/LibraryRuntime.svelte\", \"local-library/MangaDiscussion.svelte\", \"local-library/LibraryManagementTools.svelte\", \"local-library/PublicIdentitySettings.svelte\", \"local-library/IdentitySetup.svelte\", \"local-library/DeviceHistoryFeed.svelte\", \"local-library/DeviceTitleLibrary.svelte\", ...(publicApiGate ? [\"public-api/PublicLanguageFilter.svelte\", \"public-api/PublicTitleGroupFilter.svelte\", \"public-api/PublicTitleEditor.svelte\", \"public-api/PublicCoverEditor.svelte\", \"public-api/PublicTitleDisposition.svelte\", \"public-api/PublicRelationEditor.svelte\", \"public-api/PublicCreateGate.svelte\", \"public-api/PublicTitleShell.svelte\", \"public-api/PublicEntityPicker.svelte\", \"public-api/PublicReportForm.svelte\", \"public-api/PublicDraftRouteGate.svelte\", \"public-api/PublicDraftSearch.svelte\", \"public-api/PublicDraftFilter.svelte\", \"public-api/PublicDraftEntry.svelte\", \"public-api/AccountBlocklistEditor.svelte\", \"public-api/AccountProfileEditor.svelte\", \"public-api/NativeProfileActions.svelte\", \"public-api/SignedModeratorReports.svelte\", \"public-api/PublicEditorialTools.svelte\", \"public-api/PublicGroupClaimDialog.svelte\"] : [])].map(relative => ({ path: \"platform-integrations/\" + relative, sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations\", relative))), intentional_rendered_extension: true }));\n",
+          "previous": "\tconst externalComponents = [\"frontend-behavior/AccountClosure.svelte\", \"frontend-behavior/AccountOnboarding.svelte\", \"frontend-behavior/MangaEditBoundary.svelte\", \"frontend-behavior/RecoveryBoundary.svelte\", \"local-library/LocalLibraryPanel.svelte\", \"local-library/ProtocolIdentityPanel.svelte\", \"local-library/LibraryProtected.svelte\", \"local-library/LibraryRuntime.svelte\", \"local-library/MangaDiscussion.svelte\", \"local-library/LibraryManagementTools.svelte\", \"local-library/PublicIdentitySettings.svelte\", \"local-library/IdentitySetup.svelte\", \"local-library/DeviceHistoryFeed.svelte\", \"local-library/DeviceTitleLibrary.svelte\", ...(publicApiGate ? [\"public-api/PublicLanguageFilter.svelte\", \"public-api/PublicTitleGroupFilter.svelte\", \"public-api/PublicTitleEditor.svelte\", \"public-api/PublicCoverEditor.svelte\", \"public-api/PublicTitleDisposition.svelte\", \"public-api/PublicRelationEditor.svelte\", \"public-api/PublicCreateGate.svelte\", \"public-api/PublicTitleShell.svelte\", \"public-api/PublicEntityPicker.svelte\", \"public-api/PublicReportForm.svelte\", \"public-api/PublicDraftRouteGate.svelte\", \"public-api/PublicDraftSearch.svelte\", \"public-api/PublicDraftFilter.svelte\", \"public-api/PublicDraftEntry.svelte\", \"public-api/AccountBlocklistEditor.svelte\", \"public-api/AccountProfileEditor.svelte\", \"public-api/NativeProfileActions.svelte\", \"public-api/PublicEditorialTools.svelte\", \"public-api/PublicGroupClaimDialog.svelte\"] : [])].map(relative => ({ path: \"platform-integrations/\" + relative, sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations\", relative))), intentional_rendered_extension: true }));\n"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/frontend-route-additions.mjs",
+      "current_bytes": 2559,
+      "current_sha256": "691d8dc2399ce56f15ae11c09b3912d8d6c18396596c26ed02f81208b676069a",
+      "previous_bytes": 2343,
+      "previous_sha256": "f359e2fadd474c341ec393321768df3c3d4ecd09631da188c4e85c4bc5368361",
+      "literal_reversals": [
+        {
+          "current": "  {source:\"platform-integrations/frontend-reconstruction/reports/moderation/+page.svelte\",target:\"src/routes/(app)/reports/moderation/+page.svelte\",reconstruction:false,additive_signed_moderator_reports_route:true},\n  {source:\"platform-integrations/frontend-reconstruction/reports/signed/native/+page.svelte\",target:\"src/routes/(app)/reports/signed/native/+page.svelte\",reconstruction:false,additive_signed_native_report_inspection_route:true},\n",
+          "previous": "  {source:\"platform-integrations/frontend-reconstruction/reports/signed/native/+page.svelte\",target:\"src/routes/(app)/reports/signed/native/+page.svelte\",reconstruction:false,additive_signed_native_report_inspection_route:true},\n"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/frontend-reconstruction/settings/identity/+page.svelte",
+      "current_bytes": 468,
+      "current_sha256": "f804644fe2db722c1ba24713824847398c0c6eedc4ac88475c2318a8175a6592",
+      "previous_bytes": 286,
+      "previous_sha256": "dfab136b804bf4a0f877b621179ea439097ff6a6418fa3086e1ce6e769202ad5",
+      "literal_reversals": [
+        {
+          "current": "\n<p><a class=\"underline\" href=\"/reports/moderation\">Signed instance moderation</a> requires a currently authorized moderator account, separately from personal report inspection.</p>\n",
+          "previous": ""
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "source": "aaf24da0d4c9dd227226cfe72abc99a35ec5d0dd",
+  "scope": "pure source composition only; no compilation/build/browser",
+  "gates": [
+    {
+      "gate": "0",
+      "transformedSources": 119,
+      "manifestBytes": 552064,
+      "manifestSha256": "d18535e7b75f9f1f40ab16520601da4c92160d87bca09a77d6b87acdbb46ee28",
+      "allSuppliedStylesUnchanged": true,
+      "allRetainedMarkupAfterExactExceptions": true
+    },
+    {
+      "gate": "1",
+      "transformedSources": 148,
+      "manifestBytes": 625900,
+      "manifestSha256": "676957a917ed1d7b0399754ec0eaac7bc7aba89499c59a39329cf357cc9df94b",
+      "allSuppliedStylesUnchanged": true,
+      "allRetainedMarkupAfterExactExceptions": true
+    }
+  ]
+}

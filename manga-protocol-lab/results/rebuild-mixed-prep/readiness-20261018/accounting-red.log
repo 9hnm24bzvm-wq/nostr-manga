@@ -1,0 +1,32 @@
+test_http_rejection_poisoning_prevents_false_acceptance (test_mixed.ControlledHttpWorkload.test_http_rejection_poisoning_prevents_false_acceptance) ... FAIL
+test_requested_logical_demand_is_separate_from_synthetic_http_rates (test_mixed.MixedHarness.test_requested_logical_demand_is_separate_from_synthetic_http_rates) ... ERROR
+
+======================================================================
+ERROR: test_requested_logical_demand_is_separate_from_synthetic_http_rates (test_mixed.MixedHarness.test_requested_logical_demand_is_separate_from_synthetic_http_rates)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/shared/nostr-manga-recovery-20261018/mixed-load-worktree/manga-protocol-lab/bench/library-node/test_mixed.py", line 29, in test_requested_logical_demand_is_separate_from_synthetic_http_rates
+    value=plan(arguments([])); accounting=value['demand_accounting']
+                                          ~~~~~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'demand_accounting'
+
+======================================================================
+FAIL: test_http_rejection_poisoning_prevents_false_acceptance (test_mixed.ControlledHttpWorkload.test_http_rejection_poisoning_prevents_false_acceptance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/shared/nostr-manga-recovery-20261018/mixed-load-worktree/manga-protocol-lab/bench/library-node/test_mixed.py", line 175, in test_http_rejection_poisoning_prevents_false_acceptance
+    self.assertEqual(result['operations']['save']['http_statuses'],{'503':1})
+AssertionError: {} != {'503': 1}
+- {}
++ {'503': 1}
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.291s
+
+FAILED (failures=1, errors=1)

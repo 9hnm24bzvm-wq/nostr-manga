@@ -1,0 +1,13 @@
+{
+  "scope": "Exact source baseline associated with the original 18-case pure pass and the successful first harmless normal PostgreSQL stop qualification. Preserved before cross-session descendant correction; this is not corrected-source qualification.",
+  "source_sha256": {
+    "run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "auth_fixture_guard.py": "4f58eb17e042d95b7ac885facda0a32c30abf5b181744ab348f3d04e6ef408bb",
+    "test_auth_fixture_guard_recovery.py": "c4c350b012abe3d6b77bf912d2fc5f3cb5e854df307710521514ec2007c59dc5"
+  },
+  "original_pure_output": "../auth-fixture-guard-finite-first-run-20261017.tool-output.log",
+  "original_pure_receipt": "../auth-fixture-guard-finite-first-run-20261017.receipt.json",
+  "normal_stop_receipt": "../pg-guard-qualification-01/receipt.json",
+  "normal_stop_receipt_sha256": "5043d598f870de58e1f3fdf0e6dd89df9bf30472c3652e443bffd6d7c662be1f",
+  "normal_stop_limit": "Observed PostgreSQL workers use different sessions from the postmaster. Original session-filtered members() does not qualify forced escalation or postmaster-loss cleanup."
+}

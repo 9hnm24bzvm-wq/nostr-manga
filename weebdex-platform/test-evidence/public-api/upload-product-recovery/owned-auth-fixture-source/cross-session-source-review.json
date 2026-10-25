@@ -1,0 +1,37 @@
+{
+  "schema": "independent-auth-fixture-guard-source-review-v1",
+  "reviewed_at_utc": "2026-10-17T04:33:57.242827+00:00",
+  "verdict": "source_clear_for_exact_pure_test_and_separate_owned_runtime_plan",
+  "source_sha256": {
+    "scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+    "tests/ci/test_auth_fixture_guard_recovery.py": "6aba040535e2e1fae354aa8ddb7095ddfe51c3d564f2a3000c7d1fda2eaa227c"
+  },
+  "finite_authored_cases": 27,
+  "cleared_command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/ci/test_auth_fixture_guard_recovery.py -v",
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform",
+  "log_capture": "/workspace/shared/nostr-manga-recovery-20261017/auth-fixture-guard-cross-session-first-run.tool-output.log",
+  "execution_by_reviewer": false,
+  "source_findings": [
+    "Stable ownership ledger is keyed by PID/start_ticks and seeded only by immediately registered captured Popen roots.",
+    "New births require current ancestry to an existing known birth with parent birth ordering; session/group equality alone gives no authority.",
+    "Known births remain owned across setsid/reparenting; current tuple is rechecked before and after pidfd opening.",
+    "Unknown adopted births are retained as unconfirmed and cannot be signalled or reaped; they prevent success.",
+    "One aggregate INT15/TERM5/KILL5 cleanup window is retained.",
+    "Final known-process scan is unioned with prior survivors; it cannot silently discard an observed survivor."
+  ],
+  "finite_boundary": [
+    "Tests use bounded temporary fake procfs and mocked Popen/socket/CDLL/signal/clock/stop orchestration.",
+    "No real process launch, PostgreSQL, socket, browser or build is exercised by the approved command."
+  ],
+  "prior_evidence": {
+    "normal_stop_baseline_scope_sha256": "b568bb4f2f473068319e9c8c47d39fda36e99d797f85e0b5516bd228441dfd02",
+    "held_25_case_source_sha256": "4cc6797c2dff87575cf53c247312fd586848ccd3dbd096e73f97633cf59996a3",
+    "normal_stop_result_sha256": "5043d598f870de58e1f3fdf0e6dd89df9bf30472c3652e443bffd6d7c662be1f"
+  },
+  "limits": [
+    "The earlier real normal-stop result remains associated only with the old source.",
+    "Corrected-source real PG lifecycle and application integration require a separately pinned sole-owner plan.",
+    "Missed descendant ancestry remains unconfirmed; this code does not acquire signal authority through adoption alone."
+  ]
+}

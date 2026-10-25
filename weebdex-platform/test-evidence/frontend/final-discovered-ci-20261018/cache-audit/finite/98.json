@@ -1,0 +1,13 @@
+{
+  "pid": 98,
+  "protected_roots": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright-core",
+    "/workspace/shared/nostr-manga-recovery-20261017/account-library-worktree/weebdex-platform/.build/browser-dom-dependencies/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-signing-base-2.0.0/node_modules",
+    "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules"
+  ],
+  "checked_node_mutations": 0,
+  "protected_write_attempts": 0,
+  "denied": []
+}

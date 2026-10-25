@@ -1,0 +1,46 @@
+{
+  "schema": "compiled-pending-target-and-fixture-id-pure-v1",
+  "pass": true,
+  "cases": [
+    {
+      "command": [
+        "/workspace/shared/nostr-manga-recovery-20261017/cargo-target/debug/deps/weebdex_platform-e419a3fb27f0fabf",
+        "--exact",
+        "public_api::uploads::tests::pending_receipt_target_is_actual_id_only_and_does_not_imply_readability",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "pass": true,
+      "log_sha256": "7af1ae89ced1dff68e717890366f4b1dc3982b718a5343bc9eff36ce5af08178",
+      "binary_sha256": "e997081adc0f477b56ea44e607e95cf69340eb9f182ea86d5d77be3df53be857"
+    },
+    {
+      "command": [
+        "/workspace/shared/nostr-manga-recovery-20261017/cargo-target/debug/deps/weebdex_platform-e419a3fb27f0fabf",
+        "--exact",
+        "public_api::uploads::tests::pending_receipt_target_mismatches_and_missing_aliases_fail_closed",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "pass": true,
+      "log_sha256": "0587c1d03bf5794e2c4b779f253dde5c6c05b410909151096154405975b6a4ba",
+      "binary_sha256": "e997081adc0f477b56ea44e607e95cf69340eb9f182ea86d5d77be3df53be857"
+    },
+    {
+      "command": [
+        "/workspace/shared/nostr-manga-recovery-20261017/cargo-target/debug/deps/public_uploads-4987a247b7f72ece",
+        "--exact",
+        "catalog_fixture_identifiers_match_publication_schema",
+        "--test-threads=1"
+      ],
+      "exit_code": 0,
+      "pass": true,
+      "log_sha256": "2d20d8b1298eb8117d52337e39204499a860495064b54f95c4ea23be5b0ed600",
+      "binary_sha256": "bd80c874f23e67e2a27bd8bb4148cfaa2f27e28138fc70f163feb813c09c31d1"
+    }
+  ],
+  "source_unchanged": true,
+  "compile_receipt_sha256": "2b2594f77bd2e64f8f10313f60115cb81491b29446b5a79a6ee6fcda870118b1",
+  "database_started": false,
+  "finished_at_utc": "2026-10-17T05:05:34.497841+00:00"
+}

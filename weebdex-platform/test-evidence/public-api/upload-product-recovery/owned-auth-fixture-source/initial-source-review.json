@@ -1,0 +1,31 @@
+{
+  "schema": "auth-fixture-guard-source-review-v1",
+  "utc": "2026-10-17T04:15:15.284040+00:00",
+  "verdict": "source_clear_for_exact_pure_command",
+  "source_pins": {
+    "scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "tests/runtime/auth_fixture_guard.py": "4f58eb17e042d95b7ac885facda0a32c30abf5b181744ab348f3d04e6ef408bb",
+    "tests/ci/test_auth_fixture_guard_recovery.py": "c4c350b012abe3d6b77bf912d2fc5f3cb5e854df307710521514ec2007c59dc5"
+  },
+  "pure_command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/ci/test_auth_fixture_guard_recovery.py -v",
+  "authored_cases": 18,
+  "reviewed_execution_boundary": "Finite tests import only guarded definitions; all subprocess/socket/libc/signal orchestration is mocked, stop seams inject fake procfs/clock/signal/reaping; temporary files only.",
+  "fixed_findings": [
+    "Popen registered before fallible process identity observation.",
+    "Final pre-stop process observation errors retained without skipping bounded cleanup/receipt.",
+    "Deferred cancellation checked after successful waits and before final status.",
+    "All PG tools use owned session launches; no unowned subprocess.run helper paths."
+  ],
+  "runtime_contract": [
+    "Exact PID birth/group/session and parent capture; pidfd signalling rechecks identity.",
+    "Postmaster requires unique IPv4 loopback LISTEN inode owned by captured process before database mutation and test launch.",
+    "Fixed startup10s/test180s; aggregate cleanup INT15s/TERM5s/KILL5s; forced cleanup forces failure.",
+    "No broad process-group signals; targets require captured lineage/adoption; unknown births are unconfirmed with no unsafe signal.",
+    "Port closure requires ECONNREFUSED; timeouts or observation errors cannot qualify cleanup.",
+    "Original test return code retained separately from cleanup result."
+  ],
+  "owner_reported_result": "18/18 pass reported; durable log association pending.",
+  "not_executed_by_reviewer": true,
+  "runtime_validation_pending": true,
+  "retained_prior_candidate": "/workspace/shared/nostr-manga-recovery-20261017/auth-fixture-guard-first-candidate"
+}

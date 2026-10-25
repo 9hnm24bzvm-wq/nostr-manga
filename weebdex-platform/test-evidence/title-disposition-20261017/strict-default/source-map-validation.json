@@ -1,0 +1,3660 @@
+{
+  "status": "passed",
+  "validated_maps": 609,
+  "maps": [
+    {
+      "map": "evidence/source-maps/src/@types/Author.d.ts.map",
+      "source": "production-composed/src/@types/Author.d.ts",
+      "source_sha256": "cfc60979fe41eb79a85e29a2a899eb2c0092b6866bc71cc31dc8b9a439bb90a6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Chapter.d.ts.map",
+      "source": "production-composed/src/@types/Chapter.d.ts",
+      "source_sha256": "7c03fa100db34c03f837c4654f41f97777aefacbf2c87d0ded0851793c037d5e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/ChapterAggregate.d.ts.map",
+      "source": "production-composed/src/@types/ChapterAggregate.d.ts",
+      "source_sha256": "3b87e649f5eb9d7ef0d36f39f3d683e6bdb153075315db8e2b1e1437deec3312",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/ChapterHistory.d.ts.map",
+      "source": "production-composed/src/@types/ChapterHistory.d.ts",
+      "source_sha256": "2b89d001ddef6d2e1203ddb1fece1dd40f0a26a70a55a116cddbb0b46eef42d1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Client.d.ts.map",
+      "source": "production-composed/src/@types/Client.d.ts",
+      "source_sha256": "ae9d17916136da79bca2059b9ed07fcdd22fa849ae4865719f348be07d85b5c8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Cover.d.ts.map",
+      "source": "production-composed/src/@types/Cover.d.ts",
+      "source_sha256": "de5856aaa0dec745d355b9c809a8de0dcfe1e0d8b5872c4513c1a81697ab1bc9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Draft.d.ts.map",
+      "source": "production-composed/src/@types/Draft.d.ts",
+      "source_sha256": "7cc4191afaadf990cb791129a0b81d57c7e98b0af2a1eed398d77f9e1360af3a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/ExternalLink.d.ts.map",
+      "source": "production-composed/src/@types/ExternalLink.d.ts",
+      "source_sha256": "c05aa7f0a033af71405ed61889c8087b1a0df7b770c9df67e12d92c941a11da9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Feed.d.ts.map",
+      "source": "production-composed/src/@types/Feed.d.ts",
+      "source_sha256": "eb7965f3bc9e35293f56f10755ae9a9225242df5881dd7a73e5106ddf7808ace",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Global.d.ts.map",
+      "source": "production-composed/src/@types/Global.d.ts",
+      "source_sha256": "b15e1e3a7672ffe8d40b4e2098283637f5043378c50537c280c991c7d344475a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Manga.d.ts.map",
+      "source": "production-composed/src/@types/Manga.d.ts",
+      "source_sha256": "8205aefdb2ff791d3c3c7291008609591c20a13c11342e7a938d6e94945bd5d0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/MangaFollow.d.ts.map",
+      "source": "production-composed/src/@types/MangaFollow.d.ts",
+      "source_sha256": "527f01b901faa70f64cfb39aa99ecfc85146cd9134895c4871de856d6810aa9f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Reader.d.ts.map",
+      "source": "production-composed/src/@types/Reader.d.ts",
+      "source_sha256": "46540950684e621bf3b2d8255aa7a3894afb124fb7a29396cb6a25a31adce4a6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Reply.d.ts.map",
+      "source": "production-composed/src/@types/Reply.d.ts",
+      "source_sha256": "d41597f7018e8122e684114835c3004b96be0096fd42567e25056123a9a2f41b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Report.d.ts.map",
+      "source": "production-composed/src/@types/Report.d.ts",
+      "source_sha256": "71e4660282e3d8b3bde33099f41f48e14c4ec75605e61c73f9244bed1d65aecc",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Response.d.ts.map",
+      "source": "production-composed/src/@types/Response.d.ts",
+      "source_sha256": "f72a9a5963336f9c8e79ec6e5975b82d28cc72e731f7fef51d58f34781ca050e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/ScanlationGroup.d.ts.map",
+      "source": "production-composed/src/@types/ScanlationGroup.d.ts",
+      "source_sha256": "d03a359a4fefbb47af27ef8ed791456bca425a2378c03f788ec111db6edf0295",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Tag.d.ts.map",
+      "source": "production-composed/src/@types/Tag.d.ts",
+      "source_sha256": "b99a15bdd4a02021a0b5afea50d7b7983834f4bf613109b10c0ddd63b6de1aec",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Thread.d.ts.map",
+      "source": "production-composed/src/@types/Thread.d.ts",
+      "source_sha256": "b84c409f8c80e22b111e4f0bbf48484e4f9f3c32d274faf027dccee3d84087a2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/Upload.d.ts.map",
+      "source": "production-composed/src/@types/Upload.d.ts",
+      "source_sha256": "fdeed27ad868c183fab3257feec05e97ef0d4b7f568b87d9339f7628d6620553",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/User.d.ts.map",
+      "source": "production-composed/src/@types/User.d.ts",
+      "source_sha256": "a882e98f10aece21dbb3ac11a13232dd0d638e2575333e19d25b30572ff5861f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/@types/UserPreference.d.ts.map",
+      "source": "production-composed/src/@types/UserPreference.d.ts",
+      "source_sha256": "912832c02615447d4f20085112978966a083c658c4fd9e575dff6532ff1e73c4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/app.d.ts.map",
+      "source": "production-composed/src/app.d.ts",
+      "source_sha256": "3d450fc2fc7b0f10b6a9493a682769aac34f8b612f0f5d1bc4845a7b0bfe9f0a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Analytics.ts.map",
+      "source": "production-composed/src/lib/API/Analytics.ts",
+      "source_sha256": "4f74b65eae53929329a4d8f1b4dd6fc3a12f0c108d4f85c18e3d284291f730fa",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Auth.ts.map",
+      "source": "production-composed/src/lib/API/Auth.ts",
+      "source_sha256": "c7124a7dd2d6f8fe25ad34992af0cf59ab60c72afdecc1534ced1213d30705b9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Author.ts.map",
+      "source": "production-composed/src/lib/API/Author.ts",
+      "source_sha256": "43a7f265bfb3928cb8fec5b59d7339e19138a8ae5cd50d2c3c12a93ad2ccb10b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Chapter.ts.map",
+      "source": "production-composed/src/lib/API/Chapter.ts",
+      "source_sha256": "9ace62d770d644ce7b8255a7e6fd3a9bb2f98f296046cf3a3f3d474194428d20",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Client.ts.map",
+      "source": "production-composed/src/lib/API/Client.ts",
+      "source_sha256": "675624a78f724b342bf40f77938ab83abd51784ebe049773cfea2f86cd4ae29a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Cover.ts.map",
+      "source": "production-composed/src/lib/API/Cover.ts",
+      "source_sha256": "3af93906c6013d76d04a1cae33d85cdea7e0191624cc093ab8542eb4610bdb98",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Group.ts.map",
+      "source": "production-composed/src/lib/API/Group.ts",
+      "source_sha256": "2895d14c39fa09480464ef87546a6f5802bf1da7b6a3a984aa3c129462c54a01",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/index.ts.map",
+      "source": "production-composed/src/lib/API/index.ts",
+      "source_sha256": "12e056cb32ac7402c699925690cf88091a8083963f821070d2fa0a1f35c572aa",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Manga.ts.map",
+      "source": "production-composed/src/lib/API/Manga.ts",
+      "source_sha256": "de6bb13f2e7552d87dacb9ba4c797e60a43014f440844edb9641500038c1cd0c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Report.ts.map",
+      "source": "production-composed/src/lib/API/Report.ts",
+      "source_sha256": "4db1701f1989774e8ca598b0ca5d6f915725c6ee04af8ed3924c5b78dddb25fd",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Settings.ts.map",
+      "source": "production-composed/src/lib/API/Settings.ts",
+      "source_sha256": "06f0d598bf6ebe01b246f6412d16f867b4135effa0882d07e46e3acb55e1aa35",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Statistics.ts.map",
+      "source": "production-composed/src/lib/API/Statistics.ts",
+      "source_sha256": "cd6faf267238897bd991c68c9f6ccbb9b3d930d52beaae0b0d87740a1413d973",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Tag.ts.map",
+      "source": "production-composed/src/lib/API/Tag.ts",
+      "source_sha256": "14762c1cc63805aee3a188b091a1b3e31a9772b69271b649630311dfae995195",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/Thread.ts.map",
+      "source": "production-composed/src/lib/API/Thread.ts",
+      "source_sha256": "78e46f2edd3cb0ea5b7da777404cb0683bced9dcb6d55f12159870ac4639f152",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/UploadSession.ts.map",
+      "source": "production-composed/src/lib/API/UploadSession.ts",
+      "source_sha256": "363d10a86758e004d1c5040344b6cbf1b42bd426be66fd1ca5fd02deb1a487ee",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/API/User.ts.map",
+      "source": "production-composed/src/lib/API/User.ts",
+      "source_sha256": "ac8b42ea1aceb91d7df16820d0c219ff77bec2db419ffe881f5fcea5779c8559",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/AuthorLink.ts.map",
+      "source": "production-composed/src/lib/AuthorLink.ts",
+      "source_sha256": "c981f655576ae6a7af9ccad8016f05e9366560f9eef3ae4062000f1c6c845bca",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/AppHeader.svelte.map",
+      "source": "production-composed/src/lib/components/AppHeader.svelte",
+      "source_sha256": "67c9123993ae5788928925404b9fea8fb675fc59c40aa7a0d2bf39618fd54740",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/AppSidebar.svelte.map",
+      "source": "production-composed/src/lib/components/AppSidebar.svelte",
+      "source_sha256": "0ed2ea9b565a69f42338bdb7244ff4a9ad62cbe7719740b9e6fa10444b1cd369",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ChapterFeed.svelte.map",
+      "source": "production-composed/src/lib/components/ChapterFeed.svelte",
+      "source_sha256": "16677225d326b7e33d6586486390c148e5db53b2bb723dd54459b237edeb5b9c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ChapterFeedChapterEntry.svelte.map",
+      "source": "production-composed/src/lib/components/ChapterFeedChapterEntry.svelte",
+      "source_sha256": "60bd7dfb471f60d95a8ba6251087b8b123b0d809d6c8b5b074ea7effffcfd5c1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ChapterFeedMangaEntry.svelte.map",
+      "source": "production-composed/src/lib/components/ChapterFeedMangaEntry.svelte",
+      "source_sha256": "4e60dffa427f423d7a61ac3e9a1d7d49757f6bd81b2e45931a0a591496deab20",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ChapterList.svelte.map",
+      "source": "production-composed/src/lib/components/ChapterList.svelte",
+      "source_sha256": "b786687f95242c96487b94114600b36da724366eed18bb6c4a850b53427d8c15",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ChapterListEntry.svelte.map",
+      "source": "production-composed/src/lib/components/ChapterListEntry.svelte",
+      "source_sha256": "65eeebf6bd2c54b0fd380fc77b71f3888a51b96afb8daf8c9fe46e58233be43b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ChapterListFilter.svelte.map",
+      "source": "production-composed/src/lib/components/ChapterListFilter.svelte",
+      "source_sha256": "7a204a20e29eb185dbd453efc7b286885aa55bd64eff2e431b73e7551fde6fa3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/comments-create.svelte.map",
+      "source": "production-composed/src/lib/components/comments/comments-create.svelte",
+      "source_sha256": "a82d9bd8ab2ceaf4dcbcee86055f5375256abbfdddded99a9d484a9d6256390f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/comments-edit-dialog.svelte.map",
+      "source": "production-composed/src/lib/components/comments/comments-edit-dialog.svelte",
+      "source_sha256": "26c9f5ceacb22d0999982d7d14329d36f9030001c01b2eaa9d42981d68621246",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/comments-entry.svelte.map",
+      "source": "production-composed/src/lib/components/comments/comments-entry.svelte",
+      "source_sha256": "187d48ddace8c3f7c07468247bd71569289c0c345ee16193fc5b56c1f6a76799",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/comments-feed.svelte.map",
+      "source": "production-composed/src/lib/components/comments/comments-feed.svelte",
+      "source_sha256": "fb507c6f737e2dbde32324875eeb921a68573112d5b49f58445d402a6e36f795",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/comments-filter.svelte.map",
+      "source": "production-composed/src/lib/components/comments/comments-filter.svelte",
+      "source_sha256": "57c76f051769a75f7f667986bfefaa283f1d3078d1fe31bdc51f7ce2db9a6d07",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/comments-provider.svelte.map",
+      "source": "production-composed/src/lib/components/comments/comments-provider.svelte",
+      "source_sha256": "4d6a95e2cf74f7296cf3523f794a20cb81490ee7ddcd494a1557bb3a1259e92e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/comments-votes.svelte.map",
+      "source": "production-composed/src/lib/components/comments/comments-votes.svelte",
+      "source_sha256": "129a6fff5264834e313c70ad0a5b47c2d244d1c5446476b0c8f395f5000e36db",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/comments.svelte.map",
+      "source": "production-composed/src/lib/components/comments/comments.svelte",
+      "source_sha256": "98ca505010a315b1a7874f9cfd5677b88d8331021cfd1a37867ffc4ad843749c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/context.svelte.ts.map",
+      "source": "production-composed/src/lib/components/comments/context.svelte.ts",
+      "source_sha256": "e356f3cbc58a19af0364cb53c8c97e797e64adb5f400eff55a03d8ecb39387bc",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/comments/index.ts.map",
+      "source": "production-composed/src/lib/components/comments/index.ts",
+      "source_sha256": "a270358d03fcb6a4ba71e3d4309053cbc6273db33b67de5a0c3f2a51c7a61611",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ConfirmDialog.svelte.map",
+      "source": "production-composed/src/lib/components/ConfirmDialog.svelte",
+      "source_sha256": "4f0ed49cc271ecf9936008d9e915d0afbcbbfb212585e2b1658bb08c290eb871",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/AuthorCreateDialog.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/AuthorCreateDialog.svelte",
+      "source_sha256": "9d4febf75897e9d6e12ed4cf3e54ebfeddd834bda50bd110cebee22125691b29",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/CoverGroup.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/CoverGroup.svelte",
+      "source_sha256": "6153b28fdf2616993e669d22853de542c1cedbc8e49b2d4ae8d4832bc8a750fb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/CoverGroupButton.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/CoverGroupButton.svelte",
+      "source_sha256": "c6894378b7b118b24ea69bb2c937ef56202609f3e18c7465499901954eab99b5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/CoverGroupInput.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/CoverGroupInput.svelte",
+      "source_sha256": "3eeba1dd33e3310933b0c051d57b5141761c3a59810ea689f459f87abe7ca629",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/CoversSection.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/CoversSection.svelte",
+      "source_sha256": "ed7a56aedfacfac2c1ba1dccbcb3eb64a7677dca7c839d900083b44dac8b7f62",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/DraftSearch.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/DraftSearch.svelte",
+      "source_sha256": "948479291fb8930b09e04ab90114bbbdca19833299ffac439c5931a86ed69454",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/DraftSearchEntry.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/DraftSearchEntry.svelte",
+      "source_sha256": "f5460df60114cc513c608a72818f0520004d29bc31d8d3e7bf76b25125b49e54",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/DraftSearchFilter.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/DraftSearchFilter.svelte",
+      "source_sha256": "158de6d7801928ea27c007c835fa13112ecea8142701425911f6442110558e70",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/Guidelines.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/Guidelines.svelte",
+      "source_sha256": "f411f279c220365ce18bfe63b74aecfae36a9599b17d51aef2a689811ce4a12b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/LinksSection.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/LinksSection.svelte",
+      "source_sha256": "9b4e9e3b5d97a81d78cc80fc31425f86fbd1d35dc2c3f8564a0e7c2e5e23a5ad",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/MangaCreate.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/MangaCreate.svelte",
+      "source_sha256": "3772ee74ee9087c8ba77f12566e1b65b946ab07747edc97e3472f10c8f6767ff",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/MangaEdit.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/MangaEdit.svelte",
+      "source_sha256": "ea2a516e445890185514113070c4a95a3a7ae0e12a9b4a1aaadd8b0b2ec509ab",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/MetadataSection.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/MetadataSection.svelte",
+      "source_sha256": "1dd4a65d31d3d78f40abc5787c49ba7a6230ff8b56b7b68147e1308f3c92e17a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/RelationGroup.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/RelationGroup.svelte",
+      "source_sha256": "984458df6b96c1f834acdedb6296d8270d3999556b83dac4da3af2a935c20f69",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/RelationGroupButton.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/RelationGroupButton.svelte",
+      "source_sha256": "eb99f390c992044dba960803a4bf9adba0b43ee2c71de3d71c07abddb8de4c46",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/RelationGroupInput.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/RelationGroupInput.svelte",
+      "source_sha256": "b4b353b32adc1caa413fd650ebf13d9169f1eba1ed0fb49720a0046eebf89c78",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/RelationGroupSearchDialog.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/RelationGroupSearchDialog.svelte",
+      "source_sha256": "b57279cfec2bd7a67aa38d5729483db10a6edce0c520e9a10dc7abd82eeb1159",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/RelationsSection.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/RelationsSection.svelte",
+      "source_sha256": "330779331f4e3cda2f833ba249786d8de3de4c8f0c92b7c045fa05673c004a3a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/TagsSection.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/TagsSection.svelte",
+      "source_sha256": "024427fcad71c5bbae2716e4a9e3282b28debc0d31205b42d903c1dabab937f5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/TitleGroup.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/TitleGroup.svelte",
+      "source_sha256": "7ea3cad095372728b599a6091dab4ee30c609e1dc1c4f3ba95806339f195b996",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/TitleGroupButton.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/TitleGroupButton.svelte",
+      "source_sha256": "85d79f267b27aa19eb784e21ae6116d7eabacca3d052f6100a25b1011c3df859",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/TitleGroupInput.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/TitleGroupInput.svelte",
+      "source_sha256": "60c42467371a692797d74357f48600e94fb6dff8a4ff945a9b6266eb7b4fff60",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/draft/manga/TitleSection.svelte.map",
+      "source": "production-composed/src/lib/components/draft/manga/TitleSection.svelte",
+      "source_sha256": "fa539c9f36fce0f55902b4255429d4adde14c562b09d226b6d64c781da98759a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/EntitySearchDialog.svelte.map",
+      "source": "production-composed/src/lib/components/EntitySearchDialog.svelte",
+      "source_sha256": "a94a1eae61861a2e7298d38aef6d5b59129d3d13f22934e03696920bce07a558",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ErrorComponent.svelte.map",
+      "source": "production-composed/src/lib/components/ErrorComponent.svelte",
+      "source_sha256": "d2e2689f45b9b544a00ceab733f2ed74684657bf9f0c8ee09c3ab5845b26e401",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/GenericPagination.svelte.map",
+      "source": "production-composed/src/lib/components/GenericPagination.svelte",
+      "source_sha256": "4ec32fada4391b4df9a1e432d40fd2bb6919f5b7de1394e9122772e959f28efe",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/GenericSearchFilter.svelte.map",
+      "source": "production-composed/src/lib/components/GenericSearchFilter.svelte",
+      "source_sha256": "32e337bc2a5503f5e0bdf256219af35f28c2a1ea869e8ad0d670d66f44cb149a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/GroupSearch.svelte.map",
+      "source": "production-composed/src/lib/components/GroupSearch.svelte",
+      "source_sha256": "811d9a87a3b2d6aaa86602c1397318245c9dc8ecba8a6ed9e36ad7fb991b8441",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/Guidelines.svelte.map",
+      "source": "production-composed/src/lib/components/Guidelines.svelte",
+      "source_sha256": "123c7a4cf7a9c774f0abcc92d3f754074d3b97784779ad72590f889bc5f8ce4c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/InputDialog.svelte.map",
+      "source": "production-composed/src/lib/components/InputDialog.svelte",
+      "source_sha256": "f6a43fafc68fabe0eb08d7d0bca3c5958a2a3bc64ab088369056312da3344e2c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/LatestUpdatesGrid.svelte.map",
+      "source": "production-composed/src/lib/components/LatestUpdatesGrid.svelte",
+      "source_sha256": "12c0457d553dcdf77c3a2223f7199a8e03bce4d8c5b7fd37407d8595c2195c7b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/LatestUpdatesGridEntry.svelte.map",
+      "source": "production-composed/src/lib/components/LatestUpdatesGridEntry.svelte",
+      "source_sha256": "89b8bbd1fc61d12159044baa534f6d04aea63257a109615bd0153a2cf9383688",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/LatestUpdatesGridSkeleton.svelte.map",
+      "source": "production-composed/src/lib/components/LatestUpdatesGridSkeleton.svelte",
+      "source_sha256": "aaa53a7692f65a4dc7acb82eaba993f293bac1f34de92de8f10897ef6784842a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/LatestUpdatesSection.svelte.map",
+      "source": "production-composed/src/lib/components/LatestUpdatesSection.svelte",
+      "source_sha256": "f75ab347bf49dba6e671d21609ab05c60751572c69bd9fbc9daf1eeb3e81d36b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/Lightbox.svelte.map",
+      "source": "production-composed/src/lib/components/Lightbox.svelte",
+      "source_sha256": "b1485d20bdb126fd6730b86a8743b55aa669d65094c85be6ba108f8d626d368e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/LinkGroup.svelte.map",
+      "source": "production-composed/src/lib/components/LinkGroup.svelte",
+      "source_sha256": "61321565e8ddef896901bee08b267d5845b548365c0920551415c62275285476",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/LinkGroupButton.svelte.map",
+      "source": "production-composed/src/lib/components/LinkGroupButton.svelte",
+      "source_sha256": "5e5ff8ef1bc63cdb74fc3b35588b0cf63e86d617401aa40755b04d6631f71bf7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/LinkGroupInput.svelte.map",
+      "source": "production-composed/src/lib/components/LinkGroupInput.svelte",
+      "source_sha256": "2ab024c3a2a1de27b16f11024234278bd814204ad67683883a416d5d769aff8f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/MangaSearch.svelte.map",
+      "source": "production-composed/src/lib/components/MangaSearch.svelte",
+      "source_sha256": "af038cd1d33ae5e8f49d4ccc9d77e56e4f73af0039b502a8d8b09c8fdc059d4f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/MangaSearchEntryCard.svelte.map",
+      "source": "production-composed/src/lib/components/MangaSearchEntryCard.svelte",
+      "source_sha256": "9be0682ed413a90512291c0cfd5dda0b1267bf681b1c3edc6a22af2bbb75561a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/MangaSearchEntrySkeleton.svelte.map",
+      "source": "production-composed/src/lib/components/MangaSearchEntrySkeleton.svelte",
+      "source_sha256": "f2addf0399fab499820ff1e33e60c15f78478e2c9d2f9717134e83c366c67ddd",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/MangaSearchFilter.svelte.map",
+      "source": "production-composed/src/lib/components/MangaSearchFilter.svelte",
+      "source_sha256": "ae758a8523c8df74fe0864555fc09284c29fcfe2a172f4749621b451837d36e4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/MangaSearchPagination.svelte.map",
+      "source": "production-composed/src/lib/components/MangaSearchPagination.svelte",
+      "source_sha256": "5703075e356965650afba9a4d833fcccf28309960709126a9ef803cdfcc00754",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/MostReadCarousel.svelte.map",
+      "source": "production-composed/src/lib/components/MostReadCarousel.svelte",
+      "source_sha256": "7ef942e2591072bf261ec018793929277fe806932a704245e842f32ad0e607a3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/MostReadCarouselEntry.svelte.map",
+      "source": "production-composed/src/lib/components/MostReadCarouselEntry.svelte",
+      "source_sha256": "861574c9d7f8573d4a35577cdf06af7a078628c7530ed978910dd4dd27798791",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/MyUpdatesCarousel.svelte.map",
+      "source": "production-composed/src/lib/components/MyUpdatesCarousel.svelte",
+      "source_sha256": "bd08476345f658fd9046ad85f1b81eecee6ed7dfbc3bf7637e3d48b8f7248f85",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/context.svelte.ts.map",
+      "source": "production-composed/src/lib/components/reader/context.svelte.ts",
+      "source_sha256": "5e3c97a752675226ba8de833aea497ca990f82674413af0a459e77495ce28df9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/index.ts.map",
+      "source": "production-composed/src/lib/components/reader/index.ts",
+      "source_sha256": "2e6b494147547828cc5bd87b1e54baf7337a6ee2930833189ee6a8c7aade9654",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-analytics.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-analytics.svelte",
+      "source_sha256": "9df6d3c94b6f4908e4c3a8ea9d277c58fdc8dc3dff531dd11101fc285ef86917",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-chapter-selector.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-chapter-selector.svelte",
+      "source_sha256": "b259c3d69822b834b9a3b5b0f4335c2076012b973e0daa824f7a81c9122d9b88",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-group-selector.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-group-selector.svelte",
+      "source_sha256": "605842d40813d1f4d810a61a5e0c3f7cf36d49f21b26da25990d619aa017d372",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-history.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-history.svelte",
+      "source_sha256": "2807ee3a95154f48c13b1938f258ce818fb38c3c9cc63e3bb8671a60da3ba9d5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-indicator.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-indicator.svelte",
+      "source_sha256": "7057272352fc5e96ff1190dab7db6192f4b328e804fe4f0b947f8e247afdf7a6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-keyboard-listener.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-keyboard-listener.svelte",
+      "source_sha256": "26b61c86ec2e35cb84b3ccdc2e0bb1a35dc3cfab1ddaa514f932ae39f0e5854f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-last-page.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-last-page.svelte",
+      "source_sha256": "b3cb494ecc020b7d8e70855722233c18502be5258d7a527b166bec09445570f8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-page-image.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-page-image.svelte",
+      "source_sha256": "642d6a824cd7a074be9fb09dd145bb81302e930042026f68286b39fd14d63b01",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-page-selector.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-page-selector.svelte",
+      "source_sha256": "939630a4d221fdcefcafbea5de2b0f19ce0e67cf09796f99c10d0f5f535af3d3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-pages-double.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-pages-double.svelte",
+      "source_sha256": "31996302c5c5bf92c41aeddff8d6f746f65c3135ea1afd46cb7a64f73a0b87a1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-pages-single.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-pages-single.svelte",
+      "source_sha256": "70779ea41572df86543c9179d8510408cddf009501f023e1f19ab442862e6761",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-pages.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-pages.svelte",
+      "source_sha256": "b9afbee090ec3e6d6b17b77718add83310833ba7ea8ac610228e420d021a5012",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-pagination.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-pagination.svelte",
+      "source_sha256": "9b6319bc5ea4c5915d5bc7aca89c63ffa6416097c70506e1bcf219f990f05aa4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-panel.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-panel.svelte",
+      "source_sha256": "72edf7f161f7e81f961703558a6cb8fc8490151bea77a7e721bbb0d8c0b2c0c8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-provider.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-provider.svelte",
+      "source_sha256": "1f3a5dd4f379b9089a9e9e7e427cc7510dedf7fa729d2b386d00102e4c3fcf44",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-queue.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-queue.svelte",
+      "source_sha256": "14ab9d4b571f17cd2d768674d88bbff28cf7e15e15dee0352a22ca467e5654e5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-scroll-listener.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-scroll-listener.svelte",
+      "source_sha256": "1bb62005e1cf858a96b294259f57aab8e90b7bbbfa457bd21d387979da81fb14",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader-settings.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader-settings.svelte",
+      "source_sha256": "a8ccde33706b87f954b473f48ad62093f591de18783d57f8ad969cc0f1478306",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/reader/reader.svelte.map",
+      "source": "production-composed/src/lib/components/reader/reader.svelte",
+      "source_sha256": "6bfe86b5517644c278bfcb939a37af7e38b6f45fd945c1700c872da5bff91096",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/RecentlyAddedCarousel.svelte.map",
+      "source": "production-composed/src/lib/components/RecentlyAddedCarousel.svelte",
+      "source_sha256": "ea9cace7ede18a60997b3ec118b01ef5aec69972f1a13d3f101949a805028e34",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportAuthorCard.svelte.map",
+      "source": "production-composed/src/lib/components/ReportAuthorCard.svelte",
+      "source_sha256": "577d736356fb1405645e9aaa6ce3062ad36fdae0338b67525e30b28af8e90b7a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportChapterCard.svelte.map",
+      "source": "production-composed/src/lib/components/ReportChapterCard.svelte",
+      "source_sha256": "a95a9731ab3c6aca8c37c5d7365a1531ffc05af5020a9882bc666613858fb163",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportDialog.svelte.map",
+      "source": "production-composed/src/lib/components/ReportDialog.svelte",
+      "source_sha256": "0b83b84b1d288e100fdf7cf58cd474b79d9b16331da63d1ead744aa03c35bd2d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportGroupCard.svelte.map",
+      "source": "production-composed/src/lib/components/ReportGroupCard.svelte",
+      "source_sha256": "b7207564175b3f9c2a5408b3c087da39af159ed939b8d6f060fcc3b3272c9341",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportMangaCard.svelte.map",
+      "source": "production-composed/src/lib/components/ReportMangaCard.svelte",
+      "source_sha256": "11a6d691f4dba4eafaf49195bfd839d87e6ceaa63f06c161f23c0da2e8c36ccb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportReplyCard.svelte.map",
+      "source": "production-composed/src/lib/components/ReportReplyCard.svelte",
+      "source_sha256": "f4596e4b4d8478f601e887418a81a66323efbaf38243a69b8cdd37d0f5690231",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportSearch.svelte.map",
+      "source": "production-composed/src/lib/components/ReportSearch.svelte",
+      "source_sha256": "999e4bbb20c8245622314ad03bd81ffd56289857b5e81e46368ea716ef8a539d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportSearchEntry.svelte.map",
+      "source": "production-composed/src/lib/components/ReportSearchEntry.svelte",
+      "source_sha256": "6bb648650fbba370b1a713b911cdb43d2168c665ff44e5a8175811c32e53178d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportSearchFilter.svelte.map",
+      "source": "production-composed/src/lib/components/ReportSearchFilter.svelte",
+      "source_sha256": "2a0c2c99e80471e65a590f7605ecf42cdcde01dd7aa6f3b41ff46d07f4eef721",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ReportUserCard.svelte.map",
+      "source": "production-composed/src/lib/components/ReportUserCard.svelte",
+      "source_sha256": "9bfb1b249549b8caabc9ba69c2ab796d7394a1f0da8a32f3ba3b6e1bec1836f8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/SearchDialog.svelte.map",
+      "source": "production-composed/src/lib/components/SearchDialog.svelte",
+      "source_sha256": "212daf4cb70d1dfc15e27007afc3f978483eb83566a2ce1a6773353e84cf6769",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/SearchDialogMangaEntry.svelte.map",
+      "source": "production-composed/src/lib/components/SearchDialogMangaEntry.svelte",
+      "source_sha256": "486dc00e4d09c719fc44537f8d9283642b0aca344edffae315ec489828697790",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/TagComboBox.svelte.map",
+      "source": "production-composed/src/lib/components/TagComboBox.svelte",
+      "source_sha256": "c718d7229b0ab7594e48ca007f5cfaa064eae07c24569a3d08386c3986b5ebbc",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/TextAreaDialog.svelte.map",
+      "source": "production-composed/src/lib/components/TextAreaDialog.svelte",
+      "source_sha256": "af884b92c9d001bf67dba6f9da993fce59368d7eba69e4108eb077b97d8e163b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/aspect-ratio/aspect-ratio.svelte.map",
+      "source": "production-composed/src/lib/components/ui/aspect-ratio/aspect-ratio.svelte",
+      "source_sha256": "6374ef8dd91c600d77001f00daf0c2a6dae78edbbce3d5746bad62b7ecc0391a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/aspect-ratio/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/aspect-ratio/index.ts",
+      "source_sha256": "9aa4e9c86da3e3f6d0edaf9d7a2f63f9080f7066f48dad841ae094b8cd962003",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/avatar/avatar-fallback.svelte.map",
+      "source": "production-composed/src/lib/components/ui/avatar/avatar-fallback.svelte",
+      "source_sha256": "dfb2645d47b4f7aa99b655ac1ff9ed8217a1f795aa17d7fddbe28bcb8679f188",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/avatar/avatar-image.svelte.map",
+      "source": "production-composed/src/lib/components/ui/avatar/avatar-image.svelte",
+      "source_sha256": "102ff495810f7b6a5016a8ab126039ac2146a16ff73aa31ecc838731c7e30804",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/avatar/avatar.svelte.map",
+      "source": "production-composed/src/lib/components/ui/avatar/avatar.svelte",
+      "source_sha256": "b7752ae90b192f8a64c2564c1b6225ee4c958b24180375769220a153a9582a11",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/avatar/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/avatar/index.ts",
+      "source_sha256": "33f959a7207d965647239cfdbabc9ed7f6e90f9ad616686f977c87360bdaafbe",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/badge/badge.svelte.map",
+      "source": "production-composed/src/lib/components/ui/badge/badge.svelte",
+      "source_sha256": "95a80b507fd59dfd08e9539341c2c952f2d3231a1ccd592449f06e5b9e8d9095",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/badge/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/badge/index.ts",
+      "source_sha256": "1dc9eba432869188db370b8e984ca8ff97430c609746a8274a0edecc0d55b765",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/breadcrumb/breadcrumb-ellipsis.svelte.map",
+      "source": "production-composed/src/lib/components/ui/breadcrumb/breadcrumb-ellipsis.svelte",
+      "source_sha256": "a2d2f049f808ccec3410b837828882f87675ff241f11a2509c62b8822c9a233c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/breadcrumb/breadcrumb-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/breadcrumb/breadcrumb-item.svelte",
+      "source_sha256": "b737861b6212e41dbf17e6f8beb01a9190fd142c45d72f0ef998b8a4cb25d76e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/breadcrumb/breadcrumb-link.svelte.map",
+      "source": "production-composed/src/lib/components/ui/breadcrumb/breadcrumb-link.svelte",
+      "source_sha256": "24bd3b87c246552d8067cb16def7f96db31748a041d7971f84033e44733b8008",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/breadcrumb/breadcrumb-list.svelte.map",
+      "source": "production-composed/src/lib/components/ui/breadcrumb/breadcrumb-list.svelte",
+      "source_sha256": "abaca9915740ba9387dd62ed61847e6d00085995adc4c9fd88b686aa6aedf552",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/breadcrumb/breadcrumb-page.svelte.map",
+      "source": "production-composed/src/lib/components/ui/breadcrumb/breadcrumb-page.svelte",
+      "source_sha256": "2c934a09590d40984f49f75d45daa6a7b3477ab7ac152b9713d38cce19268ec7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/breadcrumb/breadcrumb-separator.svelte.map",
+      "source": "production-composed/src/lib/components/ui/breadcrumb/breadcrumb-separator.svelte",
+      "source_sha256": "4b91affe0cc47f613b61a5d6071735978d1fc44326f0cb717f9e9d9492577df6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/breadcrumb/breadcrumb.svelte.map",
+      "source": "production-composed/src/lib/components/ui/breadcrumb/breadcrumb.svelte",
+      "source_sha256": "2bb971ecba183fde4859aa8add3d7f4156822669df3433772b26ff663b940266",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/breadcrumb/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/breadcrumb/index.ts",
+      "source_sha256": "860f8a6b37a488153f2dd369901de1ab935e7857b61c88b6fd0e3cac46a038d6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/button/button.svelte.map",
+      "source": "production-composed/src/lib/components/ui/button/button.svelte",
+      "source_sha256": "62b5d7b85b9d6085b8e6d99a4b2fbbd8eee4def8a3b973054162e03679590d55",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/button/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/button/index.ts",
+      "source_sha256": "0f6b6f040d92b4153821d3f9b4d6b9cbc567247e4fda913e64c1d0fcc4a2f386",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/button-group/button-group-separator.svelte.map",
+      "source": "production-composed/src/lib/components/ui/button-group/button-group-separator.svelte",
+      "source_sha256": "a7b56e1e0fe97b3e8b58e3c48343ef8007fd0bdad7d797c7b843822fa33f9c8a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/button-group/button-group-text.svelte.map",
+      "source": "production-composed/src/lib/components/ui/button-group/button-group-text.svelte",
+      "source_sha256": "bc4e27921bd886ae520dfa3c997e60ea9bccd20c21b37370eca23376ae0debbe",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/button-group/button-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/button-group/button-group.svelte",
+      "source_sha256": "33de27c893d090bffe3619d531bdf3ce0b78831af508a98ae02af19e1d0a649b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/button-group/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/button-group/index.ts",
+      "source_sha256": "ef117b8757649900b54007caf5400004985885b31297eba6e184b3b30eeb65ac",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/card/card-action.svelte.map",
+      "source": "production-composed/src/lib/components/ui/card/card-action.svelte",
+      "source_sha256": "c2d99f6d7cc958e01bad7996dea17e077c23b5121d26b30003550f4994e2bcf1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/card/card-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/card/card-content.svelte",
+      "source_sha256": "1eeb174a588cfb398adf3870896cb16fa054cb4eb241086d5f1ba3326d593e19",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/card/card-description.svelte.map",
+      "source": "production-composed/src/lib/components/ui/card/card-description.svelte",
+      "source_sha256": "412a20d7355dd0471edcabf937d56679b437bc05b0302325b85de2d53f22cd3b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/card/card-footer.svelte.map",
+      "source": "production-composed/src/lib/components/ui/card/card-footer.svelte",
+      "source_sha256": "0bba151e83fbf3a06bec0ee6b5ebfb1a3413efd562f02e456c3b249893405b37",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/card/card-header.svelte.map",
+      "source": "production-composed/src/lib/components/ui/card/card-header.svelte",
+      "source_sha256": "e62bd06da74ab35fd41bcca0a0518f89d99eff8d309af0120e2aa901195349db",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/card/card-title.svelte.map",
+      "source": "production-composed/src/lib/components/ui/card/card-title.svelte",
+      "source_sha256": "0ef8acbaee76fcd1134f28b723bc7bdcdd65a354faf793fbabc05127f9381447",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/card/card.svelte.map",
+      "source": "production-composed/src/lib/components/ui/card/card.svelte",
+      "source_sha256": "88ebd9ddab25f19af5bf7856be1a92141e202298dc33ce24747f83f8232093c5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/card/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/card/index.ts",
+      "source_sha256": "218019c78c8be52b5add8267a758f2d2c685e036e35d6bbcee147333e6534db8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/Carousel.svelte.map",
+      "source": "production-composed/src/lib/components/ui/Carousel.svelte",
+      "source_sha256": "c811d537ac3a789e12a91c6460da6c5349afcf37cc04a62189f7a2d5ece85f04",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/checkbox/checkbox.svelte.map",
+      "source": "production-composed/src/lib/components/ui/checkbox/checkbox.svelte",
+      "source_sha256": "6955628ce2f34e86c0f9eb1b43edd217b768385b9412d02bd3d26a85934c14ad",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/checkbox/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/checkbox/index.ts",
+      "source_sha256": "39b322ab4a26c63f60c64588ff4b18552c8b596e8472b9261fb68429b8cff1d6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/collapsible/collapsible-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/collapsible/collapsible-content.svelte",
+      "source_sha256": "8af85ac6ed50471ad32a4e90fb0c54b0fbe0b0700cd3fc5a91b85de70bf22554",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/collapsible/collapsible-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/collapsible/collapsible-trigger.svelte",
+      "source_sha256": "e74d7c62176b48d8f5a7282fd0491fbab4dcfb0f23690b6cfae3f3d08b630e3a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/collapsible/collapsible.svelte.map",
+      "source": "production-composed/src/lib/components/ui/collapsible/collapsible.svelte",
+      "source_sha256": "1d48e117ac1b8fef1af070c56237a04e5ad1d4bafd4372852a0e9d10e9f4afc2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/collapsible/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/collapsible/index.ts",
+      "source_sha256": "b3388337d932c594443568a5494a3ab2740ed803df9c1d0ebb68ed74036fa399",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/Collapsible.svelte.map",
+      "source": "production-composed/src/lib/components/ui/Collapsible.svelte",
+      "source_sha256": "08735bbb3aa983004238ca332c8f21c5a4b88891f93531c47e3d345e5cfd03d9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/combobox/combobox-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/combobox/combobox-content.svelte",
+      "source_sha256": "af4f65f1ca70eab7e15e11bd0baa3e34eeff24853824ee268a23786ee55a60bf",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/combobox/combobox-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/combobox/combobox-item.svelte",
+      "source_sha256": "68b9a156913ffb3271193e72606ff66d4129ed4e0e7440d9968c0cf3fbf39986",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/combobox/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/combobox/index.ts",
+      "source_sha256": "410f2953b04b85fa8ab0133099e2da563ecd2b9dd3f2361b794a1ed0e3c00024",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-dialog.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-dialog.svelte",
+      "source_sha256": "f22825401d46489307b9c5a4e820cfb9effec52e66fd9ef12d678e5aa1708ff4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-empty.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-empty.svelte",
+      "source_sha256": "1e06fd8f65b8aa6aca6a7e464d31b758fedc3b81340d3a0236e4fe85a0f79ede",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-group.svelte",
+      "source_sha256": "1d29949a9384a624ebd8411f17d602804d20d7a12e1b81349086e07de6f63bf1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-input.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-input.svelte",
+      "source_sha256": "972f45905457dba1b52b189624fd6be71aba0470a35515dc4931bde0087b9256",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-item.svelte",
+      "source_sha256": "345b8fb0970721c8411b99ee2ab08572dcfa9563c21f4a9b577b43920f2b37d2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-link-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-link-item.svelte",
+      "source_sha256": "02797ddef7059d9411a4d86b888d48302337c4d6278c66ec44ad55f5ae9d0fd6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-list.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-list.svelte",
+      "source_sha256": "3d73650b1a311742f7d6cc3218d85cb8445599d4d540da9dd682142c96e70b3c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-loading.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-loading.svelte",
+      "source_sha256": "f3512497277a540ed8e365cd2d85084394172896131f555b631a1d57f7487fbf",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-separator.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-separator.svelte",
+      "source_sha256": "2489dcf1f64872d753bebe58f2194df87494a367d58621c5f256bd32915a2c3f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command-shortcut.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command-shortcut.svelte",
+      "source_sha256": "30d9dafde3dbde47c9e97646e61056c236213aca48761888eb5199f802bb8298",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/command.svelte.map",
+      "source": "production-composed/src/lib/components/ui/command/command.svelte",
+      "source_sha256": "9452d31d65af4425544801543a8ffdf8df191c9338a49ef53e236ab85168e0d0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/command/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/command/index.ts",
+      "source_sha256": "871d1e139dc7d39054498e965cd1abb382269e9e51004523c83d7f9a7567fd01",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog-close.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog-close.svelte",
+      "source_sha256": "98ab26760ad57170737cc6aad8d378c8d96b3dbd8a7db4067d80c199cc364de2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog-content.svelte",
+      "source_sha256": "ad82d499e129116cfa9fa15985f7e852a87a8a6d98ff287b02f3e7e34924c660",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog-description.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog-description.svelte",
+      "source_sha256": "84d8e22e55edee13926f1c6ba1e22824c598df434635e7dcd50b38b531e6681b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog-footer.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog-footer.svelte",
+      "source_sha256": "169b8349b1cf39a4a73199fddbbdd6f652361c9eff7502a47282a1102802a42f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog-header.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog-header.svelte",
+      "source_sha256": "b4e443c68373ca0352ad77a9229a457bafa5321c790e1be93a782fdf454d7ac3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog-overlay.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog-overlay.svelte",
+      "source_sha256": "97ae0a6ebc075f57bc8404968e4e968843a386332e12763e7b205a68ba7b0478",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog-portal.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog-portal.svelte",
+      "source_sha256": "718c0b6672a2911d7f9398e4ef14813cceabcf0be02b7920f10028d213a674b6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog-title.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog-title.svelte",
+      "source_sha256": "3b83f9abf285deb6393ed93e7b923a72b895a34db0baf869bb5c9d04dc741bd4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog-trigger.svelte",
+      "source_sha256": "e8caaa81a4c31e5467accae7a5df9e9f7efa6760015ea7cff9c477fff5e848b7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/dialog.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dialog/dialog.svelte",
+      "source_sha256": "cc60100e895410b9b5f17b6071c933dfc950e5dbf4d00b261edec1e443008a27",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dialog/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/dialog/index.ts",
+      "source_sha256": "9f5e95e83b0752b0795a21237de3fe2eed0f25c7d4d9eef528c7b321c84b7a0e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-checkbox-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-checkbox-group.svelte",
+      "source_sha256": "96f8cf7d2ce72fd2fd4ff5e579067b1a32101abbbe5a20612aa00a69e5df205d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-checkbox-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-checkbox-item.svelte",
+      "source_sha256": "e74ffee928ece72f34e692813e81194900700aa60dff1da9665723227041ea64",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-content.svelte",
+      "source_sha256": "302e4ff95b2a024e79d0f8973875854342a8b4ae8040cce1da7e72a7f84408de",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-group-heading.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-group-heading.svelte",
+      "source_sha256": "bbdd11b03c6ed89423507a3da355ac2e9c47d17ad23e5625f9b74bc06b501fda",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-group.svelte",
+      "source_sha256": "75f1eaeff2b3cf25f957d7f9137d3addb409815ec480e1a3bb4036bb82e8d60c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-item.svelte",
+      "source_sha256": "c9ef920fc1db768f4328c4ad4b1023f99d0f75e8f7a2ec5e1d4141b81ef670ca",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-label.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-label.svelte",
+      "source_sha256": "2f3eba34bf415c57259528019588605cc83a340b4ec365971497542a008fb61f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-portal.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-portal.svelte",
+      "source_sha256": "38f6abf9c1d47d2ab4912556d05845ec9ba1ee6825405adb5f8831d6a30ac08b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-radio-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-radio-group.svelte",
+      "source_sha256": "ac025c63e0ade7c26cef7db98de2fe217208fe9387eb8bfaf97730ab3f013da2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-radio-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-radio-item.svelte",
+      "source_sha256": "555986c498ae56c974a6cf9d6c6682b278cb25e6fc86191eae5fc46b2ef59498",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte",
+      "source_sha256": "a75fb6c5878c238d772f3d2a293fe1669ee8499be2a7246b7b4a1142f14b3c38",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-shortcut.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-shortcut.svelte",
+      "source_sha256": "4e4fe507ee60e46998490f3d8577e42e7ab2db7acb194a1a5da0671f39765680",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-sub-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-sub-content.svelte",
+      "source_sha256": "0bb092b1446e220da87121d185ba63500735b9509f3c45f60e7053cd0f741dd3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-sub-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-sub-trigger.svelte",
+      "source_sha256": "b15c6364dac2e0272e3abbdcda3f4bcb1396c74329f8b6cfc20274cc6880e6d6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-sub.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-sub.svelte",
+      "source_sha256": "1208155828183ef72dc8c96ff58c90fcd5584cce28d938a23545253013cfb9c5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu-trigger.svelte",
+      "source_sha256": "bdad1ff46fd23466dec6d1212186e9ac4e34edf862987308821956c6b24f709c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/dropdown-menu.svelte.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/dropdown-menu.svelte",
+      "source_sha256": "d49b60f3d9832a870e5eed726d39f9c0e09abb2bc061deb1ef0dfec97aa319e5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/dropdown-menu/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/dropdown-menu/index.ts",
+      "source_sha256": "02354b1d65c9862b678ebc8d247860c418478f7b074af42bd23c10272aefc7e4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/empty/empty-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/empty/empty-content.svelte",
+      "source_sha256": "2a2d8a5d609d0e86282a2ea65833ca13f26765c67405cb7bf5784a2802831641",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/empty/empty-description.svelte.map",
+      "source": "production-composed/src/lib/components/ui/empty/empty-description.svelte",
+      "source_sha256": "7c6aab2dce2c50cffc22657aa63dd9ce742af1fdd70fa295e9fd3bebe6d8b7f5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/empty/empty-header.svelte.map",
+      "source": "production-composed/src/lib/components/ui/empty/empty-header.svelte",
+      "source_sha256": "40ebb2be5ba09c5fcc39d356126e508fd5dbf5cedfb0886bb6722dccf56bf09d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/empty/empty-media.svelte.map",
+      "source": "production-composed/src/lib/components/ui/empty/empty-media.svelte",
+      "source_sha256": "eb613b937fc5b9d0d9d0b221d7782c4cbf7b717de81ae08801fbb61073730db3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/empty/empty-title.svelte.map",
+      "source": "production-composed/src/lib/components/ui/empty/empty-title.svelte",
+      "source_sha256": "9d460932a097998ca94d0cabd3292998b978b4153cba15fad63d010c31b7fe8d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/empty/empty.svelte.map",
+      "source": "production-composed/src/lib/components/ui/empty/empty.svelte",
+      "source_sha256": "6f80c28023be3ef82cfc113428242537bff29e52cc3d72f34250ef38aa862f86",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/empty/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/empty/index.ts",
+      "source_sha256": "42353c628663f6cbc7744a8aae60fd5ff26d6e1356629ce51ccc01dda87d7c62",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field-content.svelte",
+      "source_sha256": "fe9c361fad6a48385bd49b081731dfd3689940f82a92b654aa095dd1e6b7bb48",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field-description.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field-description.svelte",
+      "source_sha256": "12162019bc12a8efa50fd870ad639df7fd98a07981089591e888f0f7dc85c9fd",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field-error.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field-error.svelte",
+      "source_sha256": "fa4d6ddc8b5bcbc6da40410b85eb6c9d2b30b82b25902b672ec21afe1f2b9452",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field-group.svelte",
+      "source_sha256": "100b9002575584ce422683748c04e438e583d4766a331f39fbbaeefb85f31b2a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field-label.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field-label.svelte",
+      "source_sha256": "66a1da8084fa05f8e5a9d901e2a0de4946d9555c4009c58d76622f6999ae4545",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field-legend.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field-legend.svelte",
+      "source_sha256": "168bdafb01edb1d97a0a959cccc386be980b6f0a7d1d2cbf9d25ee016579bf8e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field-separator.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field-separator.svelte",
+      "source_sha256": "8234310dfda54a6833269d29f591dce5aaa82486827f793ec51a3ea04d4650e9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field-set.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field-set.svelte",
+      "source_sha256": "ddfeb48793fa4a206a57685902490549b7e3da49a0bbd62c275c007f6c5747a4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field-title.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field-title.svelte",
+      "source_sha256": "0b6931c8a9cc1c0263fb2aff7482eb9bf04dc0029224aa8cd823f8502e3f6ed7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/field.svelte.map",
+      "source": "production-composed/src/lib/components/ui/field/field.svelte",
+      "source_sha256": "3d2f2d61800ee9c686081a45f4e0b50d7f72a743a5f5d23b9079e099aded092a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/field/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/field/index.ts",
+      "source_sha256": "4a50f5cb00342a180e7c12a2765b7d401a1332b16c938f2c31bee299ad6e71eb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/Forbidden.svelte.map",
+      "source": "production-composed/src/lib/components/ui/Forbidden.svelte",
+      "source_sha256": "5aa187b47005c641145501ce50938759f173c421cb556ee571c2a280e0d83577",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/Grid.svelte.map",
+      "source": "production-composed/src/lib/components/ui/Grid.svelte",
+      "source_sha256": "bcea1eb796d696eee8acd69ec7263a57036a238cdee3ebb3b9e8cf4ca4aa8b19",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/ImageLoader.svelte.map",
+      "source": "production-composed/src/lib/components/ui/ImageLoader.svelte",
+      "source_sha256": "c951142f2aa6758c14958744ba4cde0069624261317106a93037ef70b323d15b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/input/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/input/index.ts",
+      "source_sha256": "4e0ad69d49a27194c7f3dfd0cdd5933ee13fc40cc13a77138b547d300701d390",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/input/input.svelte.map",
+      "source": "production-composed/src/lib/components/ui/input/input.svelte",
+      "source_sha256": "5f72cf8b29a358b72343bafd5cd1e6da44f2e38d995d21ef94aa0e7c808dfce1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/input-group/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/input-group/index.ts",
+      "source_sha256": "75ecb2424de51e8e5771f4b92094c718223464d3b7cdb25f6473d0ffb3a14a1b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/input-group/input-group-addon.svelte.map",
+      "source": "production-composed/src/lib/components/ui/input-group/input-group-addon.svelte",
+      "source_sha256": "c019a6fe316e913697b7a36411cfd24dd093d41492ab66cb5a2a36ba19a9021f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/input-group/input-group-button.svelte.map",
+      "source": "production-composed/src/lib/components/ui/input-group/input-group-button.svelte",
+      "source_sha256": "52158b3396ce9eb4e145fc97367e1a29785003f842dc5a30471a6e72ca2f73e0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/input-group/input-group-input.svelte.map",
+      "source": "production-composed/src/lib/components/ui/input-group/input-group-input.svelte",
+      "source_sha256": "cde9765e560b7803e3c27f67a9b718b4c3b08dddaa2071f9ee5585b68b341619",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/input-group/input-group-text.svelte.map",
+      "source": "production-composed/src/lib/components/ui/input-group/input-group-text.svelte",
+      "source_sha256": "25a2e635883d8e58d43146be8f5af3f0d0927afe66fa05aa7baa6d95099f080b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/input-group/input-group-textarea.svelte.map",
+      "source": "production-composed/src/lib/components/ui/input-group/input-group-textarea.svelte",
+      "source_sha256": "09c8682956b059b88b277744056e86ec7aa5594aca0036a9a5134120f4218a0b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/input-group/input-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/input-group/input-group.svelte",
+      "source_sha256": "4a9ab42c90148d4cd4005496a1c9a355c389c6b2d21dd72e0e4f8d7375f1846e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/kbd/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/kbd/index.ts",
+      "source_sha256": "2073c1adc5329119b4ea754f7d3c9aeaa5c41998ce789808cbcd7da6b0064b3d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/kbd/kbd-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/kbd/kbd-group.svelte",
+      "source_sha256": "363a2b1ad45b1834cb3e03ea0319d7064067954683d07079e3b9db449266a0c0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/kbd/kbd.svelte.map",
+      "source": "production-composed/src/lib/components/ui/kbd/kbd.svelte",
+      "source_sha256": "80bb9991a1818b3908f93e11e75beebce4c01e97293f58adb5d7cdd22211e65f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/key/context.svelte.ts.map",
+      "source": "production-composed/src/lib/components/ui/key/context.svelte.ts",
+      "source_sha256": "4809dd1c158b528171e43c858d1521d71d313517a8c9b1168e05a7fbefe0729e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/key/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/key/index.ts",
+      "source_sha256": "4571fd037dbb1ae144b20c712f033fd55f14359729fe8234165178acc86e7775",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/key/key.svelte.map",
+      "source": "production-composed/src/lib/components/ui/key/key.svelte",
+      "source_sha256": "a599b29937c6e576e5c924b068ff285f3bc43f72fa302d10ae43437100b562da",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/label/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/label/index.ts",
+      "source_sha256": "ea17621b03066fc6c0ab811ec97aac0cb2de4b504c0a1fc3f480c8fc4bef12f1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/label/label.svelte.map",
+      "source": "production-composed/src/lib/components/ui/label/label.svelte",
+      "source_sha256": "cd9fd2963284495ce3381cacd105312a91c0842ff76c2bbdbe1a37eb06e61d80",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/lightbox/context.svelte.ts.map",
+      "source": "production-composed/src/lib/components/ui/lightbox/context.svelte.ts",
+      "source_sha256": "afe3417f8986ce0b4fe664765d025236d264d3bd5183bc0334880543d17ebdb6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/lightbox/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/lightbox/index.ts",
+      "source_sha256": "bae60f6069bf5d8399c7827c2fba2406246148505f88062fbe3ef96cd6afc752",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/lightbox/lightbox-provider.svelte.map",
+      "source": "production-composed/src/lib/components/ui/lightbox/lightbox-provider.svelte",
+      "source_sha256": "7419d954d7e5aae60271e03e170501c75d303d7e873ffad6993c52894c6c4c65",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/lightbox/lightbox.svelte.map",
+      "source": "production-composed/src/lib/components/ui/lightbox/lightbox.svelte",
+      "source_sha256": "4dd53b82bb9a9438e6fcf36b591be6215a8e4578c6ac951ff91a00776e0bbbf3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/LoginRequired.svelte.map",
+      "source": "production-composed/src/lib/components/ui/LoginRequired.svelte",
+      "source_sha256": "e91c9f335536b875239f499aee9289d3cf28700c5e1abce0876515f865d9b259",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/NotFound.svelte.map",
+      "source": "production-composed/src/lib/components/ui/NotFound.svelte",
+      "source_sha256": "99bb8cd2f696ddef7a77aa268cb84396da62edea91f41d7e7176c64ba97fad32",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/pagination/index.ts",
+      "source_sha256": "9330d5c60644e81866e80edaacadc1489e8705215d1afa2275897acd2eb642c2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/pagination-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/pagination/pagination-content.svelte",
+      "source_sha256": "14d1571daf608009d25768083540b4a622022844b50de068ddac9bb260183084",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/pagination-ellipsis.svelte.map",
+      "source": "production-composed/src/lib/components/ui/pagination/pagination-ellipsis.svelte",
+      "source_sha256": "85ed2d41cead852cd9d85617d21fdf76af63aacc1be5d9a1c5e121cba72bb985",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/pagination-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/pagination/pagination-item.svelte",
+      "source_sha256": "8fd9136817dfd6ac2edfab0935418158e422e8fdeb0fdc020f6007e66bd0e175",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/pagination-link.svelte.map",
+      "source": "production-composed/src/lib/components/ui/pagination/pagination-link.svelte",
+      "source_sha256": "667e50e0508f7caa177080fbada26f6d1a7f10fb1bbcbff1f5c6e1dd3e577c40",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/pagination-next-button.svelte.map",
+      "source": "production-composed/src/lib/components/ui/pagination/pagination-next-button.svelte",
+      "source_sha256": "9c505ac623f4e747078bcccf119def062c00c11dc599a56c9c2b3fed7ae42e0e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/pagination-next.svelte.map",
+      "source": "production-composed/src/lib/components/ui/pagination/pagination-next.svelte",
+      "source_sha256": "f529c2fd9b69c174246327b78a6fe9291b1e9227b0e950d3d8f38bcf5295658a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/pagination-prev-button.svelte.map",
+      "source": "production-composed/src/lib/components/ui/pagination/pagination-prev-button.svelte",
+      "source_sha256": "05dfcdfb749ffeb924d6c67cf10a3f976a0ca6aea188c8aff9dc90a39a649070",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/pagination-previous.svelte.map",
+      "source": "production-composed/src/lib/components/ui/pagination/pagination-previous.svelte",
+      "source_sha256": "f6e71213946de589a7db6cde81ad67dc268a2b0d4aeb7776624c8523d3c90f09",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/pagination/pagination.svelte.map",
+      "source": "production-composed/src/lib/components/ui/pagination/pagination.svelte",
+      "source_sha256": "cda713912cd54f4d15a2073e706a5ad30d52f3002c8adf51d5c5328bd859a6c8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/popover/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/popover/index.ts",
+      "source_sha256": "d90d2cd7222e9192810824de111a30359b598cd994b452aa83ed205851d2bde1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/popover/popover-close.svelte.map",
+      "source": "production-composed/src/lib/components/ui/popover/popover-close.svelte",
+      "source_sha256": "bec13457158cb16ba4a0d45789ef2a6b6f3b2c84e14c819ebfa8eca76baced77",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/popover/popover-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/popover/popover-content.svelte",
+      "source_sha256": "8d9a537ae4b456bff03559eafe98f55daa173550daa769409e867a8b5226c0db",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/popover/popover-portal.svelte.map",
+      "source": "production-composed/src/lib/components/ui/popover/popover-portal.svelte",
+      "source_sha256": "4db64c036aace1359a29d703a842998a6c74b17e84900eb6289cedc5f37ff43a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/popover/popover-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/popover/popover-trigger.svelte",
+      "source_sha256": "ddde0b54ab59692ec7d9f6ea50a72249c3cc8d4849db5649b15912e75d71cf86",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/popover/popover.svelte.map",
+      "source": "production-composed/src/lib/components/ui/popover/popover.svelte",
+      "source_sha256": "9697cf96a4ab4970b93e0aafd3962aaa21a97d88d2976886f2a7dd22db87b1ca",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/progress/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/progress/index.ts",
+      "source_sha256": "047b1de9082bd67dde821e907845484557cfbac5525dd672434250420d61e6d6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/progress/progress.svelte.map",
+      "source": "production-composed/src/lib/components/ui/progress/progress.svelte",
+      "source_sha256": "d350a0f110b96542bb220f47808ed03684e44c8c7562ea44c98dd9bd8b451ee2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/Protected.svelte.map",
+      "source": "production-composed/src/lib/components/ui/Protected.svelte",
+      "source_sha256": "aadbbe2e337e3729864b78c4036f0da976d72e1fb79c968ad280aeebe16ce60b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/ProtectedCondition.svelte.map",
+      "source": "production-composed/src/lib/components/ui/ProtectedCondition.svelte",
+      "source_sha256": "449eb55a846b8b374c83d720a42fb85d5fe4e0c5f85a887c7003beafbe32e22d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/ProtectedPermission.svelte.map",
+      "source": "production-composed/src/lib/components/ui/ProtectedPermission.svelte",
+      "source_sha256": "5c5e616dedbfdd2e33e21becbdcb3b333bc8a7cf2d54ac7e5eeecaa1f1c3b737",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/ProtectedVerified.svelte.map",
+      "source": "production-composed/src/lib/components/ui/ProtectedVerified.svelte",
+      "source_sha256": "175bbb7e6ad8a3616d0f5f80e713cf1aef69cec21861f765d5dffb8cd11d3b4c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/radio-group/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/radio-group/index.ts",
+      "source_sha256": "650cb4c85b75995eca37ef7eda67b2d0d7044c5d7ff848c6e908725e729910a4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/radio-group/radio-group-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/radio-group/radio-group-item.svelte",
+      "source_sha256": "9fc4d7e03975ccaba6d93075abe6b20cc3e2079c5dcf9d4015d0f168534671d5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/radio-group/radio-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/radio-group/radio-group.svelte",
+      "source_sha256": "8ce69903194a676f5938b5d170ac80b40abe97a57d57629d4e89ce1745ac823a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/RichTextarea.svelte.map",
+      "source": "production-composed/src/lib/components/ui/RichTextarea.svelte",
+      "source_sha256": "3f674be1444b200ff338a1984d39390e802f6a90024fb69beca01b97aed39f8e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/scroll-area/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/scroll-area/index.ts",
+      "source_sha256": "9b88919b9751aa6bcc575ce5f848c4f1098336867d2a4c982a7d9071712dc26e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/scroll-area/scroll-area-scrollbar.svelte.map",
+      "source": "production-composed/src/lib/components/ui/scroll-area/scroll-area-scrollbar.svelte",
+      "source_sha256": "02c7d8e1c75e8ece1b38e1a44eee211ad44f86fed5fef6a6e90b60e6d044c7ab",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/scroll-area/scroll-area.svelte.map",
+      "source": "production-composed/src/lib/components/ui/scroll-area/scroll-area.svelte",
+      "source_sha256": "a7bd487010901691250abc1db913b39b68dde083a3e1fb3b5013fc75835d5327",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/Scrollable.svelte.map",
+      "source": "production-composed/src/lib/components/ui/Scrollable.svelte",
+      "source_sha256": "fbce35d1201571f58fa0769a6df57404fca5117bbf57b3c63cc548ba13cf73f9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/select/index.ts",
+      "source_sha256": "ae5104f0aa7f71c97c75f3bad67c91147c94749c19461873c5164bb04043405a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-content.svelte",
+      "source_sha256": "88473e3c38a57253167bcfbd36faba4527f09ffaed8faeaf6ec6ee81d3c84275",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-group-heading.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-group-heading.svelte",
+      "source_sha256": "3e4a8617fa3a2643fd7060837961eb96a7246ee8c57b820ff875dd833369d99e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-group.svelte",
+      "source_sha256": "c2262052614f8336a904b8f3503ff6c668745d0209c770e55c429210691d0917",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-item.svelte",
+      "source_sha256": "803a61e3e34687a1b2529468814f8e9992f50458deeba208da9ef5c5b1251553",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-label.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-label.svelte",
+      "source_sha256": "90087db8a45f8eee22c6866148b7f8e7e9f2ef3c106bfc8b6fd3bd2e614b912e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-portal.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-portal.svelte",
+      "source_sha256": "3ad1139eaca3b9c989495982493c99f42893d1aafbbf2f4aaab6fd117fbab742",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-scroll-down-button.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-scroll-down-button.svelte",
+      "source_sha256": "970a859d5559de6a9bdc709963f199da62bc380a635ae244eda11c1906dbc4e0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-scroll-up-button.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-scroll-up-button.svelte",
+      "source_sha256": "6e831aac555c6c8952f0a539e62a37188f99c146c5600491f94cd56b24803e9a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-separator.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-separator.svelte",
+      "source_sha256": "bdfa1131ba335ace6fc737a29906cce38717017322dd4670d7d11e6f062ac02c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select-trigger.svelte",
+      "source_sha256": "5814cd7efcb266201adef46d90b068c35fbeb64a26e5aead0354517b512f34f9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/select/select.svelte.map",
+      "source": "production-composed/src/lib/components/ui/select/select.svelte",
+      "source_sha256": "4a7062d01d4cd23edfb5667f3da7a829626c169dff46846d713af524ebf30704",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/separator/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/separator/index.ts",
+      "source_sha256": "beeaaaab286f1aeff1e43a8ef1c02a60de5e6349780d12af73e9646c6db98bf6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/separator/separator.svelte.map",
+      "source": "production-composed/src/lib/components/ui/separator/separator.svelte",
+      "source_sha256": "e9992f6dc84660165bfc72e94b51f3b277c624f1f2ae9bf9d7c8c3a8a3aca530",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/sheet/index.ts",
+      "source_sha256": "14661116f3618deeffe854f3393ed32e7e25a4ad99ffb9b7eafb47896f7137d5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet-close.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet-close.svelte",
+      "source_sha256": "5513573158c75ade2db6b5a07b59cf40f60f26e456cd811cd1f492057608216d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet-content.svelte",
+      "source_sha256": "2125068389fbacd0b95a764092335c8c4adf02b87332c34eff09cbb94b80e7f7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet-description.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet-description.svelte",
+      "source_sha256": "367e325bfd0cab0fd35ad7d36b4c12639f1cf7d9bc2cc63fe56aae55632feaf1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet-footer.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet-footer.svelte",
+      "source_sha256": "9ceffdb4b6826dcec70e514623e01e10389433364ef464cf503443ebce0c00c8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet-header.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet-header.svelte",
+      "source_sha256": "92e6f2bb14ab9578c35dccccb5aabd06e316914130c0f87ac4a2c6b5cf449b4e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet-overlay.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet-overlay.svelte",
+      "source_sha256": "5f46f140048b2d055794826d8f22d6e832962773b055523dce785c8ee32983ff",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet-portal.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet-portal.svelte",
+      "source_sha256": "9391a12d66727280eadc465b8edfa04134f92a28468218683140624feebe5c94",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet-title.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet-title.svelte",
+      "source_sha256": "a15a2da782e300609a12c4c076e9db9527f41c23d21a7889cca066cfc9e32c0f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet-trigger.svelte",
+      "source_sha256": "5e22ce7c04bbe478db7c37a43128902563c90d53febe6aa5684a706c959ca05b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sheet/sheet.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sheet/sheet.svelte",
+      "source_sha256": "eed2a698206fc1fb24ca85f7ff351c8520a8fcc3f8fd489c04b974738088f00e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/constants.ts.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/constants.ts",
+      "source_sha256": "f2bcc24d7292fce00944d1a727b305256f95f6c39ecd604578b2af98c316e435",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/context.svelte.ts.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/context.svelte.ts",
+      "source_sha256": "24a09a2dbd57ef9fba1911b8f55b89e451cae7c1da4a6e64442e33da8322c2d7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/index.ts",
+      "source_sha256": "c9e30c1da11412fc6d048dd1b0afbf9fb8a5d309423cf095a8f9f5393ac5d6b3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-content.svelte",
+      "source_sha256": "0a687f39cbdb1caf2a21449ef57150d8c072070da23401490b70f26df33b7ef8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-footer.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-footer.svelte",
+      "source_sha256": "6904f1b2f097dff1d27936662f8fad98819829804b4a50576ef68d877e67c0e9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-group-action.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-group-action.svelte",
+      "source_sha256": "15cf19bdee231ebb6d06dbc5b19c19639496ae3280309a6e83608c97d4d21711",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-group-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-group-content.svelte",
+      "source_sha256": "0982c56047ebc142bbfbe65f4b605b55807a00c7b036fca565e10ebabd1711b3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-group-label.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-group-label.svelte",
+      "source_sha256": "875eecf2ee026b4b15c42f677d4def7b94b509e049245ca3ee171abae7b5dbe8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-group.svelte",
+      "source_sha256": "10c858bb6b3fd351527c6ca59719c1411e4ce16fa0ce3f775da7c712cdfef222",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-header.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-header.svelte",
+      "source_sha256": "abf835affd8db474d491d77c511e35f4953fec2a7f4414a161f6e4fc18c7821b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-input.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-input.svelte",
+      "source_sha256": "3921b1861f788426aaa0343b6191551576ef4009cb81bfe2d1759b0572972b58",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-inset.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-inset.svelte",
+      "source_sha256": "1bbfb5812e75195b69a84f2e7921595350b6cb0c9df5f8343ab43d183c8ae34f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-menu-action.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-menu-action.svelte",
+      "source_sha256": "e1438b7626e820f899f3419838e80425890c7718c058d8cd3d1a02bc9047a1f9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-menu-badge.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-menu-badge.svelte",
+      "source_sha256": "3115d469f424d87abd25242161755c4c94b7e6717986a0826d8dfad65f2d10da",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-menu-button.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-menu-button.svelte",
+      "source_sha256": "c67d490606b12c48b24687acbf344ec0237dbd8616b53cadcd6e001d35e9f665",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-menu-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-menu-item.svelte",
+      "source_sha256": "5ae2e37faf36ab9e9c3350471c87495a6db269c6e94a9ebb30ceab07aa3e0f03",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-menu-skeleton.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-menu-skeleton.svelte",
+      "source_sha256": "9796a2dbd88c9e56dd4304f00477a48c82ed4f68cac64b07fbb2e43596709093",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-menu-sub-button.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-menu-sub-button.svelte",
+      "source_sha256": "36b0364e9cf5881f92d39d52a6865c887d1357dde9e46bdc35006a8f6af02189",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-menu-sub-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-menu-sub-item.svelte",
+      "source_sha256": "5cf53aa8b463915980d0dea37d1ce8555c40a226c02c4bf2340f6d3c332f60ec",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-menu-sub.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-menu-sub.svelte",
+      "source_sha256": "c2362930b6867d45fc10c3f8c66ae0495cc28cc452c54610597d54ac0abc4fd3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-menu.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-menu.svelte",
+      "source_sha256": "6546356d933d124a525eb2ea5d53848f474f321c6f2cc283b9ef3ee348e7ed2e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-outer.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-outer.svelte",
+      "source_sha256": "b717229b9a2160b8490eaf0cea31d8d7faa920a0ec8b94ae25155cb533f31e41",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-provider.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-provider.svelte",
+      "source_sha256": "5b87b25dc2b63530ed80f4dffa23f720c4e7e975463a905ffb80ba8d073e6faf",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-rail.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-rail.svelte",
+      "source_sha256": "fb58d9e2500f461a71ce68005b61ceb74f364c103a95013d149abf04bc0b89e1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-separator.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-separator.svelte",
+      "source_sha256": "a299f128ef1f16f9a0eeae6de76b773c0d510dd639b45f495a3643970b90a0bd",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar-trigger.svelte",
+      "source_sha256": "f4b01b274f84c44a96abfb218ccef04b2a9e29c4af9bcd01d889a7f7efab3c2a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sidebar/sidebar.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sidebar/sidebar.svelte",
+      "source_sha256": "ee0809f7ffd4d14a9147cfacb39c9298c80d1a7f33910fa0540e57ba2b50278f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/skeleton/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/skeleton/index.ts",
+      "source_sha256": "25f4d78e3dbd09eaf8eaa356a6a907f2e9b8f701190bcc402ee698a39974ca65",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/skeleton/skeleton.svelte.map",
+      "source": "production-composed/src/lib/components/ui/skeleton/skeleton.svelte",
+      "source_sha256": "cf9c6ab02d191a8a403e340f73bcea21220a87389cd87b6f0b8bdf0cb77550c8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/slider/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/slider/index.ts",
+      "source_sha256": "0e2bda41f2c93303b7c87ddf67ff6e1d05ecfdfb3e834fbf5707ba6961eeb4d5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/slider/slider.svelte.map",
+      "source": "production-composed/src/lib/components/ui/slider/slider.svelte",
+      "source_sha256": "4c77539738f6cd800a93481457966cb4d73505699fb005e561e0ae43af5dd079",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sonner/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/sonner/index.ts",
+      "source_sha256": "a72067e92f2db255eb6133c065bf75ef5650abcd9487ddbd9db118ca99b9dcca",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/sonner/sonner.svelte.map",
+      "source": "production-composed/src/lib/components/ui/sonner/sonner.svelte",
+      "source_sha256": "04a9a8e89dccd23834c15dc2c66eb3e87fdd5493d3efed7cbf0bf7c238f577e7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/spinner/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/spinner/index.ts",
+      "source_sha256": "ce8a9f311c7abdc8773e2ce6439c89f0c8a9edbc273f5ff44e3f31cd380420c6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/spinner/spinner.svelte.map",
+      "source": "production-composed/src/lib/components/ui/spinner/spinner.svelte",
+      "source_sha256": "62c4bb1d5d383836b2c7ca06d80cdb95c402a36e64d45800af6e088c937546bb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/switch/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/switch/index.ts",
+      "source_sha256": "29fe3052a55b69e37d9995a3a74ad196bda339c438596bda0dac0bde426a420b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/switch/switch.svelte.map",
+      "source": "production-composed/src/lib/components/ui/switch/switch.svelte",
+      "source_sha256": "562a351da2901c3cb3a2b5a7f76a3cbdfbbdc87ae230262fb09eaa3747522340",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tabs/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/tabs/index.ts",
+      "source_sha256": "883f05e41daca89eb612f0959f4206edafa6fbba098ad41318d14d24358cbeb5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tabs/tabs-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/tabs/tabs-content.svelte",
+      "source_sha256": "4c6f256adc7934b7be6a77cbe50a359165144da13f4dd3642e3e65d500d79c79",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tabs/tabs-list.svelte.map",
+      "source": "production-composed/src/lib/components/ui/tabs/tabs-list.svelte",
+      "source_sha256": "99f534562dc770e0ea7bcdfa7ef6899f71d1a487f85161a1bff2728d25b58214",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tabs/tabs-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/tabs/tabs-trigger.svelte",
+      "source_sha256": "c441f38c5610ff5e8d0b0cf40bd47f9a674eb5f128464681cc2c0ef1553e112c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tabs/tabs.svelte.map",
+      "source": "production-composed/src/lib/components/ui/tabs/tabs.svelte",
+      "source_sha256": "9734590c095e5a0eb6161e2d4f2a1617a9339a4f7986ff2e14b2b12c37fb308f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/textarea/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/textarea/index.ts",
+      "source_sha256": "3b5f25dfd5d1d9b5305f613f7544a7e39362cd4b0a9c3250414cd5ff02e45398",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/textarea/textarea.svelte.map",
+      "source": "production-composed/src/lib/components/ui/textarea/textarea.svelte",
+      "source_sha256": "6b91db839b0a52335809c9b1de84a2e78ac87028cd8a35efebdcf7529db0f1b4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/toggle/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/toggle/index.ts",
+      "source_sha256": "96772363857f0c48a0b412dd27a84857a5940273e02b583ae03ebcf2aeda50ef",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/toggle/toggle.svelte.map",
+      "source": "production-composed/src/lib/components/ui/toggle/toggle.svelte",
+      "source_sha256": "980ddd5b218110bf2c268d815789230116fa83550faa9ea387a4bfbf03aad305",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/toggle-group/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/toggle-group/index.ts",
+      "source_sha256": "a21e3fda6b8242165a26b680ef36f47da12d5cdf9733c35c35ff14cd640f8718",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/toggle-group/toggle-group-item.svelte.map",
+      "source": "production-composed/src/lib/components/ui/toggle-group/toggle-group-item.svelte",
+      "source_sha256": "6f3b25be90d2a2d5b89b543b99305452e06a7c48a0ed35a4e44369e2b16c9590",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/toggle-group/toggle-group.svelte.map",
+      "source": "production-composed/src/lib/components/ui/toggle-group/toggle-group.svelte",
+      "source_sha256": "dc729c197b287bdc36d055cf8fe747aa462e244c98dc14a43ad03b49c51e50e9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tooltip/index.ts.map",
+      "source": "production-composed/src/lib/components/ui/tooltip/index.ts",
+      "source_sha256": "509107c659c77010d0d64bb0af50fda1214164e4fd66280757c5f1496a0be5ec",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tooltip/tooltip-content.svelte.map",
+      "source": "production-composed/src/lib/components/ui/tooltip/tooltip-content.svelte",
+      "source_sha256": "19196aa9affdae5a08590623d4a76506da610573b36252937df125efbbb03dc1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tooltip/tooltip-portal.svelte.map",
+      "source": "production-composed/src/lib/components/ui/tooltip/tooltip-portal.svelte",
+      "source_sha256": "d38e62fa30732ba5ea79df440badb59331d22c13a19fdc1ad777857f6039b648",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tooltip/tooltip-provider.svelte.map",
+      "source": "production-composed/src/lib/components/ui/tooltip/tooltip-provider.svelte",
+      "source_sha256": "d2619c07791964e26dd4a40fbe17f8c7fcde0751ab5935455822b48f1f8c649d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tooltip/tooltip-trigger.svelte.map",
+      "source": "production-composed/src/lib/components/ui/tooltip/tooltip-trigger.svelte",
+      "source_sha256": "743356585beeefc644bf4bc5775796a829ed84507eed7c1eecc2ee017885616f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ui/tooltip/tooltip.svelte.map",
+      "source": "production-composed/src/lib/components/ui/tooltip/tooltip.svelte",
+      "source_sha256": "59f4fe4843d20500636dfa44aca584d3e4d22fa7694365169ab66c2668b3018e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/upload/UploadChapter.svelte.map",
+      "source": "production-composed/src/lib/components/upload/UploadChapter.svelte",
+      "source_sha256": "ae8daf28579b883c7d0cdc9d6319e668f310b85b3a443ee62cbe3a21d7552377",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/upload/UploadChapterEdit.svelte.map",
+      "source": "production-composed/src/lib/components/upload/UploadChapterEdit.svelte",
+      "source_sha256": "b3177267b7f7a4b108cfcbdcbe7fe72ad52ce5d71e398b7afa93fff16f82a2c9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/upload/UploadChapterGroups.svelte.map",
+      "source": "production-composed/src/lib/components/upload/UploadChapterGroups.svelte",
+      "source_sha256": "5ce9490fda4b757072b8c30025291c4fbb847d982311822fbde299eaa1974280",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/upload/UploadChapterMetadata.svelte.map",
+      "source": "production-composed/src/lib/components/upload/UploadChapterMetadata.svelte",
+      "source_sha256": "e34402aebd6fae2085c3dedcaf650a0bc242c5d921ac2217c9c46515eaed1879",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/upload/UploadChapterPages.svelte.map",
+      "source": "production-composed/src/lib/components/upload/UploadChapterPages.svelte",
+      "source_sha256": "b387f80c9e3a6a479a7dedfeb7cf84e872dd9d9e99ec963856b51225fe9e9969",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/upload/UploadChapterPagesEntry.svelte.map",
+      "source": "production-composed/src/lib/components/upload/UploadChapterPagesEntry.svelte",
+      "source_sha256": "89332d03f7df53ee4d55f3ca99d056ba9a0ad8ed8a1f865e7f764aa73e186460",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/UserSearch.svelte.map",
+      "source": "production-composed/src/lib/components/UserSearch.svelte",
+      "source_sha256": "d89d59b462e22379cd4556cc11cbe1461984fc899764ba696fcf5de9a86e4f76",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/ViewModeToggles.svelte.map",
+      "source": "production-composed/src/lib/components/ViewModeToggles.svelte",
+      "source_sha256": "a0d468f0042bbef52474d1f72cb073d165a8e8ae117cd94edf1f0176226b470e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/components/VirtualPagination.svelte.map",
+      "source": "production-composed/src/lib/components/VirtualPagination.svelte",
+      "source_sha256": "71216a9fb24ed7f5df2e6bc9384f0b2b2470a338b40506b38826563c677a1ce1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/constants/Error.ts.map",
+      "source": "production-composed/src/lib/constants/Error.ts",
+      "source_sha256": "a1a45c45acec60f4f432844183decee07589f0779ad31785b6484fa001904a61",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/constants/index.ts.map",
+      "source": "production-composed/src/lib/constants/index.ts",
+      "source_sha256": "95a874eb922385b8689da7fe96808eab2ad63483e786fa8633879987cbb893fc",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/constants/Manga.ts.map",
+      "source": "production-composed/src/lib/constants/Manga.ts",
+      "source_sha256": "f57770327de2f1cbe8a5261b8ed9022823773e84affc91ed4db071c08d348331",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/constants/MangaFollow.ts.map",
+      "source": "production-composed/src/lib/constants/MangaFollow.ts",
+      "source_sha256": "aa21347271f11f569083c14769ed32b8d7c59ac32656de929c86358f2b609ce7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/constants/Reader.ts.map",
+      "source": "production-composed/src/lib/constants/Reader.ts",
+      "source_sha256": "c64886cb93cf495969713232ac0313e38f14fb6f3b46af2e09baee981c8f75a9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/constants/Report.ts.map",
+      "source": "production-composed/src/lib/constants/Report.ts",
+      "source_sha256": "9168a935c7d52af4d19a9d26d465b04e2b9f882de96d32aaeff38d1ac44d9a65",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/constants/Tag.ts.map",
+      "source": "production-composed/src/lib/constants/Tag.ts",
+      "source_sha256": "7b6a201ce8c3405aa4cd84f2846c48026301ee9bc31b55079052185f613c8ee6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/constants/Thread.ts.map",
+      "source": "production-composed/src/lib/constants/Thread.ts",
+      "source_sha256": "362fa2fdc3dcc4ee15d4abda019d54f10e3e3aba2177446c00aaf241d4b3bf97",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/constants/User.ts.map",
+      "source": "production-composed/src/lib/constants/User.ts",
+      "source_sha256": "9ba081b27c8042817188e8d9ec215efef309345cbac2bc309ea7429218b822a5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/Context.ts.map",
+      "source": "production-composed/src/lib/Context.ts",
+      "source_sha256": "495880efb4a4ad735a1cd0486d1160b14b8f304d7b8f091d4aa1ed3e5c04a203",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/ExternalLink.ts.map",
+      "source": "production-composed/src/lib/ExternalLink.ts",
+      "source_sha256": "7039aa5793172295165e6ecbcf6f84ec67c037d6280f6cae65f5bede121a0fe0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/GroupLink.ts.map",
+      "source": "production-composed/src/lib/GroupLink.ts",
+      "source_sha256": "cd29d8e0e25931385b6c06d96071037ded91618096b7891edc11e945831060f1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/hooks/index.ts.map",
+      "source": "production-composed/src/lib/hooks/index.ts",
+      "source_sha256": "f474711585ba4f4131aa4dca2d184eb224ede63d30ce0a0fa1dbddbeedb113a9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/hooks/is-mobile.svelte.ts.map",
+      "source": "production-composed/src/lib/hooks/is-mobile.svelte.ts",
+      "source_sha256": "01e7c596011479eeda88418faca95e5625be3b74eda0b93f22ea338c9d66e4d5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/hooks/persistent-store.svelte.ts.map",
+      "source": "production-composed/src/lib/hooks/persistent-store.svelte.ts",
+      "source_sha256": "6ed66bc46c9c0f3d9f7a90c0e6c0a60ab9aaf99cbf01c905e433263a832c9732",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/HTTP.ts.map",
+      "source": "production-composed/src/lib/HTTP.ts",
+      "source_sha256": "6dd3f2689ce3041ea9d310b18119daa52017865d95a4761eddf1b7902921e55b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/index.ts.map",
+      "source": "production-composed/src/lib/index.ts",
+      "source_sha256": "8d74c9e6801bcc478e77e1273967007a2348c34157038a81f050e715aa0caf87",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/Kratos.ts.map",
+      "source": "production-composed/src/lib/Kratos.ts",
+      "source_sha256": "49738b13d0cd339e3c51a845e5bc4b74d4ad75206e1bb9137889d11eda2edb05",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/Locale.ts.map",
+      "source": "production-composed/src/lib/Locale.ts",
+      "source_sha256": "24683b1d2e4490108de376ef1afee3891e2a04994670f661f57dc753f1dbd214",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/MarkedExtensions.ts.map",
+      "source": "production-composed/src/lib/MarkedExtensions.ts",
+      "source_sha256": "93ae0a174d82dfc79576136ed698cddbe2870872832ce5257cce2f063a97ec28",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/Mutex.ts.map",
+      "source": "production-composed/src/lib/Mutex.ts",
+      "source_sha256": "a5bfbf833195c3b05ffafb34db95672824efe0b80eebd136150701ef78275c45",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/author.ts.map",
+      "source": "production-composed/src/lib/permission/author.ts",
+      "source_sha256": "b8000cdbe5ace8c27558c6d79a19cd96b33a6be8a4febdac1c0380f4320b4476",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/chapter.ts.map",
+      "source": "production-composed/src/lib/permission/chapter.ts",
+      "source_sha256": "554acd02f45a8e0e95b624f1288936f26ee4425ef00d6719e666b622ba521a3a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/client.ts.map",
+      "source": "production-composed/src/lib/permission/client.ts",
+      "source_sha256": "6c4bb2345323602db2357f7d8692a77dfcc9b4f1b53f553b0230dad9fe5d8371",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/cover.ts.map",
+      "source": "production-composed/src/lib/permission/cover.ts",
+      "source_sha256": "6e75220cdcbf04fcd5f2d2bd48c424af0eceed7de6b1c6f543105e92f2ce7f99",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/group.ts.map",
+      "source": "production-composed/src/lib/permission/group.ts",
+      "source_sha256": "6ea0ab938bba2214429cbbc5b12bb343c30665e5591acff82a7a8f05ffc5b2c0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/index.ts.map",
+      "source": "production-composed/src/lib/permission/index.ts",
+      "source_sha256": "576ac48ab04945436996a01d81b6cd3be012ca2f673f679b44b137056d087fd0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/manga.ts.map",
+      "source": "production-composed/src/lib/permission/manga.ts",
+      "source_sha256": "9f9a64cf97f3a8fac5d75a25c6e99c1c14d62ed9077e40061ef2f683ac0ec6c3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/reply.ts.map",
+      "source": "production-composed/src/lib/permission/reply.ts",
+      "source_sha256": "6b53cf02fe13023d30cc3749edfe3819a5da3d80993c945ea8a7fafcbb706446",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/report.ts.map",
+      "source": "production-composed/src/lib/permission/report.ts",
+      "source_sha256": "f075edf105bffa2ee65719d89673e35a636fc5170cd9f2b6631349cfc85b11db",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/upload.ts.map",
+      "source": "production-composed/src/lib/permission/upload.ts",
+      "source_sha256": "e54f7c6e0608906443f12f1f8d66b6eb828137ddad1372ce939bb56e912f64a1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/permission/user.ts.map",
+      "source": "production-composed/src/lib/permission/user.ts",
+      "source_sha256": "5db30043bcaa9687f89c8c949466ec731266606615ff18d6991aa5e35463cb41",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/stores/global.ts.map",
+      "source": "production-composed/src/lib/stores/global.ts",
+      "source_sha256": "473446d1b9b01309528952929a0163a89e3e3a04620df5cead30130d8abcc3f7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/stores/index.ts.map",
+      "source": "production-composed/src/lib/stores/index.ts",
+      "source_sha256": "aaf4932b81dc634f56e81123cd76906d53ef4cd044ab59608817ae881bd6f7cb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/stores/prefs.ts.map",
+      "source": "production-composed/src/lib/stores/prefs.ts",
+      "source_sha256": "971f219e3baa8cafb34da79330b6c93e692c659c35a5e8bcd74b018a44c38c8e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/stores/Session.ts.map",
+      "source": "production-composed/src/lib/stores/Session.ts",
+      "source_sha256": "32fb8ae653bb9df123a46373e490ee6b886bdc7454c98ee5d599e9ea52158320",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/Typography.svelte.ts.map",
+      "source": "production-composed/src/lib/Typography.svelte.ts",
+      "source_sha256": "1dc7edac971d75c774672a81b17253277972ddd2b00dfd47c5effea51d123603",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/UserLink.ts.map",
+      "source": "production-composed/src/lib/UserLink.ts",
+      "source_sha256": "7d86b33632b271b5545b5d0870b0116fa2d99f334e995390a167ebc57d727239",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/lib/Utils.ts.map",
+      "source": "production-composed/src/lib/Utils.ts",
+      "source_sha256": "0ef4b28ddd201f595dc6e1ae6a4900c562359800c5f0c935322a4b079f44f54f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/+layout.svelte",
+      "source_sha256": "863b4b9d9e200946a5c60970da7a31b0bf2ddc8469ff47f6d0aafc2f4e5de620",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/+page.svelte",
+      "source_sha256": "7129c33023899435d61a0d061fdab6f4f161e4cc2e18fcacee75eb45f82ec002",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/about/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/about/+page.svelte",
+      "source_sha256": "5cf47bdcf2ec5f9c02778f5b2bf646f4d4c4a2957e9a61b94c8e939d0960fa14",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/announcements/[id]/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/announcements/[id]/+page.svelte",
+      "source_sha256": "989cbda910a76e46a5306c5fdc4631c4d9955124b126c54d3ad61d16f3244a2a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/announcements/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/announcements/+page.svelte",
+      "source_sha256": "7ac91824c310f09f7516075c95e414e9300a3810bfe7e0ae31c1777d080e5c36",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/announcements/manage/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/announcements/manage/+page.svelte",
+      "source_sha256": "0b8e1fb9939652dcd1ae964bcc85b0d215cceff577e9357906665fd0790b006e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/auth/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/auth/+layout.svelte",
+      "source_sha256": "24f2b65902c89099badca22c78c6e81379bbc3607af22844b56491d7ede78b4a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/auth/error/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/auth/error/+page.svelte",
+      "source_sha256": "aac77f26712cc12531ad20ef48706cd10e839c20efc7968f18b7655afc40c477",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/auth/login/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/auth/login/+page.svelte",
+      "source_sha256": "7c28944458162f8b341c5a26a5dd6feb729dea34e5ab5d08cde3025a9d6d0fab",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/auth/logout/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/auth/logout/+page.svelte",
+      "source_sha256": "cc449eb2105cba8360ebf9191f7b0b64a98b9d6809d98c0a2cd6b90a2a6c1df1",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/auth/recovery/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/auth/recovery/+page.svelte",
+      "source_sha256": "961d36338d80b501ac337ccb757b8075ab50a941d6e38a17a19e81eb8e52f19d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/auth/register/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/auth/register/+page.svelte",
+      "source_sha256": "d4d0067c0cadbf63aef8e254360e6ff4471d44348b8713701d4a61baf7e2fc43",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/auth/verification/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/auth/verification/+page.svelte",
+      "source_sha256": "12ee80474b9fb4531dab4e5ba6b64855a0557664a391b6cd48f0486914570a4e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/author/[id]/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/author/[id]/+layout.svelte",
+      "source_sha256": "748bbb27aab45d1fd9309689c8d175ae1764ac2103173a9c531a2a7fa43f1550",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/author/[id]/+layout.ts.map",
+      "source": "production-composed/src/routes/(app)/author/[id]/+layout.ts",
+      "source_sha256": "7032596e2f96ba68a7c958cc5edf277841a3f84993fd1bafe75313c60d473a67",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/author/[id]/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/author/[id]/+page.svelte",
+      "source_sha256": "5666d1588f8672aa554ffe0e0ebd6803b4a1d95d5ff9ec0224be3dc403d52984",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/author/[id]/Author.svelte.map",
+      "source": "production-composed/src/routes/(app)/author/[id]/Author.svelte",
+      "source_sha256": "607323da047e82b934677e2b70338b16e90b8916bb5b87dc1f9690353bc24b22",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/author/[id]/settings/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/author/[id]/settings/+layout.svelte",
+      "source_sha256": "ed4945b0bf7451ae9685d93b3ec8d04fe6d50589d323a7312a3b98ee4e123599",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/author/[id]/settings/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/author/[id]/settings/+page.svelte",
+      "source_sha256": "5b5a916d1d5094de6936b3c00fd0884eddf5e6b797c52fbb221c037e2f31fb47",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/author/[id]/uploads/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/author/[id]/uploads/+page.svelte",
+      "source_sha256": "b8d75ca848e44d18475be42d66652b717f701c3d7e050bef9219286433fc59b2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/chapter/[id]/[page]/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/chapter/[id]/[page]/+page.ts",
+      "source_sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/chapter/[id]/[page]/+page@.svelte.map",
+      "source": "production-composed/src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+      "source_sha256": "bdc368cab5e084e8c5a530c50365cbc5c94324b737e5453a9c85bd8bfc23fd34",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/chapter/[id]/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/chapter/[id]/+page.ts",
+      "source_sha256": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/chapter/[id]/+page@.svelte.map",
+      "source": "production-composed/src/routes/(app)/chapter/[id]/+page@.svelte",
+      "source_sha256": "bdc368cab5e084e8c5a530c50365cbc5c94324b737e5453a9c85bd8bfc23fd34",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/chapter/[id]/edit/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/chapter/[id]/edit/+layout.svelte",
+      "source_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/chapter/[id]/edit/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/chapter/[id]/edit/+page.svelte",
+      "source_sha256": "bc8765c437333eb3ccf613368efbfa39da4b3567bf797cc5fdaf0d7932a33f97",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/chapter/[id]/edit/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/chapter/[id]/edit/+page.ts",
+      "source_sha256": "8ccafda56093c99bfe2ba27f724df0521618535e11bcd3279112c2046b6880e6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/create/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/create/+layout.svelte",
+      "source_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/create/group/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/create/group/+layout.svelte",
+      "source_sha256": "0467fd688f8966e2a92ef751e568cad1a521722157bc4efcfa5c4a25ee7b71ee",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/create/group/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/create/group/+page.svelte",
+      "source_sha256": "b6832cfa3085708a141a079ce43674bf79384b82f0b193e477df76b1e553f835",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/create/title/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/create/title/+layout.svelte",
+      "source_sha256": "ebd5fb6a501c61455dececbe4e964ee854eacb3927531876b250ae4b2f7517c7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/create/title/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/create/title/+page.svelte",
+      "source_sha256": "cb557f50780fd4c5a146553ad154923b5e71594e89554d84750cca529f640f96",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/drafts/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/drafts/+layout.svelte",
+      "source_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/drafts/title/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/drafts/title/+layout.svelte",
+      "source_sha256": "c38fbf142c8842cd6f63240d7fd30668d4f9b6cf924e91217fb0e7d8771e901b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/drafts/title/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/drafts/title/+page.svelte",
+      "source_sha256": "669ed7e93f5c8fe3809fda6c0f7fdd7ea1d772e2b0b9a88256b2eac51c628231",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/forums/threads/[id]/[postId]/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/forums/threads/[id]/[postId]/+page.svelte",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/forums/threads/[id]/[postId]/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/forums/threads/[id]/[postId]/+page.ts",
+      "source_sha256": "194c68e7bce1497ab30c882f00743748f074a3f18326511876095f0728124a09",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/forums/threads/[id]/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/forums/threads/[id]/+page.svelte",
+      "source_sha256": "d94a8c78e2436ac00da00241d85f5c362ffc8f1c285be8d958e127bcec99a6b7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/forums/threads/[id]/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/forums/threads/[id]/+page.ts",
+      "source_sha256": "b90b6b4922f87603e4d4fc53ad09fd4673e55b5b7dbdc270e4dac03932fc5ddf",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/forums/threads/[id]/Thread.svelte.map",
+      "source": "production-composed/src/routes/(app)/forums/threads/[id]/Thread.svelte",
+      "source_sha256": "4949e9f646243c4af69de9e2ad5f3f3eafb73dbe423b4e0819f038792dc518c9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/group/[id]/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/group/[id]/+layout.svelte",
+      "source_sha256": "641924a49a8d67bd1ccf9b08ca454117e0046db5ca55afc1d8a75b4e20910869",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/group/[id]/+layout.ts.map",
+      "source": "production-composed/src/routes/(app)/group/[id]/+layout.ts",
+      "source_sha256": "63a29f17a5f3666ee02320e9e8f88faf0ac4c9e2383b6ba3a1f158bae6720462",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/group/[id]/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/group/[id]/+page.svelte",
+      "source_sha256": "bd0a7bcac1e816fb89ea7443c78f36ccad976fa08bfa2cf35d07ba25f40f01c2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/group/[id]/comments/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/group/[id]/comments/+page.svelte",
+      "source_sha256": "06b1eb88a80c5abd859e28c36b5233672b7f8ccc74c90b7b62785674d3f048b3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/group/[id]/Group.svelte.map",
+      "source": "production-composed/src/routes/(app)/group/[id]/Group.svelte",
+      "source_sha256": "2a5200217bf9d624e8ad92ecdef36485000f945ded82f400e5624801273d7976",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/group/[id]/GroupClaimDialog.svelte.map",
+      "source": "production-composed/src/routes/(app)/group/[id]/GroupClaimDialog.svelte",
+      "source_sha256": "b50a34dafcaaab715dda6986c3e58f177d8e4363f015c1a61da7c06b683ae6d9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/group/[id]/settings/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/group/[id]/settings/+layout.svelte",
+      "source_sha256": "db6702a17c9fd64be4f21f8fc8e7fe5998c8cf04aa4c41b62a1c253c006a967f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/group/[id]/settings/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/group/[id]/settings/+page.svelte",
+      "source_sha256": "4f666ec443d0e46ef38cd115833a74f1fffc40622832adcd63c27d16fe014c52",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/group/[id]/uploads/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/group/[id]/uploads/+page.svelte",
+      "source_sha256": "b2e0539830a7bf083f0060001f040b3c7283b42716556301de926d63776a7459",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/groups/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/groups/+page.svelte",
+      "source_sha256": "79984c406d9f50322983854e70a2f1feaeb8ff9837fd04070859d825ba8c5cc8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/guidelines/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/guidelines/+page.svelte",
+      "source_sha256": "51844f5c45245bed1faad31a843db41f4ed6ddd36c8c75499cdbdb2b1fc8b909",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/history/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/history/+layout.svelte",
+      "source_sha256": "efb41ddb27af634c5181ae0fcd02f6c409e4b65220f1b7f9d1d838f9b6b56401",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/history/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/history/+page.svelte",
+      "source_sha256": "990d770a62018d102f9bb8a6a933526f9f57f946bc4245e9810b9d48bd31d599",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/library/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/library/+layout.svelte",
+      "source_sha256": "820aa6c6361f7364af98ce9e02fcc5a34dc0ec676d247a702ead6e44b8d68265",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/library/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/library/+page.svelte",
+      "source_sha256": "a70017ec8ce59fccea4557cd3200d3dbc8fad2829d82662ee824f65cf24872cb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/library/updates/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/library/updates/+page.svelte",
+      "source_sha256": "ed9d4fcb2017074b9742e0c917da1463f7c1b70843cba34a6fa415b08432a1f3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/my/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/my/+layout.svelte",
+      "source_sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/my/reports/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/my/reports/+page.svelte",
+      "source_sha256": "ae1e06e9552d8e28c1311297baeb3d4be9c5d94ca9442eae7bab6890a8977e64",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/popular/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/popular/+page.svelte",
+      "source_sha256": "272ce5d232afbe20f58f316ad2d0aa7dc1fc7120a571e3bc18b84237a1125a19",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/popular/MostReadChapter.svelte.map",
+      "source": "production-composed/src/routes/(app)/popular/MostReadChapter.svelte",
+      "source_sha256": "594316bd2d4b31652a093557ab44686f31d9a6d286b49d2fd4078c22ed9f431c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/popular/MostReadDaily.svelte.map",
+      "source": "production-composed/src/routes/(app)/popular/MostReadDaily.svelte",
+      "source_sha256": "94b94e57c8393994144f6f8fac18d2f47a796f818b1b5f9ebaa389585423be75",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/popular/MostReadGrid.svelte.map",
+      "source": "production-composed/src/routes/(app)/popular/MostReadGrid.svelte",
+      "source_sha256": "127a985405295bf7e250c50fab707e7c9755b98847dcb3305aba5f4338147156",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/popular/MostReadMonthly.svelte.map",
+      "source": "production-composed/src/routes/(app)/popular/MostReadMonthly.svelte",
+      "source_sha256": "4771fafd7cf7d4d7ea9a6dc5c531f1354718fd1fe674a20e6a27a5ce61248e1e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/popular/MostReadWeekly.svelte.map",
+      "source": "production-composed/src/routes/(app)/popular/MostReadWeekly.svelte",
+      "source_sha256": "18ec216da9a81494f99714448dbd4254383bcdbb635df7543cf19282d5a33c9d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/privacy/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/privacy/+page.svelte",
+      "source_sha256": "42264c485f5127e965f48af96a0c2160e03528cf71e9d569ec457cd1a8008279",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/search/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/search/+page.svelte",
+      "source_sha256": "0e373a4be0a9b37c0e56d155dcf7c4473c86c7e76f6744027c5bcb9e976b9726",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/[key]/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/[key]/+page.svelte",
+      "source_sha256": "ae58e377b3b5f95e53f1c533db0999467d51daba442d439d68edd79d75597570",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/+layout.svelte",
+      "source_sha256": "4b5400adf0757d3465321a84ed985b1841c79d5fdd51f43cf9ef03611546c0bb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/+page.svelte",
+      "source_sha256": "ae58e377b3b5f95e53f1c533db0999467d51daba442d439d68edd79d75597570",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/account/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/account/+layout.svelte",
+      "source_sha256": "8079499ad9f160af62467117eb46217ae70b92d0a3d9fa4c96c9ffc7888d9a20",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/account/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/account/+page.svelte",
+      "source_sha256": "02f343914d0553aa9d3ad6e2e57a0314e5167ddb9c148dfd5a205dd692c2adbb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/client/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/client/+layout.svelte",
+      "source_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/client/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/client/+page.svelte",
+      "source_sha256": "16206d777f0746bc8a85b0b3a64368c37d814c23e34617530231979357663383",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/client/ClientCreateDialog.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/client/ClientCreateDialog.svelte",
+      "source_sha256": "396c1c1e547de848671f6eb10fb955a22dcd413278c9055fa525a9d68606a437",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/client/ClientEntry.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/client/ClientEntry.svelte",
+      "source_sha256": "3faed250151041957f5ef4569c762461d5ca3d0a01cecb91c4711e85b195c875",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/identity/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/identity/+page.svelte",
+      "source_sha256": "dfab136b804bf4a0f877b621179ea439097ff6a6418fa3086e1ce6e769202ad5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/library/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/library/+layout.svelte",
+      "source_sha256": "6e5e3f5f755e154f77252db9cb9fe857096c8722f831eb40a27e97549eda9263",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/library/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/library/+page.svelte",
+      "source_sha256": "78e48871b3f8c5f9d8065a53c271979bc36606685092af5f4ceb87e786dd897c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/settings/preferences/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/settings/preferences/+page.svelte",
+      "source_sha256": "d5bb4aaafaa65a4ba06d1796c0bdccfffa4fe25f217223bd44b071afcdb595d8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/terms/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/terms/+page.svelte",
+      "source_sha256": "f3cd4ecd86212975d0180f61543f56cba4c0d2c04928d84378e1384bd7693c8b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/[slug]/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/[slug]/+page.svelte",
+      "source_sha256": "45ad2a97778a646a142eefb7b54bfef851e02b1c3b3af5ce958d9e89b250eebb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/[slug]/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/[slug]/+page.ts",
+      "source_sha256": "f766c71a4ee390b02e835747361caf935a7170f20b457f09242b23f0ea1e0a05",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/+page.svelte",
+      "source_sha256": "8e42628444259720812e98f08678248bfdeaedc681154e34ae328641ae834a05",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/+page.ts",
+      "source_sha256": "f766c71a4ee390b02e835747361caf935a7170f20b457f09242b23f0ea1e0a05",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/edit/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/edit/+layout.svelte",
+      "source_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/edit/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/edit/+page.svelte",
+      "source_sha256": "7e14fc46ca515634bdc18ee2292b3952846594fe87c8f984bfffe07dcaeded37",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/edit/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/edit/+page.ts",
+      "source_sha256": "0109c41a6e2e60f9e237bce451974566136ce0315bda25d012181e2f91f71de2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/upload/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/upload/+layout.svelte",
+      "source_sha256": "3b6a2330a628cde259b173823578926d83a9e1778bdbb89ca2536739c727650a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/upload/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/upload/+page.svelte",
+      "source_sha256": "8a2861de12aa32d3e1f70a74b8e2ceacecba4a070aadeb383111f7d1bbaed1bb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/[id]/upload/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/title/[id]/upload/+page.ts",
+      "source_sha256": "21ef61d9a002e2517542630ce92fad057dc4531684631168f55e852b9cf44910",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/Analytics.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/Analytics.svelte",
+      "source_sha256": "472d0676d8372999aeaea991aeb81f428658515fee19083e71e2172a30ba8b6b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/Manga.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/Manga.svelte",
+      "source_sha256": "8ba56eb70f2a7b76e2c719ab82149d86bff3633a23bb4db7364aa8945b4252ab",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/MangaActions.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/MangaActions.svelte",
+      "source_sha256": "ee7accbe36439f4489cc54dbb16671cce78ae2542470319e30b6a98da97f1267",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/MangaChapterListSection.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/MangaChapterListSection.svelte",
+      "source_sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/MangaCoversSection.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/MangaCoversSection.svelte",
+      "source_sha256": "fd1389ea66abab0e4e59324f1b418a265ed4d922fe0a4c66650b9e6e209f88fe",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/MangaRecommendationsSection.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/MangaRecommendationsSection.svelte",
+      "source_sha256": "c11ad755e7c57a9ae9fcbc30fedbec1a4c4fedb742797684b8f4a1c907e48429",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/MangaRelatedSection.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/MangaRelatedSection.svelte",
+      "source_sha256": "8aaadd97e3c46c33a18dd7cec8018bce15e5ae09e82d4437df1ffd401421f387",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/random/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/title/random/+page.svelte",
+      "source_sha256": "8f6a0a781fa3d0df37f8be6daa42355d3b4d36ce6148b3c21ea35a156489b8c6",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/title/random/+page.ts.map",
+      "source": "production-composed/src/routes/(app)/title/random/+page.ts",
+      "source_sha256": "f0dea380b171a2c3dccc2e57bc3eaec7e3ac44418ac44b531e4a757e7d9f580c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/trending/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/trending/+page.svelte",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/updates/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/updates/+page.svelte",
+      "source_sha256": "a24537a753856a637fc0451465e3d3a60cea3435b66c5b4d7eade3c685913a98",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/user/[id]/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/user/[id]/+layout.svelte",
+      "source_sha256": "624730ba5cdb267bb95116e49e1416c9108506543a75e449b358c935828869e7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/user/[id]/+layout.ts.map",
+      "source": "production-composed/src/routes/(app)/user/[id]/+layout.ts",
+      "source_sha256": "2e0b221e2797218ed01fba9df8c71c5ab1f079c7c60df310de20439d40f5df95",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/user/[id]/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/user/[id]/+page.svelte",
+      "source_sha256": "eaa3d2bbcce25af67937528ee161931d406a76067692f62c6c455208315ef4b5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/user/[id]/comments/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/user/[id]/comments/+page.svelte",
+      "source_sha256": "06b1eb88a80c5abd859e28c36b5233672b7f8ccc74c90b7b62785674d3f048b3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/user/[id]/settings/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/user/[id]/settings/+layout.svelte",
+      "source_sha256": "d224a7f313c8a80f64cdd448c71225bf038f463ab13c6eba2785851535a58bea",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/user/[id]/settings/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/user/[id]/settings/+page.svelte",
+      "source_sha256": "b64a8ac906f93b0d74cbf9a658933a52370b91d7a413c317585dda59f9d6dc90",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/user/[id]/uploads/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/user/[id]/uploads/+page.svelte",
+      "source_sha256": "28ffd1d4de746e4db28b466a0b1e2d5e85d77b8210aa0bb8f31845b7116b5cc4",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/user/[id]/User.svelte.map",
+      "source": "production-composed/src/routes/(app)/user/[id]/User.svelte",
+      "source_sha256": "e858c8dc60fe7540c38b587c3036b62ed2284a73a77adc83b062d7d32e8d6d74",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/users/+layout.svelte.map",
+      "source": "production-composed/src/routes/(app)/users/+layout.svelte",
+      "source_sha256": "275b7c3bc2d347f4d8c0fb0387d46448504eeb80df078c4f12576dc95f59e696",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/(app)/users/+page.svelte.map",
+      "source": "production-composed/src/routes/(app)/users/+page.svelte",
+      "source_sha256": "9cadc0f327f61a238358ae34e69a5d6a44623f3c8461d5f9a97522408adf5e2a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/+error.svelte.map",
+      "source": "production-composed/src/routes/+error.svelte",
+      "source_sha256": "a6e91667c9a5dc71567efce66ed2f409beb07ccda06c35ab7e0664ad12bce998",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/+layout.svelte.map",
+      "source": "production-composed/src/routes/+layout.svelte",
+      "source_sha256": "a2fcd67bf0a8bcce11afdbada771ab6cfc7cf8156c39c7bab6a69bc48e116318",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/routes/+layout.ts.map",
+      "source": "production-composed/src/routes/+layout.ts",
+      "source_sha256": "db6511c53a8684484286b55b42f0e8b8aad9f83b2e27538038f309d662be926e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/src/service-worker.ts.map",
+      "source": "production-composed/src/service-worker.ts",
+      "source_sha256": "7dd45836103aaa80a24c4486641c22232263597e7280176e78e21b08d36733cf",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/latest-search.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/latest-search.ts",
+      "source_sha256": "74e655e622d2503deb70ff495ac57f8ef14051954efd179d00e15dced4db5571",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/client-name.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/client-name.ts",
+      "source_sha256": "6234aff995b2c9bf07770da8a728129750773d1bf19f08acddf1552b525cdf2f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/authenticated-mutation.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/authenticated-mutation.ts",
+      "source_sha256": "feba7952eb231940a3f0cfd5223baee1873c96a923818291c6c91b2694f95fdd",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/thread-read.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/thread-read.ts",
+      "source_sha256": "b0dbb2500c65cbce75066825c126536a512efffa4288775644bb3bb51eca13f9",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/ChapterHistory.ts.map",
+      "source": "production-composed/platform-integrations/local-library/ChapterHistory.ts",
+      "source_sha256": "bd94c48364a043b4c53d1ed1e8e46eb03118734f2899d8bb8d842292009e5ed2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/MangaFollow.ts.map",
+      "source": "production-composed/platform-integrations/local-library/MangaFollow.ts",
+      "source_sha256": "80543297f6c7c1ab96f1b1e7ae1c5f80d447a83b32ce1d0ab84467201fbf8750",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/install-prompt.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/install-prompt.ts",
+      "source_sha256": "9951f26a7511776487beeee0915cab197306ef2e20ee7f450974984d075dccb3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/library.ts.map",
+      "source": "production-composed/platform-integrations/local-library/library.ts",
+      "source_sha256": "8c3fbae0f1cb87e27f2a7783f90dfbeea344bea5c789cb78d2180bf7d16f985a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/mutation-authority.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/mutation-authority.ts",
+      "source_sha256": "f96ef67b0dc4e74539e382db0ef3bcf57001a373db2c262a47a43b77a09c2f14",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/feed-continuation.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/feed-continuation.ts",
+      "source_sha256": "3f22a2d2085ad91c8a13b25e1eca6c09c4a8699a19b24133b12268d1a5da04a7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/navigation-authority.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/navigation-authority.ts",
+      "source_sha256": "aa8a2c99e5ebce309fc7673d3d380d3d39d4dda924f99ccbbd07acfeab30d8f2",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/action-owner.ts.map",
+      "source": "production-composed/platform-integrations/local-library/action-owner.ts",
+      "source_sha256": "c623b27a489eb45dd92f46e47e95622d2c015c07254375fd74ca37b4b9a5fd3d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/mutation-feedback.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/mutation-feedback.ts",
+      "source_sha256": "4241f752c978f4681aed346ab987f7713b3f603d97d08f3b19614fec098a9b3f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/private-feed.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/private-feed.ts",
+      "source_sha256": "2c8b1ccc3fd186daccc034089164bda1bc9706ebbc4286baba1289009a5df58c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/editor-cover-read.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/editor-cover-read.ts",
+      "source_sha256": "aa902b85a7b50e8399b8952e5103717786df081e64a5905ee97f3345003bfca0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/safe-read-owner.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/safe-read-owner.ts",
+      "source_sha256": "791040778e3fd841cc1d30ad35c88c438c40fe7ce886e041e144736098868628",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/manga-search-query.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/manga-search-query.ts",
+      "source_sha256": "db7130ddb28f6b4c3c71f3a1d41f2f6547ea907f67a00e7fb83d3d4e52105998",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/public-manga-widget-read.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/public-manga-widget-read.ts",
+      "source_sha256": "f5763b7cc436ea44ea320fa0a24043da42e381a6a63b893dccec83a82531ac86",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/reader-navigation.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/reader-navigation.ts",
+      "source_sha256": "58120d8cc91c0c80344b933db97e8e30cd412e1583db59c2f5cc427ea1e8967f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/ProtocolIdentityPanel.svelte.map",
+      "source": "production-composed/platform-integrations/local-library/ProtocolIdentityPanel.svelte",
+      "source_sha256": "2b2c621fffa228046157b0c146078a03b4432960a4da49212e3d95ef539a2b7f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/target-owner.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/target-owner.ts",
+      "source_sha256": "972844d80eb2a3eaca0a66d047bd05c572f3b599929b0a28fe268c9caeff8c09",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/upload-batch.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/upload-batch.ts",
+      "source_sha256": "b44de9fb648bf7999c59e034501eb1c0236c8c74cee1eeabb2d32901f0d006cc",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/upload-resume.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/upload-resume.ts",
+      "source_sha256": "64d7910713f122deca1fcd222243d63b4299bc159b5b74adf747a8a4624376ab",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/blob-lifetime.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/blob-lifetime.ts",
+      "source_sha256": "921e54a28927f2b680b2a9b447c4f037280e3c117b49b74ff47ff3629d5e5d75",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-reconstruction/announcements/announcement.svelte.ts.map",
+      "source": "production-composed/platform-integrations/frontend-reconstruction/announcements/announcement.svelte.ts",
+      "source_sha256": "1a8610552d74ac8ce1acb19376501bad8fffabd78fa02e4aeee90653d61bda1b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-reconstruction/announcements/AnnouncementEntry.svelte.map",
+      "source": "production-composed/platform-integrations/frontend-reconstruction/announcements/AnnouncementEntry.svelte",
+      "source_sha256": "f52cb80b88c5e827cbaea9fb302cd18928271759a297cb6bbbfa425480a5e36f",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-reconstruction/announcements/announcement-client.ts.map",
+      "source": "production-composed/platform-integrations/frontend-reconstruction/announcements/announcement-client.ts",
+      "source_sha256": "39fa4d11bcfd6794e6755ca98fa046e2c379a073ce599b2119fa40dcacebf376",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/auth-form-owner.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/auth-form-owner.ts",
+      "source_sha256": "0999a37c2dc816d2a6b8bf602428ed029776c3828521f04d8079a7054dd11c59",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/account-onboarding.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/account-onboarding.ts",
+      "source_sha256": "0f540c62ea99384dbf841327e8645849cfe629459518e8edf6f444632802db1a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/RecoveryBoundary.svelte.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/RecoveryBoundary.svelte",
+      "source_sha256": "8c5b636c64edc3416341fa41f3214630a1ebba812f9373ca785593516dbe885d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/AccountOnboarding.svelte.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/AccountOnboarding.svelte",
+      "source_sha256": "325ba6a91c5e20ea7efc79e230d92ec3d0066135cdc961d9caa09eebbb995633",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/account-preferences.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/account-preferences.ts",
+      "source_sha256": "861f2f36763f3d07497c31a498e90438707a8848e166afba3c836dac982a7ecd",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/actor-follow-state.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/actor-follow-state.ts",
+      "source_sha256": "f98b0fdd79e1cc7ea13baada0a6cdc188e312d8e12e3560ae9d901c1e11b935b",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/LibraryProtected.svelte.map",
+      "source": "production-composed/platform-integrations/local-library/LibraryProtected.svelte",
+      "source_sha256": "edcc631f5f58b90548ecc5c2347192ae31d3c00e55f8c34f9b6224682db283ba",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/PublicIdentitySettings.svelte.map",
+      "source": "production-composed/platform-integrations/local-library/PublicIdentitySettings.svelte",
+      "source_sha256": "c813d66dae44a64fe8bca82eb2c492c7e9b4ea62d784c62d0638068b26875012",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/LocalLibraryPanel.svelte.map",
+      "source": "production-composed/platform-integrations/local-library/LocalLibraryPanel.svelte",
+      "source_sha256": "66671736d3a256ea460103f9f60cd6464c0ac6242f3dfe2335e50b9c81df4acb",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/MangaEditBoundary.svelte.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/MangaEditBoundary.svelte",
+      "source_sha256": "e1bde9c6271fd7fb72f78c368156c1fe76bb28a19101ff9b70828d7c2eb41ffe",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/MangaDiscussion.svelte.map",
+      "source": "production-composed/platform-integrations/local-library/MangaDiscussion.svelte",
+      "source_sha256": "d10df4f2632f11b4f08305a1694eb59e7fd4310329b9f2e43f51b344674b54a3",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/LibraryRuntime.svelte.map",
+      "source": "production-composed/platform-integrations/local-library/LibraryRuntime.svelte",
+      "source_sha256": "13e4f2677623ce83723cc49d5d5cc08f9319c60e0f047cca1627f108cae75fd8",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/public-api/library-staging.ts.map",
+      "source": "production-composed/platform-integrations/public-api/library-staging.ts",
+      "source_sha256": "09bfdc46154741cbece9dda150d632976f6ea6d23800cd666fb34ec4f41251dc",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/catalog.ts.map",
+      "source": "production-composed/platform-integrations/local-library/catalog.ts",
+      "source_sha256": "eb8e1ec195f67e791e39b9e1a36755ce276cd6347e1f5517e972ced2ff987876",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/device-store.ts.map",
+      "source": "production-composed/platform-integrations/local-library/device-store.ts",
+      "source_sha256": "08658b7a8b35e7abebbb506f01aca9371ea1029c3de23e2fd2239bfd38efa67d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/indexeddb.js.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/indexeddb.js",
+      "source_sha256": "2383b25505953ce79e8c204ba482b2eee2268f3b66ddb420de87e40d60025908",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/store.js.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/store.js",
+      "source_sha256": "1aa41728148c566b84716937385fc5daf05b8c61c0f14ba0a383b8792120ccf7",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/nostr.js.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/nostr.js",
+      "source_sha256": "1e71954b97415c36cb42b432148bfa32129be521d57e6ba125b2bce736c63603",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/publication.ts.map",
+      "source": "production-composed/platform-integrations/local-library/publication.ts",
+      "source_sha256": "d4bb0f8e4a3f8645a348816f73cb730725c36982859e11ede50c7a460c9ca74e",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol-identity.ts.map",
+      "source": "production-composed/platform-integrations/local-library/protocol-identity.ts",
+      "source_sha256": "d75dae63cba7b9cd1f08def966418e6bbf83b74117c81f2e8dff314b02944e42",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/RecoveryRequest.svelte.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/RecoveryRequest.svelte",
+      "source_sha256": "e4e04abb9246b4f7038f69319a91952c2094342cb6bc7b80830ec39f333867d0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/IdentitySetup.svelte.map",
+      "source": "production-composed/platform-integrations/local-library/IdentitySetup.svelte",
+      "source_sha256": "ecc6fee5e72755fd257e57783c00a379eadb592ee16c7b50fdfacf6996868c73",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/LibraryManagementTools.svelte.map",
+      "source": "production-composed/platform-integrations/local-library/LibraryManagementTools.svelte",
+      "source_sha256": "abc7a8daa2d7d4349611982542d47ee42af48cbf7fbb6a7cabe45e4367dba6ec",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/public-api/device-id-migration.ts.map",
+      "source": "production-composed/platform-integrations/public-api/device-id-migration.ts",
+      "source_sha256": "54f12f96c0a34fddef4ed8a32299ed0dd620cbfbb52cbad97c80b7d45b829096",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/public-api/device-id-state.ts.map",
+      "source": "production-composed/platform-integrations/public-api/device-id-state.ts",
+      "source_sha256": "8d0e4856f2ac9cfaccb69566f293b9f2f12708f3cb169fae6d39d08ef147b204",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/codec.js.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/codec.js",
+      "source_sha256": "b899dc54a81099038cbed3ccbec7eaa2ddef38c7cf5cee4a2355d5a31f04a9c5",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/limits.js.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/limits.js",
+      "source_sha256": "c23e71d1e01380f25f450963bd531d38c817196a2decc748d7256e10f5c8e540",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/outbox.js.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/outbox.js",
+      "source_sha256": "97c272cf60023915686347cc19d3a4ba655f02fc2fb96f151cbf831efdb46902",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/backup.js.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/backup.js",
+      "source_sha256": "77e6e9626557dd7b87134d518beab3e8cdb7d8f2e0c9c7c051e9a7f03a792c53",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/publishing.js.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/publishing.js",
+      "source_sha256": "144a07f06b0fb4f7877f61cf6dd056073b169c7df403002b16285be2c7cdef3d",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/types.d.ts.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/types.d.ts",
+      "source_sha256": "cf4ffcfd7cc7f2173d3cbb7855f0c3b0d0287600fd0bf855302f52bf8118eaca",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/projection-worker.ts.map",
+      "source": "production-composed/platform-integrations/local-library/projection-worker.ts",
+      "source_sha256": "2282ce3ba78cf2cbeb44d9fd8a8b0dfbffe407f433c31e1009e8065491d430ed",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol-receipt.ts.map",
+      "source": "production-composed/platform-integrations/local-library/protocol-receipt.ts",
+      "source_sha256": "881cd529c16654606ecdae475efa35f75c7782a8dd0892189ed39c62e497b0a0",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/local-signing-key.ts.map",
+      "source": "production-composed/platform-integrations/local-library/local-signing-key.ts",
+      "source_sha256": "f9ea32185d0085ac808d134848a7042d11a35a4bc5c6a8d83ca321d0ce48b6ef",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/enrollment-policy.ts.map",
+      "source": "production-composed/platform-integrations/local-library/enrollment-policy.ts",
+      "source_sha256": "f0584a3f16aed5c3f312902a9dc71418ccddf77d6fc5e8f0af581e0f7ac5fa4a",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/frontend-behavior/route-action-owner.ts.map",
+      "source": "production-composed/platform-integrations/frontend-behavior/route-action-owner.ts",
+      "source_sha256": "49327a7794a38e43d2d7eb7c9c924bff6fd28c65b84908268192540328506349",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/public-api/device-id-transport.ts.map",
+      "source": "production-composed/platform-integrations/public-api/device-id-transport.ts",
+      "source_sha256": "bd1d01fddad7abbf819260ef39d496e6396f59382d1012301380b49304f8c292",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/public-api/validation.ts.map",
+      "source": "production-composed/platform-integrations/public-api/validation.ts",
+      "source_sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/protocol/worker.js.map",
+      "source": "production-composed/platform-integrations/local-library/protocol/worker.js",
+      "source_sha256": "fa2e0a9f8f34b508469932421c9364aafd905f30ae99b6b6ed53334ef5a9046c",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/local-library/graph-transfer.ts.map",
+      "source": "production-composed/platform-integrations/local-library/graph-transfer.ts",
+      "source_sha256": "0cbee4047d8bc0d1c3d6c7632e27ef98b2ce18bdc869dccb4df11d669275f669",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/public-api/client.ts.map",
+      "source": "production-composed/platform-integrations/public-api/client.ts",
+      "source_sha256": "5337f711748bdf73f9df63d8b764d747fc44501f544913f7e60e535261213cfa",
+      "embedded_content_matches": true
+    },
+    {
+      "map": "evidence/source-maps/platform-integrations/public-api/types.ts.map",
+      "source": "production-composed/platform-integrations/public-api/types.ts",
+      "source_sha256": "7b66cad20152c716e3047072b6050015b02709e72f47cd9ab8e8b641b7587f85",
+      "embedded_content_matches": true
+    }
+  ]
+}

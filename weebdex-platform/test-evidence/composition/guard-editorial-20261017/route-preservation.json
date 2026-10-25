@@ -1,0 +1,31 @@
+{
+  "allInheritedRoutesExact": true,
+  "before": 10,
+  "after": 14,
+  "editorialAdditions": [
+    {
+      "source": "platform-integrations/frontend-reconstruction/editorial/+page.svelte",
+      "target": "src/routes/(app)/catalogue-tools/+page.svelte",
+      "reconstruction": false,
+      "additive_editorial_route": true
+    },
+    {
+      "source": "platform-integrations/frontend-reconstruction/editorial/author-settings-page.ts",
+      "target": "src/routes/(app)/author/[id]/settings/+page.ts",
+      "reconstruction": false,
+      "additive_editorial_route": true
+    },
+    {
+      "source": "platform-integrations/frontend-reconstruction/editorial/group-settings-page.ts",
+      "target": "src/routes/(app)/group/[id]/settings/+page.ts",
+      "reconstruction": false,
+      "additive_editorial_route": true
+    },
+    {
+      "source": "platform-integrations/frontend-reconstruction/editorial/group-create-page.ts",
+      "target": "src/routes/(app)/create/group/+page.ts",
+      "reconstruction": false,
+      "additive_editorial_route": true
+    }
+  ]
+}

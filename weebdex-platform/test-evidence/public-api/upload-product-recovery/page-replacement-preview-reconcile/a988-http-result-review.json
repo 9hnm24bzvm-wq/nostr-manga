@@ -1,0 +1,62 @@
+{
+  "schema": "independent-replacement-http-result-review-v1",
+  "reviewed_at_utc": "2026-10-17T06:28:29.787950+00:00",
+  "decision": "application_case_passed_outer_lifecycle_failed_physical_cleanup_verified",
+  "receipt_sha256": "24793fbc06e23743f658d791fe845b15db8a8480a373f74ddfcc63c5018fd2ff",
+  "log_sha256": "195dfad15980125e62e43be16b1628bf0515c3d54f71c50123bb09950c670f63",
+  "probe_receipt_sha256": "a3ac9d341ff1ab9bc5288878949590e7b8e50935071068317579efbd74cc48f5",
+  "cleanup_sha256": "53e950e4e8c908b0f2eb4b6e8c8df155c4a0b11cde685e8e1501415cbf6adfc1",
+  "application": {
+    "actual_named_test": "exact_nostr_page_replacement_preserves_identity_order_and_authority_fences",
+    "passed": 1,
+    "failed": 0,
+    "test_returncode": 0,
+    "seconds": 7.55
+  },
+  "outer": {
+    "pass": false,
+    "owner_reported_exit": 1,
+    "guard_terminal_returncode": 143,
+    "error": {
+      "class": "PermissionError",
+      "message": "[Errno 13] Permission denied: '/proc/34/fd'"
+    },
+    "terminal_errors": [],
+    "cause_limit": "The fresh owner check refused an inaccessible exact test-process fd directory. No stronger race or permission cause is established."
+  },
+  "physical": {
+    "observed_births": 25,
+    "guard_captured_births": 15,
+    "independent_current_saved_birth_absence": true,
+    "same_namespaces_as_probe": true,
+    "owner_observed_listener_roles": {
+      "postmaster": [
+        40211
+      ],
+      "probe": [
+        36965
+      ]
+    },
+    "owner_terminal_all_ports_refused": true,
+    "postgres_cleanup": "verified_stopped",
+    "postgres_returncode": 0,
+    "forced": false,
+    "unknown_births": [],
+    "cleanup_errors": []
+  },
+  "source_and_protection": {
+    "owner_and_probe_source_hashes_exact": true,
+    "backend_pins": 308,
+    "held_browser_pins": 1167,
+    "held_frontend_members": 432,
+    "all_rehashed": true
+  },
+  "receipt_field_caveat": "Inherited terminal code overwrites probe_sha256 with probe.json hash. The source probe hash was separately verified and is unchanged.",
+  "review_attempt_note": "An initial combined read-only check asserted without identifying its observation; separate subsequent checks verified the same namespace, no matching saved births, exact cleanup, and all pinned inputs. No runtime was rerun.",
+  "limits": [
+    "Overall HTTP owner remains failed; the actual application case pass is retained separately.",
+    "Reviewer checked procfs identity absence and retained refusal evidence; no fresh socket probes or runtime executed.",
+    "Replacement frontend/browser and concurrent revocation qualification are not implied.",
+    "Original browser03 escalation remains held."
+  ]
+}

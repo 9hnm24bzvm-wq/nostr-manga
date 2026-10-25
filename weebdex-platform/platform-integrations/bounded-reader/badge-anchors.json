@@ -1,0 +1,135 @@
+[
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "label": "whole-title history remains device Continue only",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "if (!isPublished || !$libraryIdentity.canUse || historyDisposed) return;",
+    "after": "if (!isPublished || !$libraryIdentity.canUse || historyDisposed || $libraryIdentity.mode !== \"device\") return;"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "label": "visible badge page owner import",
+    "sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport { createVisibleChapterBadges } from \"$boundedReader/visible-badges.svelte\";"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "label": "one isolated owner for accepted visible page",
+    "sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e",
+    "count": 1,
+    "before": "let feed = $state<ChapterFeedResponse>();",
+    "after": "let feed = $state<ChapterFeedResponse>();\r\n\tconst visibleBadges = createVisibleChapterBadges({ manga: () => manga.id, href: () => page.url.href, chapters: () => feed?.data });\r\n\tconst badgeState = visibleBadges.state;"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "label": "capture chapter page before public lookup",
+    "sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e",
+    "count": 1,
+    "before": "const { href } = window.location;",
+    "after": "const { href } = window.location;\r\n\t\tconst badgeRequest = visibleBadges.requestPage();"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "label": "accept exact visible IDs before feed publication",
+    "sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e",
+    "count": 1,
+    "before": "feed = res.body;",
+    "after": "badgeRequest.accept(res.body);\r\n\t\t\tfeed = res.body;"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "label": "visible badge uncertainty and bounded retry",
+    "sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e",
+    "count": 1,
+    "before": "<section class=\"space-y-5\">",
+    "after": "<section class=\"space-y-5\">\r\n\t{#if $badgeState.message}<p role=\"status\" aria-label=\"Chapter read status\">{$badgeState.message}</p>{/if}\r\n\t{#if $badgeState.status === \"error\"}<button type=\"button\" onclick={() => visibleBadges.retry()}>Retry read status</button>{/if}",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/ChapterList.svelte",
+    "label": "visible page admission context import",
+    "sha256": "b786687f95242c96487b94114600b36da724366eed18bb6c4a850b53427d8c15",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport { getVisibleChapterBadges } from \"$boundedReader/visible-badges.svelte\";"
+  },
+  {
+    "path": "src/lib/components/ChapterList.svelte",
+    "label": "retain ordinary caches outside bounded title page",
+    "sha256": "b786687f95242c96487b94114600b36da724366eed18bb6c4a850b53427d8c15",
+    "count": 1,
+    "before": "const manga = $derived(getManga()());",
+    "after": "const manga = $derived(getManga()());\r\n\tconst visibleBadges = getVisibleChapterBadges();"
+  },
+  {
+    "path": "src/lib/components/ChapterList.svelte",
+    "label": "never admit unscoped cached title chapter IDs",
+    "sha256": "b786687f95242c96487b94114600b36da724366eed18bb6c4a850b53427d8c15",
+    "count": 1,
+    "before": "if (state._$ChapterList_feed) {",
+    "after": "if (state._$ChapterList_feed && !visibleBadges) {"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "isolated visible badge context import",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport { getVisibleChapterBadges, emptyBadgeView } from \"$boundedReader/visible-badges.svelte\";"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "isolated exact badge projection with non-title legacy fallback",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "const isRead = $derived($libraryIdentity.mode === \"device\"\r\n\t\t? ($localLibraryState.scopeStatus === \"verified\" && $localLibraryState.records.some(row => row.family === \"chapters\" && row.id === chapter.id && row.completed))\r\n\t\t: ($readHistory && manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false));",
+    "after": "const visibleBadges = getVisibleChapterBadges();\r\n\tconst badgeState = visibleBadges?.state ?? emptyBadgeView;\r\n\tconst isRead = $derived(visibleBadges ? visibleBadges.value($badgeState, chapter.id) : ($libraryIdentity.mode === \"device\"\r\n\t\t? ($localLibraryState.scopeStatus === \"verified\" && $localLibraryState.records.some(row => row.family === \"chapters\" && row.id === chapter.id && row.completed))\r\n\t\t: ($readHistory && manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false)));"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "unknown is not unread border",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "$libraryIdentity.canUse && !isRead",
+    "after": "$libraryIdentity.canUse && isRead === false",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "unknown disables read mutation",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "disabled={isUpdatingReadHistory}",
+    "after": "disabled={isUpdatingReadHistory || isRead === undefined}",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "read status action title reflects unknown",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "title={isRead ? \"Mark as unread\" : \"Mark as unread\"}",
+    "after": "title={isRead === undefined ? \"Read status unavailable\" : isRead ? \"Mark as unread\" : \"Mark as read\"}",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "unknown read status is not unread icon",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "{:else if isRead}",
+    "after": "{:else if isRead === undefined}\r\n\t\t\t\t\t\t\t<span aria-label=\"Read status unavailable\">?</span>\r\n\t\t\t\t\t\t{:else if isRead}",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "acknowledged mutation requery without partial Continue history",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "\tconst updateReadHistory = async () => {\r\n\t\tif (isUpdatingReadHistory) return;\r\n\t\tconst wasRead = isRead, view = captureLibraryContext(), mangaId = manga.id, chapterId = chapter.id;\r\n\t\tlet intent: ReturnType<typeof readActionOwner.capture> | undefined;\r\n\t\tisUpdatingReadHistory = true;\r\n\t\ttry {\r\n\t\t\tintent = readActionOwner.capture(); intent.assert();\r\n\t\t\tconst res = await API.ChapterHistory.UpdateBatch(\r\n\t\t\t\tmangaId,\r\n\t\t\t\twasRead ? { unread_ids: [chapterId] } : { read_ids: [chapterId] },\r\n\t\t\t\t{ context: view, assert: intent.assert }\r\n\t\t\t);\r\n\t\t\tintent.assert(); assertLibraryContext(view);\r\n\t\t\trequireMutationAcknowledgement(res, StatusCodes.OK, true);\r\n\t\t\tif (wasRead) {\r\n\t\t\t\tif ($readHistory && mangaId in $readHistory) delete $readHistory[mangaId][chapterId];\r\n\t\t\t} else {\r\n\t\t\t\tif (!$readHistory) $readHistory = {};\r\n\t\t\t\t($readHistory[mangaId] ??= {})[chapterId] = null;\r\n\t\t\t}\r\n\t\t\t$readHistory = $readHistory;\r\n\t\t} catch (error) {\r\n\t\t\treportCurrentMutationFailure(\"Read history update failed\", error, () => !!intent?.alive());\r\n\t\t} finally {\r\n\t\t\tisUpdatingReadHistory = false;\r\n\t\t}\r\n\t};",
+    "after": "\tconst updateReadHistory = async () => {\r\n\t\tif (isUpdatingReadHistory || isRead === undefined) return;\r\n\t\tconst wasRead = isRead, view = captureLibraryContext(), mangaId = manga.id, chapterId = chapter.id;\r\n\t\tlet intent: ReturnType<typeof readActionOwner.capture> | undefined;\r\n\t\tlet badgeMutation: ReturnType<NonNullable<typeof visibleBadges>[\"beginMutation\"]> | undefined;\r\n\t\tisUpdatingReadHistory = true;\r\n\t\ttry {\r\n\t\t\tintent = readActionOwner.capture(); intent.assert();\r\n\t\t\tbadgeMutation = visibleBadges?.beginMutation();\r\n\t\t\tconst res = await API.ChapterHistory.UpdateBatch(\r\n\t\t\t\tmangaId,\r\n\t\t\t\twasRead ? { unread_ids: [chapterId] } : { read_ids: [chapterId] },\r\n\t\t\t\t{ context: view, assert: intent.assert }\r\n\t\t\t);\r\n\t\t\tintent.assert(); assertLibraryContext(view);\r\n\t\t\trequireMutationAcknowledgement(res, StatusCodes.OK, true);\r\n\t\t\tif ($libraryIdentity.mode === \"device\" || !visibleBadges) {\r\n\t\t\tif (wasRead) {\r\n\t\t\t\tif ($readHistory && mangaId in $readHistory) delete $readHistory[mangaId][chapterId];\r\n\t\t\t} else {\r\n\t\t\t\tif (!$readHistory) $readHistory = {};\r\n\t\t\t\t($readHistory[mangaId] ??= {})[chapterId] = null;\r\n\t\t\t}\r\n\t\t\t$readHistory = $readHistory;\r\n\t\t\t}\r\n\t\t\tbadgeMutation?.acknowledged();\r\n\t\t} catch (error) {\r\n\t\t\tbadgeMutation?.uncertain();\r\n\t\t\treportCurrentMutationFailure(\"Read history update failed\", error, () => !!intent?.alive());\r\n\t\t} finally {\r\n\t\t\tisUpdatingReadHistory = false;\r\n\t\t}\r\n\t};"
+  }
+]

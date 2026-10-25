@@ -1,0 +1,44 @@
+{
+  "schema": "independent-build-result-review-v1",
+  "receipt": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-backend-compile-01/receipt.json",
+    "sha256": "809def827db838541385322c1be243f31a79de81618adcf880f84dcb31700b94",
+    "bytes": 79945
+  },
+  "log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-backend-compile-01/cargo-test-no-run.log",
+    "sha256": "75de556a15b0e84b602237a2a2646505248679dd37cea39546c8d02e23569ff4",
+    "bytes": 33214
+  },
+  "observed": {
+    "exit_code": 0,
+    "pass": true,
+    "child_reaped": true,
+    "timed_out": false,
+    "terminal_errors": []
+  },
+  "rehash": {
+    "replacement_sources": 308,
+    "held_browser_pins": 1167,
+    "held_frontend_files": 432
+  },
+  "artifacts": {
+    "unittests src/lib.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-cargo-target-01/debug/deps/weebdex_platform-cdb471e75086c1b6",
+      "sha256": "92659dcc2e4413b58dc060cd304ac8794a9a293695c5dbe9515dd1268f75bda7",
+      "bytes": 42313984,
+      "mode": 493
+    },
+    "tests/public_uploads.rs": {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-cargo-target-01/debug/deps/public_uploads-e4dbee86a27724a5",
+      "sha256": "96b98b4c57a58e0158d5526f21367463d280ecba50c86b321aa49938905e8597",
+      "bytes": 54375984,
+      "mode": 493
+    }
+  },
+  "limits": [
+    "Compile-only; no test body, HTTP, PG or browser ran.",
+    "Compiler warnings remain in the retained raw log.",
+    "Frozen original browser03 execution denial remains separate."
+  ]
+}

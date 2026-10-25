@@ -1,0 +1,5118 @@
+[
+  {
+    "bytes": 109312,
+    "path": "usr/lib/postgresql/18/bin/clusterdb",
+    "sha256": "7dacf7e2fb8156ca15f62f05ac9a94c0b7ea77fab9f0d9e85ed43b089a59cf2f"
+  },
+  {
+    "bytes": 109536,
+    "path": "usr/lib/postgresql/18/bin/createdb",
+    "sha256": "45b2ad3eb37f11c292b4c78fe718b72f4a2a11a3ec0584216158be38725b6047"
+  },
+  {
+    "bytes": 109856,
+    "path": "usr/lib/postgresql/18/bin/createuser",
+    "sha256": "5a8a56c5a7398de50dd81a7eea56cdb6f862716c0391fef9f861d090670967cf"
+  },
+  {
+    "bytes": 101056,
+    "path": "usr/lib/postgresql/18/bin/dropdb",
+    "sha256": "0a2bb4bdd9cb8c3f23a245c381c953e6754a9dfa9e998f5468b92f84506cfa67"
+  },
+  {
+    "bytes": 100992,
+    "path": "usr/lib/postgresql/18/bin/dropuser",
+    "sha256": "c3b7f7f55997f63e5461cdda6c7ff27d6625c8194134d30c898ec4de097deb1b"
+  },
+  {
+    "bytes": 196616,
+    "path": "usr/lib/postgresql/18/bin/initdb",
+    "sha256": "e625647c2750ff98d37f812e9fba60e9f6418e7d5a7488dfe7b6996312dbf206"
+  },
+  {
+    "bytes": 55616,
+    "path": "usr/lib/postgresql/18/bin/oid2name",
+    "sha256": "5ec548d0b3a82bfe65e8474faa9f82ca7a827cd4ed32c82ae7c857ae2a3c7445"
+  },
+  {
+    "bytes": 138784,
+    "path": "usr/lib/postgresql/18/bin/pg_amcheck",
+    "sha256": "12b22d52cac9807bec2c3e7b0c4fb41971671030425e53ea59742302aace9be3"
+  },
+  {
+    "bytes": 51616,
+    "path": "usr/lib/postgresql/18/bin/pg_archivecleanup",
+    "sha256": "dc8b2a08e907a45be9e8e008d20176937926f7f35525dc917fb112dad255e0bf"
+  },
+  {
+    "bytes": 200216,
+    "path": "usr/lib/postgresql/18/bin/pg_basebackup",
+    "sha256": "62666e936201f4acba4386377859abd01e1671b50dd49f816e54182f71d64640"
+  },
+  {
+    "bytes": 84648,
+    "path": "usr/lib/postgresql/18/bin/pg_checksums",
+    "sha256": "c7623b13856dd7d6e5e090ca3dd1d4888156940964436fd858bf79b89b3f1992"
+  },
+  {
+    "bytes": 170840,
+    "path": "usr/lib/postgresql/18/bin/pg_combinebackup",
+    "sha256": "01291f1d17c9306edf12d685afafa4a0c2711eb4bddc949bf407d19bd680f1f1"
+  },
+  {
+    "bytes": 51520,
+    "path": "usr/lib/postgresql/18/bin/pg_config",
+    "sha256": "32e5a1a70ab9c2d3939149137b66f3093db4d23b62936535e09e24a713e3f8e9"
+  },
+  {
+    "bytes": 67928,
+    "path": "usr/lib/postgresql/18/bin/pg_controldata",
+    "sha256": "0057ef5ee42d5f168f6c493417f4f16547dd5fbef4eda68c671eea758e614bb3"
+  },
+  {
+    "bytes": 142296,
+    "path": "usr/lib/postgresql/18/bin/pg_createsubscriber",
+    "sha256": "6a76e0e4bf8ef2bc5eb75bcc586b1e075fb7973b59ed77ce16f4f964ac55a383"
+  },
+  {
+    "bytes": 80568,
+    "path": "usr/lib/postgresql/18/bin/pg_ctl",
+    "sha256": "a05a893224f0edefe258c99d0c9c875156a8778af43653419093cad5ed66439d"
+  },
+  {
+    "bytes": 496464,
+    "path": "usr/lib/postgresql/18/bin/pg_dump",
+    "sha256": "66115325f4e49f7f9c79a83cfc89d2c9a1698858a1ae9786ae7595cd7a9f2de9"
+  },
+  {
+    "bytes": 274552,
+    "path": "usr/lib/postgresql/18/bin/pg_dumpall",
+    "sha256": "e76a3ee1d3f9d726f66b3d4c3386a575fad137b41376f927ae5b66c4718e7bd8"
+  },
+  {
+    "bytes": 100928,
+    "path": "usr/lib/postgresql/18/bin/pg_isready",
+    "sha256": "2aa2534c621439521f16e4a0d4489de2d7e564fc60cc6a01ff7850609bbaf4e1"
+  },
+  {
+    "bytes": 117760,
+    "path": "usr/lib/postgresql/18/bin/pg_receivewal",
+    "sha256": "a6c6f5470eeaadda58305bae9de915130b71348afeaa8cde60fa0287af3e75b6"
+  },
+  {
+    "bytes": 113864,
+    "path": "usr/lib/postgresql/18/bin/pg_recvlogical",
+    "sha256": "e40f5e0763bbb0fb7f769c4dbf8e4a34190df757bd0cf74c04b1d9f4f10f51a2"
+  },
+  {
+    "bytes": 80600,
+    "path": "usr/lib/postgresql/18/bin/pg_resetwal",
+    "sha256": "a07306006a0d6265a88aba28185a5b10a90c2adb7671f77dd18012cd45d56233"
+  },
+  {
+    "bytes": 253968,
+    "path": "usr/lib/postgresql/18/bin/pg_restore",
+    "sha256": "06115b93c3d1bf9d7c62563abb595792ea90acb9083233fd293eac1b34695840"
+  },
+  {
+    "bytes": 191320,
+    "path": "usr/lib/postgresql/18/bin/pg_rewind",
+    "sha256": "648286af5ef4508417e812d60a5c0bc1bf3cfa4205b0b34cb228b20d9207651e"
+  },
+  {
+    "bytes": 55656,
+    "path": "usr/lib/postgresql/18/bin/pg_test_fsync",
+    "sha256": "6aba53e42597197a3133b635f63625163e758695d82644802af2f5035eca9d64"
+  },
+  {
+    "bytes": 47424,
+    "path": "usr/lib/postgresql/18/bin/pg_test_timing",
+    "sha256": "11e550732faff80808be7eae0024e89c13c386e9c13d0545e163e309962e18bf"
+  },
+  {
+    "bytes": 229032,
+    "path": "usr/lib/postgresql/18/bin/pg_upgrade",
+    "sha256": "0e7dc27a4f19240a47988b1559e5fcced4e2d49634310d0dbd7065b0fb50865e"
+  },
+  {
+    "bytes": 146168,
+    "path": "usr/lib/postgresql/18/bin/pg_verifybackup",
+    "sha256": "de53e1fd1487aafb4c5b090018d6585f39683d5eef1c5daa66f88f862a334b20"
+  },
+  {
+    "bytes": 125896,
+    "path": "usr/lib/postgresql/18/bin/pg_waldump",
+    "sha256": "6be752d56db65c6e6b5a4a47c31859dbe4ced2da836e58cf09b60f0c0c4a4bd5"
+  },
+  {
+    "bytes": 76216,
+    "path": "usr/lib/postgresql/18/bin/pg_walsummary",
+    "sha256": "4a92269926f40bc121895079c7ce9138e156552a60f4a86ff4c567b0213b9015"
+  },
+  {
+    "bytes": 229152,
+    "path": "usr/lib/postgresql/18/bin/pgbench",
+    "sha256": "ffc2c2e3fbc810c4491362954c40791132d99ae4f9804b907b95a5abae93014b"
+  },
+  {
+    "bytes": 10549848,
+    "path": "usr/lib/postgresql/18/bin/postgres",
+    "sha256": "4944085dba4adcf0f65b8fb4e698c5ac353ecff890fdc89afe8007c2547b1469"
+  },
+  {
+    "bytes": 986656,
+    "path": "usr/lib/postgresql/18/bin/psql",
+    "sha256": "651b44cd205e8c25e7fc6a1079e949188a7acb2d9119db1c8c4479c08b7b0d3c"
+  },
+  {
+    "bytes": 113600,
+    "path": "usr/lib/postgresql/18/bin/reindexdb",
+    "sha256": "2b5a6026f68f91b719243ed99bb8f92aecbe4815484857d98166cdfef996430b"
+  },
+  {
+    "bytes": 126336,
+    "path": "usr/lib/postgresql/18/bin/vacuumdb",
+    "sha256": "7518a0b7b0f2fd843481a5ff044055f308666cb86de3be9297009ff84c34ac12"
+  },
+  {
+    "bytes": 51888,
+    "path": "usr/lib/postgresql/18/bin/vacuumlo",
+    "sha256": "4d7f80b8f9ffdb503abe37b5cc655fe5e4a4e87bdd7ea6c8fe560eb01cc965bd"
+  },
+  {
+    "bytes": 59472,
+    "path": "usr/lib/postgresql/18/lib/_int.so",
+    "sha256": "e5da2fdc4d6bd8676a79c008e67a1c67c97336135dda42f20af92a0995a14abf"
+  },
+  {
+    "bytes": 75856,
+    "path": "usr/lib/postgresql/18/lib/amcheck.so",
+    "sha256": "b298440ab572f2b730440b51c5d2cf314512a0563fdf049717090efd21616ad2"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/auth_delay.so",
+    "sha256": "55c98ff1b24f88c36fc14198df1059a92bf4f5f4a408ade9ea38cc0fbc52ef23"
+  },
+  {
+    "bytes": 14440,
+    "path": "usr/lib/postgresql/18/lib/auto_explain.so",
+    "sha256": "39f6729184c04b200f25f1534334f7ce22a49faae3dc23bfe1fcfcb87c6b5a2c"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/autoinc.so",
+    "sha256": "fd7b50ba3bcd050eb41798c46f1263573d4ea4dbe2e0f1d037394f7fc937c696"
+  },
+  {
+    "bytes": 14432,
+    "path": "usr/lib/postgresql/18/lib/basebackup_to_shell.so",
+    "sha256": "a9438edb3d4f6b5b89fff8d863a61088c33dedd6a022ab6bbea1c743003c889a"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/basic_archive.so",
+    "sha256": "94eb6f411bd51ddab4cd5340adbd13a34b254de4df7167b1c75636680cc0dcb2"
+  },
+  {
+    "bytes": 26704,
+    "path": "usr/lib/postgresql/18/lib/bloom.so",
+    "sha256": "05c9ba0ea4da4dd3465394ffceb80318bc8f617d29ed15c27f5764bb7bbd203a"
+  },
+  {
+    "bytes": 30640,
+    "path": "usr/lib/postgresql/18/lib/btree_gin.so",
+    "sha256": "996b0b91cf1a51dea6c1d2d5e11647ce85b4e6163451e9e1a6a8bdae7e870565"
+  },
+  {
+    "bytes": 104720,
+    "path": "usr/lib/postgresql/18/lib/btree_gist.so",
+    "sha256": "174e114ebdd73d473a1fd8c81f20d500ff31f55b7a47a72fa315343bbb89f1b2"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/citext.so",
+    "sha256": "46554e6467974b85514b6513716254954e5968056d2974ffdfe1fce4be63533a"
+  },
+  {
+    "bytes": 55376,
+    "path": "usr/lib/postgresql/18/lib/cube.so",
+    "sha256": "08decbfccb92e5fc530ae67dfe59535cdaffbc56563d2574dd2907372b862855"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/cyrillic_and_mic.so",
+    "sha256": "5fb76b17d40de3615f0fdc0ae98443e6ea3a1f77972c0d381c1608bb3fdb97a7"
+  },
+  {
+    "bytes": 59472,
+    "path": "usr/lib/postgresql/18/lib/dblink.so",
+    "sha256": "618397ffc03290c986c064ba97c8de1fa38c94608176d96b73e070e50b0e1a8d"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/dict_int.so",
+    "sha256": "b5dc86592ce50e3011b3f5097465948040dd1c65235946c985c5c0cb265d956b"
+  },
+  {
+    "bytes": 804944,
+    "path": "usr/lib/postgresql/18/lib/dict_snowball.so",
+    "sha256": "f6add2ca3c3134ecf6364f7952d43e9378e450c943a12c8f55cfc148226c913d"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/dict_xsyn.so",
+    "sha256": "5f18b344d7affb4d0cb5e7cc7b98c9e68c5c3f40321b43ccb50a4cfebfa9730c"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/earthdistance.so",
+    "sha256": "d187e44f0c8c01c0fd70a987909c244df72e11ec6915528c9ac091bb37c93d3e"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/euc2004_sjis2004.so",
+    "sha256": "8d674a1b566a339715544953cbcd5257bdd985f1e2a19482912d34140f673a93"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/euc_cn_and_mic.so",
+    "sha256": "a9c7b4d9efa00b9fb2948aa3cc84e5bcc582658bf1586c07f97f4e9d51de02df"
+  },
+  {
+    "bytes": 18352,
+    "path": "usr/lib/postgresql/18/lib/euc_jp_and_sjis.so",
+    "sha256": "eb2a5ab755ca84311daafe741cea525e854b11d737e27843bbef56a025631ca8"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/euc_kr_and_mic.so",
+    "sha256": "05d7ef771526711e83e85d83bc01359b3d63d0ee8f6b3512979aa48fb6d5c4f1"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/euc_tw_and_big5.so",
+    "sha256": "9a14b63ff310468f955ca5815c73898f1639bad4ec91d39080f389c2df93da34"
+  },
+  {
+    "bytes": 22608,
+    "path": "usr/lib/postgresql/18/lib/file_fdw.so",
+    "sha256": "522347c681677e4345db6c659a5868be5ae051917f83ffb595f7cd1ee0df8901"
+  },
+  {
+    "bytes": 47184,
+    "path": "usr/lib/postgresql/18/lib/fuzzystrmatch.so",
+    "sha256": "8c54fad34e953b28f1d21445169e4d3ce8027870eaa187dd29dc2a67591b3db1"
+  },
+  {
+    "bytes": 67664,
+    "path": "usr/lib/postgresql/18/lib/hstore.so",
+    "sha256": "5e063a22881675ad81c68f69bcc9a624203f21fae83034cb34cba75fad0f7378"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/insert_username.so",
+    "sha256": "bfc2702850406a0be6eb85c1d3ecadcedb17cef37ab7d70b9e6103c63b0343dc"
+  },
+  {
+    "bytes": 104904,
+    "path": "usr/lib/postgresql/18/lib/isn.so",
+    "sha256": "a756521148db7b7522e7a50b6cb260946bef572541bccb39c52540d2e967f325"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/latin2_and_win1250.so",
+    "sha256": "41df9a8684e9dabf2ef15e7bfa148501567e147838452df69df46fc8e4d172ca"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/latin_and_mic.so",
+    "sha256": "b36ed901642f04c9a843dcb78ad71ac55d473caf65a7759ffb7ef7eaa043e4b8"
+  },
+  {
+    "bytes": 35056,
+    "path": "usr/lib/postgresql/18/lib/libpqwalreceiver.so",
+    "sha256": "b346c7cb0ae6d58502f5ad5b5f5646bdf966582382df03214198240c07758cee"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/lo.so",
+    "sha256": "24c10c3441f5510afbb9e80800c6ffdfbcec8a98361b7a54f41688409ea922a2"
+  },
+  {
+    "bytes": 67664,
+    "path": "usr/lib/postgresql/18/lib/ltree.so",
+    "sha256": "e631a4b353b6de503ba8c50ccec7c04d7e7860d71eb29bace18d65807292c060"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/moddatetime.so",
+    "sha256": "d285ec1e2907fd1f8e011a5c4f0e5b6a6d17c784cc7d01ef9aba5682511fd906"
+  },
+  {
+    "bytes": 59472,
+    "path": "usr/lib/postgresql/18/lib/pageinspect.so",
+    "sha256": "1c624168102deaee9c3d51931b2e09bff82db3c5ba5a34847443baadfb7c0f80"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/passwordcheck.so",
+    "sha256": "17b51adc80045e94504d39a5116399522d5b538890766dee99139d5a68d9c503"
+  },
+  {
+    "bytes": 22608,
+    "path": "usr/lib/postgresql/18/lib/pg_buffercache.so",
+    "sha256": "8c9cb5edc58798dee660350bdf2cb85107715dcff5d12ad9518e02c8efbc37c1"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/pg_freespacemap.so",
+    "sha256": "fd7767c27ef57321bb671d41a77676fb0852d80d2b11259c0a427b1d56529afc"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/pg_logicalinspect.so",
+    "sha256": "e94a01e837aa8861ebf98eb7023bb828e3a52c63f76ba1827e3b08fdda3f271a"
+  },
+  {
+    "bytes": 18512,
+    "path": "usr/lib/postgresql/18/lib/pg_overexplain.so",
+    "sha256": "bddb3074c175462f661721927f05a5d821cbb5b3d857abeec3e6da204beb66c6"
+  },
+  {
+    "bytes": 34896,
+    "path": "usr/lib/postgresql/18/lib/pg_prewarm.so",
+    "sha256": "f38769b3c3ac8a27ba1393a2084d68019580e7c7d80e128dbba4b994a9d352e1"
+  },
+  {
+    "bytes": 47192,
+    "path": "usr/lib/postgresql/18/lib/pg_stat_statements.so",
+    "sha256": "986db7465a11a8c572e5be471e3c03f5874ba589ab9b81fe9c8c8394ecaed309"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/pg_surgery.so",
+    "sha256": "3e74a4e6e4af0d5870a04cca00ee191814c9798d9d5d127acd812f787b1393ed"
+  },
+  {
+    "bytes": 55408,
+    "path": "usr/lib/postgresql/18/lib/pg_trgm.so",
+    "sha256": "a4146d15cef9f1fd7517398c02bafe8c80919c4dfb4a83a16b1f136a2396d5f9"
+  },
+  {
+    "bytes": 22608,
+    "path": "usr/lib/postgresql/18/lib/pg_visibility.so",
+    "sha256": "1dc9c74df697d6549bdeb1c2d7bb8a3407b1ffe2e7db879c207d3c9cd962ed4a"
+  },
+  {
+    "bytes": 26704,
+    "path": "usr/lib/postgresql/18/lib/pg_walinspect.so",
+    "sha256": "6c7bbc1168178b0b6c84d56899b7df2c202e5a7a868f91c66dc3a4b1d310466b"
+  },
+  {
+    "bytes": 142216,
+    "path": "usr/lib/postgresql/18/lib/pgcrypto.so",
+    "sha256": "cccb19fdc988bcb2f942841d350c998ac2ce6330de60ba07d387dbd4596b1bb0"
+  },
+  {
+    "bytes": 38992,
+    "path": "usr/lib/postgresql/18/lib/pgoutput.so",
+    "sha256": "a8398ad1b5febce36083701cbd279525e82e98a215eb37ef2c67efbf7b158732"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/pgrowlocks.so",
+    "sha256": "bb2d0fd98a297ea624e11d3f8d404dae0cf3aca7df18eea6b8aa3cbf3b6fa3a0"
+  },
+  {
+    "bytes": 34896,
+    "path": "usr/lib/postgresql/18/lib/pgstattuple.so",
+    "sha256": "3229a49924a4864ca6e865ec244fdac4698896f3c870838849c79d4f9e6425ca"
+  },
+  {
+    "bytes": 26704,
+    "path": "usr/lib/postgresql/18/lib/pgxml.so",
+    "sha256": "6ec18d515ace5458d0f8d19cfe2efc2ff5a9dd110be773d9e301f98e4b719aee"
+  },
+  {
+    "bytes": 15437,
+    "path": "usr/lib/postgresql/18/lib/pgxs/config/install-sh",
+    "sha256": "250865025dcfc1b511e3899a16f793a7d7717d3ac2af1bdea8af9171bf1dc9ff"
+  },
+  {
+    "bytes": 1348,
+    "path": "usr/lib/postgresql/18/lib/pgxs/config/missing",
+    "sha256": "9d387d326e46288afb4ed5b9c3c12353d7627ea6277fc6d93b27d52164dca6b7"
+  },
+  {
+    "bytes": 37781,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/Makefile.global",
+    "sha256": "4e31dbdb7d447686455a7591c28a51cdba6268d81083007670c6009badb6fe8f"
+  },
+  {
+    "bytes": 308,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/Makefile.port",
+    "sha256": "005649b40ae7dfdf03650e074de7901acc4380f09169c4315720d390e21c44fe"
+  },
+  {
+    "bytes": 14279,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/Makefile.shlib",
+    "sha256": "395af3916046f51223067326fe201b7530a1290cf6d23a580e78bc6b56fb63e4"
+  },
+  {
+    "bytes": 14852,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/makefiles/pgxs.mk",
+    "sha256": "2b21722b5a679dc391abef6170a06b0b1d228ed26d4791ef968c9ff0622f79ae"
+  },
+  {
+    "bytes": 7064,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/nls-global.mk",
+    "sha256": "34ece50ab8a9aa73c0660d375d837054d4730a86705a59c33986f88ef059f62b"
+  },
+  {
+    "bytes": 55560,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/isolation/isolationtester",
+    "sha256": "f1d3e721d3a67c64a19409d7e80ca5735c11a2e787da8295bbfe16ad445b5bd6"
+  },
+  {
+    "bytes": 97456,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/isolation/pg_isolation_regress",
+    "sha256": "b67778db3291446763e3f96d87d3a34229d16c085a450f4fd75150404a7c9c96"
+  },
+  {
+    "bytes": 4173,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/perl/PostgreSQL/Test/AdjustDump.pm",
+    "sha256": "4406accbf05969464ed10f18a6e89ad401da195fb8c76f91adb2ea7476636fea"
+  },
+  {
+    "bytes": 23300,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/perl/PostgreSQL/Test/AdjustUpgrade.pm",
+    "sha256": "87dd0dd6e0131c94b17c358a29d0c5e0baa2a8cfbc41603f2b6846427a73ab6a"
+  },
+  {
+    "bytes": 9063,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/perl/PostgreSQL/Test/BackgroundPsql.pm",
+    "sha256": "68f1aa4e41f24b65ed3688d2ef254cf5cbb15bc928563e1bce69991b0fa648c3"
+  },
+  {
+    "bytes": 97295,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/perl/PostgreSQL/Test/Cluster.pm",
+    "sha256": "1777cfd02aa97a906d2ec9c1c42887761307064d5a153b086d7268ee4a991095"
+  },
+  {
+    "bytes": 5946,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/perl/PostgreSQL/Test/Kerberos.pm",
+    "sha256": "cc54ba8ceb5e5e03a18aa7ce625fa571eb7469e978cddbfd4e8ca3366db09b9a"
+  },
+  {
+    "bytes": 4098,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/perl/PostgreSQL/Test/RecursiveCopy.pm",
+    "sha256": "200d6299df774a12e46fdfa8c4341b63aea570da095808d1d7d17161bdaa2023"
+  },
+  {
+    "bytes": 1582,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/perl/PostgreSQL/Test/SimpleTee.pm",
+    "sha256": "eb6ac6c01794a6cdc0519ca47b4e0e5f7d911c4aa120ae793e1e1fbab5275a22"
+  },
+  {
+    "bytes": 26198,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/perl/PostgreSQL/Test/Utils.pm",
+    "sha256": "aa217bbb48d76bd57f74fca69cd0295a64280213438b80a6abbc7cf560cec412"
+  },
+  {
+    "bytes": 3579,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/perl/PostgreSQL/Version.pm",
+    "sha256": "4ed76a26c16078ce969c2b2525c951eca9e8cd541fb04de5ca38f77b54ed3cde"
+  },
+  {
+    "bytes": 97456,
+    "path": "usr/lib/postgresql/18/lib/pgxs/src/test/regress/pg_regress",
+    "sha256": "bb76a61c0f6546c8b5433c8fd809fc8723406b3fe7a6b2dad6737c84ac4f57d1"
+  },
+  {
+    "bytes": 206928,
+    "path": "usr/lib/postgresql/18/lib/plpgsql.so",
+    "sha256": "5a9e41b9e2a182fec34fdae13fe2021133734c0eef5907a4260b39bccc66b44e"
+  },
+  {
+    "bytes": 141392,
+    "path": "usr/lib/postgresql/18/lib/postgres_fdw.so",
+    "sha256": "bf1a2aca422f7e10032325b951ccab75e1fd33596d858e9329e78270cd18bbb5"
+  },
+  {
+    "bytes": 18512,
+    "path": "usr/lib/postgresql/18/lib/refint.so",
+    "sha256": "663a51155233b3d63b72c2a1aca9ca821692cd5370dac237356d2fecf00ac964"
+  },
+  {
+    "bytes": 34896,
+    "path": "usr/lib/postgresql/18/lib/seg.so",
+    "sha256": "1543b40cf8e15247c1302fc96a4df99dfd663971d5c3803f92da6ba4e16eb3c0"
+  },
+  {
+    "bytes": 67664,
+    "path": "usr/lib/postgresql/18/lib/sepgsql.so",
+    "sha256": "39429d08652e6dae0154b8926f3720c5d1bf71f21dc9ae952cf218ef4c071572"
+  },
+  {
+    "bytes": 18512,
+    "path": "usr/lib/postgresql/18/lib/sslinfo.so",
+    "sha256": "68a51899e48ed10c400812f4a7aab2567bc8dfc80cb9587b06f2df97e579a83a"
+  },
+  {
+    "bytes": 30800,
+    "path": "usr/lib/postgresql/18/lib/tablefunc.so",
+    "sha256": "025672aa9834ad3652b5236b058bdba86284ab10e1f3e3edfcc83070612a52d6"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/tcn.so",
+    "sha256": "543c6ea5f4ed8ea3ef866b81cffa0db8d9de8a707fda54be473cd993d744536f"
+  },
+  {
+    "bytes": 22608,
+    "path": "usr/lib/postgresql/18/lib/test_decoding.so",
+    "sha256": "c20c15921168b2386e858f8f70c2925d9b971aaa317b969a5306b9e68c8e23cf"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/tsm_system_rows.so",
+    "sha256": "f610133a2cc1063bae3057b6b43e7b1c89e2e2aaf0ff7ae546b30375eac45b37"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/tsm_system_time.so",
+    "sha256": "1e8a6b983d3b36885572d193f9f73d0ad4ca4ee427ffb378a63cf4c7751e18d7"
+  },
+  {
+    "bytes": 18512,
+    "path": "usr/lib/postgresql/18/lib/unaccent.so",
+    "sha256": "4f2bd3d62393791238f0fc91ac2483dbd44e98827e268fadfa3fa3d6c923cb78"
+  },
+  {
+    "bytes": 128944,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_big5.so",
+    "sha256": "596a42eadebc2255de18792d7364028c240dd37d3a0f75ce85c0fcb8061437a0"
+  },
+  {
+    "bytes": 18352,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_cyrillic.so",
+    "sha256": "41fbc87afe6991083cc6a0423b06c770b212ca5216a74bb243481e8835108e1a"
+  },
+  {
+    "bytes": 219056,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_euc2004.so",
+    "sha256": "2bb393c89a7416276c95fe848fb04e756d427d4fb79fe2b12ffb44d5ece658b7"
+  },
+  {
+    "bytes": 87984,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_euc_cn.so",
+    "sha256": "71200b39f97d5ef8c1dcfdf2a5d0a9ea5e1baa7de2b27854068548bcc7d2a457"
+  },
+  {
+    "bytes": 165808,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_euc_jp.so",
+    "sha256": "26fbce1dbac623d70ac3ff53dc99a68c2a68539543cb8d51674854c7294a2627"
+  },
+  {
+    "bytes": 116656,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_euc_kr.so",
+    "sha256": "678aa234fa30eea22bcdc133edeeba5b18aecc950c05dbb5d2c9abfcaa592816"
+  },
+  {
+    "bytes": 210864,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_euc_tw.so",
+    "sha256": "6ff8463ac6549eb06445e8bfed4433465e44e57b47606309fa35c6cc7d2e4ab6"
+  },
+  {
+    "bytes": 272304,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_gb18030.so",
+    "sha256": "4f91613f5ae031860887b194edffcda7c31e73051d0d9c446ca764501ff19ef5"
+  },
+  {
+    "bytes": 157616,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_gbk.so",
+    "sha256": "5de1860add78070e11101588f45d47517b3d113c43170449fe631468febd12a7"
+  },
+  {
+    "bytes": 34736,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_iso8859.so",
+    "sha256": "5f931fd5f27ee8ccacc28c8e94ac39de8257ee4a0037edfbc8fd2eddd9319f9f"
+  },
+  {
+    "bytes": 14256,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_iso8859_1.so",
+    "sha256": "8f2446cba7efdd13775f35404c55b3e32d5490b20c730e42b990d2a9428db247"
+  },
+  {
+    "bytes": 174000,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_johab.so",
+    "sha256": "4f57c25d5c8a80a3c0d904229039d76ab32f01bec2b3af8005659a419bee768c"
+  },
+  {
+    "bytes": 96176,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_sjis.so",
+    "sha256": "f23e673ce9e53cc24d3a5d4aa0dc462f2ad95ab079e27b7db7cbc19777c5cf10"
+  },
+  {
+    "bytes": 141232,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_sjis2004.so",
+    "sha256": "8d7e4f2af277c524771a0619c67a6b1ecb24217f945aa996e8e052598232cea2"
+  },
+  {
+    "bytes": 178096,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_uhc.so",
+    "sha256": "cb64dd7f25b1c948f49b44c4247e009ec30f7e3791ca2938a8d5137e4bff7dc2"
+  },
+  {
+    "bytes": 38832,
+    "path": "usr/lib/postgresql/18/lib/utf8_and_win.so",
+    "sha256": "1c3ea1a8784fc8e8e4ef082d3fe0f13a99f57f807180ce52dd12157644e23dfe"
+  },
+  {
+    "bytes": 14416,
+    "path": "usr/lib/postgresql/18/lib/uuid-ossp.so",
+    "sha256": "e7e646ac2c9011f4b13e662689e77d30d19a5b84ba0cc0b4d99ebb79814e961f"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/libpq.so.5",
+    "symlink": "libpq.so.5.18"
+  },
+  {
+    "bytes": 395680,
+    "path": "usr/lib/x86_64-linux-gnu/libpq.so.5.18",
+    "sha256": "9cce9bfae9405a71e0d642457d9d8748093cea9fdc0f785b5d2ed9575aec168d"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/liburing-ffi.so.2",
+    "symlink": "liburing-ffi.so.2.9"
+  },
+  {
+    "bytes": 51272,
+    "path": "usr/lib/x86_64-linux-gnu/liburing-ffi.so.2.9",
+    "sha256": "9e141f6d95036eb11933037217f2fc2d61e256b6ed875c8b9f26dc8d62e6474d"
+  },
+  {
+    "path": "usr/lib/x86_64-linux-gnu/liburing.so.2",
+    "symlink": "liburing.so.2.9"
+  },
+  {
+    "bytes": 30792,
+    "path": "usr/lib/x86_64-linux-gnu/liburing.so.2.9",
+    "sha256": "27e394244c998e6deeff5f49d2cac4ee5c399d35f8d502e8adb86d12e6fa554f"
+  },
+  {
+    "bytes": 11346,
+    "path": "usr/share/doc/libpq5/changelog.Debian.gz",
+    "sha256": "85e62707d149d83ec89a7e34b331d83491ee3894e4fcf1f2a5aa44735ac2ff7f"
+  },
+  {
+    "bytes": 261,
+    "path": "usr/share/doc/libpq5/changelog.gz",
+    "sha256": "d14690791995729bbac7d226809ada70b073e81d6cd0ca0a7889fe4097bb8498"
+  },
+  {
+    "bytes": 12934,
+    "path": "usr/share/doc/libpq5/copyright",
+    "sha256": "afcc052a946b4117667527211b4ca303f07044f5585222f4c8f577e0764b2123"
+  },
+  {
+    "bytes": 2465,
+    "path": "usr/share/doc/liburing2/changelog.Debian.gz",
+    "sha256": "b4c602bebce1af1699410742ae446b8fbd0a6c2896447246f23aeb6108bb706a"
+  },
+  {
+    "bytes": 2285,
+    "path": "usr/share/doc/liburing2/changelog.gz",
+    "sha256": "a81b519d093b31ab2779d80d53261fce2b56d661a4eeaa1383f939ab495a2979"
+  },
+  {
+    "bytes": 4950,
+    "path": "usr/share/doc/liburing2/copyright",
+    "sha256": "c1c394745e57257f5a7fc2f652e0e5f5ece08f6dc979f395b7216cb62b1e98ec"
+  },
+  {
+    "path": "usr/share/doc/postgresql-18/README.Debian.gz",
+    "symlink": "../postgresql-common/README.Debian.gz"
+  },
+  {
+    "bytes": 11346,
+    "path": "usr/share/doc/postgresql-18/changelog.Debian.gz",
+    "sha256": "85e62707d149d83ec89a7e34b331d83491ee3894e4fcf1f2a5aa44735ac2ff7f"
+  },
+  {
+    "bytes": 261,
+    "path": "usr/share/doc/postgresql-18/changelog.gz",
+    "sha256": "d14690791995729bbac7d226809ada70b073e81d6cd0ca0a7889fe4097bb8498"
+  },
+  {
+    "bytes": 12934,
+    "path": "usr/share/doc/postgresql-18/copyright",
+    "sha256": "afcc052a946b4117667527211b4ca303f07044f5585222f4c8f577e0764b2123"
+  },
+  {
+    "bytes": 798,
+    "path": "usr/share/doc/postgresql-18/examples/autoinc.example",
+    "sha256": "65d6f64b26468f34cf192e54b09a9235fd41c17fc47acd7a12b0d35cfd0d29a4"
+  },
+  {
+    "bytes": 560,
+    "path": "usr/share/doc/postgresql-18/examples/insert_username.example",
+    "sha256": "f8ca2cc72359704097bf17b2bea9aa7b94b321f6204d4a4961d274a9cf3f2d99"
+  },
+  {
+    "bytes": 493,
+    "path": "usr/share/doc/postgresql-18/examples/moddatetime.example",
+    "sha256": "49e64f09781b8498f2cac51ba516bd83900f329902a921f5424c20115bcd7116"
+  },
+  {
+    "bytes": 2105,
+    "path": "usr/share/doc/postgresql-18/examples/refint.example",
+    "sha256": "196420aac0d1a4e73ed8bcdeae5c3bfba059ed216a36a24e220fa61e30fcb60e"
+  },
+  {
+    "bytes": 11346,
+    "path": "usr/share/doc/postgresql-client-18/changelog.Debian.gz",
+    "sha256": "85e62707d149d83ec89a7e34b331d83491ee3894e4fcf1f2a5aa44735ac2ff7f"
+  },
+  {
+    "bytes": 261,
+    "path": "usr/share/doc/postgresql-client-18/changelog.gz",
+    "sha256": "d14690791995729bbac7d226809ada70b073e81d6cd0ca0a7889fe4097bb8498"
+  },
+  {
+    "bytes": 12934,
+    "path": "usr/share/doc/postgresql-client-18/copyright",
+    "sha256": "afcc052a946b4117667527211b4ca303f07044f5585222f4c8f577e0764b2123"
+  },
+  {
+    "bytes": 731,
+    "path": "usr/share/lintian/overrides/postgresql-18",
+    "sha256": "e42ed2697d42e95f8c0134ffd0dda46fd5604dbd671a0cd951ce9c2f341a3960"
+  },
+  {
+    "bytes": 112,
+    "path": "usr/share/lintian/overrides/postgresql-client-18",
+    "sha256": "7b7700d95ab59607f0d6d5585bbc71081b7570c806ccd7dbbd50e02650b91c01"
+  },
+  {
+    "bytes": 22904,
+    "path": "usr/share/locale/cs/LC_MESSAGES/initdb-18.mo",
+    "sha256": "ed0905a0fb73fa79c817b2bca4c63b7406f42da7a64bcdec65f25cf62402dfee"
+  },
+  {
+    "bytes": 31369,
+    "path": "usr/share/locale/cs/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "e7515d143c146c035d88e40f4b6c0a3cfbd582bb7a8c162c2a58a092337bfc1d"
+  },
+  {
+    "bytes": 3430,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "04e91998b30e8c42037d4a26d1edb8bbdcbd8ddc5162468f9a4b7e933c228aca"
+  },
+  {
+    "bytes": 35322,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "1cdcdcd0fd09aadc0bae3be53e09c7221514bf0f6d30edd3996ad070c376e632"
+  },
+  {
+    "bytes": 6407,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "60d7887ec2987624843e5fa95a37c58d92437be408ffa54ba7727094e35e6524"
+  },
+  {
+    "bytes": 6237,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "1ebf7075ebb3b46e95fc224f109ba9fe3589391e521cc31c4254432665ac7c3e"
+  },
+  {
+    "bytes": 10999,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "7a9ea6c611616e99be679bf580e9a0cdff4e3d512c153689db73e4bec12e02c5"
+  },
+  {
+    "bytes": 18588,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "af44e9b44a29bb69b71b3ccc1431cf79f68148847e89d445129b8565085cefeb"
+  },
+  {
+    "bytes": 63216,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "6fd330e6bc6e3a116f52ce32f0153097f8af024f58bc3587a1ae895730fa73b6"
+  },
+  {
+    "bytes": 14050,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "7ee7ee8d54e856346e8ea3f6bbfbd26283a09195120685605f50424a6f8a3333"
+  },
+  {
+    "bytes": 21834,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "2d13d1ecea6b56daae30b6cabd33fffc5ca94f3dedcbe118ae31eb38195e2a1a"
+  },
+  {
+    "bytes": 3522,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "41e453320d09fd2bbf1f1d149016e714fafadfa46ac4b3dce3d1c9b457f6fb38"
+  },
+  {
+    "bytes": 1578,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "deca98896432a5a1dc8c2d504d3bdc78a5776a5026c868feee321a68bd16613e"
+  },
+  {
+    "bytes": 43867,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "8f7b068a3b8823aebce9e0701da41e66b8a83a848b79d443276df340968e81fa"
+  },
+  {
+    "bytes": 7257,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "c350cd1029e8f115ecb58ed7ae6da1ffd0623006f62fee6d9c1aa92cf3187bd1"
+  },
+  {
+    "bytes": 27002,
+    "path": "usr/share/locale/cs/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "3f4b4b78cb939dfe9708111067e66c61b9205edf0522f947273e280acba71434"
+  },
+  {
+    "bytes": 20093,
+    "path": "usr/share/locale/cs/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "9fe4f43269e78e4b47222fc3a5764e9b6d990eb72bcdae882f214b5271161936"
+  },
+  {
+    "bytes": 112009,
+    "path": "usr/share/locale/cs/LC_MESSAGES/psql-18.mo",
+    "sha256": "0be8e8fa2a7f8dd29369007aed5ced9823c6a55009602b46fdc422756e6eaf9b"
+  },
+  {
+    "bytes": 28091,
+    "path": "usr/share/locale/de/LC_MESSAGES/initdb-18.mo",
+    "sha256": "4649e785306397916e309f04a8fcff469b786ae0ced421cb0c91370862e10ce0"
+  },
+  {
+    "bytes": 50367,
+    "path": "usr/share/locale/de/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "b4bbc26f16d3b46bd46447f0d4b726b55521356932cb36794215ade41a7a7256"
+  },
+  {
+    "bytes": 14887,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "5228b9142e89dfa4090e6818abade12e30eff292f0790c35898cae45f33b740f"
+  },
+  {
+    "bytes": 4438,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "4cecc48d5cb5837fe65efeba765067bddc6c614cb87a79e3145b60a41b20c12a"
+  },
+  {
+    "bytes": 70129,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "0bc27b77ed152466b70f0a6708c5de1da139502cba6b13a7e0d25eb9badab371"
+  },
+  {
+    "bytes": 10419,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "4bae87f98ced0074a34734a19bbc72be8c1d8ccb25ebb44b104df4682cbebe7a"
+  },
+  {
+    "bytes": 21700,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_combinebackup-18.mo",
+    "sha256": "ef421c2e2ed2baf4f5a13ef55fff7d31b0994a4b2dc1d12704e579eaaa916bf3"
+  },
+  {
+    "bytes": 6828,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "57d8ad81482736019bb241285ef42e8e15a65d078ac2a778fd17b214f2cd04b9"
+  },
+  {
+    "bytes": 11674,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "6b46240881631543c8bbe314efebe46f0ef3860f5a44a67bae4a2af89aa6d308"
+  },
+  {
+    "bytes": 20123,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "a804b57be3498175392cf49e7dcabbe591f84fd46383df3dc69e55622fb3c3e8"
+  },
+  {
+    "bytes": 75599,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "4273b39e4eab2c2fd9c0804790c64c1dcbb2d06ea062db5d7f2f3b5beb23f5d0"
+  },
+  {
+    "bytes": 17376,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "82850141b29b6e4c9f7569581fd17c3f0541c92d40da8fc71a92c667e3cfde14"
+  },
+  {
+    "bytes": 28686,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "7c6f8db9578ead471749f03ac8094f65428adf4a8fa96534362570e57697f5aa"
+  },
+  {
+    "bytes": 4498,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "9be8d84b97cb7afd9789bfeeb34f47aa8b9f5f5d502809a62f03a986f97f8430"
+  },
+  {
+    "bytes": 2109,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "62fa65a2c70c81d04b2373b532b81539322833f933a30b02ff5d2d7474d80117"
+  },
+  {
+    "bytes": 59113,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "22c6ce7e067a1b12bb6f56e479dab9f16a9ebb90e14188d85c8e4d80ac6611f6"
+  },
+  {
+    "bytes": 20520,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "ecb3320ab152e2e3d53b09e5d476c1572fbc9294474b70862470f87b2ac1f6e1"
+  },
+  {
+    "bytes": 16013,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "b5914e8e8bd0ee843eb059147e31e87e17d915f0674da971ff93273f15f1bdeb"
+  },
+  {
+    "bytes": 3437,
+    "path": "usr/share/locale/de/LC_MESSAGES/pg_walsummary-18.mo",
+    "sha256": "0d9827553d4e11d9c071de7488aa3d326a16a629d6dc678fe8306f995f7fb6f1"
+  },
+  {
+    "bytes": 33678,
+    "path": "usr/share/locale/de/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "e8c1bed3c3a32f92a7862e2bf9af318030535857a51ce69e67fbc11175b97433"
+  },
+  {
+    "bytes": 20734,
+    "path": "usr/share/locale/de/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "d591643f644a0b32c0295477b1bb197433d39eb1844d25e9dca2948b9d54a572"
+  },
+  {
+    "bytes": 900070,
+    "path": "usr/share/locale/de/LC_MESSAGES/postgres-18.mo",
+    "sha256": "2b47242628302a453c2e7fa4374900863b673b24edfdfe7a3c80d699c88cdaa2"
+  },
+  {
+    "bytes": 128122,
+    "path": "usr/share/locale/de/LC_MESSAGES/psql-18.mo",
+    "sha256": "10a6e1667addff0324faa9a18785e29905f9d5d13ff7b2f3df42f6fb6aba70fc"
+  },
+  {
+    "bytes": 34748,
+    "path": "usr/share/locale/el/LC_MESSAGES/initdb-18.mo",
+    "sha256": "293cc7a8ea8fcbcdcd897b10bf07dc57b00ba461a3263b8804de4aa32b77b646"
+  },
+  {
+    "bytes": 48291,
+    "path": "usr/share/locale/el/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "90a97ab05cb13f0e3fb95f7823ecf3c4b4d77f88e38da651167bb263cc094404"
+  },
+  {
+    "bytes": 15756,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "c480c0bcf18d27c0491c5bfa5ac9c499354fc4ba2e61abdd92da4a849f8d4ae2"
+  },
+  {
+    "bytes": 4591,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "e522b6df941571df8110f2ad1069fdd9dbcb42881dd69053c85f35e3d9d0ee5f"
+  },
+  {
+    "bytes": 59048,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "f57a6a31979a8fa3063a6fc3d8c97caba26d87d5f26dde8657a3452af23fae65"
+  },
+  {
+    "bytes": 9177,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "fdceed6229ca4e559602e1b77630548cbc60041be5cab4df48f47758f9e40e3d"
+  },
+  {
+    "bytes": 7976,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "3d048f1049d6cd8e3c37d5db800f35c76432837df3537e84d89d9db8b6d9a489"
+  },
+  {
+    "bytes": 14329,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "e1a1d89fe50b35fe003b8dd4878dc1877975835decd9fc01d57fe2b01233ad51"
+  },
+  {
+    "bytes": 26594,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "06de99f9fdc8f75b5ec893a4845ac02cb3db22726b5a2d56ee5d270056fba71f"
+  },
+  {
+    "bytes": 89606,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "0a0c1e63c553d809415ad249c0ee0d9c4b2745210890d0ee4c36cb82a57d3855"
+  },
+  {
+    "bytes": 19169,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "283337574c3b88a12cb8aa098e659a2e3598c68fe4af354d90dc2762130c021e"
+  },
+  {
+    "bytes": 33848,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "af991da88fc60dcbe77293fd2c078aed1330fb9380c40117364b5b7fb7cb9132"
+  },
+  {
+    "bytes": 5163,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "5ffd62d05fc4525e64dd9793af970615c57191da4786f1295d31ab7b2b6b493c"
+  },
+  {
+    "bytes": 2081,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "3f1579c523ad26517f6c4ad021c71cadc46c5abf40de94c46118f1915a9b3258"
+  },
+  {
+    "bytes": 15070,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "ee39cdce4f056bbcd1f7d754aa836e38cf30351fcab56c6c27226807147fd75a"
+  },
+  {
+    "bytes": 19326,
+    "path": "usr/share/locale/el/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "c228da34e14698302f4f0dd343bb8cd091380d84998bc82aede668fa4037c236"
+  },
+  {
+    "bytes": 41953,
+    "path": "usr/share/locale/el/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "d57873ed01a9b4136079987450a933321b3afae9ceedf4bc507a6bbb477d47be"
+  },
+  {
+    "bytes": 27335,
+    "path": "usr/share/locale/el/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "691974914e3f8d6f7ad5c99218335c32935f96de613423567d83fd0496529626"
+  },
+  {
+    "bytes": 150182,
+    "path": "usr/share/locale/el/LC_MESSAGES/psql-18.mo",
+    "sha256": "ccb897663f729b9812d7919a7fa028160792cba63c17935ecb72d3bfacba4235"
+  },
+  {
+    "bytes": 28705,
+    "path": "usr/share/locale/es/LC_MESSAGES/initdb-18.mo",
+    "sha256": "e023c11557c6bbda09e1e4586e236f1c0df8227edc003216aa6976cacb12ed4b"
+  },
+  {
+    "bytes": 51264,
+    "path": "usr/share/locale/es/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "da19f700ccf2e31df2c8e515919deb42a31737cee14e99ddb73fa7c398ca8709"
+  },
+  {
+    "bytes": 15013,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "2c595a9f06d9e83c748bd3652877102c45cd9ce997b33a9d430b9e60d4c73ed2"
+  },
+  {
+    "bytes": 4351,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "324dc4e16792ccb4a706067e134e9931a7494d75b82527f9b2bee48f7c246794"
+  },
+  {
+    "bytes": 69971,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "aee9880b760dad93372e668477e586a6c619811fa4b74ac321203cdb1a2fd31f"
+  },
+  {
+    "bytes": 10070,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "6a555642950d598a2f05c54c99ac8541cd3b2136aef697f668b8e31e8bfc4901"
+  },
+  {
+    "bytes": 21909,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_combinebackup-18.mo",
+    "sha256": "c44177b43d1232ab298d701ffc3ac0852772045f23cf57ad7e5acaec1d9e8a41"
+  },
+  {
+    "bytes": 6994,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "12046b32cdcd3ca4d5a9f1d7b91bc64b37570f2207929d76ea7ddbbffca2c4ba"
+  },
+  {
+    "bytes": 11495,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "b938a383aacdba03009b3f43c5a11121eb617f9aff37c94eda65f0c09b5a5baa"
+  },
+  {
+    "bytes": 20493,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "ca16ab7bcbf58cc1a812f24ad0c1b9e9b4933f8f6a11b410edbaa84857d98c3e"
+  },
+  {
+    "bytes": 76184,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "70362babaf3042d80e693205ae432539cdce31dd8263055ddd1234c8b43f23a8"
+  },
+  {
+    "bytes": 17534,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "bdc442bb83a88835a1daffcc72308033ffab5ca86a52876ad7f020478f767fa2"
+  },
+  {
+    "bytes": 28346,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "64b926434eb7b45e2f72e41d2cad09a141bb4ea18024758695c3dec113bbc26d"
+  },
+  {
+    "bytes": 4341,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "67d54f736ef932eb514f6d3b1564cb159413cde3344b440e5916fafe6e56c467"
+  },
+  {
+    "bytes": 1930,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "adf911a3e854b0238ff79004ac87257bd3a52a9439d946b28815624c290404b6"
+  },
+  {
+    "bytes": 58867,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "34e512d9adf7630d6f6f61acb859a74d6b8f10c993eac40f58ffba379c64ae8a"
+  },
+  {
+    "bytes": 20944,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "d8052c2a609feaaa0d66c54aaaa6756acd955d6193f79986139a5d68c86a311e"
+  },
+  {
+    "bytes": 16312,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "7c497bbd35077d0b037a09c7b0bee9221949fe02020817a27c4b7c3d835e2370"
+  },
+  {
+    "bytes": 3293,
+    "path": "usr/share/locale/es/LC_MESSAGES/pg_walsummary-18.mo",
+    "sha256": "ba8395f80d6ba7a098cbcd360e8c3fd30c0fbf6478c53b41f19b7e96009ee2c8"
+  },
+  {
+    "bytes": 33448,
+    "path": "usr/share/locale/es/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "e4d6594a53a70634c014aae870699fec9b9ff36408c5f085deab1a36f35645f6"
+  },
+  {
+    "bytes": 20943,
+    "path": "usr/share/locale/es/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "e865e59ae2679161d64996f2a66ab7b41706aac64804d882fa8c8518828b8ef2"
+  },
+  {
+    "bytes": 852515,
+    "path": "usr/share/locale/es/LC_MESSAGES/postgres-18.mo",
+    "sha256": "ce71fe933392956d40d38e077c33affb439112ba43f2c72142c862b347685445"
+  },
+  {
+    "bytes": 129987,
+    "path": "usr/share/locale/es/LC_MESSAGES/psql-18.mo",
+    "sha256": "5e2e1f410b61a2e4ea4470be530598969325887d082bb53f2bacc91cbae018de"
+  },
+  {
+    "bytes": 30171,
+    "path": "usr/share/locale/fr/LC_MESSAGES/initdb-18.mo",
+    "sha256": "5e8f36a15513c385d2a1b74ee833666965ed2d9f45923fe9570ff6cf89a4c807"
+  },
+  {
+    "bytes": 51633,
+    "path": "usr/share/locale/fr/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "e124c5ef2e0bc60b697aadbbffca9e42608fcf52088da69f46a2c038a1cd618f"
+  },
+  {
+    "bytes": 15517,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "07369f9478ef4721f0c0dad4d35a62b38299f1713206736b2c9e866141991e14"
+  },
+  {
+    "bytes": 4318,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "85023f424881f471f09a6312f8178931b6f9926fc9258b5c037649e07eec5098"
+  },
+  {
+    "bytes": 73502,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "95476ae10e5e7a4044c4f0abca5084d4030f04c41e78df349c484f1d80ae97bb"
+  },
+  {
+    "bytes": 10727,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "6d9d0d2e15cba632ecb5f83a41d5cdf0033734840abb8d89f1b21205a3605776"
+  },
+  {
+    "bytes": 22455,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_combinebackup-18.mo",
+    "sha256": "bd0649afa108b590717b890abc450e3464a092e89ec5dac212d5884b0239ffe4"
+  },
+  {
+    "bytes": 7144,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "9e28c9f78ca97026f58f1e3d3a285ba51f408d8d2c4772ab60a600e557b01b8d"
+  },
+  {
+    "bytes": 12268,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "2fc26a80d96ceacdcfc1795c4e856f9d37cf21979d21dd368e974632c38bf03a"
+  },
+  {
+    "bytes": 21342,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "1c5c0afe4af0c401bfbdaef684e71dbcfc40fb40895b19086f9518e42ca7ad45"
+  },
+  {
+    "bytes": 79030,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "69b873555f6dc89cd4da301bb4fe5bdfa966cc79fbacabbd9de32ae37b3125b9"
+  },
+  {
+    "bytes": 18374,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "fd65fcbd3b30c93514a90c7769106fdd986acfbc91e2919b0118cd9982e545f2"
+  },
+  {
+    "bytes": 29192,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "7332a262088cf23ee5440c5d7517efb2a560dc1959817e06b60faf7a0341e05c"
+  },
+  {
+    "bytes": 4449,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "39fcf6ace6facf5ba887f009dbecbc7d418d0a6b3d027670250d5a6c6487a40a"
+  },
+  {
+    "bytes": 1864,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "a5ca8ef21aa157b0206ffd885b62a9e588beed31e789b33d987dcfd3f448dfb2"
+  },
+  {
+    "bytes": 62827,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "ca881a126201ba09ab48a8837a7534d564843b9ce86c51b40c8d65176602c002"
+  },
+  {
+    "bytes": 21305,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "d1a9a574d8181ec50bb359cc76a74d788b3daf10466228b1d6f140a89aa9621f"
+  },
+  {
+    "bytes": 17528,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "5003a52df49a64bbe0e33466dd34b94ce337cddec26e118996c110a78209322d"
+  },
+  {
+    "bytes": 3355,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pg_walsummary-18.mo",
+    "sha256": "bd0ad5c049aea8efdb8e9098541d70dea20f0769a525c86bb1c994fed93fb072"
+  },
+  {
+    "bytes": 35716,
+    "path": "usr/share/locale/fr/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "a28e223a1ea93bb31da7ab5a95bb7d34bc67935e8a3eaeb1f4b8de7fbd47e798"
+  },
+  {
+    "bytes": 21473,
+    "path": "usr/share/locale/fr/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "e1d91b3ac9071d7e3dfed1d23e3c1cde220d9e3de139edd57176f04dd4260cdc"
+  },
+  {
+    "bytes": 747076,
+    "path": "usr/share/locale/fr/LC_MESSAGES/postgres-18.mo",
+    "sha256": "988842bdb46dd94aab5aceaa3459674cb6a9e6b7c93b956912ec28ff669097bd"
+  },
+  {
+    "bytes": 133601,
+    "path": "usr/share/locale/fr/LC_MESSAGES/psql-18.mo",
+    "sha256": "04333b384e5d367d9292e4f85cd60017e28bc34867582487f674c4abac522679"
+  },
+  {
+    "bytes": 26056,
+    "path": "usr/share/locale/he/LC_MESSAGES/initdb-18.mo",
+    "sha256": "98065014bef176edb635f5c10e98a65a4d3e4a9cbcaf0934e3afc946e06a03fd"
+  },
+  {
+    "bytes": 28000,
+    "path": "usr/share/locale/he/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "edccabaf90cb810c9c722ceea918beacd9ebe76b4af7c4f92e6ac7950e4c576f"
+  },
+  {
+    "bytes": 36168,
+    "path": "usr/share/locale/he/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "7873604e1e3a4f73886511bec947edd50b97dcc3d2003121ebb8fb61e0ca7527"
+  },
+  {
+    "bytes": 6482,
+    "path": "usr/share/locale/he/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "fd89c52b1587b9e4433696a3ce24bc15cba41f47bbcade6c640ede928d0c66b1"
+  },
+  {
+    "bytes": 20980,
+    "path": "usr/share/locale/he/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "0517af3fc15127faf42356e1689a87df5b718328ab65d5bafed8ef526107aa32"
+  },
+  {
+    "bytes": 71838,
+    "path": "usr/share/locale/he/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "37de3432bc2b1728d84886b6a449503085665212ac92ecb9761abeed74c70550"
+  },
+  {
+    "bytes": 27198,
+    "path": "usr/share/locale/he/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "62b1dfb643316d25f22a3c4a0b2ff8e76c0e10951f83186e6e22c80b0c559f69"
+  },
+  {
+    "bytes": 111021,
+    "path": "usr/share/locale/he/LC_MESSAGES/psql-18.mo",
+    "sha256": "b3d228ce4952e614698e82a8028071e18e0243573dfdbeb069aee3b0170bb03d"
+  },
+  {
+    "bytes": 482714,
+    "path": "usr/share/locale/id/LC_MESSAGES/postgres-18.mo",
+    "sha256": "346f93dbcfe992e51daa369032a3fb8e7ce2d8fd95e14d0042561e5879764886"
+  },
+  {
+    "bytes": 25541,
+    "path": "usr/share/locale/it/LC_MESSAGES/initdb-18.mo",
+    "sha256": "f57040b729c788180c65d4b83f4c8ed1583b574c33ee9a2bed43a16daa695726"
+  },
+  {
+    "bytes": 28431,
+    "path": "usr/share/locale/it/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "94073cd90f4378b644f23450bf26724ca5ec12378a45b46726f785391cd7724d"
+  },
+  {
+    "bytes": 12220,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "866a7601072f81b35c414a1416a466d2ff85b113445fddc7a9db633b9c6b1549"
+  },
+  {
+    "bytes": 3542,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "120944c597589448e6e46b10cfe79ee7433d773817d07863eb8237f4f7d88960"
+  },
+  {
+    "bytes": 44219,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "c346065f4c7bbd90d32b9b8935cf952557169a0eb43b9088ec544346987d94ec"
+  },
+  {
+    "bytes": 6772,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "02d8116b1898971c3b6d2deb76d8eb032e6f7c7592d0a19f4655c43a0814a4ac"
+  },
+  {
+    "bytes": 6564,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "7e42bccc79a89e9d5587c4c02728dfd40f65b27d4ada7d340586afe23b44bba5"
+  },
+  {
+    "bytes": 10935,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "db800cb693a6b80c03fbd1e3286f9213957af8c45a698c9e65d7010683fcf28c"
+  },
+  {
+    "bytes": 19803,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "e1f58a367065979a1dbbf3a2ed57a96e355381256ba7e1abf0bcce758a122c17"
+  },
+  {
+    "bytes": 63722,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "8e520abfc2c84f2cb3a73b2fc2ed59db9771187870490f8d0e26cd3511dfbbdc"
+  },
+  {
+    "bytes": 14535,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "5e1efec620b8598e230b00015fa2ea906d26270fe5b13c3b31bb5ddbc70588dc"
+  },
+  {
+    "bytes": 25319,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "51f68fee31336c02db40afe4e523d4a915a72bcec4756cecc2eaafb0a91f9175"
+  },
+  {
+    "bytes": 4172,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "db1983a2fccf376af2bc5793476233e05578212722c0b1c136ee86f4cf697145"
+  },
+  {
+    "bytes": 1631,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "89dc8dc2314b217050ffa905fc2fb2afbf0e32b65fb8937bce69c1dfdd6c0c9a"
+  },
+  {
+    "bytes": 10633,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "51f7bcf53b04c586a11b09b3ae7cc5c2f4504fc07efd1dc28584716b66d31e3d"
+  },
+  {
+    "bytes": 13765,
+    "path": "usr/share/locale/it/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "f2ad96f58c89fda8f7b058d928e9cc26f205931c871538fee7bf4c53166937a1"
+  },
+  {
+    "bytes": 28956,
+    "path": "usr/share/locale/it/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "1f14d0af75ffaef96827d65b7ba0cc50699d88753b365083f224d399b2658ef4"
+  },
+  {
+    "bytes": 20721,
+    "path": "usr/share/locale/it/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "7b70320ac20b8b53a87ddb610f35c40be7f7c90b0d1d71ddbeaecce5db5ea284"
+  },
+  {
+    "bytes": 784647,
+    "path": "usr/share/locale/it/LC_MESSAGES/postgres-18.mo",
+    "sha256": "6cd584425ddf33ac1c0cb3b25e7ac9f1eb2b5e72f479baf02e05e1b080aae6cf"
+  },
+  {
+    "bytes": 117948,
+    "path": "usr/share/locale/it/LC_MESSAGES/psql-18.mo",
+    "sha256": "87b070277f077cd9fa5b51eeae71406f01b97c3deeff776eb27a0c17c5daffd2"
+  },
+  {
+    "bytes": 31331,
+    "path": "usr/share/locale/ja/LC_MESSAGES/initdb-18.mo",
+    "sha256": "31dfe190dabba57f2a9142a746e2c50c7669568d983acbf45585f8ad093ef10b"
+  },
+  {
+    "bytes": 56087,
+    "path": "usr/share/locale/ja/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "ad02e53ac0bc382c92665a9ffa1117237f8dc9cbc0a86ea037e6d48e0f0268bd"
+  },
+  {
+    "bytes": 16322,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "86799ba02b4258eb9f0d8beae98811a38374b959ef391e7aef96645e1eaeb212"
+  },
+  {
+    "bytes": 4591,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "08ea42196372ac9acc9ca16c77f9a61fd045e6e3138f46939bc8f9561ccd55c1"
+  },
+  {
+    "bytes": 79194,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "ae996be54bf45581728f74f27313dea7eb3121dcd31aa2349c1018f71076918d"
+  },
+  {
+    "bytes": 11481,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "f72492814feefb915a76773209753fa9831ae4cf09b2b5dc0947c1d645e25004"
+  },
+  {
+    "bytes": 24983,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_combinebackup-18.mo",
+    "sha256": "c2806a049383eccb637d7266e3ed0d2e47d92f7d4141523f00de09ebabdbe36f"
+  },
+  {
+    "bytes": 6588,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "4552836525d281f07b8fa984722c101ba3c9b9e73f744c02a62cdc8a32860369"
+  },
+  {
+    "bytes": 12450,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "9094e462c8b49274e484bfc807720f7dde2ccce09b68497e024ebf69f75ee023"
+  },
+  {
+    "bytes": 22210,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "848e12694af94ac60ba6d966d8a75310539e801e11f7cdcffed807589a1215c0"
+  },
+  {
+    "bytes": 83283,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "817fcc6846b50ca494185d1df5e46f41690f4a83765847d99286651c91556b30"
+  },
+  {
+    "bytes": 18804,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "227fe9ebd18f16efd0ec5a94b312fd5f7bd9e28827a74ddd4719d19618c3adc1"
+  },
+  {
+    "bytes": 32982,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "fe0bf8bd5d9ff089c76132e26bff6cc55c79adafb4a629203520a08d862f792c"
+  },
+  {
+    "bytes": 4550,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "c9d894e91544db11c4e94bcd0781b1b14cca9d70794536dd063291a9b2c23d0c"
+  },
+  {
+    "bytes": 2200,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "741440b29309b382597f8168ef3ae1113d2cd2d726494ae5584fb0b33ad4c146"
+  },
+  {
+    "bytes": 67231,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "32e671d7bb25b4eb64db732ea80153f0d88c3b4f9d4d5d6ebb664af31f9fb82d"
+  },
+  {
+    "bytes": 22866,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "e5363614eab85e626789381cd8f810d06fea8424dc49612e87c5f8ec7a8aa807"
+  },
+  {
+    "bytes": 16363,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "f0c440316c3e10ca624d290eb94c6b372fefae2a19432bb55e267bffcb223d1c"
+  },
+  {
+    "bytes": 3494,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pg_walsummary-18.mo",
+    "sha256": "7e6e9a2af680569e002993cfc6231543339eee1d8b832422bf39bcbcd48f1b1f"
+  },
+  {
+    "bytes": 36036,
+    "path": "usr/share/locale/ja/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "917cffb4e646135dac5d85698650f611cb2b7ce5b3cba65ed2166b4690628266"
+  },
+  {
+    "bytes": 22735,
+    "path": "usr/share/locale/ja/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "44763a2f4ba2eb4ac6aff846545364bd959f1ad30ab1cee9f13101701359f6eb"
+  },
+  {
+    "bytes": 984074,
+    "path": "usr/share/locale/ja/LC_MESSAGES/postgres-18.mo",
+    "sha256": "a2fa379ee20697f631321d23cca36c71fbcf257307ecceae3ff5098420b28bb2"
+  },
+  {
+    "bytes": 140076,
+    "path": "usr/share/locale/ja/LC_MESSAGES/psql-18.mo",
+    "sha256": "149058f24608160cbf2678ba898e70dc5d69cadeded1614209eff84ac170a404"
+  },
+  {
+    "bytes": 42235,
+    "path": "usr/share/locale/ka/LC_MESSAGES/initdb-18.mo",
+    "sha256": "6b99fa5179b18126031a65759e4fe19ee459170c28cc5bb36781cc48a3d3d8a7"
+  },
+  {
+    "bytes": 80705,
+    "path": "usr/share/locale/ka/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "397d041aa4fe2df70d5382771a0cd2082118d20b89aa8b2857794ad21244a245"
+  },
+  {
+    "bytes": 22046,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "4e72a38ee5c7c428b486051a500886c4b37ad19f20229b9568f002d5fda1cb2d"
+  },
+  {
+    "bytes": 6140,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "34eefdb5606ac52807e8fb63df06226cce5fdf1fcd4dff629319a0ac940c389f"
+  },
+  {
+    "bytes": 107315,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "7427372ed9d7be8ba1e77a0b27f49da18dacdb3e4d594c1f01906a6ff03fdfdd"
+  },
+  {
+    "bytes": 15580,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "190f75142e76f7ae4e0773c2a511b39c69271cc10b1382d0fad63b9574c9ea63"
+  },
+  {
+    "bytes": 33514,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_combinebackup-18.mo",
+    "sha256": "7c6573f2a7f7d8e85f93b85849dc5bebbcc79e9a9fdb14da00d11dc9e2e3cc4b"
+  },
+  {
+    "bytes": 9618,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "21446cbd0015f65989a941badf78070e57ffc1620466ff089982c97b898679cc"
+  },
+  {
+    "bytes": 16669,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "2fec928664e094acdb470ed0e3156541471826e8d90bdd6118b75644f3a6023e"
+  },
+  {
+    "bytes": 30898,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "af28cb46f545e8fa689b6307591628d518811654cfef13e78412577372d5c6c8"
+  },
+  {
+    "bytes": 113587,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "7b52bd89d15fa580abf4c391d28939dfc3644ddb44cff864f537a0c1bb861287"
+  },
+  {
+    "bytes": 25171,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "30d6d9ffdc5825313a15a2c81afd86209370fc66ac29a7f81985199d32695e55"
+  },
+  {
+    "bytes": 42646,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "7fa6a20c22410b42e76b38dc836db184f4c62c2c31f3f49a0e4326c5ea780285"
+  },
+  {
+    "bytes": 6222,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "85c9356f483ee04c567296a508911c1017c5dbf46ec795560a97ac7cc0bdf991"
+  },
+  {
+    "bytes": 2674,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "e7ebb06722096323096bc557a9fe148836546ab9cf6abd76a8a495979b8c3c68"
+  },
+  {
+    "bytes": 94422,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "f44596e7a6076b4de1287f6e370c30b71c6df555fb2ad39806fd887fd926e0d2"
+  },
+  {
+    "bytes": 31269,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "f39cc221ad2e494a764dc0cef6aa5fa5365b5481128400acd84d77549fc40221"
+  },
+  {
+    "bytes": 24657,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "dd3bce5a03de1dcb835ba5cb1ad9a7db527b4dfef1b953092100c469f81589ac"
+  },
+  {
+    "bytes": 4624,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pg_walsummary-18.mo",
+    "sha256": "3fffc9c3c88f886a2a6c2a397bb4822a27b9cf927f046238ed85f8ca4c6f13ec"
+  },
+  {
+    "bytes": 49439,
+    "path": "usr/share/locale/ka/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "010e1c368063b9604ab2f2b5cd8461e0ba6fe7d3bfafcc89395bc4d837fb8a49"
+  },
+  {
+    "bytes": 32072,
+    "path": "usr/share/locale/ka/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "1952de544b381ce08244adea53a2ee596409da69078cc408518da5ec94550228"
+  },
+  {
+    "bytes": 1059590,
+    "path": "usr/share/locale/ka/LC_MESSAGES/postgres-18.mo",
+    "sha256": "ea5c1636b0f52b441138a6ca075f73edf73de371954d0b476976bc1062a0b6d5"
+  },
+  {
+    "bytes": 194360,
+    "path": "usr/share/locale/ka/LC_MESSAGES/psql-18.mo",
+    "sha256": "5b3659ac948a83a74fd9c09e0e453f45e1826a5ca6352a99d74b16ca6f329a39"
+  },
+  {
+    "bytes": 28484,
+    "path": "usr/share/locale/ko/LC_MESSAGES/initdb-18.mo",
+    "sha256": "d625fd3a5db1c070ea37b986fc949c3caefe7b258346ef01167926cf88598ca3"
+  },
+  {
+    "bytes": 47576,
+    "path": "usr/share/locale/ko/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "8c3d438a8457f725d0fcaf9897aa4e592ca60657df0f02ca8ef3f5ec70268343"
+  },
+  {
+    "bytes": 15071,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "32b22ccd3f6ee2c8b77739772f8d8651341b92407c798f9c0ed707bfde4a5f23"
+  },
+  {
+    "bytes": 4258,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "fc3f69df171ffe5e949c5ac8c8e1f24a4fdcc5934e7440cf9e5e7641fe8faa20"
+  },
+  {
+    "bytes": 67614,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "848f37c56198333c4b234a5af09da3c155e2dc32835e37ecff46bbb56809aef0"
+  },
+  {
+    "bytes": 10411,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "4a51f69e1c2adc001b841bd348f4b8b401e3f1e0a0a5de463a2f9da06cf68f7c"
+  },
+  {
+    "bytes": 21767,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_combinebackup-18.mo",
+    "sha256": "19ad3466c99b9fc40296c46efa3a9cc40b73384eb7e9e7c3ee3f09074b8ff117"
+  },
+  {
+    "bytes": 6613,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "5015c803595539d9795796e8d0d25f935699bfc29bb7c7c013c4fcbb43baac11"
+  },
+  {
+    "bytes": 11636,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "0bbc314d1abba20c1b0cfc6c83ed8ff838dc6cf6b7fd190a9cd70b1c7b609523"
+  },
+  {
+    "bytes": 20808,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "39b6a1b9e0b59990ffde09556722edfe13adbd92807f5cce81cf7d39efdad7bb"
+  },
+  {
+    "bytes": 78267,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "f0b4a51b3692e7c4ac15e54a80d245fa66fae975cc5237e308121f21a19a097d"
+  },
+  {
+    "bytes": 17437,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "bea27f9522ea2bca9c0490fb8be7fbb3e8821bbcf07319cecf79d48eab47c68b"
+  },
+  {
+    "bytes": 28002,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "e157e46f009bb0ad0185809da04aa5c23c62fc66e04181009cb8050007aef00a"
+  },
+  {
+    "bytes": 4207,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "f2df21345aa9380b1883a87fc6babc4477833b14f775ed1e563489cebf04f027"
+  },
+  {
+    "bytes": 1784,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "dd2a081a4e502ee2ac31ebc2e0198cf3a318a4353f31a520e00be85a8ac54b91"
+  },
+  {
+    "bytes": 59906,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "a75d93e10e0fa1997e11388154ef237d6bc657b6bba05c75029ddc20b6dcf3aa"
+  },
+  {
+    "bytes": 20347,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "96d670f5f11af102622952f6a93a775139353a0fc798d3f5edbb967bd5df8ea5"
+  },
+  {
+    "bytes": 15906,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "786f40f461b0beaa477e9d342258430b878cfba5decf664b63b7eb5b5ee042fa"
+  },
+  {
+    "bytes": 3287,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pg_walsummary-18.mo",
+    "sha256": "ec911733b0529fc79b9d5545e429c81ddfc094ff6209ff35441be828eb2963fd"
+  },
+  {
+    "bytes": 33560,
+    "path": "usr/share/locale/ko/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "73e7bde9e02f24393ffb6b433b609babcd13bf1fdb7977ef75a9deaba59d8cbe"
+  },
+  {
+    "bytes": 20603,
+    "path": "usr/share/locale/ko/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "aae471e7d9ca9a0d6507cb765374766d4c18f007b5247b48e5c23a3c8020dcdb"
+  },
+  {
+    "bytes": 922651,
+    "path": "usr/share/locale/ko/LC_MESSAGES/postgres-18.mo",
+    "sha256": "58f4d46618e240b3925321db271aa255c05f1c9f12c2a14dcc3d31287404f931"
+  },
+  {
+    "bytes": 126562,
+    "path": "usr/share/locale/ko/LC_MESSAGES/psql-18.mo",
+    "sha256": "afa07000cc02d22fb57363c858f6f0a2e5ef144fe7b317a72b67042d441ce1f4"
+  },
+  {
+    "bytes": 5805,
+    "path": "usr/share/locale/nb/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "815edffb2d7d7ed440f50f60ef9b5f78b5506284b3988aacc513b6667c8f0dc9"
+  },
+  {
+    "bytes": 23397,
+    "path": "usr/share/locale/pl/LC_MESSAGES/initdb-18.mo",
+    "sha256": "2f0b3a51465f83c466190f1612fbc1517b1a603fce23eea23938c16fb15422fd"
+  },
+  {
+    "bytes": 25111,
+    "path": "usr/share/locale/pl/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "dca34b3c2dfa1c8c001398e0888a601470e449c386e19d9989b4d268436214c0"
+  },
+  {
+    "bytes": 3834,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "296fdf682f112adc08277c5d59126168f3cfd6f28b15e2469f4628509837ccbc"
+  },
+  {
+    "bytes": 32454,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "20aebb7ef864607ed5b6d593b7137962861d0972f84a65a4783c2803495d9f53"
+  },
+  {
+    "bytes": 6233,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "0f45ca247531e21c5cb52e0a91c9c0b863f41b4bcdd1ec4798887668763bfe98"
+  },
+  {
+    "bytes": 10020,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "8c8b012ca86b3288a1e75ae77006fa1d8309ed2508dbb77b84c5a3103b67c792"
+  },
+  {
+    "bytes": 15586,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "a86f9676edcf903a919a1ef14e13f7029599cacac9484caebb839c13191e46c2"
+  },
+  {
+    "bytes": 65863,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "c020cec20f63721b38ede6b74f67f152e0ecef6634aa3f21b6bfca4a31a1394c"
+  },
+  {
+    "bytes": 13382,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "46d9ee8d1fb04004122f7231dbe820d89ce858c5fbc6a9d8ee1304682e564b24"
+  },
+  {
+    "bytes": 20200,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "b967e8c9084fcc36d31a8e17ea719716fb08da9cf6f9b0060a37a584371658b0"
+  },
+  {
+    "bytes": 3505,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "fe8146861fbad47a66352c3daba8bc30bb5113cf2c56ea90c0451ab749e9bfb0"
+  },
+  {
+    "bytes": 1650,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "767533280049ee48254f5dd313fc664e475d0e88ea550efe966f1de6860adf07"
+  },
+  {
+    "bytes": 26756,
+    "path": "usr/share/locale/pl/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "d2b77b393dba9a5bd0a9f5a4d94c55d0ed3d538c7b9d88a2a826a34221967f83"
+  },
+  {
+    "bytes": 19859,
+    "path": "usr/share/locale/pl/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "169d92329ef7b425843ca43b325616c5edde956b1ff76e9fc970e77f4d049aa8"
+  },
+  {
+    "bytes": 602020,
+    "path": "usr/share/locale/pl/LC_MESSAGES/postgres-18.mo",
+    "sha256": "31b7356fa0b7678d4cbba385652b459c9113b2667fcebf1ee3ec45431548adf2"
+  },
+  {
+    "bytes": 103557,
+    "path": "usr/share/locale/pl/LC_MESSAGES/psql-18.mo",
+    "sha256": "a9ca8c3b3b63d543b6967384d5d1e359a3aa1cddd43982271e0186990352d61b"
+  },
+  {
+    "bytes": 24915,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/initdb-18.mo",
+    "sha256": "6523f0cda418e42798d793b40b57262722c2cbd5efce1bbb1fb27ea0e9d32640"
+  },
+  {
+    "bytes": 35687,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "63259c9a117ce94bc9db7b72115d1ae546da476b4e75a59da84711b8a8b6e843"
+  },
+  {
+    "bytes": 3603,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "7fe87ea8e4c802b0bb503db15ac909cc8a6b180cdef6bba40199c341e82d4829"
+  },
+  {
+    "bytes": 28901,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "4bc9e4ad2d98b4ba8d7699847330b8e6b0ef8df87408480322a7e21a6fd22d3a"
+  },
+  {
+    "bytes": 7115,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "c3b14d45c888776a408f9801fffbb7650dda0ae6e7ebf86bce205dddc8d60102"
+  },
+  {
+    "bytes": 6010,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "088ae47ec9ae6b3db3d31e12979b2161da8b45045b94e9c72ac6864b553ffddc"
+  },
+  {
+    "bytes": 11427,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "550bb3a5790828a620aabee89a997777df8a5eb8963cca6c4577494ae54da44a"
+  },
+  {
+    "bytes": 19378,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "8ec05635553da757643922381e15a56d63d403d1533a95a238ea04c35c8c0cbc"
+  },
+  {
+    "bytes": 62725,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "a39acb3a60393bde30a2f6f9963409095a06e9bcdadadf2fbb930d37b00ecf99"
+  },
+  {
+    "bytes": 14648,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "242ff4061be5f4ff765d1db9bb0a08d9900bbb719b1d23bc9b39a0a0df72af75"
+  },
+  {
+    "bytes": 20299,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "438e2b6ade4387ab4ab35ad2b539a62c7c1f839d4375fbbdaf08012e25735715"
+  },
+  {
+    "bytes": 4065,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "f7248509b91899b7723a7af63000b877fc77effe2a97f71d603bad727e63d9e3"
+  },
+  {
+    "bytes": 1648,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "192fccf2234666016fe552a91fc603957886b9ffa334e3c51b77229abe1bbc11"
+  },
+  {
+    "bytes": 28671,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "046d12f0dd844b2eebecf2f59d12d653eea52b5ae5f806e74fcc9d2da4711cb7"
+  },
+  {
+    "bytes": 20096,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "ae2498e109aad79f652a6ff4cd6cce87769c556a12547a483c9d28812f2f7b7e"
+  },
+  {
+    "bytes": 706582,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/postgres-18.mo",
+    "sha256": "ab1bf60d99814a683f8d2e805351e5c32576cda3fbd7e2f512de29ebb5864845"
+  },
+  {
+    "bytes": 121741,
+    "path": "usr/share/locale/pt_BR/LC_MESSAGES/psql-18.mo",
+    "sha256": "8472bc444762a947b82424cffd19d31575919a628182ae44eaaec74f99b4f5b6"
+  },
+  {
+    "bytes": 6651,
+    "path": "usr/share/locale/ro/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "f5b2dea5dd2c7e282c8ec36d132b715ef1d7abae7e3bfcc1213cc47aec7c4dd4"
+  },
+  {
+    "bytes": 17862,
+    "path": "usr/share/locale/ro/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "e586e17dab77f5e7c6d62841f73410af35d9bb041fa6947d6d7e0001de854f7a"
+  },
+  {
+    "bytes": 35091,
+    "path": "usr/share/locale/ru/LC_MESSAGES/initdb-18.mo",
+    "sha256": "1c1a437e03225ae576307ff5a3ecfbec7ad14ea27ca7b9d99eed789a693c7eed"
+  },
+  {
+    "bytes": 64916,
+    "path": "usr/share/locale/ru/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "07cd28727bc56d4a149352a2b2c1768d9c4002eae92e5837163ddc9fc36abf3d"
+  },
+  {
+    "bytes": 18836,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "b18b1225b41052921d3d4950af40b49754e81817525dbefc6ad2f5d81ced6098"
+  },
+  {
+    "bytes": 5698,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "5b01d1ac078b3222ba85f00220ffffb81aeaf684fbb81acb9ce5458022ae202c"
+  },
+  {
+    "bytes": 88667,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "7717af5d1dfde81594b3e3ea5a7ec9c7262e04b768f52bfbef8c6c3e032b5281"
+  },
+  {
+    "bytes": 12723,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "6c91df40eb13c9e639535cac61e3d1e0d6046eebf4284afb970d4fbfe99e3fab"
+  },
+  {
+    "bytes": 28268,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_combinebackup-18.mo",
+    "sha256": "71995be8c781b0c5aaefe1507cb10f6144490d0a0e52f188dbe094e84504f381"
+  },
+  {
+    "bytes": 8355,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "41298a02fbb9669089494356d6d74be8440857ac31ac21ccf28b8fb1ec421997"
+  },
+  {
+    "bytes": 13879,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "dc5d2b96a11bb2cf06b65f75317d926ea91eba9cd9fa33c83835f27963cbd10e"
+  },
+  {
+    "bytes": 25307,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "2eaa6eb0b5bc2581f0bf7ca80ae36076bec171ff11624e041b21863ed3a541ee"
+  },
+  {
+    "bytes": 95152,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "78e8e77112fbc5bda4e8f2f2da4b6b7b56bccc87fcc6e0c71d343f52a8880f0c"
+  },
+  {
+    "bytes": 21233,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "1fce11d78051b30b8c4d76f750e4d6fa68522aff004e8090809d5c973932b0a2"
+  },
+  {
+    "bytes": 37189,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "d21cc074224cb83c14cac21b2d3c54c171d97e46aff7d192b0b864d736b8d27b"
+  },
+  {
+    "bytes": 5980,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "c4ae06a7503330fd6bb6b66c2f0533f18770e89e8126c1fc67a90ccbd0cd9d8c"
+  },
+  {
+    "bytes": 2821,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "1a6928b63c250799fce0ae5169f4b5dbba97f3d62d38b767eddd08a5d475dcd4"
+  },
+  {
+    "bytes": 77161,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "85804631424f2e027224861ff0f20742d51a1658f04e97accbc3ef7243edfe9d"
+  },
+  {
+    "bytes": 26311,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "a8a932713ce7af2a8178f354e952e733f5bb085c860408c6b438e54101285c11"
+  },
+  {
+    "bytes": 20959,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "81413d63f9c67dc65eee99893b51d7cd258b22267a9c548e872c25442a0b5d33"
+  },
+  {
+    "bytes": 4427,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pg_walsummary-18.mo",
+    "sha256": "033c6e131430684a298c2cf95861a6cb5be261ab8f35889c0c19784f80a12e03"
+  },
+  {
+    "bytes": 41528,
+    "path": "usr/share/locale/ru/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "a58ecd6db6ac5fd768e536fb6f0d76469728a2430e6be78150c188b46e6bde30"
+  },
+  {
+    "bytes": 25657,
+    "path": "usr/share/locale/ru/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "a57f71ff121f9a593b2ed60e8549d0c2ec26577b30d909a5eccd14128058d22e"
+  },
+  {
+    "bytes": 1167030,
+    "path": "usr/share/locale/ru/LC_MESSAGES/postgres-18.mo",
+    "sha256": "182d27b35766c5a2fddb81536123fbc8a09e6b5a9bf8c4cae833200ccae7fb4a"
+  },
+  {
+    "bytes": 162531,
+    "path": "usr/share/locale/ru/LC_MESSAGES/psql-18.mo",
+    "sha256": "d3c715cc20ae4d39686b4d0f5815a5d0e53e0c44da98a7cd654a6f7b43854874"
+  },
+  {
+    "bytes": 26614,
+    "path": "usr/share/locale/sv/LC_MESSAGES/initdb-18.mo",
+    "sha256": "deb7e730f3572f1e3898e69f04e65a7d67fe17778f472e618f6c54ff48084501"
+  },
+  {
+    "bytes": 47951,
+    "path": "usr/share/locale/sv/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "9ecdf9fc13f390db4796a296f21bb659c9b51d59d2c4d36aed674a3bba07b02b"
+  },
+  {
+    "bytes": 14246,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "ef5cb66ce07fa17e7489cc999b704654636117ab6f873bf7493af3dc639c9fea"
+  },
+  {
+    "bytes": 4106,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "bdd44f2471ed02c861e8f9d79db7b8c69aced6a24ae59b1db2e031ff8052bc74"
+  },
+  {
+    "bytes": 66217,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "8076d23909eea9f6d8c7b1c285dd3a3e4cc517a0bb97435264b74e498d8b1614"
+  },
+  {
+    "bytes": 9712,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "cc8317c8071af00505b51331669ff929e4c8522a727b2b3b73281a272315c9d9"
+  },
+  {
+    "bytes": 20451,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_combinebackup-18.mo",
+    "sha256": "2999f0c7a890026e25211efd0ad6e0a7d02878025a25db223f912b25b678cbe8"
+  },
+  {
+    "bytes": 6269,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "0cd70a06b2b4174571329d5083055810513c9aed4078cc7f1412c2d2fe23b25c"
+  },
+  {
+    "bytes": 11137,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "2127064105b58ebe594b575883a3aa6e12b4fa6934b91f341c0a8b0578cfe857"
+  },
+  {
+    "bytes": 19227,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "87dc4afdc1695a1fd64285db5523e0cc20bb5d025026d3391542f4ba56899ac3"
+  },
+  {
+    "bytes": 70925,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "b633d049beeee44953882df8ae62c07b4ceb9acfcac71f18bf01a68a8a546c85"
+  },
+  {
+    "bytes": 16596,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "1346f2e648312b41ca490804598a329c37055af2a608c0fc66b6a11106d145d1"
+  },
+  {
+    "bytes": 27207,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "24de1257798250f831ff1a5cc7520fa22af6861b7edac7cb9695ddf7fae71db2"
+  },
+  {
+    "bytes": 4138,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "8e7b7e50c81758644102edc031f469dca5046f7fe825f9158aca4396593e2555"
+  },
+  {
+    "bytes": 1764,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "cf3861656b507277f5f583bcf07ddd1f5d0cb66a6b5a832126f4a6d996a5abed"
+  },
+  {
+    "bytes": 56220,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "c9028955aad478acc82c5923792735f1426bef06ba158abe2c69ba8d91d4bd87"
+  },
+  {
+    "bytes": 19149,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "adf32b1ed5e00b9334feb971c0ad49d8ac8864b95d042df3023121df9975036a"
+  },
+  {
+    "bytes": 15200,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "7b960a3802113f7bb2a6194b294f63ab86ca1bdf7153bbbfcb7fc480655a2020"
+  },
+  {
+    "bytes": 3079,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pg_walsummary-18.mo",
+    "sha256": "346f2dbefdb990f84d029b37188c0dd2be61e9e49fdc133f2cd993f05dca34c3"
+  },
+  {
+    "bytes": 31853,
+    "path": "usr/share/locale/sv/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "d31a895baa8f50657288b9be9d0505fd0ca9f6633ad2c98b46a7ab00e9a35cb0"
+  },
+  {
+    "bytes": 19456,
+    "path": "usr/share/locale/sv/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "5cd71bc8c7cbb2d5c379e7df3d11ea2e8a3aad5cd5edc3885e07189ac735c20a"
+  },
+  {
+    "bytes": 847350,
+    "path": "usr/share/locale/sv/LC_MESSAGES/postgres-18.mo",
+    "sha256": "f4bf95d41fbb95f154d6941cc7d213f181647567cebd74581bf2671561800769"
+  },
+  {
+    "bytes": 123524,
+    "path": "usr/share/locale/sv/LC_MESSAGES/psql-18.mo",
+    "sha256": "fece6b480d01751616cf0b2b06206207c85cde0adcd3478bfef0dfa51ab189b5"
+  },
+  {
+    "bytes": 9945,
+    "path": "usr/share/locale/ta/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "e0b68bc4ca4e59c072c2a504b4229686c9e0b717b9e6c3cfa09bd9a90993f3d5"
+  },
+  {
+    "bytes": 23246,
+    "path": "usr/share/locale/tr/LC_MESSAGES/initdb-18.mo",
+    "sha256": "06881333e5b7fff6b15649bf2ab0a2c321791647bdded8d47a217fc3e2f8409b"
+  },
+  {
+    "bytes": 28472,
+    "path": "usr/share/locale/tr/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "883045c14388e1475e23aa7da13c5d635fb5101a3003e12fb0eb7dcc3d3f7994"
+  },
+  {
+    "bytes": 3477,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "cedf2dc4876d7b5769feb8cb003dec024d05d90674e99b129bac2492897741a6"
+  },
+  {
+    "bytes": 33682,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "2d88d74a6541988ee467bc981ad7512465ee36528ff175d2704545514065190b"
+  },
+  {
+    "bytes": 6438,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "9cb841740b18151018586611de4dddb1990b03b4beb9987b6cba049439609718"
+  },
+  {
+    "bytes": 6241,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "7c17824d5818905108bf5504b3f64211ad0730c1a668f67fd6ae4fdf3d1a8045"
+  },
+  {
+    "bytes": 10398,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "7be17611a9ce63a6b4654625a8efb042c7ebf1eaad9f05a7094384a009b16b98"
+  },
+  {
+    "bytes": 15616,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "332297190b5549cbbe29ee2fc45530d86acbea9116e508273515a9b033ac298d"
+  },
+  {
+    "bytes": 64419,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "72b75d379f45f80ac20dcdb156eba3906a32112b3a3d961ee10341214f4739bd"
+  },
+  {
+    "bytes": 14085,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "56dce37720672ff231cdca88ee6e2f984e01c31168419201228820b30af2b7a4"
+  },
+  {
+    "bytes": 18801,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "cc66b0e3e2f8dbf3dfc410006bc90e68be27b9db93ae4feac4ebafa411a905ad"
+  },
+  {
+    "bytes": 3448,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "a595a2810e2c0edfd26433f46ecd7b7a1d60818e43a01e774b322e093988bfbd"
+  },
+  {
+    "bytes": 1495,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "26f06889ecd92b83619c0df6ddac1410fa8d50bad1b50d3c6bf0fd98918ad02f"
+  },
+  {
+    "bytes": 42264,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "37a5abfd9a3edbb19175a3766c15fc445fbaa64966d851cc67f4877225bd7547"
+  },
+  {
+    "bytes": 7405,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "af7ccfd68cd37782ebe94d34db878a593ace7a1517215f97b8bde44fbea1fc92"
+  },
+  {
+    "bytes": 26365,
+    "path": "usr/share/locale/tr/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "b59dd33c131905a8024b344ec1aa4f3f65f634c939d7e190d7e35d5464c81414"
+  },
+  {
+    "bytes": 20008,
+    "path": "usr/share/locale/tr/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "11b9786adbe0c0383909c8c4d8eefe705257c8d626b4dda3f9ed0e007caf522d"
+  },
+  {
+    "bytes": 593861,
+    "path": "usr/share/locale/tr/LC_MESSAGES/postgres-18.mo",
+    "sha256": "31dfd200d868d9ed5323c065cde35d3bfb95258c3a994aebf2e8dd9ae93dc34b"
+  },
+  {
+    "bytes": 93755,
+    "path": "usr/share/locale/tr/LC_MESSAGES/psql-18.mo",
+    "sha256": "a5b4ae127669cf5222d42b73d6e3e092a6e5e04ff653012e7e50633c5fbc3700"
+  },
+  {
+    "bytes": 34601,
+    "path": "usr/share/locale/uk/LC_MESSAGES/initdb-18.mo",
+    "sha256": "b1198499491f9f17549e0d449335391933a0b6798c9b21afe2ad2b6ad86bcdaf"
+  },
+  {
+    "bytes": 64364,
+    "path": "usr/share/locale/uk/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "27952ab81aea0ce1c70f2357c127a37ebe4033509b075d11b43fb95e2546e229"
+  },
+  {
+    "bytes": 18291,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "b27f0c558a21bfc271b1d776e400132b1e2ee4e7eddc03abe54f28b4fb9a322e"
+  },
+  {
+    "bytes": 5445,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "650bdc7b5bfce06da6f2bfc62b08350921385f2a76f00b5b2f440ea92bd8c8b0"
+  },
+  {
+    "bytes": 88616,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "1d8581353587aa62ad622fcc3917034bed63769ac2777a8e7e25ace912ff3f74"
+  },
+  {
+    "bytes": 12592,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "1cc912eeb4c06a0238521b6f3d7abdec1da5df5400c2621ad357cf58e0521cf9"
+  },
+  {
+    "bytes": 27357,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_combinebackup-18.mo",
+    "sha256": "221a2667581d31be2687881997064c1e2d60d9b04cba2d67c5561c32825feafb"
+  },
+  {
+    "bytes": 7589,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "79d51ff5d6179dad3ecb8c2e2b4763474956234375792c95ae13fefcc7d689eb"
+  },
+  {
+    "bytes": 14137,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "93528d3ae5bd2e3d36eec9e273fedd356aeab1704193c2e97a5cb9ed1391ef18"
+  },
+  {
+    "bytes": 24735,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "d48373663e164898ae164af0b59408401a9f96ab1642bdf742d0bb30b45cdff5"
+  },
+  {
+    "bytes": 93323,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "1da1319bc99ff0d1e3eab3307ca13e329eef9444ea487523e621dd62da3c0f03"
+  },
+  {
+    "bytes": 21133,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "5a43858ed2e520636ba2674ba40ada48313e714783dccec4ea2fbdff1a5e7249"
+  },
+  {
+    "bytes": 35444,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "ae943f396409b82310a52df0a185a6252a986d4ce06e96623c33d7026133cf77"
+  },
+  {
+    "bytes": 5580,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "4dd55fd297e5486c8865ad8cdbfce087dbf4670271458015cf20274a26f80c71"
+  },
+  {
+    "bytes": 2686,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "725ba03a247db891c45dcc376378f6ce851f1c540704a01cba3d41c54a1aeedf"
+  },
+  {
+    "bytes": 76133,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "9cfc02ee074dcd7bd495bb2dcd3a24a684f3770042fa88964b92afad9aa3be22"
+  },
+  {
+    "bytes": 25539,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "6e8d861c1d126296ed876942252840e4a792d174235ff18e61e808de710e945d"
+  },
+  {
+    "bytes": 20447,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "04d5bb883d5a6deb50051123bcd6dd32d531a6427d9edf8a4cdf099e8a52f157"
+  },
+  {
+    "bytes": 4118,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pg_walsummary-18.mo",
+    "sha256": "08632bdbaee6c4d6c8df524fe45d726b1e3f0eb0194e6c9f297fc90473977b8f"
+  },
+  {
+    "bytes": 40379,
+    "path": "usr/share/locale/uk/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "cb46cb86c73c01fe4ca64adf6791d39f2f80134f6ad2dbceaa8f43accda44c5d"
+  },
+  {
+    "bytes": 25345,
+    "path": "usr/share/locale/uk/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "370452fb3edf8580592d8cb67a2b949673e02477b2cd691dd5ad4e8d90fb476d"
+  },
+  {
+    "bytes": 1151449,
+    "path": "usr/share/locale/uk/LC_MESSAGES/postgres-18.mo",
+    "sha256": "fe5c84e9bc4bafbb4ae0517bf0c6cb31c09760ebe9c00dd6047cebabbc2fbff8"
+  },
+  {
+    "bytes": 158530,
+    "path": "usr/share/locale/uk/LC_MESSAGES/psql-18.mo",
+    "sha256": "af91aea842841c6566979988373aa5eb8a4f7eadd7eadf6b210b5b179867d417"
+  },
+  {
+    "bytes": 25147,
+    "path": "usr/share/locale/vi/LC_MESSAGES/initdb-18.mo",
+    "sha256": "ae74a877d5afe0024678895ec85d5c3de2a57d5923fac400d69d567b38b65113"
+  },
+  {
+    "bytes": 3985,
+    "path": "usr/share/locale/vi/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "cf6c39096f1ea6f7325bed02fd46a09dd3f390fe791caf0396ef94d47c655613"
+  },
+  {
+    "bytes": 36541,
+    "path": "usr/share/locale/vi/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "f3cf1ffbf205f8eea5c239faa33febba6e0fc6db06ce49be7f115deb92cc8efc"
+  },
+  {
+    "bytes": 6628,
+    "path": "usr/share/locale/vi/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "e52f3591cecb139725a6bec891e19046b486b32c5fafcaca9d719f23a8d150c1"
+  },
+  {
+    "bytes": 11257,
+    "path": "usr/share/locale/vi/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "dda9e43547a77ca2aa1aad0266dd67c48ddf66f3626f66cddbad64c5ca54863e"
+  },
+  {
+    "bytes": 3873,
+    "path": "usr/share/locale/vi/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "6e418ebeb86554cdb8a68a11b1118f121428b098a1c43e7e12674672ea446106"
+  },
+  {
+    "bytes": 1693,
+    "path": "usr/share/locale/vi/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "5bb34812665affbe46c3ff4e4cb994ad6190ddf4c7f335609ea4799cbbd7a351"
+  },
+  {
+    "bytes": 7374,
+    "path": "usr/share/locale/vi/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "5f9ffe8282fa58a526d1dc87d1faa62cdb13b21565d6fd2d9d63379abb26ac98"
+  },
+  {
+    "bytes": 20340,
+    "path": "usr/share/locale/vi/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "2506e2648edc36cf832b1ee60603866cbd95bb02bc8597b7f379358f69a2a11b"
+  },
+  {
+    "bytes": 24291,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/initdb-18.mo",
+    "sha256": "65dee6e5abe5c19518ef3937cf178779e5605e5f0d0ed8b43e40f1e424e9011b"
+  },
+  {
+    "bytes": 27044,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "3ad3d8c62d0e9cc145ee6add63b5c2cd8372b6ca505e968e1a8d3b7ace3f75ee"
+  },
+  {
+    "bytes": 10925,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "362de94c0361076dd6844b7366165382fb840b5ed7f568156a5ecb240fb4e8bc"
+  },
+  {
+    "bytes": 3858,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_archivecleanup-18.mo",
+    "sha256": "b63a73a905107b37b3e72c61ea5cd1afb112c182a9f662ba931b0fe509f34147"
+  },
+  {
+    "bytes": 31204,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_basebackup-18.mo",
+    "sha256": "8f8419de587d022f53b4f86d8058cbc76b04bc32acd61b80432154a2b5dcbc86"
+  },
+  {
+    "bytes": 6004,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "4402b247fa4aa40a49471c27161f35cdccfbbdef9be7e1c08eed19bb45011f57"
+  },
+  {
+    "bytes": 6157,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "444e03a7a18788413254396e472c92e811f5fc3314403e9d251044b6e69c3196"
+  },
+  {
+    "bytes": 10188,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "f8e44b17f55cabb3a6e58ee4160060efeca8408355207cc5bf1c1e6e0c77f2d6"
+  },
+  {
+    "bytes": 17449,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "267cfbdb7c494e84403caf5e69cb337aa95d376e46af0711b7d4801c1724c386"
+  },
+  {
+    "bytes": 58823,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "86e8051287a93d8d2edfad3a3115fba753c84b4d0c7b944bc89a4083aa8b8818"
+  },
+  {
+    "bytes": 13404,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_resetwal-18.mo",
+    "sha256": "a3a1a1dc3dad4b89f2aebe925fe296918327746b14780854f6ea2a100d9b4cf2"
+  },
+  {
+    "bytes": 21431,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "15fe902fbd2c4b202f79c39a90da72349f4e2823d12a4d86a5e9faed89d90077"
+  },
+  {
+    "bytes": 3139,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "5691d4e40997e6e3d3a67c3be75c5077ec137b909af9ee4b46f020a4fdc8e7b1"
+  },
+  {
+    "bytes": 1556,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "0a5bc4c96767f7fc4a5b8cf81528b40fc741d8360b08f8f2495fd4a4ea54533c"
+  },
+  {
+    "bytes": 42361,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_upgrade-18.mo",
+    "sha256": "5ebaf23bb9e78383cf1b5bade1e66375140189c7c8b519ccb8802ddf43adadb3"
+  },
+  {
+    "bytes": 9554,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "1fd5b4d490f8d6d37434dd84664c3324083666e93999d8a76f1df9ab1b6f18c7"
+  },
+  {
+    "bytes": 6833,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "223b53d8839d2a733fc9d16e9411d51d89ee6f074ba3fa114e40a11aacb02339"
+  },
+  {
+    "bytes": 26928,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/pgscripts-18.mo",
+    "sha256": "943d5e26f393e496d4da11e973b837676dfccb55a2c77e0c4c10bf8c2a05d8c9"
+  },
+  {
+    "bytes": 17857,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "396db713cb439728aa0db53d9c99538ad3792d36dfceb9dfc10970ec991190de"
+  },
+  {
+    "bytes": 614078,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/postgres-18.mo",
+    "sha256": "a2bc0218603c43de432d77121ff194d767aeedf6024c31f345bae7bcceabecb3"
+  },
+  {
+    "bytes": 108275,
+    "path": "usr/share/locale/zh_CN/LC_MESSAGES/psql-18.mo",
+    "sha256": "068f6398381430b62b6b7014fc5616dec8a5336760fbbe82bd6304fb338a2821"
+  },
+  {
+    "bytes": 22682,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/initdb-18.mo",
+    "sha256": "b3ec03a542c95ad4ff9cc31d88af9fdecbaf4a322936ac212eb51f5ff0d9721a"
+  },
+  {
+    "bytes": 30529,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/libpq5-18.mo",
+    "sha256": "ae428c695dd091e459bd25741e879d4908c4d80e6c3b942c8a3801e9184f58ca"
+  },
+  {
+    "bytes": 11321,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_amcheck-18.mo",
+    "sha256": "a0792c6d881791fcf977ad5aa57b662e4143d2234b94ec33cbc02b2372ac6255"
+  },
+  {
+    "bytes": 6204,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_checksums-18.mo",
+    "sha256": "47c900aecf19f4e0723ae755800ab5a82428c02150e57a4d5b0d912cfb1bda8f"
+  },
+  {
+    "bytes": 5536,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_config-18.mo",
+    "sha256": "f766fff12549f9924bfd4399fd2ac6e5b5756f049603e6f044cb4990ebd2b8af"
+  },
+  {
+    "bytes": 9993,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_controldata-18.mo",
+    "sha256": "af9ac37fc6280e8c9017621bdc6bc6b3efc36e42588dee4dd30dacb2f16adc81"
+  },
+  {
+    "bytes": 17695,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_ctl-18.mo",
+    "sha256": "952235c89e59a9a40d9657b8c80acfe23f329757f2e03a38b42204eb0d12e008"
+  },
+  {
+    "bytes": 60207,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_dump-18.mo",
+    "sha256": "3ffdd65a008d215e8acc743a4bdc6c5f660090409417c1482bd1dd03b0e71045"
+  },
+  {
+    "bytes": 22649,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_rewind-18.mo",
+    "sha256": "94e89ab18be2f0f8a4f5e3671fcf0ae56b3b86fa429cf07181846a0f633e2710"
+  },
+  {
+    "bytes": 3766,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_test_fsync-18.mo",
+    "sha256": "1f0dca9a55229c6ae6444be065d01ca7f292038ccdfba7319d14ee4facd344ea"
+  },
+  {
+    "bytes": 1507,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_test_timing-18.mo",
+    "sha256": "b994af5aa85f628eea0f9f83559dff489df1640f75df2f69103cc34d149de4f9"
+  },
+  {
+    "bytes": 10039,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_verifybackup-18.mo",
+    "sha256": "78a09cd26f5626342732c65e9849cebdd5df2719d10d417607bcd08fb0788b20"
+  },
+  {
+    "bytes": 13712,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/pg_waldump-18.mo",
+    "sha256": "ce6d591eea089dc6bf354b4662512946f84860756b2fc925c7a46913f3c96b04"
+  },
+  {
+    "bytes": 15463,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/plpgsql-18.mo",
+    "sha256": "7a85a447e6a46b9bbe7dc411a36c653476b9ff589d0f7e9f75d4aebf750d6310"
+  },
+  {
+    "bytes": 108777,
+    "path": "usr/share/locale/zh_TW/LC_MESSAGES/psql-18.mo",
+    "sha256": "3dfe17b927b4326516a8019190b2641440baa48ca6231394948fbebeb07ad44b"
+  },
+  {
+    "bytes": 15,
+    "path": "usr/share/postgresql/18/catalog_version",
+    "sha256": "4500b655b16561fb531a69abc6d68d0eb404b5cdd6b8d3989a701a515a24715f"
+  },
+  {
+    "bytes": 1644,
+    "path": "usr/share/postgresql/18/contrib/sepgsql.sql",
+    "sha256": "1f5e1386e651d6f76161fa009842f6a64789543d83ff1fba589101995e29af0e"
+  },
+  {
+    "bytes": 33739,
+    "path": "usr/share/postgresql/18/errcodes.txt",
+    "sha256": "6e8de346643ba84aa3c9c6a73360acfc7b2dfb89162c06c08ce9bf5bcd5bbcba"
+  },
+  {
+    "bytes": 931,
+    "path": "usr/share/postgresql/18/extension/amcheck--1.0--1.1.sql",
+    "sha256": "ef7837e801a68f98a386417dcc2e6daffbcf489903ac6ae2a7785f5c979f2a57"
+  },
+  {
+    "bytes": 704,
+    "path": "usr/share/postgresql/18/extension/amcheck--1.0.sql",
+    "sha256": "6a11b89aac993740431348d1c578d5be1e285a81de79eb27ff6335b075bb7e79"
+  },
+  {
+    "bytes": 705,
+    "path": "usr/share/postgresql/18/extension/amcheck--1.1--1.2.sql",
+    "sha256": "2a67d156021c0aa2f96f89e4a537c2087666debecb07cb708c022adfafa7db35"
+  },
+  {
+    "bytes": 852,
+    "path": "usr/share/postgresql/18/extension/amcheck--1.2--1.3.sql",
+    "sha256": "7205188cc931c77ccf914d234285d4c67fbc8384c5d1f5178aa3be1892ed7b26"
+  },
+  {
+    "bytes": 1082,
+    "path": "usr/share/postgresql/18/extension/amcheck--1.3--1.4.sql",
+    "sha256": "ce984ec2ebcdb26735661931636b91f1fa60f4ee585c208552ddf7b5713ee43c"
+  },
+  {
+    "bytes": 406,
+    "path": "usr/share/postgresql/18/extension/amcheck--1.4--1.5.sql",
+    "sha256": "abb8bde73a19b73f83c6dc81408be948429b0ab74c1ca4a58eb995fc3bf6f1c0"
+  },
+  {
+    "bytes": 154,
+    "path": "usr/share/postgresql/18/extension/amcheck.control",
+    "sha256": "c6e17db5929a9022fc93a534f37326e29825594eb4b21e64333a229ab3340923"
+  },
+  {
+    "bytes": 249,
+    "path": "usr/share/postgresql/18/extension/autoinc--1.0.sql",
+    "sha256": "90a86e5b46d1d6b1688c3cc068b60782e26a52fa19139feb6b6049ec7c289b53"
+  },
+  {
+    "bytes": 149,
+    "path": "usr/share/postgresql/18/extension/autoinc.control",
+    "sha256": "4fc948f4ae89d47a07589a4c2cb93af211bad46369666322fe0a3d41d6d7d5ff"
+  },
+  {
+    "bytes": 666,
+    "path": "usr/share/postgresql/18/extension/bloom--1.0.sql",
+    "sha256": "cecce7d404b82c1fb397f8598953c55a9d9eaf02b5554989259bbf185611837f"
+  },
+  {
+    "bytes": 156,
+    "path": "usr/share/postgresql/18/extension/bloom.control",
+    "sha256": "a638be9bb2eac43f8fb73db7d5fc43a170b9112ddbf2034d7d037b34d5deedbf"
+  },
+  {
+    "bytes": 1372,
+    "path": "usr/share/postgresql/18/extension/btree_gin--1.0--1.1.sql",
+    "sha256": "c81798c7433e3286af13d5b876c0640e0f6cbe7fae25275b86511500ba5d8879"
+  },
+  {
+    "bytes": 24818,
+    "path": "usr/share/postgresql/18/extension/btree_gin--1.0.sql",
+    "sha256": "0c5440a89f33c953fd0217d273a3ad6816ae32eeea8bcadbc8951ea6688756e3"
+  },
+  {
+    "bytes": 1445,
+    "path": "usr/share/postgresql/18/extension/btree_gin--1.1--1.2.sql",
+    "sha256": "6a3c43f4d8e91802f205b1c0ee330eadbb23372b1ff86e2954bb1ea3dd412f42"
+  },
+  {
+    "bytes": 4571,
+    "path": "usr/share/postgresql/18/extension/btree_gin--1.2--1.3.sql",
+    "sha256": "7a159af1a74eb2202be19c5a6383720a08e65ded58d4b2393cca56fe8c34cd35"
+  },
+  {
+    "bytes": 175,
+    "path": "usr/share/postgresql/18/extension/btree_gin.control",
+    "sha256": "ba6ceeda8de05adc0145a152178fc96a84ef7d21b4347af36f8c644542c94bcd"
+  },
+  {
+    "bytes": 3739,
+    "path": "usr/share/postgresql/18/extension/btree_gist--1.0--1.1.sql",
+    "sha256": "bf5d5f760da60f41fbfcd31804550f06c4511b1a5c19ffa302c3c1761c4afe38"
+  },
+  {
+    "bytes": 5048,
+    "path": "usr/share/postgresql/18/extension/btree_gist--1.1--1.2.sql",
+    "sha256": "2d3caf344f62e7367e7b9227e42196fcabbf3a666b5a2216e44854675f643033"
+  },
+  {
+    "bytes": 1955,
+    "path": "usr/share/postgresql/18/extension/btree_gist--1.2--1.3.sql",
+    "sha256": "5dc7a402185ddbdff6d4488686ba28e3e89c59a850e54f833114f383cda19123"
+  },
+  {
+    "bytes": 41115,
+    "path": "usr/share/postgresql/18/extension/btree_gist--1.2.sql",
+    "sha256": "6ce065d3cf6225cdc56d06ce0e8c18f404b658f18d5ae5b5adc652b69b4a66b4"
+  },
+  {
+    "bytes": 1932,
+    "path": "usr/share/postgresql/18/extension/btree_gist--1.3--1.4.sql",
+    "sha256": "7a7f5ece012f23d7a11f460e7536b65435ee0aeead0717963a428b092135ab84"
+  },
+  {
+    "bytes": 1872,
+    "path": "usr/share/postgresql/18/extension/btree_gist--1.4--1.5.sql",
+    "sha256": "4e28241668ad1ccc0d645ac46726a160617af4d07a8d77f188776e91b085d3ce"
+  },
+  {
+    "bytes": 13417,
+    "path": "usr/share/postgresql/18/extension/btree_gist--1.5--1.6.sql",
+    "sha256": "593f167508dc9c6e8be7e5565c15d5fb8d259e38f6139170b72b3da115e2cff4"
+  },
+  {
+    "bytes": 2170,
+    "path": "usr/share/postgresql/18/extension/btree_gist--1.6--1.7.sql",
+    "sha256": "426340ca65ed9763e3934c39e5f427e743a4947f6e89eba6bb4c7d9bd3ad0bf5"
+  },
+  {
+    "bytes": 9427,
+    "path": "usr/share/postgresql/18/extension/btree_gist--1.7--1.8.sql",
+    "sha256": "df7eef35d2bafdb15ecfd8624c4fc6fa57e05f89be7cb7f98f7be2faedb7537c"
+  },
+  {
+    "bytes": 178,
+    "path": "usr/share/postgresql/18/extension/btree_gist.control",
+    "sha256": "6225c28596c04fb200885b82347a0d135733ee3ea9ee6642637705041ef1106c"
+  },
+  {
+    "bytes": 1028,
+    "path": "usr/share/postgresql/18/extension/citext--1.0--1.1.sql",
+    "sha256": "8e522f09d70ccaa6794ba3aa9e0eb19e4c4235b6772605506e619f5b77ba23c4"
+  },
+  {
+    "bytes": 3424,
+    "path": "usr/share/postgresql/18/extension/citext--1.1--1.2.sql",
+    "sha256": "9f9fe637eab0a2af2a3b6c1595d73fe8a24c8f23668c9ac43190f050055400cf"
+  },
+  {
+    "bytes": 850,
+    "path": "usr/share/postgresql/18/extension/citext--1.2--1.3.sql",
+    "sha256": "7d28362af43aa2cbfe46785afeafea351dc47c75257876aa07e466f7e1c4901f"
+  },
+  {
+    "bytes": 668,
+    "path": "usr/share/postgresql/18/extension/citext--1.3--1.4.sql",
+    "sha256": "7289ff58c1cb20ca73b4c5a0e1c55808661b07d196f28a0b9a1c1dd7679a736e"
+  },
+  {
+    "bytes": 2284,
+    "path": "usr/share/postgresql/18/extension/citext--1.4--1.5.sql",
+    "sha256": "8104223ef4f55afc26bddbca5a6f5500a87c026a9692c6bf1f06e2594fe69c21"
+  },
+  {
+    "bytes": 13466,
+    "path": "usr/share/postgresql/18/extension/citext--1.4.sql",
+    "sha256": "ca0e42530cef4281e9ee788739c6774cf4d5e1ce8eeb1a84964150a9659d3e0b"
+  },
+  {
+    "bytes": 427,
+    "path": "usr/share/postgresql/18/extension/citext--1.5--1.6.sql",
+    "sha256": "31917f922dcc33b58c34cd9f221d4822eadfd5a190f2d3f0a447e03f46de394e"
+  },
+  {
+    "bytes": 3030,
+    "path": "usr/share/postgresql/18/extension/citext--1.6--1.7.sql",
+    "sha256": "2d658cf2defb2a9e510939e84cbe65f5af8eba61c9b0aa76512c65d6f98342e6"
+  },
+  {
+    "bytes": 3591,
+    "path": "usr/share/postgresql/18/extension/citext--1.7--1.8.sql",
+    "sha256": "f498dbcfd839b21536d1e474430bd0161b84ee116cb2bdfe88c51d83380c66a2"
+  },
+  {
+    "bytes": 173,
+    "path": "usr/share/postgresql/18/extension/citext.control",
+    "sha256": "da2a338a0a3eae999cbff9d70df9f8763fc53f77fcec9dced7b9c63d9ea1f541"
+  },
+  {
+    "bytes": 1594,
+    "path": "usr/share/postgresql/18/extension/cube--1.0--1.1.sql",
+    "sha256": "943afc9d06b3898eb53855166438e42f3475f284176d5ec3745a701c53365bfc"
+  },
+  {
+    "bytes": 3815,
+    "path": "usr/share/postgresql/18/extension/cube--1.1--1.2.sql",
+    "sha256": "5815a7165eaec913b651bc1aabbecddb0a85a0c5eb67b995d86f185ac07dd8fa"
+  },
+  {
+    "bytes": 365,
+    "path": "usr/share/postgresql/18/extension/cube--1.2--1.3.sql",
+    "sha256": "ccc82742d4a9360cbd3baeb8eb50090824be5a84e30e9e01f8ef9f1e82c0beb5"
+  },
+  {
+    "bytes": 9761,
+    "path": "usr/share/postgresql/18/extension/cube--1.2.sql",
+    "sha256": "5c6dbab000abc408addfbf19bd797a7d7bcea7d64f02f4ab44356eb0acb2daeb"
+  },
+  {
+    "bytes": 2387,
+    "path": "usr/share/postgresql/18/extension/cube--1.3--1.4.sql",
+    "sha256": "1ece52185fcbeaf78b43984c9923d1949ddca64d30350a5b96e3d42fe5e1ee72"
+  },
+  {
+    "bytes": 591,
+    "path": "usr/share/postgresql/18/extension/cube--1.4--1.5.sql",
+    "sha256": "cd493c743c1a8fc305cdfac8c8a06bfd7aac89f6ef737a6e5197c34fef8088b7"
+  },
+  {
+    "bytes": 157,
+    "path": "usr/share/postgresql/18/extension/cube.control",
+    "sha256": "bab0de58b95c1014fa8f2372680653c39b8b7af2fde69393c966112a44dc9a8a"
+  },
+  {
+    "bytes": 419,
+    "path": "usr/share/postgresql/18/extension/dblink--1.0--1.1.sql",
+    "sha256": "41aae031fc6c6e60bd64ddc21841d02a0d894a3894ddad2591a37c02281633bd"
+  },
+  {
+    "bytes": 2832,
+    "path": "usr/share/postgresql/18/extension/dblink--1.1--1.2.sql",
+    "sha256": "65ef017bd7c0b07f65f0785420e83939a833645f5cd2935b9fc7235bac0f3001"
+  },
+  {
+    "bytes": 6645,
+    "path": "usr/share/postgresql/18/extension/dblink--1.2.sql",
+    "sha256": "615d0687b504a6389ce94d4fd202a78a0dec09eef55653d358e9c964f9521914"
+  },
+  {
+    "bytes": 170,
+    "path": "usr/share/postgresql/18/extension/dblink.control",
+    "sha256": "000235278aab047a81911dbb285563e4ea5cefbbc1930901560914f28c86237c"
+  },
+  {
+    "bytes": 711,
+    "path": "usr/share/postgresql/18/extension/dict_int--1.0.sql",
+    "sha256": "ef69820527c757bd6004c04353fc2136b405b47dfd78c4af6aa34e96b8fd540f"
+  },
+  {
+    "bytes": 173,
+    "path": "usr/share/postgresql/18/extension/dict_int.control",
+    "sha256": "7f8fecf5146855a282f1a66ce0902cf78fa0f3a6ab0ac0eb081f83bf8275c206"
+  },
+  {
+    "bytes": 694,
+    "path": "usr/share/postgresql/18/extension/dict_xsyn--1.0.sql",
+    "sha256": "a0ff05b7ee7c72242952d6cecb4a00837a19b3ed28da25a00a0ffa7ecaf90019"
+  },
+  {
+    "bytes": 179,
+    "path": "usr/share/postgresql/18/extension/dict_xsyn.control",
+    "sha256": "99ccde7920c8f430fea48e311d5420bc238491d2d9f7e2d38f916ade95a0b9cd"
+  },
+  {
+    "bytes": 671,
+    "path": "usr/share/postgresql/18/extension/earthdistance--1.0--1.1.sql",
+    "sha256": "378acfc1526f7a7b9dff088cde21bc85548d15388f7283732fe728f7facac809"
+  },
+  {
+    "bytes": 2194,
+    "path": "usr/share/postgresql/18/extension/earthdistance--1.1--1.2.sql",
+    "sha256": "a7bc619b81e8204ddec34fd9109b34a50e6c93c4725fb281b437e5164a701781"
+  },
+  {
+    "bytes": 3319,
+    "path": "usr/share/postgresql/18/extension/earthdistance--1.1.sql",
+    "sha256": "ebd715f3f22ec5287c4d5c42b4301fb82fbc9d2f5037656b1943cc542444ea15"
+  },
+  {
+    "bytes": 202,
+    "path": "usr/share/postgresql/18/extension/earthdistance.control",
+    "sha256": "22fe151b4758eb166ec24400df08df3e9711827d207947f5511f1f476f08a9d4"
+  },
+  {
+    "bytes": 475,
+    "path": "usr/share/postgresql/18/extension/file_fdw--1.0.sql",
+    "sha256": "9e8c813cfe876d71d5ee36ecaad5d17c77bbfc8bbfb005490f76478ac37e3f53"
+  },
+  {
+    "bytes": 155,
+    "path": "usr/share/postgresql/18/extension/file_fdw.control",
+    "sha256": "2f5964ed7e8d26aeb1a5b78674b891f219cb4d8b63fecc9600aded4315c6de78"
+  },
+  {
+    "bytes": 788,
+    "path": "usr/share/postgresql/18/extension/fuzzystrmatch--1.0--1.1.sql",
+    "sha256": "b4e6797d0a1d25ca905b52bc96f5ab18b40f18b1fc71fdadd8d01513b03a754e"
+  },
+  {
+    "bytes": 351,
+    "path": "usr/share/postgresql/18/extension/fuzzystrmatch--1.1--1.2.sql",
+    "sha256": "69c66f21261fb48cf64bbcfccc204a5f5bb078d0d3dbd1bdbb3f2fc7fd99ea31"
+  },
+  {
+    "bytes": 1576,
+    "path": "usr/share/postgresql/18/extension/fuzzystrmatch--1.1.sql",
+    "sha256": "84009c54e3756973a0e8c5786161eb5bbd1d45b83d2f1c717ecac2917ae6cf06"
+  },
+  {
+    "bytes": 190,
+    "path": "usr/share/postgresql/18/extension/fuzzystrmatch.control",
+    "sha256": "03cb75eb2e7602c93bae23f6912a9cb6728229c1118434505ff26958829045d4"
+  },
+  {
+    "bytes": 1639,
+    "path": "usr/share/postgresql/18/extension/hstore--1.1--1.2.sql",
+    "sha256": "8e166794ad480bd9141f5627b838d9c9076a76f63237c9058b836c36f0600df7"
+  },
+  {
+    "bytes": 525,
+    "path": "usr/share/postgresql/18/extension/hstore--1.2--1.3.sql",
+    "sha256": "0753c346e86147cb7767f603310b774cff6affb11e65c2d5caf173cf0766ad2c"
+  },
+  {
+    "bytes": 5310,
+    "path": "usr/share/postgresql/18/extension/hstore--1.3--1.4.sql",
+    "sha256": "7e8df8d33964ce7ab39d32be90e94b64f9776588fe43b53e70077a3e58ec95f9"
+  },
+  {
+    "bytes": 409,
+    "path": "usr/share/postgresql/18/extension/hstore--1.4--1.5.sql",
+    "sha256": "045d0def508a248fd0049f1bf99bbbec9bccff523f31514ffa3f7daf46b11de6"
+  },
+  {
+    "bytes": 13765,
+    "path": "usr/share/postgresql/18/extension/hstore--1.4.sql",
+    "sha256": "bcd0328004e985554dc3831cb0db92da3f45bec48b6501fce962187b7a2c2bbf"
+  },
+  {
+    "bytes": 455,
+    "path": "usr/share/postgresql/18/extension/hstore--1.5--1.6.sql",
+    "sha256": "957ae4e39efc2841766c59e2ece1bc431d87a8cfe39e8433b70ba08cf3e3b8d5"
+  },
+  {
+    "bytes": 1061,
+    "path": "usr/share/postgresql/18/extension/hstore--1.6--1.7.sql",
+    "sha256": "0d410440dc457b525626b0fd6f5a0262dd233ec6f299e5c3ca7b090d2f9576db"
+  },
+  {
+    "bytes": 508,
+    "path": "usr/share/postgresql/18/extension/hstore--1.7--1.8.sql",
+    "sha256": "49bbb159d5f67e86ddcb93d11a9d444f6dd70bcb03a8400ce8c3664fbb974dba"
+  },
+  {
+    "bytes": 173,
+    "path": "usr/share/postgresql/18/extension/hstore.control",
+    "sha256": "1df9f2b3059cd77e38920dd35235161b3ad336fc71198c66120d120262ad086d"
+  },
+  {
+    "bytes": 273,
+    "path": "usr/share/postgresql/18/extension/insert_username--1.0.sql",
+    "sha256": "dfd01c866f57383291de8998b03dc99f4ef0d0f6a6f238a61511f6b3c05676db"
+  },
+  {
+    "bytes": 170,
+    "path": "usr/share/postgresql/18/extension/insert_username.control",
+    "sha256": "a50a089237d1da5e5d56ace503a601d5e3d759ffb1d3cc5a61c9024eb19a0ddd"
+  },
+  {
+    "bytes": 897,
+    "path": "usr/share/postgresql/18/extension/intagg--1.0--1.1.sql",
+    "sha256": "7d1dc1395321cf717ccb84383f95bf5f34f9691a303ee16c5a32bb2387d60e57"
+  },
+  {
+    "bytes": 1089,
+    "path": "usr/share/postgresql/18/extension/intagg--1.1.sql",
+    "sha256": "23efea89ed8f96cc6aff196d2ca19100757e8a27d69add7ea516ade554273324"
+  },
+  {
+    "bytes": 119,
+    "path": "usr/share/postgresql/18/extension/intagg.control",
+    "sha256": "b0fd3e80a9386f194adebdcdec7a87d3e3be05f2b121b5feedf24c70c3a6590f"
+  },
+  {
+    "bytes": 1794,
+    "path": "usr/share/postgresql/18/extension/intarray--1.0--1.1.sql",
+    "sha256": "afe3f46b5ea00c14d203b81de1f9c44ddff65fb1780f12fdbe9f9a5fe8bf3296"
+  },
+  {
+    "bytes": 5525,
+    "path": "usr/share/postgresql/18/extension/intarray--1.1--1.2.sql",
+    "sha256": "999a398ea4c6c568c9c539223fd6fa22582e5cfbce48efeaff73cb88157c7737"
+  },
+  {
+    "bytes": 663,
+    "path": "usr/share/postgresql/18/extension/intarray--1.2--1.3.sql",
+    "sha256": "6ec2bd07555168eac88c09efd777fdf5855b01e8170e9c21c164d36e2976513f"
+  },
+  {
+    "bytes": 12293,
+    "path": "usr/share/postgresql/18/extension/intarray--1.2.sql",
+    "sha256": "cdbe2efda79cb5c9cfc17f157425e240bcd659b5c4ff590b30ab7dafc8b9dab1"
+  },
+  {
+    "bytes": 692,
+    "path": "usr/share/postgresql/18/extension/intarray--1.3--1.4.sql",
+    "sha256": "df2479d62a6aac3fba7a924f5c84f994fd98d4ad9926966d9d471794f604460e"
+  },
+  {
+    "bytes": 282,
+    "path": "usr/share/postgresql/18/extension/intarray--1.4--1.5.sql",
+    "sha256": "2fadcb036e13e88a68ad11030c5c90234951050c0db3ce925cd8b82ae4797dd1"
+  },
+  {
+    "bytes": 191,
+    "path": "usr/share/postgresql/18/extension/intarray.control",
+    "sha256": "4639c9ee34acfc0f3a25bcff0c4e6398722f9a6371241b1950a4c1d1b73121c1"
+  },
+  {
+    "bytes": 12333,
+    "path": "usr/share/postgresql/18/extension/isn--1.0--1.1.sql",
+    "sha256": "481e984efaf9cf02f0351f601945976b1604bbb46eaf72f8400da7121f206302"
+  },
+  {
+    "bytes": 5264,
+    "path": "usr/share/postgresql/18/extension/isn--1.1--1.2.sql",
+    "sha256": "a8bb938809c0c3cd239ba3248590e774961a54da454a7f2d3050169b221e46b2"
+  },
+  {
+    "bytes": 69885,
+    "path": "usr/share/postgresql/18/extension/isn--1.1.sql",
+    "sha256": "eedbf152770a67be7cb839ce3c229c2886ae07d4888f8ec61caac09c818a0fcb"
+  },
+  {
+    "bytes": 292,
+    "path": "usr/share/postgresql/18/extension/isn--1.2--1.3.sql",
+    "sha256": "7e8d58714dc11698f081b162f24f3cf61effb147036406319b41bba4be35654e"
+  },
+  {
+    "bytes": 175,
+    "path": "usr/share/postgresql/18/extension/isn.control",
+    "sha256": "8a590a8f6a5e114c8930386379e20fd53d99ef7eb2a93c21d16e7eb8eca6c518"
+  },
+  {
+    "bytes": 223,
+    "path": "usr/share/postgresql/18/extension/lo--1.0--1.1.sql",
+    "sha256": "6b746a7b34517f8c4a9aded518085fcdce85ee9145b7400788167401833a3485"
+  },
+  {
+    "bytes": 323,
+    "path": "usr/share/postgresql/18/extension/lo--1.1--1.2.sql",
+    "sha256": "8e2a2180cefa65513bfe122dce821acb5c16abcb569f98830671d68ef9700a61"
+  },
+  {
+    "bytes": 722,
+    "path": "usr/share/postgresql/18/extension/lo--1.1.sql",
+    "sha256": "d045cbbb5385d15052b9dacd213d896d994ba51af55695e1685681b2f7637d5e"
+  },
+  {
+    "bytes": 141,
+    "path": "usr/share/postgresql/18/extension/lo.control",
+    "sha256": "5ed64ac0ce65df679e4351b92e28c2efbaffb21b514849b57a0d02089757b079"
+  },
+  {
+    "bytes": 6336,
+    "path": "usr/share/postgresql/18/extension/ltree--1.0--1.1.sql",
+    "sha256": "069cf8d289005a3ce19bbd4f7c0b7aa84fccac2763392a1c7ebe1fcfe641a25f"
+  },
+  {
+    "bytes": 5217,
+    "path": "usr/share/postgresql/18/extension/ltree--1.1--1.2.sql",
+    "sha256": "e8f907408575edae282a028691eaa6f61b0c810b6f7c3a9cd2b7fb8935bfb406"
+  },
+  {
+    "bytes": 19375,
+    "path": "usr/share/postgresql/18/extension/ltree--1.1.sql",
+    "sha256": "17bd2b7616cc0fdd72ded20017c224e7c1d8d145a7562f985f5093bb8180b7cc"
+  },
+  {
+    "bytes": 652,
+    "path": "usr/share/postgresql/18/extension/ltree--1.2--1.3.sql",
+    "sha256": "ed01ab8c7da84e75e2e2f4d502b1526e8ef29a26236817b4ec332a0b77e93d4e"
+  },
+  {
+    "bytes": 170,
+    "path": "usr/share/postgresql/18/extension/ltree.control",
+    "sha256": "73290b3b95f8045c7081d65f4e1decab49f74b4ac521b59b07622493e717f181"
+  },
+  {
+    "bytes": 261,
+    "path": "usr/share/postgresql/18/extension/moddatetime--1.0.sql",
+    "sha256": "81aa1167a1f7ab51f1518698c8f56f712a5030e15ec588d2e1def03dddc69c96"
+  },
+  {
+    "bytes": 165,
+    "path": "usr/share/postgresql/18/extension/moddatetime.control",
+    "sha256": "7c6e860c0570348baa620603566c6bc4d7bb4b3b11a66dd0033493fcb4f1f96e"
+  },
+  {
+    "bytes": 560,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.0--1.1.sql",
+    "sha256": "84268e37d39bef6585d42a4e14dee567e7afb919addf6621dfd4ec9eabf08fca"
+  },
+  {
+    "bytes": 562,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.1--1.2.sql",
+    "sha256": "84899c9fbf372d2c2dacffd817eec64c6076fe41006be6261e76f3661c91435e"
+  },
+  {
+    "bytes": 1570,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.10--1.11.sql",
+    "sha256": "37957ad54c1565165d586604605ffe6c017a2fcd749eadb91f19c1d04c980db6"
+  },
+  {
+    "bytes": 1165,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.11--1.12.sql",
+    "sha256": "9ac047074faab612b9b04e8a9239ee99eb662522538b855016575618374954fa"
+  },
+  {
+    "bytes": 1720,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.12--1.13.sql",
+    "sha256": "bc557854bf340b1835e34425f73d42c86989deaad8e06bf7fa27afc1b17d3990"
+  },
+  {
+    "bytes": 1946,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.2--1.3.sql",
+    "sha256": "df73aa055b6977ae94cbafca5ce57dab3778633189525ffcd517722a333cb9d7"
+  },
+  {
+    "bytes": 2566,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.3--1.4.sql",
+    "sha256": "77ea8f779d43ca5fbf04b81170e9971459c9667f0d3e340b5d1ae2c055d35f41"
+  },
+  {
+    "bytes": 1347,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.4--1.5.sql",
+    "sha256": "b433f6d5838c1055b9d67fa15c170069b9f7e48f0c44d89b30b9207254b4de2a"
+  },
+  {
+    "bytes": 2252,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.5--1.6.sql",
+    "sha256": "24280667f07c8e9323361c01e6180453f659c3b7aa92ed4cb2356bc6742fcc10"
+  },
+  {
+    "bytes": 6262,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.5.sql",
+    "sha256": "c8ae5e8b5b2a4ddd91606768bb97a15b20d9801bf221dc5f5a6b9d04f8728582"
+  },
+  {
+    "bytes": 698,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.6--1.7.sql",
+    "sha256": "9429a8581910c56ca47892c6c0c5f21f978de3b365735234dc918eb88da689fb"
+  },
+  {
+    "bytes": 1711,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.7--1.8.sql",
+    "sha256": "063f1cd1dc1fbf11db12e10528dee5f2298e7032e5a2cbc5853c864526a02215"
+  },
+  {
+    "bytes": 3398,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.8--1.9.sql",
+    "sha256": "52b688ab40c01ef54b9ac660fd05520aa35b5132b712f001fcb4a2f4c3bdc307"
+  },
+  {
+    "bytes": 589,
+    "path": "usr/share/postgresql/18/extension/pageinspect--1.9--1.10.sql",
+    "sha256": "a2b2dde12407e6bdfddf9bec8e6db6a48a973d4ed6fed1e4349b1b6a477b20ec"
+  },
+  {
+    "bytes": 174,
+    "path": "usr/share/postgresql/18/extension/pageinspect.control",
+    "sha256": "28d5a68378bbc39de02239368a7d5066cba21ca52c9edf372479d9b36b61d5cc"
+  },
+  {
+    "bytes": 508,
+    "path": "usr/share/postgresql/18/extension/pg_buffercache--1.0--1.1.sql",
+    "sha256": "88d9a4fe3d4b1f57716786357bf323c3a563da32e5ba424220dc79b96134458c"
+  },
+  {
+    "bytes": 271,
+    "path": "usr/share/postgresql/18/extension/pg_buffercache--1.1--1.2.sql",
+    "sha256": "78054761138f260a9c1b34577e7f2a09b81ff3d58ac3f6e1c6424e0f7f5ca00f"
+  },
+  {
+    "bytes": 328,
+    "path": "usr/share/postgresql/18/extension/pg_buffercache--1.2--1.3.sql",
+    "sha256": "7a90452071e7dae7ca6e75bacf15b73f96bb4be46abfa93502c3e6d520540aad"
+  },
+  {
+    "bytes": 794,
+    "path": "usr/share/postgresql/18/extension/pg_buffercache--1.2.sql",
+    "sha256": "ef83a188c86f21905f9ace8393143c6407d2c25c577e486df6a251c742b6cb6e"
+  },
+  {
+    "bytes": 1021,
+    "path": "usr/share/postgresql/18/extension/pg_buffercache--1.3--1.4.sql",
+    "sha256": "d90f11f4e76c28f5a92a298658a44f2d1bdf6751cf5543fdf9647ebd085abefd"
+  },
+  {
+    "bytes": 230,
+    "path": "usr/share/postgresql/18/extension/pg_buffercache--1.4--1.5.sql",
+    "sha256": "bf0e0c61ae6274b281ed65757064b1d7b54d07d5e7e7dfdd8c5f1286f3fd60e4"
+  },
+  {
+    "bytes": 1584,
+    "path": "usr/share/postgresql/18/extension/pg_buffercache--1.5--1.6.sql",
+    "sha256": "f49f0ac70eb7300a6c67dcff675308bf8392bd2b48d1f905e8bac5268b6d1fd1"
+  },
+  {
+    "bytes": 157,
+    "path": "usr/share/postgresql/18/extension/pg_buffercache.control",
+    "sha256": "f630da4d681b9dd5c06f5773c3f32200220e514d94d5c372bc41373a85f8ff01"
+  },
+  {
+    "bytes": 335,
+    "path": "usr/share/postgresql/18/extension/pg_freespacemap--1.0--1.1.sql",
+    "sha256": "67a3bc34c99015ddb234e33af7468aecf7d07d32ad2edca1689c8f385b8ff0f5"
+  },
+  {
+    "bytes": 377,
+    "path": "usr/share/postgresql/18/extension/pg_freespacemap--1.1--1.2.sql",
+    "sha256": "d864b9660785a2b139368539f5523c26a125e1f70e110d60f7106f203b4bb5b2"
+  },
+  {
+    "bytes": 899,
+    "path": "usr/share/postgresql/18/extension/pg_freespacemap--1.1.sql",
+    "sha256": "af0b659e01f3d1c49cdae9857be584e7ee0358b80c917eb810e8a808b5a3d087"
+  },
+  {
+    "bytes": 554,
+    "path": "usr/share/postgresql/18/extension/pg_freespacemap--1.2--1.3.sql",
+    "sha256": "3f81d7bc28831c759166dcaf7b33c6fbf8005f78386d4b3d97c7e264f79ffd1e"
+  },
+  {
+    "bytes": 160,
+    "path": "usr/share/postgresql/18/extension/pg_freespacemap.control",
+    "sha256": "1041b87bfea1fce901d7885406a9f39ef63243f3b36a8637b13cee35581e25b1"
+  },
+  {
+    "bytes": 1391,
+    "path": "usr/share/postgresql/18/extension/pg_logicalinspect--1.0.sql",
+    "sha256": "e75f3bd0e747a519b6e3c7a3edd6f3cceed9681048907b9dd1da75c4a0bc2b4f"
+  },
+  {
+    "bytes": 180,
+    "path": "usr/share/postgresql/18/extension/pg_logicalinspect.control",
+    "sha256": "057f92d253761f7841341d457a5f02b61f5503b388025b2c345e465a1003ebe0"
+  },
+  {
+    "bytes": 281,
+    "path": "usr/share/postgresql/18/extension/pg_prewarm--1.0--1.1.sql",
+    "sha256": "086aab8d6f130184865916aa93e84a2563ce335eb8da130fc485368860c8c390"
+  },
+  {
+    "bytes": 458,
+    "path": "usr/share/postgresql/18/extension/pg_prewarm--1.1--1.2.sql",
+    "sha256": "1e3071f0c1535462db8e3d03df58c4de0de73e0106f16a013c4b47e4d84cdd19"
+  },
+  {
+    "bytes": 475,
+    "path": "usr/share/postgresql/18/extension/pg_prewarm--1.1.sql",
+    "sha256": "879227a872c8a8e200b87a09470d166264d0f71269118dcd2117cd89370dbdf6"
+  },
+  {
+    "bytes": 139,
+    "path": "usr/share/postgresql/18/extension/pg_prewarm.control",
+    "sha256": "02457f028a8d2b0a861c4a6611318e3a9af92926881fb111d7d39c329da52b08"
+  },
+  {
+    "bytes": 1246,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.0--1.1.sql",
+    "sha256": "3be14c0cfbc48097813ddb38be7b6ba8b64e61eed495ac78691b112f177fad5d"
+  },
+  {
+    "bytes": 1336,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.1--1.2.sql",
+    "sha256": "585bcd4b958d9509a4884807895263dc408cd84deb591422fb5088c84797a03c"
+  },
+  {
+    "bytes": 2644,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.10--1.11.sql",
+    "sha256": "91165d66ca91a64c6fee227e601641cc35771ddebc6213f9162eefaffdc5b0aa"
+  },
+  {
+    "bytes": 2476,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.11--1.12.sql",
+    "sha256": "0dbf0b841e0f2475e63ca297c8cf5026c0aec24eaab926eec224d85951cbfe9a"
+  },
+  {
+    "bytes": 1454,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.2--1.3.sql",
+    "sha256": "fec6a32365da764be76cf65d3cc5aa70286601f33a07191d122f394eb34c6214"
+  },
+  {
+    "bytes": 345,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.3--1.4.sql",
+    "sha256": "1224d505a793c90f36e8d9ee860780a3b9cc57043d75bf5a3c3b9f3e45b20a60"
+  },
+  {
+    "bytes": 305,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.4--1.5.sql",
+    "sha256": "2f0256a0f057d6bbf62fec58045f06e31974d8d391f553b6ba48fb8583962b86"
+  },
+  {
+    "bytes": 1427,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.4.sql",
+    "sha256": "2bf423c3cebe2fcce8ac589f4b12cbdd6c4e678520d5d8bd76bbf21d7d86a185"
+  },
+  {
+    "bytes": 376,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.5--1.6.sql",
+    "sha256": "7c537b11d4bb551208b8f61ecc240ab8af9ba779b76fbd653bd12f38bfe28dc6"
+  },
+  {
+    "bytes": 806,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.6--1.7.sql",
+    "sha256": "7a5ffffffbff4eab6dff365f8cdb63fd5b675674e2ab52a53adf705aec45fc73"
+  },
+  {
+    "bytes": 1744,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.7--1.8.sql",
+    "sha256": "049ebb696bfbd46fe5b9695a3b44aa6f4059e360e1edd2c047f9c0a0d5f619dd"
+  },
+  {
+    "bytes": 2128,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.8--1.9.sql",
+    "sha256": "56b838f8d2eb7dcad313370d656fc6a8d886574e93ddc1d942c6d9af85b89d57"
+  },
+  {
+    "bytes": 2114,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements--1.9--1.10.sql",
+    "sha256": "cfb235d790cceb4bb64dc1e23211114324a978b6ea874fe143bf6acc64bc6171"
+  },
+  {
+    "bytes": 205,
+    "path": "usr/share/postgresql/18/extension/pg_stat_statements.control",
+    "sha256": "83c3e5a4d00b6f3dda8a446adeaf86dba22239a308346de4f3d207db07227736"
+  },
+  {
+    "bytes": 608,
+    "path": "usr/share/postgresql/18/extension/pg_surgery--1.0.sql",
+    "sha256": "03db9e2e8ab9d92eed941cdbf3f2cb5f43f530cff2d2810baaca36dea5cdee6d"
+  },
+  {
+    "bytes": 168,
+    "path": "usr/share/postgresql/18/extension/pg_surgery.control",
+    "sha256": "4f213c2f2ae1e53ef463a20d8b3c5dd0e7122c6cb6fd32c1f0b50f0aee627cd6"
+  },
+  {
+    "bytes": 536,
+    "path": "usr/share/postgresql/18/extension/pg_trgm--1.0--1.1.sql",
+    "sha256": "a85cff55497081250bef3bb3b7fc8d8beb3b9bab64675501f79f923d7bd0a06c"
+  },
+  {
+    "bytes": 2192,
+    "path": "usr/share/postgresql/18/extension/pg_trgm--1.1--1.2.sql",
+    "sha256": "0ed40419dc9b01417ce058aba210c615bf1ff04daba44e4d23085983a4565f7f"
+  },
+  {
+    "bytes": 3498,
+    "path": "usr/share/postgresql/18/extension/pg_trgm--1.2--1.3.sql",
+    "sha256": "29caec4ef2830920c74c2594c11e0255c3a17102c59d244d9aacb3b1add541ea"
+  },
+  {
+    "bytes": 2045,
+    "path": "usr/share/postgresql/18/extension/pg_trgm--1.3--1.4.sql",
+    "sha256": "98763d59a6e221dd1bfc43e941024e4ed363fc05c9ce4514bc93554dfd8a8ed5"
+  },
+  {
+    "bytes": 7942,
+    "path": "usr/share/postgresql/18/extension/pg_trgm--1.3.sql",
+    "sha256": "2d90a742f644ca794f3819bbefac60bddb53fd9e253bfbc68d6ad3b6d1cf45c4"
+  },
+  {
+    "bytes": 858,
+    "path": "usr/share/postgresql/18/extension/pg_trgm--1.4--1.5.sql",
+    "sha256": "e5de4624f7dcc3954b4c8d84136f9cc6dfc9942545b091180ca18da41f234d18"
+  },
+  {
+    "bytes": 418,
+    "path": "usr/share/postgresql/18/extension/pg_trgm--1.5--1.6.sql",
+    "sha256": "76d02b6ac7c6a5c2eed44d8fa48c8a104b7af98da594969b19e5bdafbb706bb8"
+  },
+  {
+    "bytes": 192,
+    "path": "usr/share/postgresql/18/extension/pg_trgm.control",
+    "sha256": "17c2745da2a706e1443ee363ab7424ced871a9a652e86bf55d25d139f43ee27b"
+  },
+  {
+    "bytes": 883,
+    "path": "usr/share/postgresql/18/extension/pg_visibility--1.0--1.1.sql",
+    "sha256": "60764a081274333c2fb9378e339ede225cd914d72da82fb4f2e7144e9630f6af"
+  },
+  {
+    "bytes": 833,
+    "path": "usr/share/postgresql/18/extension/pg_visibility--1.1--1.2.sql",
+    "sha256": "e013d95f190343277fb02d797b2ab845a975e4a4280a4702cb6941c2211a8b60"
+  },
+  {
+    "bytes": 2825,
+    "path": "usr/share/postgresql/18/extension/pg_visibility--1.1.sql",
+    "sha256": "4894754ecbcd82334a9af001bc8eec10f81a12149afe89ff04ea1193ea71cc34"
+  },
+  {
+    "bytes": 186,
+    "path": "usr/share/postgresql/18/extension/pg_visibility.control",
+    "sha256": "5265d68f17d85a14d89441b5a800a2689509dab34c05419bbdb1c5081d4cc39e"
+  },
+  {
+    "bytes": 1296,
+    "path": "usr/share/postgresql/18/extension/pg_walinspect--1.0--1.1.sql",
+    "sha256": "f0f705c1776991de419b64fa77eb7ab75cb323ab9345fd4ae1e3333019dd51a5"
+  },
+  {
+    "bytes": 3665,
+    "path": "usr/share/postgresql/18/extension/pg_walinspect--1.0.sql",
+    "sha256": "dc1835c445c2a571d1d46740941618e0d07a0a0596b9b04217c4dc50f09ba782"
+  },
+  {
+    "bytes": 183,
+    "path": "usr/share/postgresql/18/extension/pg_walinspect.control",
+    "sha256": "794e7a688fc60ea2e0dd109f6ce6d5f7a013a2e5e9fc230f9c8d0de645fdec2a"
+  },
+  {
+    "bytes": 307,
+    "path": "usr/share/postgresql/18/extension/pgcrypto--1.0--1.1.sql",
+    "sha256": "530abf4709c3010f600312b513cafd2c169b8d8810b59f54ad4da5e576689ec3"
+  },
+  {
+    "bytes": 483,
+    "path": "usr/share/postgresql/18/extension/pgcrypto--1.1--1.2.sql",
+    "sha256": "d33b87d052730a764df864d59f16f09686c0f6c8883184d60784c02702ab1af3"
+  },
+  {
+    "bytes": 2346,
+    "path": "usr/share/postgresql/18/extension/pgcrypto--1.2--1.3.sql",
+    "sha256": "dfc2f4de2ca4eef79c4b24e25562b8d1948f5a6571a916b6b4c81b07d14dfbc6"
+  },
+  {
+    "bytes": 325,
+    "path": "usr/share/postgresql/18/extension/pgcrypto--1.3--1.4.sql",
+    "sha256": "6aa2c856cf63b7a170bb974408fd607a2ef04751c9e712b52a001bb08f7dadfe"
+  },
+  {
+    "bytes": 5708,
+    "path": "usr/share/postgresql/18/extension/pgcrypto--1.3.sql",
+    "sha256": "84f8eee1d6b03982fac596988b46bf89d5d5d8790d3133783eedad38bc7d8d38"
+  },
+  {
+    "bytes": 152,
+    "path": "usr/share/postgresql/18/extension/pgcrypto.control",
+    "sha256": "5cf6178775bb21bad56de69d123c3d20414e508dc58317bde54178d8b656c902"
+  },
+  {
+    "bytes": 651,
+    "path": "usr/share/postgresql/18/extension/pgrowlocks--1.0--1.1.sql",
+    "sha256": "679105d3cf9c1ae69ee1f95653bc3bdfd6501b1ce2b4f166749937c7a7c9e52f"
+  },
+  {
+    "bytes": 253,
+    "path": "usr/share/postgresql/18/extension/pgrowlocks--1.1--1.2.sql",
+    "sha256": "5718fa13fd8e3ea9058284683eafe8c1be3ea8d549032d04b625ecb33208f46b"
+  },
+  {
+    "bytes": 555,
+    "path": "usr/share/postgresql/18/extension/pgrowlocks--1.2.sql",
+    "sha256": "6645e58b3282e3f7ef35a7ec832bf1a06cd0480715993f379e03472eb8d9e636"
+  },
+  {
+    "bytes": 152,
+    "path": "usr/share/postgresql/18/extension/pgrowlocks.control",
+    "sha256": "95be083d42f975d6868a667d2c085accea63e65e235cd65d1697de4e4ea0ff49"
+  },
+  {
+    "bytes": 400,
+    "path": "usr/share/postgresql/18/extension/pgstattuple--1.0--1.1.sql",
+    "sha256": "f3d746e666e75ea13570858459e9cc6264de26fe9a7149af35f6739605682947"
+  },
+  {
+    "bytes": 1435,
+    "path": "usr/share/postgresql/18/extension/pgstattuple--1.1--1.2.sql",
+    "sha256": "3166dce80800ea8cd1abe4334f8d76b16b4b1c25f5fc69533264ee97920646d5"
+  },
+  {
+    "bytes": 1126,
+    "path": "usr/share/postgresql/18/extension/pgstattuple--1.2--1.3.sql",
+    "sha256": "140f5d8b2a6fa9285244fafeb3763e579e3478762ab2646011c8aab6a21e43f6"
+  },
+  {
+    "bytes": 623,
+    "path": "usr/share/postgresql/18/extension/pgstattuple--1.3--1.4.sql",
+    "sha256": "d4a79f01e50e9623ed1bc0e44d84b88ab5312ed1b25c23d43b6eb5db9dccf7d7"
+  },
+  {
+    "bytes": 5506,
+    "path": "usr/share/postgresql/18/extension/pgstattuple--1.4--1.5.sql",
+    "sha256": "8d8eb6a614cbfca248684edff229303a1c18ad0e12c89f62da0e1b2411f35e24"
+  },
+  {
+    "bytes": 3764,
+    "path": "usr/share/postgresql/18/extension/pgstattuple--1.4.sql",
+    "sha256": "f2340a359a830b8ca02d192a40470df25e4cd600212062910980ad694f49d5cb"
+  },
+  {
+    "bytes": 147,
+    "path": "usr/share/postgresql/18/extension/pgstattuple.control",
+    "sha256": "51ddd02509a3c65c5b07eae95f4f49375cd3d3da56f0357a4c9c12bc5a357941"
+  },
+  {
+    "bytes": 658,
+    "path": "usr/share/postgresql/18/extension/plpgsql--1.0.sql",
+    "sha256": "f4e7e05438808ac0da0b3801397d16e36102969af7e2ffc982def5b7524fb557"
+  },
+  {
+    "bytes": 193,
+    "path": "usr/share/postgresql/18/extension/plpgsql.control",
+    "sha256": "9457c3f51d6bdfab93f13080d177795a9274c025e378fb613218342e3a3c7b45"
+  },
+  {
+    "bytes": 626,
+    "path": "usr/share/postgresql/18/extension/postgres_fdw--1.0--1.1.sql",
+    "sha256": "7a9c1935dc118da7811a9b07a00e7e688362a3af7c82bad26710b1437c723e98"
+  },
+  {
+    "bytes": 507,
+    "path": "usr/share/postgresql/18/extension/postgres_fdw--1.0.sql",
+    "sha256": "3a6af33c106f7f62040e0ed8ca97eaa5f144b23efdfc0e261bb25368d0239a70"
+  },
+  {
+    "bytes": 764,
+    "path": "usr/share/postgresql/18/extension/postgres_fdw--1.1--1.2.sql",
+    "sha256": "448351fb05f7c2c9090bb3cf9f4eaf856b340dec69bab617e86de0d5c6d6a8ba"
+  },
+  {
+    "bytes": 172,
+    "path": "usr/share/postgresql/18/extension/postgres_fdw.control",
+    "sha256": "80b142c8f2fd40b1f5def67ad0af8d9c4c1c0e0d92e034c1b9dead6f1653a8c8"
+  },
+  {
+    "bytes": 343,
+    "path": "usr/share/postgresql/18/extension/refint--1.0.sql",
+    "sha256": "25f8d28d97c44c2ec317755620cbfdd740360a868a58626a47ad4aebee0dfe7b"
+  },
+  {
+    "bytes": 169,
+    "path": "usr/share/postgresql/18/extension/refint.control",
+    "sha256": "2c04e91a2d113ec5e6596c5b66cdbdc80dd4e0b9d0d7af9af13116c91e06fe04"
+  },
+  {
+    "bytes": 3005,
+    "path": "usr/share/postgresql/18/extension/seg--1.0--1.1.sql",
+    "sha256": "7375ad8d52499dde1fa5a574ce106c926068ce97d5282bbcfa7fb067259912cb"
+  },
+  {
+    "bytes": 360,
+    "path": "usr/share/postgresql/18/extension/seg--1.1--1.2.sql",
+    "sha256": "fc18230eaa27579238ad232553393cf09ae9e47de249b5f3ce064e9045ea1a96"
+  },
+  {
+    "bytes": 8142,
+    "path": "usr/share/postgresql/18/extension/seg--1.1.sql",
+    "sha256": "afcaf459b8f653942151c68723510724b596b8b914b6a41525efa00a378e63c0"
+  },
+  {
+    "bytes": 2344,
+    "path": "usr/share/postgresql/18/extension/seg--1.2--1.3.sql",
+    "sha256": "59e7d2875e78467c18349da9b0648e213be07654c0c52c0ef4cf89e719acc78f"
+  },
+  {
+    "bytes": 259,
+    "path": "usr/share/postgresql/18/extension/seg--1.3--1.4.sql",
+    "sha256": "41df806282108d0e41826a13f6a25815822bf09181e4dacbf9a9170bb3f5a196"
+  },
+  {
+    "bytes": 187,
+    "path": "usr/share/postgresql/18/extension/seg.control",
+    "sha256": "adcb5b70f99424bbdb49e866bfbc21a6d2fbaf78b3e852125fe8df7d7f42c379"
+  },
+  {
+    "bytes": 375,
+    "path": "usr/share/postgresql/18/extension/sslinfo--1.0--1.1.sql",
+    "sha256": "1a293f04b59457df7fbd0609a1358324516baff7ff1e59d47070619c92ce4bd0"
+  },
+  {
+    "bytes": 746,
+    "path": "usr/share/postgresql/18/extension/sslinfo--1.1--1.2.sql",
+    "sha256": "95cf20ca97265301b1f046a65aa153890bc93817e2cf20d5f5cddfc3cd00b122"
+  },
+  {
+    "bytes": 1534,
+    "path": "usr/share/postgresql/18/extension/sslinfo--1.2.sql",
+    "sha256": "e58a0233448e54dd486126208d4551ee1f313a8330eccf1d28a6400795ef95a4"
+  },
+  {
+    "bytes": 146,
+    "path": "usr/share/postgresql/18/extension/sslinfo.control",
+    "sha256": "e6a93ff05db1a9947cbb5d2a8477a71c0726f656e934a525f651731193ff717e"
+  },
+  {
+    "bytes": 2153,
+    "path": "usr/share/postgresql/18/extension/tablefunc--1.0.sql",
+    "sha256": "82488e9d01a88bc0481d1a4be6193802d0aecd925a362a56ddcb406bea39ad7e"
+  },
+  {
+    "bytes": 189,
+    "path": "usr/share/postgresql/18/extension/tablefunc.control",
+    "sha256": "2b679be26461f6014cce2d9af5bab584fe1ab0fc016158bbde6e6e02e58fd89d"
+  },
+  {
+    "bytes": 274,
+    "path": "usr/share/postgresql/18/extension/tcn--1.0.sql",
+    "sha256": "61685715d8213fe053f8e1d78864e4948df337a7a660bcdf3d61d0808b1d1af3"
+  },
+  {
+    "bytes": 149,
+    "path": "usr/share/postgresql/18/extension/tcn.control",
+    "sha256": "ffbb70de41a41be97629bb6918e21b442d905d4cf0b3d92ef8f398657674fb06"
+  },
+  {
+    "bytes": 327,
+    "path": "usr/share/postgresql/18/extension/tsm_system_rows--1.0.sql",
+    "sha256": "b6ff301cc9069b9be9f3e29ea6708f8e452b4621e5728b25cc10e8d6b45a1ef3"
+  },
+  {
+    "bytes": 201,
+    "path": "usr/share/postgresql/18/extension/tsm_system_rows.control",
+    "sha256": "3e9077a0ef885ffb4af0de79bd2177bdd5445d9c5269061c1d6f725d2624146f"
+  },
+  {
+    "bytes": 327,
+    "path": "usr/share/postgresql/18/extension/tsm_system_time--1.0.sql",
+    "sha256": "3c47246eab5711c561310e9c5209318deb12df9a2f26837493e701c56ca37ef3"
+  },
+  {
+    "bytes": 207,
+    "path": "usr/share/postgresql/18/extension/tsm_system_time.control",
+    "sha256": "2ce290064590c7a10cdc59658acca7d5564e8275f10982139242f9a7e88f8779"
+  },
+  {
+    "bytes": 445,
+    "path": "usr/share/postgresql/18/extension/unaccent--1.0--1.1.sql",
+    "sha256": "82040e64db6ec0fe8210bb414e175ca6fb7ae4a70d80b0e65d861f4f4266ac96"
+  },
+  {
+    "bytes": 910,
+    "path": "usr/share/postgresql/18/extension/unaccent--1.1.sql",
+    "sha256": "e08a90e98ae8e1b6cdb5d25dcab352064f13f187e99f29b6d971ef61e10f6a7a"
+  },
+  {
+    "bytes": 172,
+    "path": "usr/share/postgresql/18/extension/unaccent.control",
+    "sha256": "6845006fd86d373d556ce0ad83b3f1cdfe6f9c35df71a4fe31e3bc23312d8160"
+  },
+  {
+    "bytes": 688,
+    "path": "usr/share/postgresql/18/extension/uuid-ossp--1.0--1.1.sql",
+    "sha256": "112b84c73afb619a0dcddc2c23aef834cab2b4a2a0aa6b54c42d74e0064f3bc1"
+  },
+  {
+    "bytes": 1516,
+    "path": "usr/share/postgresql/18/extension/uuid-ossp--1.1.sql",
+    "sha256": "1cf94e2eaa2033f32b80b1a7a371809d6cacc108b39d187c254f6fe04b383f84"
+  },
+  {
+    "bytes": 178,
+    "path": "usr/share/postgresql/18/extension/uuid-ossp.control",
+    "sha256": "eaafef3ac3fbaa16e59986201e15f2944abb841167fb37553700c11b6ba97e5b"
+  },
+  {
+    "bytes": 944,
+    "path": "usr/share/postgresql/18/extension/xml2--1.0--1.1.sql",
+    "sha256": "f14378e15a56c8e837feb24deffd3fb779a456b87d9e81ddb7da702802d4990a"
+  },
+  {
+    "bytes": 651,
+    "path": "usr/share/postgresql/18/extension/xml2--1.1--1.2.sql",
+    "sha256": "379be36bad02fa9e653fa97a599bc49dcc360f24572a512e5c03e45d6f44ca3c"
+  },
+  {
+    "bytes": 2049,
+    "path": "usr/share/postgresql/18/extension/xml2--1.1.sql",
+    "sha256": "287954e902826960e9dec8f7e86bc0e39ca1e257fe25c0641f9f9fd5a4594e0d"
+  },
+  {
+    "bytes": 182,
+    "path": "usr/share/postgresql/18/extension/xml2.control",
+    "sha256": "162752c3fd735914a52bf616441306f89d2d53c72f5282af7d5784e829308232"
+  },
+  {
+    "bytes": 113997,
+    "path": "usr/share/postgresql/18/information_schema.sql",
+    "sha256": "3c8aa2a9d43bfe1fe8880ade54a0a3a93cc3dbb8ee68c98a4c7189173df948e6"
+  },
+  {
+    "bytes": 2286,
+    "path": "usr/share/postgresql/18/man/man1/clusterdb.1.gz",
+    "sha256": "8a2f3069cc6e2bc1065df61363ae5b1a2fe7f4095b67064a742eb24991d82581"
+  },
+  {
+    "bytes": 2874,
+    "path": "usr/share/postgresql/18/man/man1/createdb.1.gz",
+    "sha256": "e35b0a9694ce9d37c2242163a39dea711b12e3651b9b0a403d13420a15071f01"
+  },
+  {
+    "bytes": 3565,
+    "path": "usr/share/postgresql/18/man/man1/createuser.1.gz",
+    "sha256": "1dcacba7073270e982e22e64f160a9f1b737aae4db006f8f25c417fa7337dc70"
+  },
+  {
+    "bytes": 2211,
+    "path": "usr/share/postgresql/18/man/man1/dropdb.1.gz",
+    "sha256": "36597046820da31ade579f28c23cdc0798217cb9f44fad4efe0a2005c0a029d7"
+  },
+  {
+    "bytes": 2143,
+    "path": "usr/share/postgresql/18/man/man1/dropuser.1.gz",
+    "sha256": "de9b83968ae964e2559be31de4a0c416c182c2a47e80157d8a3ee46ade370c84"
+  },
+  {
+    "bytes": 5485,
+    "path": "usr/share/postgresql/18/man/man1/initdb.1.gz",
+    "sha256": "3d79a8268e6c82ef943aa01d00fccde891e75253eb4bef222e672c79586c2b99"
+  },
+  {
+    "bytes": 3184,
+    "path": "usr/share/postgresql/18/man/man1/oid2name.1.gz",
+    "sha256": "14d31244352ac0cae022003df38cbccd67b8282a8f409b1339ae4bc51f5767ee"
+  },
+  {
+    "bytes": 4429,
+    "path": "usr/share/postgresql/18/man/man1/pg_amcheck.1.gz",
+    "sha256": "2c27bfc397feaaed9d98752ed52d6c48ec37ab44d9a422f2117e5e548947a2f3"
+  },
+  {
+    "bytes": 2164,
+    "path": "usr/share/postgresql/18/man/man1/pg_archivecleanup.1.gz",
+    "sha256": "1f3d460c65f72074cfdf1838517bd18954770f396fa3dbdd42649abe1aeaa09e"
+  },
+  {
+    "bytes": 9538,
+    "path": "usr/share/postgresql/18/man/man1/pg_basebackup.1.gz",
+    "sha256": "dc1a553eb9d9b2b8d227105c9bc547619b28a5ac9b3ce0921373aba1a77d6320"
+  },
+  {
+    "bytes": 2113,
+    "path": "usr/share/postgresql/18/man/man1/pg_checksums.1.gz",
+    "sha256": "7e90079d0b72d5a88493e74319d1272fab157b3486cddab0aa8e5700938fd479"
+  },
+  {
+    "bytes": 3313,
+    "path": "usr/share/postgresql/18/man/man1/pg_combinebackup.1.gz",
+    "sha256": "94f92dcb2db638573a04bbc094e4802edd26700ff188a0c0a8cc8a26c39549b6"
+  },
+  {
+    "bytes": 1024,
+    "path": "usr/share/postgresql/18/man/man1/pg_controldata.1.gz",
+    "sha256": "9ddb76ae9741df558f395d49cc9d3a1c763f9dfcf396d6c896d3d9230f1ab8d0"
+  },
+  {
+    "bytes": 5189,
+    "path": "usr/share/postgresql/18/man/man1/pg_createsubscriber.1.gz",
+    "sha256": "912f343bfd5963b6d311fb22572c108bf498b26b07fc0b535f266213afb85864"
+  },
+  {
+    "bytes": 4925,
+    "path": "usr/share/postgresql/18/man/man1/pg_ctl.1.gz",
+    "sha256": "3f5d80a17bb1d5a84e4c38519de13331a726de7c654d284e04b8454a8a3b64af"
+  },
+  {
+    "bytes": 14255,
+    "path": "usr/share/postgresql/18/man/man1/pg_dump.1.gz",
+    "sha256": "0e4423e9c0fc00780fa67d3e6dc0f4b9012a2e658430d5362d6f85c365fa0bf7"
+  },
+  {
+    "bytes": 7629,
+    "path": "usr/share/postgresql/18/man/man1/pg_dumpall.1.gz",
+    "sha256": "8c2f146d1d061d65c87a189db31a01940c619046f90dbb7f1fa3a16bdd92e010"
+  },
+  {
+    "bytes": 1748,
+    "path": "usr/share/postgresql/18/man/man1/pg_isready.1.gz",
+    "sha256": "685263ff91e1e394d7cf4e72c736daf1a5261cab132c548d1803e62315e8156b"
+  },
+  {
+    "bytes": 4717,
+    "path": "usr/share/postgresql/18/man/man1/pg_receivewal.1.gz",
+    "sha256": "62a4bcdc840aaa377a0f8b71b9430265807ef0a81fe362858754df5e3a493a6d"
+  },
+  {
+    "bytes": 3587,
+    "path": "usr/share/postgresql/18/man/man1/pg_recvlogical.1.gz",
+    "sha256": "2fb0e463adb0624cd4457ab8bada9fbfcfeb4cb83ec3e8ca2cae3ae428abadc5"
+  },
+  {
+    "bytes": 4289,
+    "path": "usr/share/postgresql/18/man/man1/pg_resetwal.1.gz",
+    "sha256": "c8fc2c7c9e0402a9cebfe55968b12503de7bbd182fdacb2a08d7c5b48b6e332d"
+  },
+  {
+    "bytes": 9351,
+    "path": "usr/share/postgresql/18/man/man1/pg_restore.1.gz",
+    "sha256": "d9b314fa0ba6fbd924a542ab9887b7b5e145b1a535719d12930cc70714e2ca6a"
+  },
+  {
+    "bytes": 4666,
+    "path": "usr/share/postgresql/18/man/man1/pg_rewind.1.gz",
+    "sha256": "5923a3aa716355b8dcade1e0ee71a619796feb3578ed43afa4d6e1d42bc042ac"
+  },
+  {
+    "bytes": 1352,
+    "path": "usr/share/postgresql/18/man/man1/pg_test_fsync.1.gz",
+    "sha256": "70f44efcbd4643e4655bdfd1c714aba715e44be263a686b98e777e3d75e04fd7"
+  },
+  {
+    "bytes": 3894,
+    "path": "usr/share/postgresql/18/man/man1/pg_test_timing.1.gz",
+    "sha256": "07efff05fcfe9e8632af7d486aadd17fcc1a3795c0f3e2388f6e39169f704ca8"
+  },
+  {
+    "bytes": 9959,
+    "path": "usr/share/postgresql/18/man/man1/pg_upgrade.1.gz",
+    "sha256": "03868da3f5171d18bfcb72aa58ed0f4f6499b05d781adb1912dfa92d3fd3f450"
+  },
+  {
+    "bytes": 3435,
+    "path": "usr/share/postgresql/18/man/man1/pg_verifybackup.1.gz",
+    "sha256": "06121db5fbc26e47fd80ca3571cc8a044ee9181cf067ea2b60d4b235af2b1548"
+  },
+  {
+    "bytes": 2945,
+    "path": "usr/share/postgresql/18/man/man1/pg_waldump.1.gz",
+    "sha256": "8eb108c0555ca6e1f796daae66ae4cfa8b6b1cce1dc3d0dc4082f3a833cab04c"
+  },
+  {
+    "bytes": 1447,
+    "path": "usr/share/postgresql/18/man/man1/pg_walsummary.1.gz",
+    "sha256": "dd8c3242aa91acc392aaaf42b889ebd585ad7dc5680e9a9abf96944f23cb0e7e"
+  },
+  {
+    "bytes": 20156,
+    "path": "usr/share/postgresql/18/man/man1/pgbench.1.gz",
+    "sha256": "bfabf72194754f5e0f28a301a8e096d659fddb4ca29cdd1666c5f4752381f56e"
+  },
+  {
+    "bytes": 7083,
+    "path": "usr/share/postgresql/18/man/man1/postgres.1.gz",
+    "sha256": "bb093d253b33b26d55c5c2fbac556450f23627dba87875465c4b1fe8b32ccb52"
+  },
+  {
+    "bytes": 39049,
+    "path": "usr/share/postgresql/18/man/man1/psql.1.gz",
+    "sha256": "239ed0dc877c9447bf2a3b22c56957da00f0c3d9db26a450e47f54df763a7771"
+  },
+  {
+    "bytes": 2653,
+    "path": "usr/share/postgresql/18/man/man1/reindexdb.1.gz",
+    "sha256": "f06c143ac1f9e675bfa68a0076b6d246519aa545196ea94cd6c3394a6a2f93eb"
+  },
+  {
+    "bytes": 4139,
+    "path": "usr/share/postgresql/18/man/man1/vacuumdb.1.gz",
+    "sha256": "7b84b8e25ef9b86630fc756455d925b7ef2380aa5ebfd8994a43474dda3567db"
+  },
+  {
+    "bytes": 1983,
+    "path": "usr/share/postgresql/18/man/man1/vacuumlo.1.gz",
+    "sha256": "5dccf910e68d1b45d583d0760263a47f64a025fd2d0aa00ffa60cfd1eb13edaf"
+  },
+  {
+    "bytes": 1053,
+    "path": "usr/share/postgresql/18/man/man7/ABORT.7.gz",
+    "sha256": "3a1b938b5341585c7b427fa38a93ff9d14bf67ff173a834f7277a419d032a9ea"
+  },
+  {
+    "bytes": 1670,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_AGGREGATE.7.gz",
+    "sha256": "b337e8936214f82f906edf86148f9d043b3ec9e191d42b3c8fb33431ab28fd98"
+  },
+  {
+    "bytes": 2362,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_COLLATION.7.gz",
+    "sha256": "7685d516db19f5b4a5fabdce4d9a9a87c2364eb758c869b896ecdce4538b2cab"
+  },
+  {
+    "bytes": 1107,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_CONVERSION.7.gz",
+    "sha256": "9b442c98f42e467acbc9f90c63323a874b4fb7de18dc88567a63ce2e3e5c5dcb"
+  },
+  {
+    "bytes": 2198,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_DATABASE.7.gz",
+    "sha256": "d6114443a9f47ab55014c0c92c89682e3a5a8e4916019bb0bdd4e2182f77e966"
+  },
+  {
+    "bytes": 2662,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_DEFAULT_PRIVILEGES.7.gz",
+    "sha256": "b7603a928f8c86cfab45f8aff0a22574fd863d4e8ee888d33109cf94b481f1ac"
+  },
+  {
+    "bytes": 2660,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_DOMAIN.7.gz",
+    "sha256": "3416095370554bf6623f36224e43e3adcdfebb25eb4e46e1f1450f259df59c32"
+  },
+  {
+    "bytes": 961,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_EVENT_TRIGGER.7.gz",
+    "sha256": "0546aaee0d62a21b9eba27ec94569cf99cb4ca6a8cebfffc6cc7326e9edfdbd2"
+  },
+  {
+    "bytes": 2348,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_EXTENSION.7.gz",
+    "sha256": "16e4f8826ef442535ba03a762b11c2e31ca92f73011bfae671069c366dee09e8"
+  },
+  {
+    "bytes": 1592,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_FOREIGN_DATA_WRAPPER.7.gz",
+    "sha256": "4515cbef0bf24c76671e5805f2b19ae90cae90a9f27ce7b950d16fb71642e12b"
+  },
+  {
+    "bytes": 3951,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_FOREIGN_TABLE.7.gz",
+    "sha256": "111cd135fdb132a22cf070bddbbbf210e784bd1f07dd38b30358dd67d9ada23f"
+  },
+  {
+    "bytes": 2915,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_FUNCTION.7.gz",
+    "sha256": "c9502f7c6b5cd1204e9afc78ae8c91d62d01722716d787968340dd3eede1e100"
+  },
+  {
+    "bytes": 1357,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_GROUP.7.gz",
+    "sha256": "fae16d6c4183b8f753253f97a7867008924320f75ebb1b1243c66f54b1669a98"
+  },
+  {
+    "bytes": 2786,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_INDEX.7.gz",
+    "sha256": "f4c3d537752ef76040d6f20aa38800fbc5338148fa5c33c2645bd2b17003d81c"
+  },
+  {
+    "bytes": 844,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_LANGUAGE.7.gz",
+    "sha256": "59cc3b2c51724562e81f5d2503c9f4f70273e80788b70ae883f8b523e361517e"
+  },
+  {
+    "bytes": 888,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_LARGE_OBJECT.7.gz",
+    "sha256": "b12d22503a045b19132ea5e8f58bcc8aefca60380ddd5855371a9a3e50de7f33"
+  },
+  {
+    "bytes": 1691,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_MATERIALIZED_VIEW.7.gz",
+    "sha256": "9b004127766d8b797f6ce73a4dff2a5e1d2a56497c2c9cce0595115155b693d9"
+  },
+  {
+    "bytes": 1643,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_OPERATOR.7.gz",
+    "sha256": "0cc8dbe991ae0354127ff4a3da7516107c8e1611c85f3ff523192e765f9966bf"
+  },
+  {
+    "bytes": 1075,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_OPERATOR_CLASS.7.gz",
+    "sha256": "3b69899ce8c6a59f28d84960b6f9307851b71eafe0a2a1e4e5e25aa6b0e9f275"
+  },
+  {
+    "bytes": 2789,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_OPERATOR_FAMILY.7.gz",
+    "sha256": "2963c1a79bf5dfc374eb689b28b5b9f0e330688d32c13d86dde7cd492445c36f"
+  },
+  {
+    "bytes": 1229,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_POLICY.7.gz",
+    "sha256": "2338526501728b9c4a09e06e297bae4497a49ec95615f840f392ac7c254ce753"
+  },
+  {
+    "bytes": 2428,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_PROCEDURE.7.gz",
+    "sha256": "e681c39f7172762fcac6823f27b0c6578d5cc105a1bca663c1c2e77da011c389"
+  },
+  {
+    "bytes": 2561,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_PUBLICATION.7.gz",
+    "sha256": "3d7909ca28e1a7524ba3232cf3bd545081f37f754d32d54212097c618fd9c41d"
+  },
+  {
+    "bytes": 3161,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_ROLE.7.gz",
+    "sha256": "da8acf349a51290d6697e037492da592561371f1bebcf7ae0da6104c79147e31"
+  },
+  {
+    "bytes": 1350,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_ROUTINE.7.gz",
+    "sha256": "2910a1c362e6b8d25003e34b1526a6db298ebcb348aa86c453e61a1ae4a75b63"
+  },
+  {
+    "bytes": 916,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_RULE.7.gz",
+    "sha256": "630325aa65776338465ffc442490acd58034f063123c01dd01b9c8cfef8c8de5"
+  },
+  {
+    "bytes": 948,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_SCHEMA.7.gz",
+    "sha256": "8c2a0b6c30704273730a276c60d960191e9c49c72ba331d425c772de9c81bc9d"
+  },
+  {
+    "bytes": 3035,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_SEQUENCE.7.gz",
+    "sha256": "1c4faa6ad790893f921f9b7f5144870a836e66abbdb29504c6266aa0ea02c6d4"
+  },
+  {
+    "bytes": 1341,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_SERVER.7.gz",
+    "sha256": "368dc0392d0812066623535c7e70fd0b617c72bd121b5e745ebd55a4232ee9ab"
+  },
+  {
+    "bytes": 1325,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_STATISTICS.7.gz",
+    "sha256": "ed8c0c1c933d56dca3cbe422f6d98ca1d21a97244d01fd052866a57a6e2e6acd"
+  },
+  {
+    "bytes": 3446,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_SUBSCRIPTION.7.gz",
+    "sha256": "daa6b2faedeecca76da03ebdfca0ed817dc74308c999e2c620901eb9b829fbe5"
+  },
+  {
+    "bytes": 1749,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_SYSTEM.7.gz",
+    "sha256": "e8ed6befdcd466c554b66e631edb732e511c3b8fb051b8fbe6f37b0fbe55512e"
+  },
+  {
+    "bytes": 15539,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_TABLE.7.gz",
+    "sha256": "beccc85f078aeb136357b17eff9647b016e6cbbad2de7c07d6fa68bfd5413f44"
+  },
+  {
+    "bytes": 1354,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_TABLESPACE.7.gz",
+    "sha256": "79dad536adcfc974b9814cf93d0671a12371efc5db672de3154c9ca9704adbce"
+  },
+  {
+    "bytes": 1495,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_TEXT_SEARCH_CONFIGURATION.7.gz",
+    "sha256": "ffbd1a4b09a8e27d4bd64bf874a4c2a223b747b3638bcd31305988d7910362f4"
+  },
+  {
+    "bytes": 1443,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_TEXT_SEARCH_DICTIONARY.7.gz",
+    "sha256": "6ec99f3a2c7f4dd1ecee27b229231003ba061ad5b6187a4dbe1dc644d3901a31"
+  },
+  {
+    "bytes": 847,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_TEXT_SEARCH_PARSER.7.gz",
+    "sha256": "a2b30c01560a9c700913fca28c512c2b7a977817d99d0be4df6b03fae7132bc6"
+  },
+  {
+    "bytes": 853,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_TEXT_SEARCH_TEMPLATE.7.gz",
+    "sha256": "d6ad7145b8c34b8cd463ed7a508db15e565e8976f1c5fbf560754f0951cd68e1"
+  },
+  {
+    "bytes": 1245,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_TRIGGER.7.gz",
+    "sha256": "42a3ef081d106f77880189eb5f00dae3339439671b1b4f365072d10378e81475"
+  },
+  {
+    "bytes": 3507,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_TYPE.7.gz",
+    "sha256": "ad868c8bcb69bf2b9ffe229c862538665f189f4e0d63fc6c6b3150bb9fcc6809"
+  },
+  {
+    "bytes": 1020,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_USER.7.gz",
+    "sha256": "0b880772800dd8560f7045611ed5b87c73627f3c49161e898892d3471c1b962b"
+  },
+  {
+    "bytes": 1375,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_USER_MAPPING.7.gz",
+    "sha256": "365f478184d7d59bf109103f310ea3d7c1391a5d34996bc457e2aab4aaa00b77"
+  },
+  {
+    "bytes": 1891,
+    "path": "usr/share/postgresql/18/man/man7/ALTER_VIEW.7.gz",
+    "sha256": "1f1ff31306f8fd8e5956bf9144ca658b2643f59a42e1696c20ca733a972ae7c7"
+  },
+  {
+    "bytes": 4337,
+    "path": "usr/share/postgresql/18/man/man7/ANALYZE.7.gz",
+    "sha256": "f78b0e9b7a4e27534599bb17df13891bf04f86e02c4073bf4b6c2c1ae7ceeb76"
+  },
+  {
+    "bytes": 1734,
+    "path": "usr/share/postgresql/18/man/man7/BEGIN.7.gz",
+    "sha256": "fcca87c9fd7ce206f5ed8d08174d231750f4ea7ae6be5ab7330edcb73010a2e5"
+  },
+  {
+    "bytes": 1332,
+    "path": "usr/share/postgresql/18/man/man7/CALL.7.gz",
+    "sha256": "3af2d16dd71fa84189add31af39ee2f58d2c81040caba8d2b55a7ffa18cbaebb"
+  },
+  {
+    "bytes": 938,
+    "path": "usr/share/postgresql/18/man/man7/CHECKPOINT.7.gz",
+    "sha256": "62d5715fa08ee40aaefc9a9867605292118caa0c78421b6a04043bed4d47bd3a"
+  },
+  {
+    "bytes": 1158,
+    "path": "usr/share/postgresql/18/man/man7/CLOSE.7.gz",
+    "sha256": "b637dc2af0e9647e0db5907d4bb86c15555d695babc9c43669b295889789df6c"
+  },
+  {
+    "bytes": 2870,
+    "path": "usr/share/postgresql/18/man/man7/CLUSTER.7.gz",
+    "sha256": "c4850d0fd1559cb757693447a29bdbeb5873a806f43ff9237a66e8181b7de40c"
+  },
+  {
+    "bytes": 3714,
+    "path": "usr/share/postgresql/18/man/man7/COMMENT.7.gz",
+    "sha256": "1a369f75d9175b9dcb1bd32fdaaf8700c8e0fc63e07591a30e560e485be383c5"
+  },
+  {
+    "bytes": 1045,
+    "path": "usr/share/postgresql/18/man/man7/COMMIT.7.gz",
+    "sha256": "03c8f10c1479404f79c74608a0adda6695fdfbcee258cdbe4f0efb81be69b32f"
+  },
+  {
+    "bytes": 1061,
+    "path": "usr/share/postgresql/18/man/man7/COMMIT_PREPARED.7.gz",
+    "sha256": "56750aef6c17ebb9fe1ab576bb23e8b61ec77b6422e2517205660b669da40579"
+  },
+  {
+    "bytes": 11108,
+    "path": "usr/share/postgresql/18/man/man7/COPY.7.gz",
+    "sha256": "105df7e3c427be0467c2f1e343c94c32f00fdc4b36f14eefa4d12ef1914e4149"
+  },
+  {
+    "bytes": 1152,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_ACCESS_METHOD.7.gz",
+    "sha256": "70b54cce7df3e16fda5d8a4b7928681e2fd4e5fa32aa1f7ce067acf83c9cf265"
+  },
+  {
+    "bytes": 7608,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_AGGREGATE.7.gz",
+    "sha256": "1cb9764d3a45644e66f61723dcc4eb114b86c51882a05164fda08c46bdae6f99"
+  },
+  {
+    "bytes": 4789,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_CAST.7.gz",
+    "sha256": "5206506b11fcebe5a1d1f073b33d0bc9d523c3cacb9b3097a9f2aa99a86e147a"
+  },
+  {
+    "bytes": 2503,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_COLLATION.7.gz",
+    "sha256": "ceb3e79775f6ecac68234bf6bdd2d8e86c4903cfc0474a31bd53e5eabfad335e"
+  },
+  {
+    "bytes": 1673,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_CONVERSION.7.gz",
+    "sha256": "2f2abc299de2f8d202aea4908b78074699de9e37ad3dea8f0028ff145f1f404e"
+  },
+  {
+    "bytes": 4739,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_DATABASE.7.gz",
+    "sha256": "7079e619b9d8e844e7481822512920a7230fd63eddbb7731e03944ae053c2ff3"
+  },
+  {
+    "bytes": 3193,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_DOMAIN.7.gz",
+    "sha256": "278a6f35f95a8be2480fb3966926362fcbe0e8ec74eb6ecb130492d5fbe5cd3d"
+  },
+  {
+    "bytes": 1704,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_EVENT_TRIGGER.7.gz",
+    "sha256": "29ce8f95366d207d99a144ed366100231ec421c97116205be45a65ec518c9d8b"
+  },
+  {
+    "bytes": 2828,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_EXTENSION.7.gz",
+    "sha256": "c947185d21a08b80ed131f685d053615d9ae15567f4c5330b8b8d9f5b5e84d9c"
+  },
+  {
+    "bytes": 1803,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_FOREIGN_DATA_WRAPPER.7.gz",
+    "sha256": "5e0ae90211d852798356a1424376c214de7ade0ca07be89dfcb630f06e9920e2"
+  },
+  {
+    "bytes": 5237,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_FOREIGN_TABLE.7.gz",
+    "sha256": "31eacb09e8ecddf569ca92af54d539d620f485139dfb433e2a3b83ba905eb362"
+  },
+  {
+    "bytes": 9055,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_FUNCTION.7.gz",
+    "sha256": "63b6c8253be437c866d6c99908dcadae8ddf1afe73cb55c5c8ce6bbaa7734c82"
+  },
+  {
+    "bytes": 882,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_GROUP.7.gz",
+    "sha256": "247532977b2a724cad82254326789317f6c2a5052f120e69f6b8616abfdd9178"
+  },
+  {
+    "bytes": 9748,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_INDEX.7.gz",
+    "sha256": "656c0e7a1baa7dcada0f88b10509828998ba9af5c160451c54a1a446db145d6a"
+  },
+  {
+    "bytes": 2534,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_LANGUAGE.7.gz",
+    "sha256": "453ad976a17eb3bc53509657636f12d3c30cdaf9bfec5f870a85a934dfd9b735"
+  },
+  {
+    "bytes": 1862,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_MATERIALIZED_VIEW.7.gz",
+    "sha256": "80e9845e717b62e19a57afe05593e8a5f652ae3f67a9a5a8adc7c7c51b0f2c66"
+  },
+  {
+    "bytes": 3285,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_OPERATOR.7.gz",
+    "sha256": "7cc2ea10dc04d14581c4173f0983dbc213bd2fd8d0cc85066f5908668ee50103"
+  },
+  {
+    "bytes": 2868,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_OPERATOR_CLASS.7.gz",
+    "sha256": "98e1aefe8bf8f911e619b01314e663a515da5e33875b52cfc6d622315c3323fe"
+  },
+  {
+    "bytes": 1377,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_OPERATOR_FAMILY.7.gz",
+    "sha256": "0ed9981dfc84201113c02f5852cb925607ccb88fbb4b24d19e9c02243fe1d951"
+  },
+  {
+    "bytes": 6339,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_POLICY.7.gz",
+    "sha256": "9442d57fee92072d1d18b10ed9f3097bbd68691d5bf6d7902fd27d3b3446bbc9"
+  },
+  {
+    "bytes": 3871,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_PROCEDURE.7.gz",
+    "sha256": "97bed909c077dc03e9b5365a56ac778c825fb7fd09857bd59e27a78d334978d3"
+  },
+  {
+    "bytes": 4062,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_PUBLICATION.7.gz",
+    "sha256": "614bad95a2f425082e2ebc2dcfc60e42bdc982045a2632c2eb3841b0560d278a"
+  },
+  {
+    "bytes": 4900,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_ROLE.7.gz",
+    "sha256": "48cfccb64f0c68a46c954b40a4136a6e8b428ba120b31caf2ac2eaaafb3455d5"
+  },
+  {
+    "bytes": 3426,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_RULE.7.gz",
+    "sha256": "26574a71059cef68df2b6d2bce44accf736154b703b7030e5e9a51514622e9ef"
+  },
+  {
+    "bytes": 2277,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_SCHEMA.7.gz",
+    "sha256": "54e997715d3f4246c99783ca6ca3028da62ca455a7318bd8766d80b8fdfb86cd"
+  },
+  {
+    "bytes": 3883,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_SEQUENCE.7.gz",
+    "sha256": "c03af68d9f6ec85a28c9d2a3098eb6944a3254e6727b7b9083cb183cddfc98ca"
+  },
+  {
+    "bytes": 1583,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_SERVER.7.gz",
+    "sha256": "a4f67929bd2c8527081402adbcf8d6c19cd387eae4c4edab03c827d45b53dded"
+  },
+  {
+    "bytes": 3413,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_STATISTICS.7.gz",
+    "sha256": "7e18970b957b3db25943785e3e1a52e1fd7b60e7ec3681cb2faf956917c8970e"
+  },
+  {
+    "bytes": 5426,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_SUBSCRIPTION.7.gz",
+    "sha256": "ad7b0a1a3171fda4f457914b896b4ef4f5e6ab4b58b9f603f292f346299a0a66"
+  },
+  {
+    "bytes": 19976,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TABLE.7.gz",
+    "sha256": "32ae3c3fd39da134bed2bf8be98f87eeb0900e087386dc676bbea698ca4b0477"
+  },
+  {
+    "bytes": 1918,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TABLESPACE.7.gz",
+    "sha256": "72ae14058322b648d4639f4dd70eb033b37a0492e6c3846db342af59819d8f6d"
+  },
+  {
+    "bytes": 2810,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TABLE_AS.7.gz",
+    "sha256": "fb4b443e22b51c3f642faf98fe66a89630a70248d7b0dfa4a9aa5a6302475aa9"
+  },
+  {
+    "bytes": 1197,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TEXT_SEARCH_CONFIGURATION.7.gz",
+    "sha256": "1ad972da239610a6861e40d58fb7c40b3639c1e4675a04013fe4339485de3da0"
+  },
+  {
+    "bytes": 1310,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TEXT_SEARCH_DICTIONARY.7.gz",
+    "sha256": "7a39a4df5c0318adca5f736801db50e035e5ef231e6aa2ed0ae098ae5337c0ae"
+  },
+  {
+    "bytes": 1339,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TEXT_SEARCH_PARSER.7.gz",
+    "sha256": "82a8e0cb2d95c01e95caa71cbb7635040c40324d6f7ffdddd8f9fc00dd3025d8"
+  },
+  {
+    "bytes": 1306,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TEXT_SEARCH_TEMPLATE.7.gz",
+    "sha256": "5aea22603280703c50397372bb81a31f748eab0a50c31d0fd762823ae0adb620"
+  },
+  {
+    "bytes": 2085,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TRANSFORM.7.gz",
+    "sha256": "299cf055ad26adf338b9e6b6e29e0fcf90d3f6b52d6d6817ab4bcf739a0f75d6"
+  },
+  {
+    "bytes": 7223,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TRIGGER.7.gz",
+    "sha256": "7ca15c5a47e980ea665a902fe9db922214743efcc1c37aa8579d9066ab8a9e1b"
+  },
+  {
+    "bytes": 9877,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_TYPE.7.gz",
+    "sha256": "5aab2b97a087b7751af733e17c1687b66a9b4ea65a32302f812f5aba08a769ae"
+  },
+  {
+    "bytes": 984,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_USER.7.gz",
+    "sha256": "c229147f29afd895a066f9a3a2a802162858756317cb5eeab04b01accd28bc71"
+  },
+  {
+    "bytes": 1439,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_USER_MAPPING.7.gz",
+    "sha256": "c28280ba68962617c1e870142dac76b18af5b3ad82a3f30564dce7f8881db382"
+  },
+  {
+    "bytes": 5501,
+    "path": "usr/share/postgresql/18/man/man7/CREATE_VIEW.7.gz",
+    "sha256": "63eca154ab33b6382e2ec1d27341aafaa2e57b0fab4f8fec5d18913d738b0264"
+  },
+  {
+    "bytes": 812,
+    "path": "usr/share/postgresql/18/man/man7/DEALLOCATE.7.gz",
+    "sha256": "6ccc705e159eb57b6049b0774b30185d1d5fbd5732bdefcc9411a87de3d4c40b"
+  },
+  {
+    "bytes": 4093,
+    "path": "usr/share/postgresql/18/man/man7/DECLARE.7.gz",
+    "sha256": "b3b87c034d057a3d2c1280cf6d171d09cdc00bd6ac128f87390d9a1f116e4c09"
+  },
+  {
+    "bytes": 3370,
+    "path": "usr/share/postgresql/18/man/man7/DELETE.7.gz",
+    "sha256": "3b13f6f837ccab55340e63e2e927a1a515b1a3884ee1d6f98e30c2336879f0b4"
+  },
+  {
+    "bytes": 1246,
+    "path": "usr/share/postgresql/18/man/man7/DISCARD.7.gz",
+    "sha256": "fea5466442669016b1d28797b06d8cd9e183c364c4f11aee6fa63d1b7e3c4d03"
+  },
+  {
+    "bytes": 1425,
+    "path": "usr/share/postgresql/18/man/man7/DO.7.gz",
+    "sha256": "67be49e83c31c02b21911ab0e2210aa192227a8f39fcfd096f6c0ed0c6e7a9a8"
+  },
+  {
+    "bytes": 947,
+    "path": "usr/share/postgresql/18/man/man7/DROP_ACCESS_METHOD.7.gz",
+    "sha256": "7133b99be4518715fd0c56ea53e847f931b0a0e8eeae147ed092af6c9ebdfcf2"
+  },
+  {
+    "bytes": 1476,
+    "path": "usr/share/postgresql/18/man/man7/DROP_AGGREGATE.7.gz",
+    "sha256": "248d8d588b8feabe27a7d7ef7ab5fb51af44d128105a0678c965d08f42e701fb"
+  },
+  {
+    "bytes": 976,
+    "path": "usr/share/postgresql/18/man/man7/DROP_CAST.7.gz",
+    "sha256": "15db10d450c90c320038f2567b2d8406ba8cb68390f5ff5bed12c9aea3991233"
+  },
+  {
+    "bytes": 990,
+    "path": "usr/share/postgresql/18/man/man7/DROP_COLLATION.7.gz",
+    "sha256": "febf056c586a76f35cc19b4ac17a66886bb314cc19019110bdc551939cd6106f"
+  },
+  {
+    "bytes": 977,
+    "path": "usr/share/postgresql/18/man/man7/DROP_CONVERSION.7.gz",
+    "sha256": "f6efe99cbfeb679752e36b826c0d0973e2d13c84b044e0a3bf67441d4f1860f3"
+  },
+  {
+    "bytes": 1278,
+    "path": "usr/share/postgresql/18/man/man7/DROP_DATABASE.7.gz",
+    "sha256": "0ad98c1ece014e1c53045fc4134df23b159b4ecbb44751b6d37767ccff544c81"
+  },
+  {
+    "bytes": 989,
+    "path": "usr/share/postgresql/18/man/man7/DROP_DOMAIN.7.gz",
+    "sha256": "af69ab3b228c7c4a94f0f8e02397fb9983be7fccbbdece3290395494e658ffd2"
+  },
+  {
+    "bytes": 963,
+    "path": "usr/share/postgresql/18/man/man7/DROP_EVENT_TRIGGER.7.gz",
+    "sha256": "ecf6f532907e8c87f120ebdc8bd0ccbfe1a4857796a2a2d3b4f132406effcad1"
+  },
+  {
+    "bytes": 1197,
+    "path": "usr/share/postgresql/18/man/man7/DROP_EXTENSION.7.gz",
+    "sha256": "f2e52100578d6370899e0dc0e4962f3411b997313ab0fd11a45e3f07ede58a47"
+  },
+  {
+    "bytes": 1030,
+    "path": "usr/share/postgresql/18/man/man7/DROP_FOREIGN_DATA_WRAPPER.7.gz",
+    "sha256": "6fcc82bb4af386a19d65a1a235dfdffdc76145fc812164a17adbe90a0e2ab8cc"
+  },
+  {
+    "bytes": 1082,
+    "path": "usr/share/postgresql/18/man/man7/DROP_FOREIGN_TABLE.7.gz",
+    "sha256": "2fb067086525844217e6770068f6a87a43f55a52b3e6cf85f0a8a01cd8ea51a1"
+  },
+  {
+    "bytes": 1646,
+    "path": "usr/share/postgresql/18/man/man7/DROP_FUNCTION.7.gz",
+    "sha256": "cc9aa9bf9eeb932b5bd5ea3995c8b8e55564e89cc77f3f2d5cf0eca1d4decb10"
+  },
+  {
+    "bytes": 649,
+    "path": "usr/share/postgresql/18/man/man7/DROP_GROUP.7.gz",
+    "sha256": "9a1486b070ac3bf32c61fc410ba06dc5f453e124e366af6b8f4b026bf4915007"
+  },
+  {
+    "bytes": 1439,
+    "path": "usr/share/postgresql/18/man/man7/DROP_INDEX.7.gz",
+    "sha256": "182c8cfb3bde7fbdb36eea35f8e82c475563affba2f91d9f92e5e73b3bef04f0"
+  },
+  {
+    "bytes": 1160,
+    "path": "usr/share/postgresql/18/man/man7/DROP_LANGUAGE.7.gz",
+    "sha256": "c75998d5e2a9a205bd5ec0c035db95eb850c820ab34ff7ff9023839b21aee637"
+  },
+  {
+    "bytes": 1029,
+    "path": "usr/share/postgresql/18/man/man7/DROP_MATERIALIZED_VIEW.7.gz",
+    "sha256": "c7c0616ed34f9133081c967dd91616700a107bef939e8d8d883e26f9af3d66e0"
+  },
+  {
+    "bytes": 1161,
+    "path": "usr/share/postgresql/18/man/man7/DROP_OPERATOR.7.gz",
+    "sha256": "a2e5bc93b60a5cba44c3bbbe6b7c32c2c9e1279cbf7ae947020638bad19f38f4"
+  },
+  {
+    "bytes": 1367,
+    "path": "usr/share/postgresql/18/man/man7/DROP_OPERATOR_CLASS.7.gz",
+    "sha256": "48ebd76488745378857afd434a360c8196478c46913225044ac7253baef557e6"
+  },
+  {
+    "bytes": 1238,
+    "path": "usr/share/postgresql/18/man/man7/DROP_OPERATOR_FAMILY.7.gz",
+    "sha256": "62f670c18450872b7d1fa072d21c4e604a083744d3d8f3756f29f72935630c55"
+  },
+  {
+    "bytes": 1254,
+    "path": "usr/share/postgresql/18/man/man7/DROP_OWNED.7.gz",
+    "sha256": "04b8b163afbbd3436473f4d730f47c4c2004dab4136a26f57b3f3f7376d6482a"
+  },
+  {
+    "bytes": 1082,
+    "path": "usr/share/postgresql/18/man/man7/DROP_POLICY.7.gz",
+    "sha256": "da9d8b1d5f6c4d04398afbe58f16bcfc248fb956827a9e2f9e24ab238dc5ffc4"
+  },
+  {
+    "bytes": 2184,
+    "path": "usr/share/postgresql/18/man/man7/DROP_PROCEDURE.7.gz",
+    "sha256": "bc331e6decd9c48fe0f41a6829367c1732d89dfb9f4e14b9489d045d864df56d"
+  },
+  {
+    "bytes": 906,
+    "path": "usr/share/postgresql/18/man/man7/DROP_PUBLICATION.7.gz",
+    "sha256": "6d92bc6a1c34313de4b2d67434753648ad526ad83638d12c56fc098896f300fc"
+  },
+  {
+    "bytes": 1329,
+    "path": "usr/share/postgresql/18/man/man7/DROP_ROLE.7.gz",
+    "sha256": "8b4886654daacad43b72c2a36599c33414639ed13c260094214b2f88c801921c"
+  },
+  {
+    "bytes": 1534,
+    "path": "usr/share/postgresql/18/man/man7/DROP_ROUTINE.7.gz",
+    "sha256": "2d819a890f911243fe4c7948b92927824fcbb78e850fd5e72726f36db65876d6"
+  },
+  {
+    "bytes": 972,
+    "path": "usr/share/postgresql/18/man/man7/DROP_RULE.7.gz",
+    "sha256": "1314dbf02dbe142b2b17ea08cfdf600aec38cabd13fa9ff193662c7e12267e75"
+  },
+  {
+    "bytes": 1173,
+    "path": "usr/share/postgresql/18/man/man7/DROP_SCHEMA.7.gz",
+    "sha256": "4e67db4275ebf0a361e6e3a1ce0f7d503bead36e6df470ccdce28816a854e720"
+  },
+  {
+    "bytes": 1031,
+    "path": "usr/share/postgresql/18/man/man7/DROP_SEQUENCE.7.gz",
+    "sha256": "2502b1dc92a25c4bc718d58c896d66db39e7fae947ce12a4094c8ad20532232b"
+  },
+  {
+    "bytes": 1007,
+    "path": "usr/share/postgresql/18/man/man7/DROP_SERVER.7.gz",
+    "sha256": "50df8ac06016bc0149b59fda338356d2b9a782665a03f8457e4261186e8f3be4"
+  },
+  {
+    "bytes": 1030,
+    "path": "usr/share/postgresql/18/man/man7/DROP_STATISTICS.7.gz",
+    "sha256": "11ea573f4c102e975cbd0dcceb63e96840e7794053450600b80150e6701eeeca"
+  },
+  {
+    "bytes": 1492,
+    "path": "usr/share/postgresql/18/man/man7/DROP_SUBSCRIPTION.7.gz",
+    "sha256": "46529d8fd7ce2320c91fcb04c6f8ce10cc9289674d639010444ff952c0eb934c"
+  },
+  {
+    "bytes": 1278,
+    "path": "usr/share/postgresql/18/man/man7/DROP_TABLE.7.gz",
+    "sha256": "aadd5ed87a7d993b101761704a363171aa5302b396f10d9c9dbbed301ca22a9a"
+  },
+  {
+    "bytes": 1027,
+    "path": "usr/share/postgresql/18/man/man7/DROP_TABLESPACE.7.gz",
+    "sha256": "db5fd1873b67447af2e4fb7c175450ac96988b698617708cc267c36ba46c6a16"
+  },
+  {
+    "bytes": 1078,
+    "path": "usr/share/postgresql/18/man/man7/DROP_TEXT_SEARCH_CONFIGURATION.7.gz",
+    "sha256": "ad653635eed1eb8e451e10b06b7029e33842c382da9b277cc622bb727b1fd3f8"
+  },
+  {
+    "bytes": 1051,
+    "path": "usr/share/postgresql/18/man/man7/DROP_TEXT_SEARCH_DICTIONARY.7.gz",
+    "sha256": "1ad45347923cc0ae267781fe5074b91fd3943f5700d30a6a39884a5ce1c25e17"
+  },
+  {
+    "bytes": 1041,
+    "path": "usr/share/postgresql/18/man/man7/DROP_TEXT_SEARCH_PARSER.7.gz",
+    "sha256": "a2662c98800f18e2e29d29174b082072c57b7b73d9ee3e426d6d1839301c0e1a"
+  },
+  {
+    "bytes": 1045,
+    "path": "usr/share/postgresql/18/man/man7/DROP_TEXT_SEARCH_TEMPLATE.7.gz",
+    "sha256": "f7a22487544125f4471e9d11a916f8f23de29566a75d7ef489f1e3281bd1fd91"
+  },
+  {
+    "bytes": 1046,
+    "path": "usr/share/postgresql/18/man/man7/DROP_TRANSFORM.7.gz",
+    "sha256": "c41b1009d1bda8e1973f34ec58260cb904e50c69f48197578d2d10791ea7a7ea"
+  },
+  {
+    "bytes": 1078,
+    "path": "usr/share/postgresql/18/man/man7/DROP_TRIGGER.7.gz",
+    "sha256": "5ad4dc679e855b3e31b35b2db319822ddf4672252728902aaca34a5555d5ef55"
+  },
+  {
+    "bytes": 1081,
+    "path": "usr/share/postgresql/18/man/man7/DROP_TYPE.7.gz",
+    "sha256": "8051eb9367502419d275ba443a4f40a0637b89bf0ee72e981b97091c534cd7c2"
+  },
+  {
+    "bytes": 692,
+    "path": "usr/share/postgresql/18/man/man7/DROP_USER.7.gz",
+    "sha256": "d701c61f8410f3bb30f17ac812c8df70dc35d9b1daf8473372b1265b89dcf71f"
+  },
+  {
+    "bytes": 1072,
+    "path": "usr/share/postgresql/18/man/man7/DROP_USER_MAPPING.7.gz",
+    "sha256": "af2aef7cf9305273984c492ae7813f4c5445110ad72e1d7f327343007601aef4"
+  },
+  {
+    "bytes": 1043,
+    "path": "usr/share/postgresql/18/man/man7/DROP_VIEW.7.gz",
+    "sha256": "003c439dbb99753ce358ad906a16b47ac93980365a6662cd5e41469dadc0ad94"
+  },
+  {
+    "bytes": 1065,
+    "path": "usr/share/postgresql/18/man/man7/END.7.gz",
+    "sha256": "897ebf65fa2fe2e572e8eeb987d6145d61d4ae4983af0ee0763b3bfbfb583662"
+  },
+  {
+    "bytes": 1172,
+    "path": "usr/share/postgresql/18/man/man7/EXECUTE.7.gz",
+    "sha256": "d84b08bd15fbd71130c3d764952fcfb34390e5679626ab6e0072b5917763b4a4"
+  },
+  {
+    "bytes": 5966,
+    "path": "usr/share/postgresql/18/man/man7/EXPLAIN.7.gz",
+    "sha256": "cf6d89904c33d21c6a3d5fab8967636d077b3121a0cfd7f0c843cc15f984d9a2"
+  },
+  {
+    "bytes": 3071,
+    "path": "usr/share/postgresql/18/man/man7/FETCH.7.gz",
+    "sha256": "e7f73676e5091f978e44e02d026bbf3b3521a23f4cb88210ccf331a0d13ac79e"
+  },
+  {
+    "bytes": 5431,
+    "path": "usr/share/postgresql/18/man/man7/GRANT.7.gz",
+    "sha256": "8d74200092bd71f5c0c5d2b1c08dfac4bd51a014affd567f6c7115359d52e372"
+  },
+  {
+    "bytes": 1474,
+    "path": "usr/share/postgresql/18/man/man7/IMPORT_FOREIGN_SCHEMA.7.gz",
+    "sha256": "02438300badac3a65ffbaabfa7d62ca05b31e068ce58f8838685a916d2c0ce76"
+  },
+  {
+    "bytes": 7667,
+    "path": "usr/share/postgresql/18/man/man7/INSERT.7.gz",
+    "sha256": "f807ab8e9374f6c8a7799d5ad990f40349950d8fb23be80296a7be96bde0335e"
+  },
+  {
+    "bytes": 1813,
+    "path": "usr/share/postgresql/18/man/man7/LISTEN.7.gz",
+    "sha256": "a038dab01c985de046052ed140e1cbf6b443489559c232c8ac181e4eb6702cc4"
+  },
+  {
+    "bytes": 1139,
+    "path": "usr/share/postgresql/18/man/man7/LOAD.7.gz",
+    "sha256": "1ac3239ee96f531f9c670ea631c60cd413f8bf257c330fd64c4329be9a642a66"
+  },
+  {
+    "bytes": 3335,
+    "path": "usr/share/postgresql/18/man/man7/LOCK.7.gz",
+    "sha256": "904873b4ac421476471ff860db03041b9c1d0c4af4f82af1329dff7b245aab94"
+  },
+  {
+    "bytes": 6807,
+    "path": "usr/share/postgresql/18/man/man7/MERGE.7.gz",
+    "sha256": "ee0002061615dc67dd94d1506e2c63f305d9b16e9079d13187581594b199e900"
+  },
+  {
+    "bytes": 1252,
+    "path": "usr/share/postgresql/18/man/man7/MOVE.7.gz",
+    "sha256": "181e6963b97cd88c12a6d3eca040df2658e6c1d8a8af208f6529733a8c05abe2"
+  },
+  {
+    "bytes": 3166,
+    "path": "usr/share/postgresql/18/man/man7/NOTIFY.7.gz",
+    "sha256": "f9d033c61c6a15efb01201796e514ed57fd771098d13b5803fc7babb60712485"
+  },
+  {
+    "bytes": 3283,
+    "path": "usr/share/postgresql/18/man/man7/PREPARE.7.gz",
+    "sha256": "7fedd67d29f2e494dcd650ac79f09f509768e54df4af09df734d880f5ef0020b"
+  },
+  {
+    "bytes": 2252,
+    "path": "usr/share/postgresql/18/man/man7/PREPARE_TRANSACTION.7.gz",
+    "sha256": "9ce771e0f04348d149a14c3f5898be937229df192d0df51d2cc49c0ce7ac4438"
+  },
+  {
+    "bytes": 1213,
+    "path": "usr/share/postgresql/18/man/man7/REASSIGN_OWNED.7.gz",
+    "sha256": "20ac2bf216f26d984c5abaeadc9e4f7d8c3b41206ee920a87bc9057599b1fcb6"
+  },
+  {
+    "bytes": 1571,
+    "path": "usr/share/postgresql/18/man/man7/REFRESH_MATERIALIZED_VIEW.7.gz",
+    "sha256": "3ebb46cd52e20174cbc6bcb3a5f17661bbaf7fe1409a81cc34e39d64251fdfb0"
+  },
+  {
+    "bytes": 6027,
+    "path": "usr/share/postgresql/18/man/man7/REINDEX.7.gz",
+    "sha256": "1d791865d754889e8fa3ead5fad862e2e40f0aebc8fcd714a87c83b92eeb8c9c"
+  },
+  {
+    "bytes": 1546,
+    "path": "usr/share/postgresql/18/man/man7/RELEASE_SAVEPOINT.7.gz",
+    "sha256": "3458abcc2792af298355dbc08ce99f79d3e436b59124b90d15b7c539bdb9d533"
+  },
+  {
+    "bytes": 1163,
+    "path": "usr/share/postgresql/18/man/man7/RESET.7.gz",
+    "sha256": "35730467f1276911d500c8f1e5bae7d11503868744265dd96737e9dd15903e2e"
+  },
+  {
+    "bytes": 3481,
+    "path": "usr/share/postgresql/18/man/man7/REVOKE.7.gz",
+    "sha256": "932f4c7428a0b81c8c0f3a17dbb22b8d50b58bd21c04669be8d197d12cff13c1"
+  },
+  {
+    "bytes": 1047,
+    "path": "usr/share/postgresql/18/man/man7/ROLLBACK.7.gz",
+    "sha256": "b9c71d1321ab263d3d1624c2c215b8309f09b4a7ecac7b6a710a630d8708fcc7"
+  },
+  {
+    "bytes": 1071,
+    "path": "usr/share/postgresql/18/man/man7/ROLLBACK_PREPARED.7.gz",
+    "sha256": "cab603f5baeec5596862ff6f6008953dbeae8d0bcf9e4d28bcb30e57d898463e"
+  },
+  {
+    "bytes": 1639,
+    "path": "usr/share/postgresql/18/man/man7/ROLLBACK_TO_SAVEPOINT.7.gz",
+    "sha256": "0d494ef02095f77e018377203b221e9167541273633b1d1a44b06a07af84d2fe"
+  },
+  {
+    "bytes": 1441,
+    "path": "usr/share/postgresql/18/man/man7/SAVEPOINT.7.gz",
+    "sha256": "682c3c66885068aa8bf147f49110c25d5aa69a7e3c1cc1b449f2ff70325aa553"
+  },
+  {
+    "bytes": 2220,
+    "path": "usr/share/postgresql/18/man/man7/SECURITY_LABEL.7.gz",
+    "sha256": "d5c4785a2bdd6aeb570fb2e970392a1fe7c937b03f3eb0fef8fa01610f7b30ee"
+  },
+  {
+    "bytes": 20327,
+    "path": "usr/share/postgresql/18/man/man7/SELECT.7.gz",
+    "sha256": "826b2bc3ceb72d52558c0cafce2cfd39e28379a933e07a666e72a92c95f0321c"
+  },
+  {
+    "bytes": 1941,
+    "path": "usr/share/postgresql/18/man/man7/SELECT_INTO.7.gz",
+    "sha256": "82d9ce2d20284bb48cefd7d8b7cc02617d8f57bc367a50d0d6f6ed2b6366693d"
+  },
+  {
+    "bytes": 2915,
+    "path": "usr/share/postgresql/18/man/man7/SET.7.gz",
+    "sha256": "d98f0d9b538604ed6f9492d3d07b07ff1958e851b0772e948ca4d711705c185f"
+  },
+  {
+    "bytes": 1790,
+    "path": "usr/share/postgresql/18/man/man7/SET_CONSTRAINTS.7.gz",
+    "sha256": "78e16c321ff8d0aa21b5ab0e4ca74baa3889237a22fbae4e7506cb9e109edb73"
+  },
+  {
+    "bytes": 1877,
+    "path": "usr/share/postgresql/18/man/man7/SET_ROLE.7.gz",
+    "sha256": "779256ce2215e808b02b3a4e15cec1497d6a47312d6811889a81a9d743a763ca"
+  },
+  {
+    "bytes": 1470,
+    "path": "usr/share/postgresql/18/man/man7/SET_SESSION_AUTHORIZATION.7.gz",
+    "sha256": "25bdf2affb4e8f90ae4fd68f8a6fbb8b7b6e4328b36631a3f779fe2796dae500"
+  },
+  {
+    "bytes": 3044,
+    "path": "usr/share/postgresql/18/man/man7/SET_TRANSACTION.7.gz",
+    "sha256": "a3477a126299e876744ac11930c9ea395b1710f19543cc399f5723161c606078"
+  },
+  {
+    "bytes": 1456,
+    "path": "usr/share/postgresql/18/man/man7/SHOW.7.gz",
+    "sha256": "80dc56b29183d740e7c9c73287e31d4c23caf15d510671bf5752a4213f32ccfd"
+  },
+  {
+    "bytes": 1230,
+    "path": "usr/share/postgresql/18/man/man7/START_TRANSACTION.7.gz",
+    "sha256": "74a2c71f7e63fbc82e39d944ea5fa8f3d03a8f81de083587e51b8a6a39f66af3"
+  },
+  {
+    "bytes": 38,
+    "path": "usr/share/postgresql/18/man/man7/TABLE.7.gz",
+    "sha256": "1249089ecd98524fa6675bd1fb31ee4346311fb602e1baf7008194ed38250261"
+  },
+  {
+    "bytes": 2553,
+    "path": "usr/share/postgresql/18/man/man7/TRUNCATE.7.gz",
+    "sha256": "6185756c9a0b1db8e363516b86d7e6b6b1715083868058f9559619038174ec54"
+  },
+  {
+    "bytes": 1138,
+    "path": "usr/share/postgresql/18/man/man7/UNLISTEN.7.gz",
+    "sha256": "05190425e727300e8b112948b4bfc418d6ec4b248892abf4f21ef8e065ebd0be"
+  },
+  {
+    "bytes": 5934,
+    "path": "usr/share/postgresql/18/man/man7/UPDATE.7.gz",
+    "sha256": "5ee37cd1306ce746924ae5c0053c4e3e98dd79e8c32db27133d5001a570ddd03"
+  },
+  {
+    "bytes": 5841,
+    "path": "usr/share/postgresql/18/man/man7/VACUUM.7.gz",
+    "sha256": "d2a48be88179e08f80795bbe7dc2504c5173818c8d902d5a5b45a847f6ef89b9"
+  },
+  {
+    "bytes": 2777,
+    "path": "usr/share/postgresql/18/man/man7/VALUES.7.gz",
+    "sha256": "bf0d18b5f10fd5222db19bf8690d192726bc71cd620145c77b0e26c9889bfbf3"
+  },
+  {
+    "bytes": 38,
+    "path": "usr/share/postgresql/18/man/man7/WITH.7.gz",
+    "sha256": "1249089ecd98524fa6675bd1fb31ee4346311fb602e1baf7008194ed38250261"
+  },
+  {
+    "bytes": 5635,
+    "path": "usr/share/postgresql/18/pg_hba.conf.sample",
+    "sha256": "e3abfe29646ac6ece67e92d0b5255eb3b35d2878d23c7ea6bbd94f100054c168"
+  },
+  {
+    "bytes": 2681,
+    "path": "usr/share/postgresql/18/pg_ident.conf.sample",
+    "sha256": "bf8f1664dc42eeb78a71a3746afb6b6c93805bda55ff4504f796dbe339d1fa50"
+  },
+  {
+    "bytes": 640,
+    "path": "usr/share/postgresql/18/pg_service.conf.sample",
+    "sha256": "fa450c0972fce4719719db157780909e6a7f6c5bbfbe4e8cc267ddd45181837f"
+  },
+  {
+    "bytes": 973769,
+    "path": "usr/share/postgresql/18/postgres.bki",
+    "sha256": "ba43fc265c5e477644ac7c28b1771e42d020ee76520cb80bf9a82074a9e90756"
+  },
+  {
+    "bytes": 32652,
+    "path": "usr/share/postgresql/18/postgresql.conf.sample",
+    "sha256": "93e3da1fc8d667ba086ee239e5f053581739648a90566f191666cc63de16357f"
+  },
+  {
+    "bytes": 278,
+    "path": "usr/share/postgresql/18/psqlrc.sample",
+    "sha256": "2b42310e0d223450f5aef5d8762531d228141397577c0fe787f09c954e437426"
+  },
+  {
+    "bytes": 45710,
+    "path": "usr/share/postgresql/18/snowball_create.sql",
+    "sha256": "d864b814c350c087e92dde9d550ea7e9230f8f9f048db12d0fc21f2f931d7c9c"
+  },
+  {
+    "bytes": 35761,
+    "path": "usr/share/postgresql/18/sql_features.txt",
+    "sha256": "882036c6e1be3236dfa2789604b31c35225fe0bc1d6b9b423fa5f5f4dba0a2bc"
+  },
+  {
+    "bytes": 8895,
+    "path": "usr/share/postgresql/18/system_constraints.sql",
+    "sha256": "09407a5554a7b4310fc1aa7570c010e151e0f89ad4fb6d659dd6acc870725a01"
+  },
+  {
+    "bytes": 24879,
+    "path": "usr/share/postgresql/18/system_functions.sql",
+    "sha256": "e5b61e70663b9dd55e2e6397ecb1ff3084f4f9afbf12907529b6e565a75f254f"
+  },
+  {
+    "bytes": 53364,
+    "path": "usr/share/postgresql/18/system_views.sql",
+    "sha256": "418f4ae7472fe0742e6fbdc7a055581602c5131e082aa6f17e2c7269bf711972"
+  },
+  {
+    "bytes": 6973,
+    "path": "usr/share/postgresql/18/timezonesets/Africa.txt",
+    "sha256": "29f630662fde2db5724990f715b73f09791a85627dfeb5612adfef12a6a0b8f4"
+  },
+  {
+    "bytes": 11007,
+    "path": "usr/share/postgresql/18/timezonesets/America.txt",
+    "sha256": "8ca517c53d723a61b85cea6880af7ce1672e6c1be73f704fbf28477db2645124"
+  },
+  {
+    "bytes": 1134,
+    "path": "usr/share/postgresql/18/timezonesets/Antarctica.txt",
+    "sha256": "6f47ca542b13b594bb3a3689a63fbf3bcc8414815ece60eeeb15158ea4becb7c"
+  },
+  {
+    "bytes": 8311,
+    "path": "usr/share/postgresql/18/timezonesets/Asia.txt",
+    "sha256": "ae480b39d72487ffc4576a7fdf9a1e613ac3f87633daafeb7e071d6cd47dc982"
+  },
+  {
+    "bytes": 3533,
+    "path": "usr/share/postgresql/18/timezonesets/Atlantic.txt",
+    "sha256": "d03378d66a563226cb25390dcdbc8d5dc9015d0ec86cbba07b81718062c28ca5"
+  },
+  {
+    "bytes": 1135,
+    "path": "usr/share/postgresql/18/timezonesets/Australia",
+    "sha256": "249e83499ae7cd0348571d31ef50e240071bca5b063eed97ee902edcc98105dd"
+  },
+  {
+    "bytes": 3384,
+    "path": "usr/share/postgresql/18/timezonesets/Australia.txt",
+    "sha256": "32128798fcc64d269c9033acf05ea5e404f155d13c4d7afee0046f3a4649e2b9"
+  },
+  {
+    "bytes": 27214,
+    "path": "usr/share/postgresql/18/timezonesets/Default",
+    "sha256": "0dadd689b1998cc2d3acec42f66913194661f8d4835623776593b7bcdd075cb1"
+  },
+  {
+    "bytes": 1250,
+    "path": "usr/share/postgresql/18/timezonesets/Etc.txt",
+    "sha256": "abe5ce63e30162ae9200603bcf68cdab453826e3180651eee3cc10d0e6fc9c69"
+  },
+  {
+    "bytes": 8746,
+    "path": "usr/share/postgresql/18/timezonesets/Europe.txt",
+    "sha256": "3dc21632cab73cc7cbe973a671f549bc2603b6af862f130b82c09adb5a73c6b6"
+  },
+  {
+    "bytes": 593,
+    "path": "usr/share/postgresql/18/timezonesets/India",
+    "sha256": "77eb5794aeb96c90f5016a74f1ef8efd597a2059e74ec2258be03be9a1e8d894"
+  },
+  {
+    "bytes": 1261,
+    "path": "usr/share/postgresql/18/timezonesets/Indian.txt",
+    "sha256": "6973cbbfdf88507ff4d32566e8c5328685b6a441a8ae22ee83b35039722c1acc"
+  },
+  {
+    "bytes": 3768,
+    "path": "usr/share/postgresql/18/timezonesets/Pacific.txt",
+    "sha256": "55f614feedb1857c43d0f5aee1a5cabe9073365e368865c6c79495a3ee25e0a3"
+  },
+  {
+    "bytes": 424,
+    "path": "usr/share/postgresql/18/tsearch_data/danish.stop",
+    "sha256": "1bedc9cf5a8830dacf8c4ee0d8b301f0801861756ad0d504431d01047f961b0c"
+  },
+  {
+    "bytes": 453,
+    "path": "usr/share/postgresql/18/tsearch_data/dutch.stop",
+    "sha256": "e5a2a7c390fe3ad0c0a132586ed11492b635d66a1f426cd89677f80b07bc76a6"
+  },
+  {
+    "bytes": 622,
+    "path": "usr/share/postgresql/18/tsearch_data/english.stop",
+    "sha256": "b3f772a000465cb76e23adb03b47073c591c156fad8f7af09c8b8e80d6bd8eac"
+  },
+  {
+    "bytes": 1579,
+    "path": "usr/share/postgresql/18/tsearch_data/finnish.stop",
+    "sha256": "952af766edc9b8e7ddc877fc464cbd94b91754b5621fdfdd7020568fd4813fcd"
+  },
+  {
+    "bytes": 805,
+    "path": "usr/share/postgresql/18/tsearch_data/french.stop",
+    "sha256": "6ca60ffd4257c35cc3981d0e923881c3d8b85c8c0f6ef7a6697bd4ae97200fd8"
+  },
+  {
+    "bytes": 1349,
+    "path": "usr/share/postgresql/18/tsearch_data/german.stop",
+    "sha256": "46bf0dcec5b5bd83cd7fb96a5283876fdf91cfae7f988252132218545a61d1f7"
+  },
+  {
+    "bytes": 1227,
+    "path": "usr/share/postgresql/18/tsearch_data/hungarian.stop",
+    "sha256": "cb66b000fe0c852579ab2cb01e086f3d0eef80d650353bcd854958556dcf917d"
+  },
+  {
+    "bytes": 243,
+    "path": "usr/share/postgresql/18/tsearch_data/hunspell_sample.affix",
+    "sha256": "0f1fb5943562c9523d010780b61784c147b49e57596b2497d1396d31c5214aaf"
+  },
+  {
+    "bytes": 633,
+    "path": "usr/share/postgresql/18/tsearch_data/hunspell_sample_long.affix",
+    "sha256": "2132c84f2453d7c3d8bc6b5598a57afe4f9c4aca04d886f46308a070a86df217"
+  },
+  {
+    "bytes": 98,
+    "path": "usr/share/postgresql/18/tsearch_data/hunspell_sample_long.dict",
+    "sha256": "1926afe91b724eb2a3bcd6dd3a03ae3d46691d3246a597d2682a209eb3ada459"
+  },
+  {
+    "bytes": 462,
+    "path": "usr/share/postgresql/18/tsearch_data/hunspell_sample_num.affix",
+    "sha256": "5c2eeed5197453472cc4f918d556a8d092b3b8891579dc8cc0b3db939da52364"
+  },
+  {
+    "bytes": 129,
+    "path": "usr/share/postgresql/18/tsearch_data/hunspell_sample_num.dict",
+    "sha256": "dc6e8fcfaf5bc2b93cd58e8273cae625107ba02dace80061bb6c765ec97dea6f"
+  },
+  {
+    "bytes": 465,
+    "path": "usr/share/postgresql/18/tsearch_data/ispell_sample.affix",
+    "sha256": "3a5a3e7a54acd42c27d3c231526ccf8ccf7f29f688ef6ad74dbd04af11309d8f"
+  },
+  {
+    "bytes": 81,
+    "path": "usr/share/postgresql/18/tsearch_data/ispell_sample.dict",
+    "sha256": "e913216b14f04ebfe390f8f6048c408aebab7fe7ff313d61a0d2355146d83397"
+  },
+  {
+    "bytes": 1654,
+    "path": "usr/share/postgresql/18/tsearch_data/italian.stop",
+    "sha256": "293d7841f198e4012f49e8e5653c3bfd073a58cea1259fa2c0fcec894167b628"
+  },
+  {
+    "bytes": 4261,
+    "path": "usr/share/postgresql/18/tsearch_data/nepali.stop",
+    "sha256": "43245d062fa39a6543d5ff3216552a391bac95fd2ba26c05b1d6959d26f441fb"
+  },
+  {
+    "bytes": 851,
+    "path": "usr/share/postgresql/18/tsearch_data/norwegian.stop",
+    "sha256": "f7e5b42208ccf1b1f282f9e0f8570e464272762bda5718b6b26750f510a688dc"
+  },
+  {
+    "bytes": 1267,
+    "path": "usr/share/postgresql/18/tsearch_data/portuguese.stop",
+    "sha256": "5f305fac1d830620eeb9b2a68a1b96bf26f65c2e9257d56c8413d6fb36ed6cac"
+  },
+  {
+    "bytes": 1235,
+    "path": "usr/share/postgresql/18/tsearch_data/russian.stop",
+    "sha256": "1743191192b4a4f77fcc216499455dc00c1b8626fdd407076a8deefff80e3d59"
+  },
+  {
+    "bytes": 2178,
+    "path": "usr/share/postgresql/18/tsearch_data/spanish.stop",
+    "sha256": "7450c1f7196c161d9a4e537de43f88bd55cdb64028c808e14587bd7a6ac7be3d"
+  },
+  {
+    "bytes": 559,
+    "path": "usr/share/postgresql/18/tsearch_data/swedish.stop",
+    "sha256": "2a9d9d756bc4257d49329994f805c712cd5ab6746162e2082752238766c1c0c8"
+  },
+  {
+    "bytes": 73,
+    "path": "usr/share/postgresql/18/tsearch_data/synonym_sample.syn",
+    "sha256": "59a46c3c25c2b5a1fe174de62bf2f53ce46021e3831eec0eb62d9301ea327e49"
+  },
+  {
+    "bytes": 473,
+    "path": "usr/share/postgresql/18/tsearch_data/thesaurus_sample.ths",
+    "sha256": "346954eaf1def3007ad848731b3c26c203ed12923911b6a0ac198604831f7dc4"
+  },
+  {
+    "bytes": 260,
+    "path": "usr/share/postgresql/18/tsearch_data/turkish.stop",
+    "sha256": "f2c7f0c2bd3dba42da700776266831853a3b5f1207fada5c15207334109abb57"
+  },
+  {
+    "bytes": 17235,
+    "path": "usr/share/postgresql/18/tsearch_data/unaccent.rules",
+    "sha256": "ecf4c41c0883dee17d02431e0a7f24a2611aadf8fe1da06e98c6ccb4acc4a981"
+  },
+  {
+    "bytes": 139,
+    "path": "usr/share/postgresql/18/tsearch_data/xsyn_sample.rules",
+    "sha256": "25346fa2b510399e4f30548067ef76b0b61aee884b301a7fa55db4781aa1d84e"
+  }
+]

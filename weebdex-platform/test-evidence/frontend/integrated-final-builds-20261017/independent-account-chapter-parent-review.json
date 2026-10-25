@@ -1,0 +1,20 @@
+{
+  "sourceOnly": true,
+  "productionAccountIntentAndChapterModeByteIdenticalToQualifiedB22": {
+    "weebdex-platform/backend/src/public_api/chapter_writes.rs": "a11d4a3bcfaf6fd7ccf930d0e908b9bf517e1c46cf67e744bb352362516c4694",
+    "weebdex-platform/backend/src/public_api/uploads.rs": "3c2a58867fe7f0eff958eed2b28a34bd85dad3b40a0a005bd9e06cc1da55f330",
+    "weebdex-platform/backend/src/public_api/reports.rs": "d329d21588aae460b8de940c430fad23fb77cc3b9a6c9f262213748d7ec2950e",
+    "weebdex-platform/platform-integrations/public-api/upload-client.ts": "af792fb9e1ebd24d17cb2d11b0838351ba19f5445786465a73ba70c3e3d4bc18",
+    "weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte": "77245d8bf59c4b6288a3a3a4097326782a245eb368134d81c610a8e085923f5c"
+  },
+  "childMountGuards": {
+    "PublicRelationEditor": "busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||metadataDirty||awaitingProjection",
+    "PublicCoverEditor": "busy||pending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||awaitingProjection",
+    "PublicTitleDisposition": "busy||pending||coverBusy||coverPending||relationBusy||relationPending||metadataDirty||awaitingProjection"
+  },
+  "authoritativeTitleRereadAfterChildMutation": true,
+  "combinedRuntimeQualified": false,
+  "originalReviewedFreeze": "a4817ce2d1017cb3828e8095704b935ae4ed996f",
+  "sourceCommit": "56d5e20a29574b21999b0b8d4f0f470f14db2a35",
+  "parentGuardSourceSha256": "6eb94e292a0900b0c9dc3dd69f2a87cd996c67ee375c13e51bd3caaf636f7859"
+}

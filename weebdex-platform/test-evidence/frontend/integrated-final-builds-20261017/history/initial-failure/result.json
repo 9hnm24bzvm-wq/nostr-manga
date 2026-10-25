@@ -1,0 +1,74 @@
+{
+  "schema": "integrated-frontend-production-build-v2",
+  "label": "default",
+  "source_commit": "a4817ce2d1017cb3828e8095704b935ae4ed996f",
+  "started_at_utc": "2026-10-17T22:51:01.669590+00:00",
+  "ended_at_utc": "2026-10-17T22:51:14.894877+00:00",
+  "source_map_sha256": "ce9538ba18e758c6c7824abe81d8ed2a84276294c97be8de37a80560978c15a9",
+  "frontend_inputs_sha256": "b9313582f66621eb656d8f9f5d42895649b2e4d9146458de1b53ed2449ff3101",
+  "canonical_manifest_sha256": "af37b108d0c4b4fbd57bd47c97fd40a853711c8a9fdba5c3a1f7eea8c347eaa5",
+  "dependencies_map_sha256": "e51d6db7e15636d1a4bcaa913d5fcb0f0553fdff985a2f9ea716e3e9471cbbda",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform/scripts/build-frontend.mjs"
+  ],
+  "environment": {
+    "NODE_OPTIONS": "--max-old-space-size=2048",
+    "WEEBDEX_QA_BUILD_RESOURCE_PROFILE": "serial-terser",
+    "PUBLIC_MANGADEX_CATALOGUE": "0",
+    "WEEBDEX_FRONTEND_ROOT": "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform/.build/frontend-default"
+  },
+  "exit_code": 1,
+  "owned": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform/scripts/build-frontend.mjs"
+    ],
+    "cwd": "/workspace/shared/nostr-manga-recovery-20261017/integrated-frontend-validation-worktree-20261017/weebdex-platform",
+    "deadline_seconds": 900,
+    "elapsed_seconds": 13.225,
+    "process_exit_code": 1,
+    "deadline_exceeded": false,
+    "cleanup_verified": true,
+    "surviving_owned_process_ids": [],
+    "owned_process_births": [
+      [
+        5,
+        7087191
+      ],
+      [
+        12,
+        7087201
+      ],
+      [
+        20,
+        7087210
+      ],
+      [
+        37,
+        7087405
+      ],
+      [
+        53,
+        7088058
+      ]
+    ],
+    "cleanup_signals": [],
+    "stop_reason": null,
+    "minimum_free_bytes": 6502993920,
+    "cleanup_reserve_bytes": 134217728,
+    "floor_bytes": 4294967296,
+    "maximum_owned_rss_bytes": 1470087168,
+    "minimum_available_memory_bytes": 5497200640,
+    "terminal_receipt": true,
+    "identity": "verified process births and pidfd-owned descendants"
+  },
+  "source_unchanged": true,
+  "dependencies_unchanged": true,
+  "free_after": 6502989824,
+  "build_log_sha256": "5b077bd4a78c84739e12c421556f04d1b71047f83e237b3856d0933def5ac686",
+  "browser_executed": false,
+  "dependency_downloaded": false,
+  "pass": false,
+  "canonical_frontend_679_files_preserved": true
+}

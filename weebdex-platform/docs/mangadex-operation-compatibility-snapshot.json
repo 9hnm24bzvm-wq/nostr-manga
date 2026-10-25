@@ -1,0 +1,1340 @@
+{
+  "audit_date_utc": "2026-10-18",
+  "source_baseline": "717d88936cd654529a197ca9bcabc9af47cab6e9",
+  "snapshot_scope": "Source-only reconciliation of the exact new composed backend with scoped native reading-status writes and final chapter authority-lock correction. This is not full MangaDex API compatibility; post-ec1 runtime qualification is pending.",
+  "public_base": "/api/v1",
+  "upstream_api_version": "5.13.1",
+  "inventory_source_sha256": "004031ccdfc4b66727dd1f85d09b5300cf60235bbab2de6f6ea4816094bd6d33",
+  "operation_count": 113,
+  "counts": {
+    "source_routed_scoped_operation": 91,
+    "explicit_501_protocol_auth_exception": 12,
+    "known_501_unimplemented": 9,
+    "explicit_501_operator_administration_boundary": 1
+  },
+  "verification_scope": "The retained final-combined-api-20261017 report qualifies ec1b216 only. It does not qualify the new717d889 native-status0102 or final chapter lock source. Current-source lib, account113routing/status HTTP and the remaining backend matrix require fresh explicit receipts.",
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/ping",
+      "operation_id": "get-ping",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga",
+      "operation_id": "get-search-manga",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/manga",
+      "operation_id": "post-manga",
+      "status": "source_routed_scoped_operation",
+      "module": "manga_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/manga_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/aggregate",
+      "operation_id": "get-manga-aggregate",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/recommendation",
+      "operation_id": "get-manga-recommendation",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue_edges",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue_edges.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}",
+      "operation_id": "get-manga-id",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "PUT",
+      "path": "/manga/{id}",
+      "operation_id": "put-manga-id",
+      "status": "source_routed_scoped_operation",
+      "module": "manga_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/manga_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/manga/{id}",
+      "operation_id": "delete-manga-id",
+      "status": "source_routed_scoped_operation",
+      "module": "title_disposition",
+      "scope": "Review-first title removal returns 202 and durable request evidence; this is a scoped extension, not immediate MangaDex deletion parity.",
+      "evidence": [
+        "backend/src/public_api/title_disposition.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "operation_id": "post-auth-login",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex password/OAuth session is not a Nostr principal.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/auth/check",
+      "operation_id": "get-auth-check",
+      "status": "source_routed_scoped_operation",
+      "module": "auth",
+      "scope": "Original Nostr HTTP admission check, not MangaDex OAuth/password-session equivalence.",
+      "evidence": [
+        "backend/src/public_api/auth.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "operation_id": "post-auth-logout",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "No MangaDex password/OAuth session exists.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/auth/refresh",
+      "operation_id": "post-auth-refresh",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "No MangaDex password/OAuth session exists.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/client",
+      "operation_id": "get-list-apiclients",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/client",
+      "operation_id": "post-create-apiclient",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/client/{id}",
+      "operation_id": "get-apiclient",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/client/{id}",
+      "operation_id": "post-edit-apiclient",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/client/{id}",
+      "operation_id": "delete-apiclient",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/client/{id}/secret",
+      "operation_id": "get-apiclient-secret",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/client/{id}/secret",
+      "operation_id": "post-regenerate-apiclient-secret",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "MangaDex OAuth API-client credentials/secrets have no equivalent identity in the original Nostr capability model. No credential or secret is fabricated; original signing keys are not converted into OAuth secrets.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/group",
+      "operation_id": "get-search-group",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/group",
+      "operation_id": "post-group",
+      "status": "source_routed_scoped_operation",
+      "module": "editorial",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/editorial.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/group/{id}",
+      "operation_id": "get-group-id",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "PUT",
+      "path": "/group/{id}",
+      "operation_id": "put-group-id",
+      "status": "source_routed_scoped_operation",
+      "module": "editorial",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/editorial.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/group/{id}",
+      "operation_id": "delete-group-id",
+      "status": "source_routed_scoped_operation",
+      "module": "editorial",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/editorial.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/group/{id}/follow",
+      "operation_id": "post-group-id-follow",
+      "status": "source_routed_scoped_operation",
+      "module": "follow_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/follow_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/group/{id}/follow",
+      "operation_id": "delete-group-id-follow",
+      "status": "source_routed_scoped_operation",
+      "module": "follow_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/follow_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/list",
+      "operation_id": "post-list",
+      "status": "known_501_unimplemented",
+      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/list/{id}",
+      "operation_id": "get-list-id",
+      "status": "source_routed_scoped_operation",
+      "module": "lists",
+      "scope": "Original signed public-library projection and visibility/head checks; protocol publisher ownership is distinct from native private-account state.",
+      "evidence": [
+        "backend/src/public_api/lists.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "PUT",
+      "path": "/list/{id}",
+      "operation_id": "put-list-id",
+      "status": "known_501_unimplemented",
+      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/list/{id}",
+      "operation_id": "delete-list-id",
+      "status": "known_501_unimplemented",
+      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/list/{id}/follow",
+      "operation_id": "follow-list-id",
+      "status": "source_routed_scoped_operation",
+      "module": "list_follows",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/list_follows.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/list/{id}/follow",
+      "operation_id": "unfollow-list-id",
+      "status": "source_routed_scoped_operation",
+      "module": "list_follows",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/list_follows.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{id}/list/{listId}",
+      "operation_id": "post-manga-id-list-listId",
+      "status": "known_501_unimplemented",
+      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/manga/{id}/list/{listId}",
+      "operation_id": "delete-manga-id-list-listId",
+      "status": "known_501_unimplemented",
+      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/list",
+      "operation_id": "get-user-list",
+      "status": "source_routed_scoped_operation",
+      "module": "lists",
+      "scope": "Original signed public-library projection and visibility/head checks; protocol publisher ownership is distinct from native private-account state.",
+      "evidence": [
+        "backend/src/public_api/lists.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/{id}/list",
+      "operation_id": "get-user-id-list",
+      "status": "source_routed_scoped_operation",
+      "module": "lists",
+      "scope": "Original signed public-library projection and visibility/head checks; protocol publisher ownership is distinct from native private-account state.",
+      "evidence": [
+        "backend/src/public_api/lists.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user",
+      "operation_id": "get-user",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/{id}",
+      "operation_id": "get-user-id",
+      "status": "source_routed_scoped_operation",
+      "module": "profiles",
+      "scope": "Typed native public user or genuine protocol publisher projection; protocol-only profiles have no invented mutable version or native follow authority.",
+      "evidence": [
+        "backend/src/public_api/profiles.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/user/{id}",
+      "operation_id": "delete-user-id",
+      "status": "known_501_unimplemented",
+      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/user/delete/{code}",
+      "operation_id": "post-user-delete-code",
+      "status": "known_501_unimplemented",
+      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/chapter",
+      "operation_id": "get-chapter",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/chapter/{id}",
+      "operation_id": "get-chapter-id",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "PUT",
+      "path": "/chapter/{id}",
+      "operation_id": "put-chapter-id",
+      "status": "source_routed_scoped_operation",
+      "module": "chapter_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/chapter_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/chapter/{id}",
+      "operation_id": "delete-chapter-id",
+      "status": "source_routed_scoped_operation",
+      "module": "chapter_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/chapter_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/manga/feed",
+      "operation_id": "get-user-follows-manga-feed",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/list/{id}/feed",
+      "operation_id": "get-list-id-feed",
+      "status": "source_routed_scoped_operation",
+      "module": "lists",
+      "scope": "Original signed public-library projection and visibility/head checks; protocol publisher ownership is distinct from native private-account state.",
+      "evidence": [
+        "backend/src/public_api/lists.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/manga/{id}/follow",
+      "operation_id": "delete-manga-id-follow",
+      "status": "source_routed_scoped_operation",
+      "module": "follow_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/follow_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{id}/follow",
+      "operation_id": "post-manga-id-follow",
+      "status": "source_routed_scoped_operation",
+      "module": "follow_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/follow_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/cover",
+      "operation_id": "get-cover",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/cover/{mangaOrCoverId}",
+      "operation_id": "upload-cover",
+      "status": "source_routed_scoped_operation",
+      "module": "cover_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/cover_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/cover/{mangaOrCoverId}",
+      "operation_id": "get-cover-id",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "PUT",
+      "path": "/cover/{mangaOrCoverId}",
+      "operation_id": "edit-cover",
+      "status": "source_routed_scoped_operation",
+      "module": "cover_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/cover_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/cover/{mangaOrCoverId}",
+      "operation_id": "delete-cover",
+      "status": "source_routed_scoped_operation",
+      "module": "cover_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/cover_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/author",
+      "operation_id": "get-author",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/author",
+      "operation_id": "post-author",
+      "status": "source_routed_scoped_operation",
+      "module": "editorial",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/editorial.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/author/{id}",
+      "operation_id": "get-author-id",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "PUT",
+      "path": "/author/{id}",
+      "operation_id": "put-author-id",
+      "status": "source_routed_scoped_operation",
+      "module": "editorial",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/editorial.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/author/{id}",
+      "operation_id": "delete-author-id",
+      "status": "source_routed_scoped_operation",
+      "module": "editorial",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/editorial.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/legacy/mapping",
+      "operation_id": "post-legacy-mapping",
+      "status": "known_501_unimplemented",
+      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/feed",
+      "operation_id": "get-manga-id-feed",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/read",
+      "operation_id": "get-manga-chapter-readmarkers",
+      "status": "source_routed_scoped_operation",
+      "module": "library",
+      "scope": "Original signed public-library projection and visibility/head checks; protocol publisher ownership is distinct from native private-account state.",
+      "evidence": [
+        "backend/src/public_api/library.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{id}/read",
+      "operation_id": "post-manga-chapter-readmarkers",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "Plain JSON does not authorize server signing; use the existing client-signed Nostr library commit.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/read",
+      "operation_id": "get-manga-chapter-readmarkers-2",
+      "status": "source_routed_scoped_operation",
+      "module": "library",
+      "scope": "Original signed public-library projection and visibility/head checks; protocol publisher ownership is distinct from native private-account state.",
+      "evidence": [
+        "backend/src/public_api/library.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/random",
+      "operation_id": "get-manga-random",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/at-home/server/{chapterId}",
+      "operation_id": "get-at-home-server-chapterId",
+      "status": "source_routed_scoped_operation",
+      "module": "media",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/media.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/tag",
+      "operation_id": "get-manga-tag",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/me",
+      "operation_id": "get-user-me",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/group",
+      "operation_id": "get-user-follows-group",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/group/{id}",
+      "operation_id": "get-user-follows-group-id",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/user",
+      "operation_id": "get-user-follows-user",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/user/{id}",
+      "operation_id": "get-user-follows-user-id",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/manga",
+      "operation_id": "get-user-follows-manga",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/manga/{id}",
+      "operation_id": "get-user-follows-manga-id",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/list",
+      "operation_id": "get-user-follows-list",
+      "status": "source_routed_scoped_operation",
+      "module": "list_follows",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/list_follows.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/follows/list/{id}",
+      "operation_id": "get-user-follows-list-id",
+      "status": "source_routed_scoped_operation",
+      "module": "list_follows",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/list_follows.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/status",
+      "operation_id": "get-manga-status",
+      "status": "source_routed_scoped_operation",
+      "module": "statuses",
+      "scope": "Original signed public-library projection and visibility/head checks; protocol publisher ownership is distinct from native private-account state.",
+      "evidence": [
+        "backend/src/public_api/statuses.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{id}/status",
+      "operation_id": "get-manga-id-status",
+      "status": "source_routed_scoped_operation",
+      "module": "statuses",
+      "scope": "Original signed public-library projection and visibility/head checks; protocol publisher ownership is distinct from native private-account state.",
+      "evidence": [
+        "backend/src/public_api/statuses.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{id}/status",
+      "operation_id": "post-manga-id-status",
+      "status": "source_routed_scoped_operation",
+      "module": "native_reading_status",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred.",
+      "scope": "Explicitly bound active native-account status edit for an already-followed visible native Manga; mandatory captured expectedAccountId/expectedMangaId and independent0102status CAS. Six nonnull native values only; null clear fails closed and never unfollows. Existing GET status routes retain original signed-library meaning. Source-only pending runtime qualification.",
+      "evidence": [
+        "backend/src/public_api/native_reading_status.rs",
+        "backend/src/domains/library/reading_status.rs",
+        "backend/migrations/0102_native_reading_status_revisions.sql",
+        "backend/tests/public_native_reading_status.rs",
+        "docs/mangadex-native-reading-status.md"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/manga/draft/{id}",
+      "operation_id": "get-manga-id-draft",
+      "status": "source_routed_scoped_operation",
+      "module": "drafts",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/drafts.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/manga/draft/{id}/commit",
+      "operation_id": "commit-manga-draft",
+      "status": "source_routed_scoped_operation",
+      "module": "manga_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/manga_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/draft",
+      "operation_id": "get-manga-drafts",
+      "status": "source_routed_scoped_operation",
+      "module": "drafts",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/drafts.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/captcha/solve",
+      "operation_id": "post-captcha-solve",
+      "status": "known_501_unimplemented",
+      "reason": "This plain MangaDex REST operation is unsupported in the frozen source. Separate device-local or original signed workflows do not constitute this operation.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/report/reasons/{category}",
+      "operation_id": "get-report-reasons-by-category",
+      "status": "source_routed_scoped_operation",
+      "module": "reports",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/reports.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/report",
+      "operation_id": "get-reports",
+      "status": "source_routed_scoped_operation",
+      "module": "reports",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/reports.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/report",
+      "operation_id": "post-report",
+      "status": "source_routed_scoped_operation",
+      "module": "reports",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/reports.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/upload",
+      "operation_id": "get-upload-session",
+      "status": "source_routed_scoped_operation",
+      "module": "uploads",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/uploads.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/upload/begin",
+      "operation_id": "begin-upload-session",
+      "status": "source_routed_scoped_operation",
+      "module": "uploads",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/uploads.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/upload/begin/{chapterId}",
+      "operation_id": "begin-edit-session",
+      "status": "source_routed_scoped_operation",
+      "module": "uploads",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/uploads.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/upload/{uploadSessionId}",
+      "operation_id": "put-upload-session-file",
+      "status": "source_routed_scoped_operation",
+      "module": "uploads",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/uploads.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/upload/{uploadSessionId}",
+      "operation_id": "abandon-upload-session",
+      "status": "source_routed_scoped_operation",
+      "module": "uploads",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/uploads.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/upload/{uploadSessionId}/commit",
+      "operation_id": "commit-upload-session",
+      "status": "source_routed_scoped_operation",
+      "module": "uploads",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/uploads.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/upload/{uploadSessionId}/{uploadSessionFileId}",
+      "operation_id": "delete-uploaded-session-file",
+      "status": "source_routed_scoped_operation",
+      "module": "uploads",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/uploads.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/upload/{uploadSessionId}/batch",
+      "operation_id": "delete-uploaded-session-files",
+      "status": "source_routed_scoped_operation",
+      "module": "uploads",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/uploads.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/upload/check-approval-required",
+      "operation_id": "upload-check-approval-required",
+      "status": "source_routed_scoped_operation",
+      "module": "uploads",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/uploads.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/manga/{mangaId}/relation",
+      "operation_id": "get-manga-relation",
+      "status": "source_routed_scoped_operation",
+      "module": "catalogue_edges",
+      "scope": "Current visible local catalogue with persisted typed canonical UUIDs and operation-specific bounded queries; unsupported filters fail closed.",
+      "evidence": [
+        "backend/src/public_api/catalogue_edges.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/manga/{mangaId}/relation",
+      "operation_id": "post-manga-relation",
+      "status": "source_routed_scoped_operation",
+      "module": "relation_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/relation_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/manga/{mangaId}/relation/{id}",
+      "operation_id": "delete-manga-relation-id",
+      "status": "source_routed_scoped_operation",
+      "module": "relation_writes",
+      "scope": "Scoped genuine request-authorized native transaction/review or original-publication adapter; supported fields, expected account/version guards and authority differ from MangaDex. See module and dedicated seam tests.",
+      "evidence": [
+        "backend/src/public_api/relation_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/rating",
+      "operation_id": "get-rating",
+      "status": "source_routed_scoped_operation",
+      "module": "ratings",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/ratings.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/rating/{mangaId}",
+      "operation_id": "post-rating-manga-id",
+      "status": "source_routed_scoped_operation",
+      "module": "ratings",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/ratings.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "DELETE",
+      "path": "/rating/{mangaId}",
+      "operation_id": "delete-rating-manga-id",
+      "status": "source_routed_scoped_operation",
+      "module": "ratings",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/ratings.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/chapter/{uuid}",
+      "operation_id": "get-statistics-chapter-uuid",
+      "status": "source_routed_scoped_operation",
+      "module": "statistics",
+      "scope": "Actual persisted local statistics only; no remote MangaDex counts or fabricated user observation.",
+      "evidence": [
+        "backend/src/public_api/statistics.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/chapter",
+      "operation_id": "get-statistics-chapters",
+      "status": "source_routed_scoped_operation",
+      "module": "statistics",
+      "scope": "Actual persisted local statistics only; no remote MangaDex counts or fabricated user observation.",
+      "evidence": [
+        "backend/src/public_api/statistics.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/group/{uuid}",
+      "operation_id": "get-statistics-group-uuid",
+      "status": "source_routed_scoped_operation",
+      "module": "statistics",
+      "scope": "Actual persisted local statistics only; no remote MangaDex counts or fabricated user observation.",
+      "evidence": [
+        "backend/src/public_api/statistics.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/group",
+      "operation_id": "get-statistics-groups",
+      "status": "source_routed_scoped_operation",
+      "module": "statistics",
+      "scope": "Actual persisted local statistics only; no remote MangaDex counts or fabricated user observation.",
+      "evidence": [
+        "backend/src/public_api/statistics.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/manga/{uuid}",
+      "operation_id": "get-statistics-manga-uuid",
+      "status": "source_routed_scoped_operation",
+      "module": "statistics",
+      "scope": "Actual persisted local statistics only; no remote MangaDex counts or fabricated user observation.",
+      "evidence": [
+        "backend/src/public_api/statistics.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/statistics/manga",
+      "operation_id": "get-statistics-manga",
+      "status": "source_routed_scoped_operation",
+      "module": "statistics",
+      "scope": "Actual persisted local statistics only; no remote MangaDex counts or fabricated user observation.",
+      "evidence": [
+        "backend/src/public_api/statistics.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/settings/template",
+      "operation_id": "get-settings-template",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/settings/template",
+      "operation_id": "post-settings-template",
+      "status": "explicit_501_operator_administration_boundary",
+      "reason": "Settings template installation is operator administration; no public client may replace the app-owned validated template.",
+      "module": "routes",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/settings/template/{version}",
+      "operation_id": "get-settings-template-version",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/settings",
+      "operation_id": "get-settings",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/settings",
+      "operation_id": "post-settings",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "GET",
+      "path": "/user/history",
+      "operation_id": "get-reading-history",
+      "status": "source_routed_scoped_operation",
+      "module": "account_reads/account_settings/settings_writes",
+      "scope": "Fresh request-bound Nostr proof and explicit active native-account binding; typed UUIDs and persisted native-account state. Native account, signer and device library remain distinct.",
+      "evidence": [
+        "backend/src/public_api/account_reads.rs",
+        "backend/src/public_api/account_settings.rs",
+        "backend/src/public_api/settings_writes.rs"
+      ],
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    },
+    {
+      "method": "POST",
+      "path": "/forums/thread",
+      "operation_id": "forums-thread-create",
+      "status": "explicit_501_protocol_auth_exception",
+      "reason": "Native forum identities and commands use their explicitly namespaced contract; no MangaDex Forums identity is fabricated.",
+      "module": "routes/library",
+      "routing_probe_scope": "Unauthenticated actual HTTP with absent UUID targets and empty mutation JSON checks routing/auth/validation only; no successful write or complete upstream parity is inferred."
+    }
+  ]
+}

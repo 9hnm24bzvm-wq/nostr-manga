@@ -1,0 +1,257 @@
+{
+  "schema": 1,
+  "status": "source-associated-finite-diagnostics-only",
+  "publishedRecoveryBase": "cc5b237d33ceb8a9027feaa2b64682f0826cc012",
+  "publishedRecoveryBaseTree": "9fad0a11e76c4ca2174b4d103dfc8238a0e7124f",
+  "composedSourceBeforeMetadata": "f07219c9ef5116df3ebf67e4acfb2949c126843e",
+  "composedTreeBeforeMetadata": "7ae73a873f02fc5998e42083cd065791cbe76dab",
+  "sourceManifest": "caught-diagnostic-current-source-pins-20261018.json",
+  "sourceManifestSha256": "0e4adff9ccf5ecfaa4afdbcdd863910fda91d3086f3b9f7c020da40bb34f461a",
+  "sourcePins": 1268,
+  "manifestScope": "Previous1265 exact source inputs, refreshed, plus the three newly added diagnostic document/Node/Python paths. Evidence and this metadata are outside the source map.",
+  "comparisonsWithHistoricalFullQualification": {
+    "product": {
+      "historicalInputs": 922,
+      "unchanged": 913,
+      "exceptions": [
+        {
+          "path": "weebdex-platform/platform-integrations/public-api/client.ts",
+          "historicalSha256": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+          "currentSha256": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad"
+        },
+        {
+          "path": "weebdex-platform/scripts/browser-acceptance.mjs",
+          "historicalSha256": "33ae625d030bf222adc1678bf3cd9446f808c46faf03844191ead925455115d9",
+          "currentSha256": "2a9aeb0de972d27f5d3869ee3b6609a74eb8d25fc39c39717a9e84467d8b9be7"
+        },
+        {
+          "path": "weebdex-platform/scripts/browser-journeys.mjs",
+          "historicalSha256": "4371099ee492e92a950b5183a2bf1b96462acbb94f1739b0c0f39e9a20d834d7",
+          "currentSha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/native-feed-diagnostics.py",
+          "historicalSha256": "22c617e689c54df1c8af776d5df7cdb2b79ca8ea59e656cbdd8618205fbbd11c",
+          "currentSha256": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/runner-diagnostics.py",
+          "historicalSha256": "9271b0ee7f39954d9ee470284ac2a2b5550e0c8e14895427804cc3a2b0d1576b",
+          "currentSha256": "23852ebaeec6cc5147d039a9eeff93019965e12b6927934c9e659a7100ccf854"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/validate-ci-evidence.py",
+          "historicalSha256": "9fc684992fe02ca39ef2435c4c7b041ec279994004be158c7898c7501a68ce1a",
+          "currentSha256": "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77"
+        },
+        {
+          "path": "weebdex-platform/scripts/private-checkpoint.py",
+          "historicalSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+          "currentSha256": "f8c9184cea4169c9b544e587473b2c0d80ac346259b31b634c811b70270c3357"
+        },
+        {
+          "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+          "historicalSha256": "30b0626a5c131cb38a581a0db1cf36c7f1918f84ddc789f82d123c4584916f79",
+          "currentSha256": "20346189278b318c55aa08a41c60ff6ce0da639746341cae8de1439bf8d439cb"
+        },
+        {
+          "path": "weebdex-platform/scripts/runner-lifecycle.mjs",
+          "historicalSha256": "b89cd51a6e55ebf02331c6d37e06ca4bb524c2daa7d8caee1e678d45f39065d0",
+          "currentSha256": "384df9c700e337df1717d0e57cb62260f4d581916c18153e465de66bff6abf15"
+        }
+      ]
+    },
+    "execution": {
+      "historicalInputs": 1242,
+      "unchanged": 1217,
+      "exceptions": [
+        {
+          "path": "manga-protocol-lab/bench/library-node/MIXED.md",
+          "historicalSha256": "f447c2263354dad6914c3f4ba7262de3b0a4490da2563ef65bfcfd215ca72504",
+          "currentSha256": "018559a05e4b4cb621b0b7c5c7bf86bc78b6673e5cf03d5bf3c6e4476fbf7547"
+        },
+        {
+          "path": "manga-protocol-lab/bench/library-node/README.md",
+          "historicalSha256": "cdbffc8497395a66eac4c36c981786858f22f0c5b862ee316af321f0239e1032",
+          "currentSha256": "205aa49ee3bce3e3b98c6dfdbbe8376aa452a2b7757db2f1ed1d7ca6d71dea3c"
+        },
+        {
+          "path": "manga-protocol-lab/bench/library-node/mixed.py",
+          "historicalSha256": "d5592e7a72b6828640bf89b54331996059389f7271a61ee7dcc795e661ae9d1d",
+          "currentSha256": "a55afd995e9b5505ef8e0be2a96dd9c4809abd09a2ccf444b2e19cfde71b590b"
+        },
+        {
+          "path": "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py",
+          "historicalSha256": "cc887d16336bdad53c1dfaccfea02c4ac9e010cf6c844ac3a0206e5aa1bc911f",
+          "currentSha256": "92c7d81ed72ccfa22b9610b1d91712579a4d272c2360d594a3c0973a4586cc04"
+        },
+        {
+          "path": "manga-protocol-lab/bench/library-node/test_mixed.py",
+          "historicalSha256": "77fe28fae8f9075c1fb18feeebe5f879bb0f10a355565f74902324cc68fb1374",
+          "currentSha256": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db"
+        },
+        {
+          "path": "manga-protocol-lab/scripts/bootstrap.sh",
+          "historicalSha256": "a4d56b91647d443223c4ddd2bf8682aa16811532bed55b34a6c8c141dbe1b384",
+          "currentSha256": "c1ddc8252d85f183abd55b4732e0b15fd019bc83b3f82a284b0244aa58d46ba0"
+        },
+        {
+          "path": "weebdex-platform/platform-integrations/public-api/client.ts",
+          "historicalSha256": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+          "currentSha256": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad"
+        },
+        {
+          "path": "weebdex-platform/scripts/browser-acceptance.mjs",
+          "historicalSha256": "33ae625d030bf222adc1678bf3cd9446f808c46faf03844191ead925455115d9",
+          "currentSha256": "2a9aeb0de972d27f5d3869ee3b6609a74eb8d25fc39c39717a9e84467d8b9be7"
+        },
+        {
+          "path": "weebdex-platform/scripts/browser-journeys.mjs",
+          "historicalSha256": "4371099ee492e92a950b5183a2bf1b96462acbb94f1739b0c0f39e9a20d834d7",
+          "currentSha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/native-feed-diagnostics.py",
+          "historicalSha256": "22c617e689c54df1c8af776d5df7cdb2b79ca8ea59e656cbdd8618205fbbd11c",
+          "currentSha256": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/runner-diagnostics.py",
+          "historicalSha256": "9271b0ee7f39954d9ee470284ac2a2b5550e0c8e14895427804cc3a2b0d1576b",
+          "currentSha256": "23852ebaeec6cc5147d039a9eeff93019965e12b6927934c9e659a7100ccf854"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/validate-ci-evidence.py",
+          "historicalSha256": "9fc684992fe02ca39ef2435c4c7b041ec279994004be158c7898c7501a68ce1a",
+          "currentSha256": "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77"
+        },
+        {
+          "path": "weebdex-platform/scripts/private-checkpoint.py",
+          "historicalSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+          "currentSha256": "f8c9184cea4169c9b544e587473b2c0d80ac346259b31b634c811b70270c3357"
+        },
+        {
+          "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+          "historicalSha256": "30b0626a5c131cb38a581a0db1cf36c7f1918f84ddc789f82d123c4584916f79",
+          "currentSha256": "20346189278b318c55aa08a41c60ff6ce0da639746341cae8de1439bf8d439cb"
+        },
+        {
+          "path": "weebdex-platform/scripts/runner-lifecycle.mjs",
+          "historicalSha256": "b89cd51a6e55ebf02331c6d37e06ca4bb524c2daa7d8caee1e678d45f39065d0",
+          "currentSha256": "384df9c700e337df1717d0e57cb62260f4d581916c18153e465de66bff6abf15"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs",
+          "historicalSha256": "ee010e25b29ddfa09cb71ab1980506d0101ce345d52d13953e020ea77c9a2bae",
+          "currentSha256": "56f32a65b635e9549306165790509a401fffb199880d314b5cd83ed893d161fa"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_browser_library_follow_diagnostics.mjs",
+          "historicalSha256": "264321df786164d2bf5c79b1e2a210c7224a388145b6de568f28076d528f8940",
+          "currentSha256": "ba6c483dc1eb118d5a5345c5cfcd805494dd29af96dcad507e2be028abbab5e9"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+          "historicalSha256": "8f377f873e747a05e4175b2be0856ed6541782ccff0b083ecdef6ee18b68d101",
+          "currentSha256": "1dd590c4c20aa71174bcaa4bfa523479bca1d3433e91bb03995af66046053bf1"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_hosted_browser.py",
+          "historicalSha256": "f90749db354035557400c0af9f57d8c0a2e3a977b1bfc09d7cccc692d0efeb86",
+          "currentSha256": "d2740cf8b7cb0799484f81524faa2a78a2169f101b87481f3d2217792306eb6c"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_journey_diagnostics.py",
+          "historicalSha256": "897506786584b684931dba67b022672818bc17200a46e7736e7b930d591367ef",
+          "currentSha256": "2b1bba707414f7a2aec91acceb95157f5ca64116e6f592c0cb0214c50eedb558"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_native_feed_diagnostics.py",
+          "historicalSha256": "786c71228692f93efad49cb330e19ebcde15b658e24cdeac5e425f729134fe2a",
+          "currentSha256": "1101cbb285c830e4453903c16c6053fc545281b100c523ed0a1a670f686688f6"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_private_checkpoint.py",
+          "historicalSha256": "3767ddeb35f9e99af092d4e49b9177a8cf52f4c7bcfe3fc13acc2aebfd2a1c27",
+          "currentSha256": "98b284a1bf31a9b08b086e1d28a6026d9ca7cc25eeb5240e305386bd031cc886"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_public_upload_hosted_profile.py",
+          "historicalSha256": "e80ea2ad19ee9277be3b5f35efff8eee37f3f2d83e68dafea5550975bc7117df",
+          "currentSha256": "6bb9693e7d6a7f99c38f1145be5ed700c7ef9fc68116dc8b2a2c6a0b92523cd2"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_runner_diagnostics.py",
+          "historicalSha256": "d22d226f5afad25440a2fe0859fa07e3b0684bb7dac34511167322bca10572b5",
+          "currentSha256": "65c6d6ef30b71ada40cfa2fe5de297c968088366e4581f3006bac4e652608f56"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_runner_lifecycle.mjs",
+          "historicalSha256": "a78310be5a18909cb2202983ecb05cf31059428d0217d90528cd9888305f971f",
+          "currentSha256": "d77eea2a0d06f855a9da063b6a4194a9d592304d04ad033e4d1816224073df4d"
+        }
+      ]
+    }
+  },
+  "currentPlatformNodeTestFiles": 134,
+  "currentPlatformPythonTestFiles": 10,
+  "ciProposalSource": "1dad688c23d24a2dd0338f26391d278be662d4b3",
+  "ciProposalTree": "5c80a5bc1b5cf2c108360edcd9df556bfd5f7236",
+  "ciProposalChangedPaths": 12,
+  "ciProposalFileDifferencesFromRecovery": [
+    {
+      "path": "weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs",
+      "ciSha256": "96ce56e63d0dad4fa1063e7af5beed884e99e54791b73082acb1b942cc5ec233",
+      "recoverySha256": "56f32a65b635e9549306165790509a401fffb199880d314b5cd83ed893d161fa"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_hosted_browser.py",
+      "ciSha256": "1729620a542e5f8a69501e49a0c18aac6604bb282a7e24e27b44f0d85f0b125e",
+      "recoverySha256": "d2740cf8b7cb0799484f81524faa2a78a2169f101b87481f3d2217792306eb6c"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_hosted_profile.py",
+      "ciSha256": "b2e1ce944d57a09f3dd0b6bc376ef1f8165baddd1e3437c3368e714275458830",
+      "recoverySha256": "6bb9693e7d6a7f99c38f1145be5ed700c7ef9fc68116dc8b2a2c6a0b92523cd2"
+    }
+  ],
+  "ciProposalBoundary": "The pending CI proposal keeps the previously published CI application snapshot and its unchanged bounded workflow. This recovery source includes subsequent application/readiness/backup changes and separate diagnostic controls. No CI result is transferred between complete trees.",
+  "runtimeDiagnosticSourceFilesMatchCiProposal": true,
+  "recoveryWorkflowEqualsPublishedBase": true,
+  "canonicalFrontendTreeEqualsPublishedBase": true,
+  "backendTreeEqualsPublishedBase": true,
+  "protocolSourceTreeEqualsPublishedBase": true,
+  "newBrowserOrFullSuiteExecution": false,
+  "applicationOrder": [
+    {
+      "original": "d57a1f0ba55b65c2d4f4927afc1b350712569c0e",
+      "applied": "a8b6e133c16f29f2fd9fdd033789e334dae4c9f6"
+    },
+    {
+      "original": "c7a45aa3d67ede6c979f581a8064ad62b1ba3a1e",
+      "applied": "3073c5c7da375958d8e2a29eb9956ca6d16116a2"
+    },
+    {
+      "original": "26a79f6775f4b52ae745c9fab5f1b321faa50378",
+      "applied": "96a362a026cef37fa4c57c93d4ff672b53fe882f"
+    },
+    {
+      "original": "4a79bbb59f8b2f8e4bf6bb41ee24dddfce112df3",
+      "applied": "713e5dbfed759fc1935c0348a51f1a29ae861aa2"
+    },
+    {
+      "original": "168d96e0e46311a328f0b1e0eeb52b3fde24d513",
+      "applied": "d364a4d31c8e7cf7311692094960df6a0c5767d7"
+    },
+    {
+      "original": "2e62d4ccc7d339c92f08598d763385114dc5760e",
+      "applied": "e57da4a12553b3b2b8ff37ae722481c825e8bdbe"
+    },
+    {
+      "original": "c0937be695c9a447674e5aa919f9383985cdce0a",
+      "applied": "098e40bae89d9a5c7e8ee935519707f0c40f1574"
+    }
+  ],
+  "recoveryOnlySandboxSource": "1782ad19c3f6a79397efd5f8de2b6314a6b91a25",
+  "recoveryOnlySandboxEvidence": "f07219c9ef5116df3ebf67e4acfb2949c126843e"
+}

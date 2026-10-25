@@ -1,0 +1,36 @@
+{
+  "schema": "fixture-operational-completion-independent-source-review-v1",
+  "verdict": "source_clear_for_exact_28_case_pure_run",
+  "reviewed_at_utc": "2026-10-17T05:36:30.598973+00:00",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/runtime/browser_fixture.py",
+      "sha256": "b51600aa499ef8d5330482e05b444aa5ca868aaa6c3ad6c7cfd155d6b1052551"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_browser_fixture_early_response_recovery.py",
+      "sha256": "9735d4cd43df0ccf33a71a764c6dd34ecff2293e52e89b5cb2d8e8c2a5d88069"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/fixture-early-response-source/reviewed25-browser_fixture.py.retained",
+      "sha256": "00268d6e868cb85d770930f2e718d3453b0fd05605bffaf4c37b147919768b66"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/fixture-early-response-source/reviewed25-test.py.retained",
+      "sha256": "dc3bb08abcdd1a045114c14aef82f5de51e5e32b3649686920dec5ef4740d4e4"
+    }
+  ],
+  "checks": [
+    "Reviewed 25-case predecessor sources are retained at their exact pins. The transport helper AST is identical.",
+    "Listener startup clears the prior completion marker before any listener ready publication.",
+    "Operational receipt binds the exact current run_directory; marker uses the exact saved bytes hash and is assigned only after atomic receipt save and hash read succeed, before final ready publication.",
+    "Three added AST-only fake-file tests inspect exact source association and execute the actual publication tail. Failed receipt save/hash read cannot publish completion."
+  ],
+  "allowed_command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/ci/test_browser_fixture_early_response_recovery.py -v",
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform",
+  "limits": [
+    "No real transport/startup qualification yet.",
+    "The outer owner must require the fixed evidence path/hash/current run and actual 413 row before browser command submission; status ready alone is insufficient.",
+    "The original browser01 error remains unassigned to a particular request."
+  ]
+}

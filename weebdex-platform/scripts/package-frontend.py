@@ -31,6 +31,7 @@ for source, name in [
     (ROOT / "docs/local-library-integration.md", "local-library-integration.md"),
     (ROOT / ".build/local-library-noble-2.0.1/node_modules/@noble/curves/LICENSE", "third-party/noble-curves-LICENSE"),
     (ROOT / ".build/local-library-noble-2.0.1/node_modules/@noble/hashes/LICENSE", "third-party/noble-hashes-LICENSE"),
+    (ROOT / ".build/local-signing-base-2.0.0/node_modules/@scure/base/LICENSE", "third-party/scure-base-LICENSE"),
     (EVIDENCE / "artifact-manifest.json", "frontend-artifact-manifest.json"),
     (EVIDENCE / "bootstrap-csp.json", "frontend-bootstrap-csp.json"),
     (ROOT / "docs/frontend-preservation.md", "frontend-preservation.md"),

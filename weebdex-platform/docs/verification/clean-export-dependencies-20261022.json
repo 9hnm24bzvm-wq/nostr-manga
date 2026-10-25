@@ -1,0 +1,849 @@
+{
+  "schema": "clean-export-git-dependency-audit-v1",
+  "audited_source_commit": "087c0ec1f7ddf3f8ad413fb861b863a835e77d2b",
+  "scan_scope": "Tracked executable text; active scripts/tests plus separately classified historical evidence replay scripts. No ignored dependency cache, credential, database, or external worktree inventory.",
+  "limitations": [
+    "Source-only Git-call audit, not an executed complete build/recovery dependency qualification.",
+    "The one local remote-tracking ref was not refreshed; ancestry observations do not establish current hosted refs.",
+    "Patch A removes historical-object retrieval only; the combined driver still requires current Git metadata, exact pinned external dependencies, and its selected phase prerequisites."
+  ],
+  "retained_original_manifest": {
+    "path": "weebdex-platform/tests/fixtures/qualification-baselines/manifest.json",
+    "sha256": "7e9d0a0407aa1438ed21f359b9e53e198135ba4979efe7939fe247f1a3f75a89",
+    "entries": 19,
+    "bytes": 277491
+  },
+  "existing_title_history_manifest": {
+    "path": "weebdex-platform/tests/fixtures/title-history-baselines/manifest.json",
+    "sha256": "9068d664c7d7d4fbeed59b9b27cb3af029d1c6a0b64072728f2fd4e3f8142fde",
+    "entries": 8,
+    "changed": false
+  },
+  "old_restore_closure": {
+    "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+    "files": [
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/device-id-state.ts",
+        "bytes": 13896,
+        "git_blob": "b9b5547b4d55679962dfe11be099de3f11ffd521",
+        "sha256": "fcfe071a89174f33f684cfb2790d8d2f709a3ed12eb3a158d2980c387b55441b"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/codec.js",
+        "bytes": 16914,
+        "git_blob": "e737d87c845ebd01863ab6124eba245f564e704c",
+        "sha256": "b899dc54a81099038cbed3ccbec7eaa2ddef38c7cf5cee4a2355d5a31f04a9c5"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/validation.ts",
+        "bytes": 2001,
+        "git_blob": "3a22b7f3c091b33ad11f82abf65adede3c7c1505",
+        "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/device-store.ts",
+        "bytes": 19725,
+        "git_blob": "dbb7304884a16c1b5cd1bac705a777dbc9485d20",
+        "sha256": "4b9f9ab7eb4d01dd1c903cfae86168fb2c81cf391d1731a9bbaf2217e2a1d210"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/device-id-migration.ts",
+        "bytes": 23733,
+        "git_blob": "7e62342bb651bdfa09df85309f2a9df281f99852",
+        "sha256": "df44157598490637bae67c921e79ac1b02570f11c5582067468c0c8327312d5d"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/device-write-v2.ts",
+        "bytes": 7768,
+        "git_blob": "046c68d64fdcd2b1609e7e35c0716a349fbe3cda",
+        "sha256": "1ad5c60c4fabe332e3a4220ed7e5f7b7c3a8fe488675beba3c76c883da544eef"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/protocol/limits.js",
+        "bytes": 184,
+        "git_blob": "4ef1df73cefbb74c5863c733902d8397626c0767",
+        "sha256": "c23e71d1e01380f25f450963bd531d38c817196a2decc748d7256e10f5c8e540"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/library.ts",
+        "bytes": 33365,
+        "git_blob": "29fdccbc84f600dc6902be7d4e522637eb42c895",
+        "sha256": "2c093421cbeeb368b681f09cd1ae7cb3319316979e4c3304ab3de8fabbd23c76"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/public-api/library-staging.ts",
+        "bytes": 926,
+        "git_blob": "851623f9d021478cc8a3552b726afc4f1bc1dba0",
+        "sha256": "b9418ece73a23f64580aa017013397a74a440f9d315070e70b9ffbe6bd810169"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/device-list-name.ts",
+        "bytes": 3445,
+        "git_blob": "f6da0e98a2a780c7526f7a7cadf85cc296ac2c8d",
+        "sha256": "9957bf7898a000738ad6d9c97a05b00b3e30914d9f54b01001b1fd6fbfb80fb1"
+      },
+      {
+        "path": "weebdex-platform/platform-integrations/local-library/LocalLibraryPanel.svelte",
+        "bytes": 9208,
+        "git_blob": "571fdf8a8150fd748a5f7ece278c2bcd36b0d3d2",
+        "sha256": "61216a341f11ad5c2ea854e014a9c704c82eb39ff121ceb9e51062cd96945877"
+      }
+    ],
+    "edges": [
+      {
+        "from": "public-api/device-id-state.ts",
+        "specifier": "../local-library/protocol/codec.js",
+        "target": "local-library/protocol/codec.js",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/protocol/codec.js",
+        "specifier": "@noble/hashes/sha2.js",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "public-api/device-id-state.ts",
+        "specifier": "./validation",
+        "target": "public-api/validation.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/device-store.ts",
+        "specifier": "../public-api/device-id-migration",
+        "target": "public-api/device-id-migration.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "public-api/device-id-migration.ts",
+        "specifier": "../local-library/protocol/indexeddb.js",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "public-api/device-id-migration.ts",
+        "specifier": "./validation",
+        "target": "public-api/validation.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "public-api/device-id-migration.ts",
+        "specifier": "./device-id-state",
+        "target": "public-api/device-id-state.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/device-store.ts",
+        "specifier": "../public-api/device-id-state",
+        "target": "public-api/device-id-state.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/device-store.ts",
+        "specifier": "../public-api/device-write-v2",
+        "target": "public-api/device-write-v2.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "public-api/device-write-v2.ts",
+        "specifier": "../local-library/protocol/indexeddb.js",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "public-api/device-write-v2.ts",
+        "specifier": "./validation",
+        "target": "public-api/validation.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "public-api/device-write-v2.ts",
+        "specifier": "./device-id-state",
+        "target": "public-api/device-id-state.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/device-store.ts",
+        "specifier": "../public-api/validation",
+        "target": "public-api/validation.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/device-store.ts",
+        "specifier": "./protocol/indexeddb.js",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/device-store.ts",
+        "specifier": "./protocol/codec.js",
+        "target": "local-library/protocol/codec.js",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/device-store.ts",
+        "specifier": "./protocol/limits.js",
+        "target": "local-library/protocol/limits.js",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "../public-api/library-staging",
+        "target": "public-api/library-staging.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "public-api/library-staging.ts",
+        "specifier": "$env/static/public",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "public-api/library-staging.ts",
+        "specifier": "$lib/HTTP",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "svelte/store",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "$lib/stores/Session",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "$env/static/public",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "$lib/HTTP",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "./device-store",
+        "target": "local-library/device-store.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "./protocol/indexeddb.js",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "../public-api/validation",
+        "target": "public-api/validation.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "./protocol/store.js",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "$platform/mutation-authority",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "./protocol/nostr.js",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "./protocol/indexeddb.js",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "./device-list-name",
+        "target": "local-library/device-list-name.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/device-list-name.ts",
+        "specifier": "../public-api/device-id-migration",
+        "target": "public-api/device-id-migration.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/device-list-name.ts",
+        "specifier": "./device-store",
+        "target": "local-library/device-store.ts",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/device-list-name.ts",
+        "specifier": "./protocol/indexeddb.js",
+        "kind": "explicit-existing-fixture-adapter"
+      },
+      {
+        "from": "local-library/device-list-name.ts",
+        "specifier": "./protocol/codec.js",
+        "target": "local-library/protocol/codec.js",
+        "kind": "retained-source"
+      },
+      {
+        "from": "local-library/library.ts",
+        "specifier": "./device-list-name",
+        "target": "local-library/device-list-name.ts",
+        "kind": "retained-source"
+      }
+    ],
+    "count": 11,
+    "bytes": 131165
+  },
+  "active_requirements_after_patch_a": [
+    {
+      "entrypoint": "weebdex-platform/tests/ci/run_combined_qualification.py",
+      "requires": [
+        "current Git HEAD identity",
+        "current tracked-file inventory",
+        "seven explicit existing pinned dependency roots"
+      ],
+      "historical_git_objects_required": false,
+      "no_git_export_support": "not implemented; patch B pending provenance review"
+    },
+    {
+      "entrypoint": "weebdex-platform/tests/ci/test_native_user_navigation.mjs",
+      "requires": [
+        "current source fixture closure",
+        "retained native-user-site-client original"
+      ],
+      "historical_git_objects_required": false
+    },
+    {
+      "entrypoint": "weebdex-platform/scripts/check-composed-frontend.mjs",
+      "requires": [
+        "Git tracked frontend identities",
+        "Git HEAD",
+        "full pinned frontend node_modules",
+        "fresh semantic output"
+      ]
+    },
+    {
+      "entrypoint": "weebdex-platform/tests/ci/test_composed_semantic_projection.mjs",
+      "requires": [
+        "Git tracked frontend/product identities",
+        "matching fresh strict generation",
+        "matching outer receipts"
+      ]
+    },
+    {
+      "entrypoint": "weebdex-platform/scripts/ci/native-upload-diagnostic-owner.py",
+      "requires": [
+        "exact approved publication parent 4294b711c3b90c9ec3c507435aabdfc59e28f0c6",
+        "actual Git parent/diff/status proof",
+        "verified GitHub push event"
+      ],
+      "note": "Intentional one-publication authorization gate. Do not loosen or treat fixture retention as authorization."
+    },
+    {
+      "entrypoint": "weebdex-platform/scripts/ci/qualify-full-application-restore.py",
+      "requires": [
+        "current Git HEAD",
+        "reviewed exact executable/UI/release/frontend manifests",
+        "explicit synthetic fixture/runtime prerequisites"
+      ],
+      "note": "Actual restore, no export fallback. Read-only --inventory is separate."
+    },
+    {
+      "entrypoint": "weebdex-platform/scripts/ci/qualify-real-app-capacity.py",
+      "requires": [
+        "exact source Git HEAD and clean tracked status before/after",
+        "separately hash-pinned application/runtime artifacts",
+        "approved capacity-run inputs"
+      ]
+    },
+    {
+      "entrypoint": "weebdex-platform/scripts/ci/qualify-integrated-load-budget.py",
+      "requires": [
+        "Git HEAD for source receipt",
+        "installed aiohttp",
+        "finite transport fixture sources"
+      ]
+    },
+    {
+      "entrypoint": "weebdex-platform/scripts/integrated_load_scenarios.py",
+      "requires": [
+        "Git HEAD for source receipt",
+        "separate real-application load prerequisites"
+      ]
+    },
+    {
+      "entrypoint": "manga-protocol-lab/scripts/bootstrap.sh; weebdex-platform/scripts/ci/bootstrap-native.sh",
+      "requires": [
+        "Git executable",
+        "external exact upstream vendor revisions and recursive strfry submodules",
+        "official build/dependency toolchains"
+      ],
+      "vendor_commits": {
+        "strfry": "4cd3cf64850caf47dda46c2a2abbbf3525a64d10",
+        "secp256k1": "0cdc758a56360bf58a851fe91085a327ec97685a",
+        "lmdb": "3a29a24777c82a0165de813ae696a5068b5add30",
+        "flatbuffers": "1c514626e83c20fffa8557e75641848e1e15cd5e"
+      }
+    }
+  ],
+  "matching_executable_sources": {
+    "manga-protocol-lab/scripts/bootstrap.sh": {
+      "source_sha256_at_audit_base": "c1ddc8252d85f183abd55b4732e0b15fd019bc83b3f82a284b0244aa58d46ba0",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [
+        "0cdc758a56360bf58a851fe91085a327ec97685a",
+        "1c514626e83c20fffa8557e75641848e1e15cd5e",
+        "3a29a24777c82a0165de813ae696a5068b5add30",
+        "4cd3cf64850caf47dda46c2a2abbbf3525a64d10"
+      ],
+      "git_call_lines_at_audit_base": [
+        16,
+        72,
+        91,
+        92,
+        97
+      ]
+    },
+    "weebdex-platform/scripts/check-composed-frontend.mjs": {
+      "source_sha256_at_audit_base": "7506ca7ad2be35dcebd08e7a03a16263f91d57d6868047b71a39762d9040f94e",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        36,
+        292
+      ]
+    },
+    "weebdex-platform/scripts/ci/bootstrap-native.sh": {
+      "source_sha256_at_audit_base": "840a62d739a9c5d25170c8f10eb331c1cc41f63822ccf0edf744cae05b7a5301",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [
+        "0cdc758a56360bf58a851fe91085a327ec97685a",
+        "1c514626e83c20fffa8557e75641848e1e15cd5e",
+        "3a29a24777c82a0165de813ae696a5068b5add30",
+        "4cd3cf64850caf47dda46c2a2abbbf3525a64d10"
+      ],
+      "git_call_lines_at_audit_base": [
+        13,
+        14,
+        16,
+        20
+      ]
+    },
+    "weebdex-platform/scripts/ci/native-upload-diagnostic-owner.py": {
+      "source_sha256_at_audit_base": "37bb529c2b55d5d7172a3022b57cdde8b0fd747e541a137d637efa6ce33e1db0",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [
+        "4294b711c3b90c9ec3c507435aabdfc59e28f0c6"
+      ],
+      "git_call_lines_at_audit_base": [
+        140
+      ]
+    },
+    "weebdex-platform/scripts/ci/qualify-full-application-restore.py": {
+      "source_sha256_at_audit_base": "3ddabdbfef7c35e75d77a2db3a5d7ae609c63babc82366e776b21653a5b0d50b",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        691
+      ]
+    },
+    "weebdex-platform/scripts/ci/qualify-integrated-load-budget.py": {
+      "source_sha256_at_audit_base": "8ff6eac8201e30ecb5571268249d044b7a980b95df8a63e646895e17952c0db2",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        55
+      ]
+    },
+    "weebdex-platform/scripts/ci/qualify-real-app-capacity.py": {
+      "source_sha256_at_audit_base": "c19e235a96ba8ec9fd22daddf65eec3acaa211b7d08c004dfcafe535bc121a38",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        120
+      ]
+    },
+    "weebdex-platform/scripts/integrated_load_scenarios.py": {
+      "source_sha256_at_audit_base": "deac5165ac50bd70eb05924cc391442c7b16e4905daf363c70f7b16ca3d0af0c",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        289
+      ]
+    },
+    "weebdex-platform/test-evidence/composition/guard-editorial-20261017/preserve-composition.py": {
+      "source_sha256_at_audit_base": "4502e7667bd37bd9ba1b336f7832061377deb563179181f707d209bf29f912eb",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "0cf2b60bb08c00bb3090bbbc519c57466b74cf74",
+        "0e978d36c57d935f830650248a442fa20a923387",
+        "13ff71d093c14d5d9a0a8f437f8a681f0237978b",
+        "1f5059d48c7745c77ae2982833f0c21617a845af",
+        "31396b44e0abbb4d9fc3689545a5cd2425b8879b",
+        "729ce95873a1d5594f5629a908f9c247fc4727b6",
+        "93ff312704d2f750cbd166e9c20984f6cf7bf04d",
+        "ad6c76bf0b39cd96b432e69eb79f41280f0d48eb",
+        "b22de61e695a427fcbceac1a0ccb2741f728bd58",
+        "b4feb0b02350ac5332a59a47a308540fe9c4cdf7",
+        "b72c91d08bb105ed8f9be74002579b1fc9fa9764",
+        "b76308ad1e42650c2acbb31ba443445e0004e328",
+        "c056047d95f5d5b91c10db155cff1636e6dcd28b",
+        "c40e813a5b2e7342e1a6ac9a6eb6a32457f812c3",
+        "db5964cffda71e89a95395b1a03346b02dced04e",
+        "df4adab27bfdc6fbc5e327d5d1dd33b7186a34da",
+        "e47b33aeb371dc08f4486ca86217e52cde7e1227",
+        "ecd842cc53ed2b42a17f0fd279a8ba328d139d44",
+        "ed4935dceaa8140825bed1c5c3a6a9a32cf0a796"
+      ],
+      "git_call_lines_at_audit_base": [
+        4,
+        33,
+        34
+      ]
+    },
+    "weebdex-platform/test-evidence/deployment/mixed-read-correctness-20261018/run-owned.py": {
+      "source_sha256_at_audit_base": "9262fb9001f5317ef45614f1fd4dd79df2e9b32ab336c35b6bfd87cd448e7040",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "6c5000081092134facb8713ccea202fc37edd7b5"
+      ],
+      "git_call_lines_at_audit_base": [
+        74,
+        77
+      ]
+    },
+    "weebdex-platform/test-evidence/deployment/offline-compact-correctness-20261018/run-owned.py": {
+      "source_sha256_at_audit_base": "b72b6d952f6df7eecea57243aa84d955aebf4d3e5409c2a297ead2cf943c370f",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "be283b664f699e8c7175f6eac0200cd22e212c8a"
+      ],
+      "git_call_lines_at_audit_base": [
+        43,
+        46
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/approved-current-restore-builds-20261018/validate.py": {
+      "source_sha256_at_audit_base": "f2e72d8db0120440f3fc42a1f0083034382d1b95c72cc54203af1ebb96daefce",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        10
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/complete-discovered-physical-ci-20261018/pin-source-inputs.py": {
+      "source_sha256_at_audit_base": "9bc48c738ba90dbc87c754b78864b39e778051ee05ba2cb9d96f91fdaf11e693",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        3
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/composed-account-library-final-20261017/pin-inputs.py": {
+      "source_sha256_at_audit_base": "7148cef6773e4b9f1a05604be99f7663cfc8a96fc3ce295af76f2f78d78984e8",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        14
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/final-discovered-ci-20261018/pin-inputs.py": {
+      "source_sha256_at_audit_base": "873dbf727970c09441d2d67e04b19513b3d4e6e358d61392b40a67c27f455685",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        14
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/final-popularity-blocklist-20261018/pin-inputs.py": {
+      "source_sha256_at_audit_base": "1f37b65b5f42aec70d1878d510855014a403bfa73600d740ae6bb43086a5a189",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        14
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/final-rename-status-20261018/pin-inputs.py": {
+      "source_sha256_at_audit_base": "e0ad06b9603271275855f6c02da711c795b92aaa39a7b8f54193ff8bb2cd9fdd",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        14
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/fixture-mixed-union-postmerge-20261018/pin-inputs.py": {
+      "source_sha256_at_audit_base": "820ba6402f18eda8831ad25d956b47ad20929d587ff9a2df85d8e662b06428c1",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        3
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/integrated-final-builds-20261017/run-builds-owned.py": {
+      "source_sha256_at_audit_base": "cbfa02fa49cbbfb6436dbf7e1ae1fcb6d104e31522592c6ac44304d9428a43ed",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "56d5e20a29574b21999b0b8d4f0f470f14db2a35"
+      ],
+      "git_call_lines_at_audit_base": [
+        19,
+        31
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/library-exact-numbering-20261017/repro-at-original-workspace.mjs": {
+      "source_sha256_at_audit_base": "fbd8b56afb43b2864ede2c2bfa36c2948e005a0f03877efc8b041e6001f8811a",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        11
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/mixed-import-followon-20261018/pin-inputs.py": {
+      "source_sha256_at_audit_base": "820ba6402f18eda8831ad25d956b47ad20929d587ff9a2df85d8e662b06428c1",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        3
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/popularity-blocklist-final-builds-20261018/run-builds-owned.py": {
+      "source_sha256_at_audit_base": "385076fa9b70a7582f5049fc5d1dc163804497a3bcd8fefc6aff33995baaf99d",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9"
+      ],
+      "git_call_lines_at_audit_base": [
+        19,
+        31
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/profile-title-final-builds-20261018/run-guard.py": {
+      "source_sha256_at_audit_base": "a39a88192277b9870f06b36d7d64c549e1428b797b3e2fdde9c15c2cfaa3cee3",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "34042537b23df594a0c7923773ea4f00c6e47b9c"
+      ],
+      "git_call_lines_at_audit_base": [
+        18,
+        85,
+        97
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/public-relation-pages-20261017/commands.txt": {
+      "source_sha256_at_audit_base": "5429e31f437bd4ff2e95a882a775018af5ee25ec327a12bacb8210a9ff9ec866",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        4
+      ]
+    },
+    "weebdex-platform/test-evidence/frontend/status-rename-final-builds-20261018/run-builds-owned.py": {
+      "source_sha256_at_audit_base": "495c7247b21c3df584dea62368049c6e7bc8baa961295d05564fa080b7d71802",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "53130b47424b107d3b9d1b5ceb00959b62addaa5"
+      ],
+      "git_call_lines_at_audit_base": [
+        19,
+        31
+      ]
+    },
+    "weebdex-platform/test-evidence/native-account-profile-20261018/compile.py": {
+      "source_sha256_at_audit_base": "0ff9597914c756e026deacee49a1f772d25d9ffdbe7660ad9c7ebb36ef385b52",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "c0e82cb1032a972bc1234166518dcd979fe4868d"
+      ],
+      "git_call_lines_at_audit_base": [
+        5,
+        6,
+        10
+      ]
+    },
+    "weebdex-platform/test-evidence/native-feed-cleanup-contract-20261018/baseline-probe.py": {
+      "source_sha256_at_audit_base": "172f8952aafb627813668f17531adbcbc17241d4e913cf1b44a0fee0715c84b8",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "9feba101f8bb1bda487d1df56a5952151d9f5022"
+      ],
+      "git_call_lines_at_audit_base": [
+        5
+      ]
+    },
+    "weebdex-platform/test-evidence/native-status-combined-api-20261018/mdex-status-final-compile-20261018.py": {
+      "source_sha256_at_audit_base": "94636cce0cba88c978979f555d40601941a195b856ae112473c2213859a4bfda",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "c96ead07654d38ead63bab9e6172328b79811ec9"
+      ],
+      "git_call_lines_at_audit_base": [
+        5,
+        6,
+        9
+      ]
+    },
+    "weebdex-platform/test-evidence/operations/pg18-diagnostics-20261018/run-diagnostics-owned-03.py": {
+      "source_sha256_at_audit_base": "aa10cfabba5626bc7f2daf94a07a54000b4c09b46770e200d326f0922df7bcf3",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4"
+      ],
+      "git_call_lines_at_audit_base": [
+        39,
+        41
+      ]
+    },
+    "weebdex-platform/test-evidence/operations/pg18-diagnostics-20261018/run-setup-owned.py": {
+      "source_sha256_at_audit_base": "7ac9bf4299456fcd2b55e7dbb950bc8163c2d23bef09a2f5ca392d6c9f7f8fd9",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4"
+      ],
+      "git_call_lines_at_audit_base": [
+        54,
+        57
+      ]
+    },
+    "weebdex-platform/test-evidence/public-api/account-intent-final-20261017/final-compile-corrected-owned.py": {
+      "source_sha256_at_audit_base": "5ed9ec4d498d695f0df3087fb3dcfaabf918ecf295009c18ecbcf802d0a0957b",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        8,
+        52
+      ]
+    },
+    "weebdex-platform/test-evidence/public-api/account-intent-final-20261017/final-compile-owned.py": {
+      "source_sha256_at_audit_base": "ede1593fc724e43a88ad3416405e0e204246b01c0f88be4568c80e95a053ad70",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        8,
+        52
+      ]
+    },
+    "weebdex-platform/test-evidence/public-api/account-intent-final-20261017/final-http-corrected-owned.py": {
+      "source_sha256_at_audit_base": "722b6446c0f86f4d4c7f4c0724ee5b81316b0bb6db4946bff0e1595b926b5983",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        12
+      ]
+    },
+    "weebdex-platform/test-evidence/public-api/account-intent-final-20261017/final-http-owned.py": {
+      "source_sha256_at_audit_base": "7feb35126c13c752820fd107ea7d9c25420d520a677b51301d20debb3331c679",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        12
+      ]
+    },
+    "weebdex-platform/test-evidence/public-api/account-intent-final-20261017/final-strict-owned.py": {
+      "source_sha256_at_audit_base": "70a4510a7b66bbcfa58c15019c81ae7d3279d75bb8b2a368ecc12d318fe9f52c",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        8,
+        53
+      ]
+    },
+    "weebdex-platform/test-evidence/public-api/title-cover-independent-20261017/run-independent-owned.py": {
+      "source_sha256_at_audit_base": "1a0f31e5e239d72ea4564766f5e6ec0087418ce85350b2d0cf506e73bd71a6ad",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "407c3e0cba55458a9cc72420a5ceaf1369886a52"
+      ],
+      "git_call_lines_at_audit_base": [
+        12,
+        13
+      ]
+    },
+    "weebdex-platform/test-evidence/public-api/title-relations-independent-20261017/run-independent-owned.py": {
+      "source_sha256_at_audit_base": "e152cafef5fca114b7d0f3d0463337bf8891536da9e4f2ec63b38a18d6741280",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "aa6b4a702e3552f37360fd89af958b17efe37876"
+      ],
+      "git_call_lines_at_audit_base": [
+        12,
+        13
+      ]
+    },
+    "weebdex-platform/test-evidence/public-collection-contract-20261018/baseline-probe.mjs": {
+      "source_sha256_at_audit_base": "2ed37f039a9df3389081f0339c8f874cc73c5289dad69cd70e4c05a0fd75df7d",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "be283b664f699e8c7175f6eac0200cd22e212c8a"
+      ],
+      "git_call_lines_at_audit_base": [
+        4
+      ]
+    },
+    "weebdex-platform/test-evidence/public-popularity-client-bridge-20261018/compile.py": {
+      "source_sha256_at_audit_base": "fbef663e7940db92678f4d9a8ea068d4caabe1626d041936a6019154de0e2f99",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "f505bccdc6dfbd82bbf0bdee7a7b18ee9c360dff"
+      ],
+      "git_call_lines_at_audit_base": [
+        5,
+        6,
+        10
+      ]
+    },
+    "weebdex-platform/test-evidence/public-signed-covers-20261017/production-build/driver.py": {
+      "source_sha256_at_audit_base": "2383a79765035455bdab51905210373bf34df9b9c74f3da43ff4d86744d6b0f3",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "a7a0186b7d7d2df1766574509ea7eec30f3e28a6"
+      ],
+      "git_call_lines_at_audit_base": [
+        15,
+        19
+      ]
+    },
+    "weebdex-platform/test-evidence/public-uuid-popularity-20261018/compile.py": {
+      "source_sha256_at_audit_base": "b9d14fe89922babc61bdae1e21a566ca3e84d2d05f096e95eeba9a4d3bdded96",
+      "category": "historical-evidence-replay",
+      "literal_40_hex_identifiers": [
+        "a23ac87a945ecff3d5e7daa07d428bb41efc4820"
+      ],
+      "git_call_lines_at_audit_base": [
+        5,
+        6,
+        9
+      ]
+    },
+    "weebdex-platform/tests/ci/run_combined_qualification.py": {
+      "source_sha256_at_audit_base": "6b4a0b02115a0d3b4c15d63d977a704f11d3777065eadd8477dcea496ddc01d8",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [
+        "2d654f245d86967dd28e324d171b3fafb0528778",
+        "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+        "d6bfb53b8a9edc38e2c2e1166a0aea350b986b5f",
+        "f74bbb090aa015f440e34bef7b6e79ddb1774b1e"
+      ],
+      "git_call_lines_at_audit_base": [
+        48
+      ]
+    },
+    "weebdex-platform/tests/ci/test_composed_semantic_projection.mjs": {
+      "source_sha256_at_audit_base": "1a6315dbfd9c505b34ffcaa2a7e5d51f4c7a5c740b37d4b9929d320807a29765",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [],
+      "git_call_lines_at_audit_base": [
+        26
+      ]
+    },
+    "weebdex-platform/tests/ci/test_native_user_navigation.mjs": {
+      "source_sha256_at_audit_base": "55c405421615e7a8b496b17adb2285daa1cd94fb47ca1ef6e884232ac389a301",
+      "category": "current-qualification-or-bootstrap",
+      "literal_40_hex_identifiers": [
+        "55a55d6578d991285caaef1eff362ad2f9fc6f1c"
+      ],
+      "git_call_lines_at_audit_base": [
+        19
+      ]
+    }
+  }
+}

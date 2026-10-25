@@ -1,0 +1,86 @@
+{
+  "source-association.json": {
+    "bytes": 554,
+    "sha256": "bc63ed4b3cb82aac4f5aca3208057e1385d3a6eafd260201cff021c3050a1fe5"
+  },
+  "migration-resource-receipt.json": {
+    "bytes": 10559,
+    "sha256": "50766e920b2a2cdaa278b344583dae838d85ec66b4702d7eb769fdfcd6f80488"
+  },
+  "README.md": {
+    "bytes": 2104,
+    "sha256": "d7bcf7713722b2f53a8dbdaf73f49a7f8e4527ec5eb9b5287ec0f38a3e0f9bde"
+  },
+  "installed-before.json": {
+    "bytes": 9396,
+    "sha256": "df0f57f710c4a4a44ab993cd9beeb39509f8d38ba4050fb3e13fb6a61dff01d6"
+  },
+  "published-wheel-metadata.json": {
+    "bytes": 1064,
+    "sha256": "1cbacff4a904eb23c4f3236444bd2953b69e923a38b63cbfeecc099a1baeee74"
+  },
+  "cache-audit-manifest.json": {
+    "bytes": 694,
+    "sha256": "18bdd2b2366c19a249d5c013dc9eeffa941f1b76af89966b6bcde59cee762752"
+  },
+  "status.json": {
+    "bytes": 2493,
+    "sha256": "5c89b3ba5ff7a5d5671d2b3f18e8f8abd4773ac196b8b501f0699348d8f2a1ce"
+  },
+  "requirements-hashed.txt": {
+    "bytes": 539,
+    "sha256": "f3bc45040f787329949b5ac56ed2969f9adb4a7a2d6a0059aa53cda41eb04a56"
+  },
+  "raw-log-manifest.json": {
+    "bytes": 323,
+    "sha256": "cdd7aa64d2d13dae51c66d27349335978b3cbe4c4a787891404539e87321caa2"
+  },
+  "prior-seven-roots-current-verification.json": {
+    "bytes": 138,
+    "sha256": "c0b8830637dcc9da4ff53d9417f19a5fcc232e894b2d7825fd386342b928046d"
+  },
+  "runtime.json": {
+    "bytes": 936,
+    "sha256": "01c4010c8c321fbe8d87dd49a4a3a29de42cf5ddf550658a13599e83ea050ecf"
+  },
+  "consumer-alias.json": {
+    "bytes": 583,
+    "sha256": "abfed419dd55529a38044b5106780cdcfa51912e5977910fd4ddee9763916fca"
+  },
+  "install-approved.py": {
+    "bytes": 3757,
+    "sha256": "d7de1e4ac02d794b738c725f193290ae2d2919f8355bbd82e93cd5517b183765"
+  },
+  "install.log.gz": {
+    "bytes": 1335,
+    "sha256": "cbf23872c86cb77efcd1f9a88d413baccf954d31e24dca8dd7dc9354563d822e"
+  },
+  "installed-after.json": {
+    "bytes": 9396,
+    "sha256": "df0f57f710c4a4a44ab993cd9beeb39509f8d38ba4050fb3e13fb6a61dff01d6"
+  },
+  "install-resource-receipt.json": {
+    "bytes": 6011,
+    "sha256": "9353d168d6dbf9606671f156b960beaeab58d251fe12334c64e6311eaa3007d2"
+  },
+  "pin-installed.py": {
+    "bytes": 1123,
+    "sha256": "1a5ac20d9a3ba160fe50adc83b1130d9024d6a5560dfb94b10289f8b17aae073"
+  },
+  "run-migration.sh": {
+    "bytes": 2036,
+    "sha256": "347450e88fd1b1156f1dc627c298780113752125fa87d8ae1238acb860dde2be"
+  },
+  "migration.log.gz": {
+    "bytes": 946,
+    "sha256": "0e991364b796138734266254c068d8c5132ded11507377c170b63349e4fb2139"
+  },
+  "cache-audit/migration/15.json": {
+    "bytes": 1073,
+    "sha256": "9cf6fe1ee9dc6240d131b1f3026f6e246ff8507e089b8ef06557ce90114bc35b"
+  },
+  "cache-audit/migration/32.json": {
+    "bytes": 1073,
+    "sha256": "6592c0f911e4e55090d5d338083226304f6c603b8bdebb4610b5df14c52de364"
+  }
+}

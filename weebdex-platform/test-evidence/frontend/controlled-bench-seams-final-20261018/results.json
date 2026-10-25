@@ -1,0 +1,18 @@
+{
+  "files": {
+    "test_head_verification": 2,
+    "test_mixed": 11,
+    "test_image_shards": 18,
+    "test_diagnostic_observer": 9,
+    "test_disk_guard": 9
+  },
+  "testsRun": 49,
+  "failures": 0,
+  "errors": 2,
+  "skipped": 0,
+  "failedMethods": [
+    "test_mixed.MixedHarness.test_unique_jpeg_metadata_preserves_original_stream",
+    "test_diagnostic_observer.DiagnosticObserver.test_cli_default_plan_unchanged_and_enabled_observer_not_target_offers"
+  ],
+  "status": "failed"
+}

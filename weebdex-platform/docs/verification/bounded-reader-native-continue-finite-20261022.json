@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "status": "Passed within the three finite Node scopes only",
+  "executedSource": "9847abe90213266ea9264bd751e2c381a84703a1",
+  "results": [
+    {
+      "stage": "native_continue",
+      "executedSource": "9847abe90213266ea9264bd751e2c381a84703a1",
+      "passedCases": 82,
+      "parserControls": 12,
+      "scope": "Actual native Continue controller, canonical query, DTO and byte transport. Server selection, cookie authority and library admission are synthetic; chapter10001 is only a compact target marker.",
+      "manifestSha256": "e4297c3be598fc64819e9fe3806fc2e2f01eff60be6591ebf50560465ed803ea",
+      "associationSha256": "d4dd3740acae148c9789e21b9d163b3c361de0b16bd3439499e678688b3d71ee",
+      "logSha256": "88546d1b2083399b9e9c2322e8af027ad41d41abccc187276fc4da97f4160aba",
+      "ownerReceiptSha256": "7684436d7e9e6754456d7ecf104534f43558e210467a5cdb1d4512c59c462ee5"
+    },
+    {
+      "stage": "consumers",
+      "executedSource": "9847abe90213266ea9264bd751e2c381a84703a1",
+      "passedCases": 44,
+      "parserControls": 12,
+      "scope": "Actual composed/extracted handlers, including retained device selection and immediate chooser-context guards. Not DOM mounting.",
+      "manifestSha256": "9559c5f2bbea438fc30da66ab13986263652546ef07d66ad0a2b0de769409ea7",
+      "associationSha256": "8539b98d9a5aa0b6f75e99ad517314c53b97e41da00cdf41d619ac0fac91e034",
+      "logSha256": "d947031f3170b9fcbe89ad4db5201c9a71ce900b5ee341f6f788ac687a63ed5b",
+      "ownerReceiptSha256": "c0637f79899c43d16ab949361e47bee82443fd4c20f9369978f9e06af10bacb2"
+    },
+    {
+      "stage": "runtime_vm",
+      "executedSource": "9847abe90213266ea9264bd751e2c381a84703a1",
+      "passedCases": 20,
+      "parserControls": 12,
+      "scope": "Actual runtime/controller modules with synthetic Svelte lifecycle, router, HTTP and library/authority observations.",
+      "manifestSha256": "9559c5f2bbea438fc30da66ab13986263652546ef07d66ad0a2b0de769409ea7",
+      "associationSha256": "56a540911f9c9a47d5c070fd12878cd1f31da694c4ec1a3535141ca31b0210c2",
+      "logSha256": "43add5b2f9faca7867a7991c21206110000c00938db50d5bd07a9809b28f4688",
+      "ownerReceiptSha256": "15441abb95c14eac1f88024c4e92d6766d1f0a537af09fc2b791f1cdcc573119"
+    }
+  ],
+  "commonGates": {
+    "rawNodeExit": 0,
+    "rawOwnerExit": 0,
+    "exactSelectedCounts": true,
+    "failCancelSkipTodo": 0,
+    "positiveSourceGuard": true,
+    "sourceAndToolContinuity": true,
+    "exceptions": null,
+    "ownerPassed": true,
+    "unforcedVerifiedSettlement": true,
+    "survivorsUnknownBirthsTrackingErrors": 0,
+    "stdoutEof": true
+  },
+  "provenance": {
+    "nodeSha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+    "ownerSha256": "8f3e00cb93e93403e6d0bd926f539b849fddbee0b26791eb9d2749cb092d8470",
+    "lifecycleSha256": "ba6770dc7dbc70b61a809f631305ba8ee4765ae5fe7fe21291a3c25dac0ed196",
+    "detail": "The exact manifests retain tool/input/driver hashes and all limits. Each stage separately ran the same 12 parser controls, not 36 distinct controls. Documentation successors inherit no execution claim."
+  },
+  "retainedFailures": {
+    "nativeContinueV1": "80/82 at 8486e9f; the two controls incorrectly passed host-realm objects into a plain-record VM validator. Corrected byte/JSON-path controls preserve validation and foreign-prototype refusal. Failed association fe31c52d6f9d26c732860249b35d8c678434c4cf4122db2b8f97fb398b79ee66 remains intact.",
+    "mountedV4": "Eight assertion rows and zero semantic errors did not qualify the forced owner outcome. See bounded-reader-mounted-v4-unqualified-20261022.json. Prior failures were not deleted or reclassified."
+  },
+  "limits": "No current DOM/Svelte mount, native SQL, real cookie authority, device IndexedDB, browser, full strict check or build qualification. The mounted pre-effect chooser click, broader forum/completion regressions, whole badge-history boundedness and device automatic Continue beyond supported aggregate scope remain pending. Guarded reads are not OS-wide hermeticity."
+}

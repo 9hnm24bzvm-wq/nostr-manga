@@ -1,0 +1,357 @@
+//! RECONSTRUCTED UNVERIFIED auth/check and principal verifier base. Merge with
+//! foundation's recovered BoundAccountRead/BoundAccountWrite; do not replace it.
+use super::{PublicApiError, PublicApiResult};
+use crate::state::AppState;
+use axum::{
+    Json, Router,
+    body::to_bytes,
+    extract::{OriginalUri, Request, State},
+    http::{HeaderMap, StatusCode, header},
+    routing::get,
+};
+use manga_node::http_auth::{
+    AdmittedHttpCapability, HttpAuthError, HttpRequestPreflight, HttpService,
+};
+use serde_json::{Value, json};
+use std::time::Duration;
+pub fn router() -> Router<AppState> {
+    Router::new().route("/auth/check", get(check))
+}
+fn error(status: StatusCode, title: &'static str, detail: &'static str) -> PublicApiError {
+    PublicApiError {
+        status,
+        title,
+        detail: detail.into(),
+    }
+}
+pub(super) fn map_error(source: HttpAuthError) -> PublicApiError {
+    match source {
+        HttpAuthError::Invalid | HttpAuthError::Replay => error(
+            StatusCode::UNAUTHORIZED,
+            "Authentication required",
+            "A fresh Nostr proof bound to this exact request is required",
+        ),
+        HttpAuthError::Denied => error(
+            StatusCode::FORBIDDEN,
+            "Permission denied",
+            "The Nostr principal is not admitted on this instance",
+        ),
+        HttpAuthError::Service | HttpAuthError::Unavailable => error(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "Service unavailable",
+            "The configured Nostr authorization service is unavailable",
+        ),
+    }
+}
+pub async fn admitted_request(
+    state: &AppState,
+    uri: &axum::http::Uri,
+    headers: &HeaderMap,
+    method: &str,
+    body: &[u8],
+) -> PublicApiResult<AdmittedHttpCapability> {
+    let (service, authorization) = request_credentials(state, headers)?;
+    state
+        .protocol
+        .verify_http_request(&service, authorization, &uri.to_string(), method, body)
+        .await
+        .map_err(map_error)
+}
+fn request_credentials<'a>(
+    state: &AppState,
+    headers: &'a HeaderMap,
+) -> PublicApiResult<(HttpService, &'a str)> {
+    let mut values = headers.get_all(header::AUTHORIZATION).iter();
+    let authorization = values.next().and_then(|v| v.to_str().ok()).ok_or_else(|| {
+        error(
+            StatusCode::UNAUTHORIZED,
+            "Authentication required",
+            "Nostr request authorization is required",
+        )
+    })?;
+    if values.next().is_some() {
+        return Err(map_error(HttpAuthError::Invalid));
+    }
+    let publication = state
+        .config
+        .protocol_publication
+        .as_ref()
+        .filter(|c| c.native_node.is_some())
+        .ok_or_else(|| map_error(HttpAuthError::Service))?;
+    let service = HttpService::new(&state.config.public_origin, &publication.storage_holder)
+        .map_err(map_error)?;
+    Ok((service, authorization))
+}
+/// Header-only preflight grants no write authority and consumes no replay.
+pub async fn admitted_preflight(
+    state: &AppState,
+    uri: &axum::http::Uri,
+    headers: &HeaderMap,
+    method: &str,
+) -> PublicApiResult<HttpRequestPreflight> {
+    let (service, authorization) = request_credentials(state, headers)?;
+    state
+        .protocol
+        .preflight_http_request(&service, authorization, &uri.to_string(), method)
+        .await
+        .map_err(map_error)
+}
+/// The bounded raw-body reader owns digest/count correctness. Never hash only
+/// selected multipart fields, decoded objects, or a reserialized JSON value.
+pub async fn admitted_request_digest(
+    state: &AppState,
+    uri: &axum::http::Uri,
+    headers: &HeaderMap,
+    method: &str,
+    body_hash: [u8; 32],
+    body_empty: bool,
+) -> PublicApiResult<AdmittedHttpCapability> {
+    let (service, authorization) = request_credentials(state, headers)?;
+    state
+        .protocol
+        .verify_http_request_digest(
+            &service,
+            authorization,
+            &uri.to_string(),
+            method,
+            body_hash,
+            body_empty,
+        )
+        .await
+        .map_err(map_error)
+}
+async fn check(
+    State(state): State<AppState>,
+    OriginalUri(uri): OriginalUri,
+    headers: HeaderMap,
+    request: Request,
+) -> PublicApiResult<Json<Value>> {
+    if uri.query().is_some() {
+        return Err(PublicApiError::bad_request(
+            "This operation accepts no query parameters",
+        ));
+    }
+    let method = request.method().as_str().to_owned();
+    let body = tokio::time::timeout(Duration::from_secs(5), to_bytes(request.into_body(), 10240))
+        .await
+        .map_err(|_| PublicApiError::bad_request("Request body timeout"))?
+        .map_err(|_| PublicApiError::bad_request("Request body exceeds the operation budget"))?;
+    if !body.is_empty() {
+        return Err(PublicApiError::bad_request("GET body is not supported"));
+    }
+    let principal = admitted_request(&state, &uri, &headers, &method, &body).await?;
+    Ok(Json(
+        json!({"result":"ok","isAuthenticated":true,"roles":[],"permissions":[],"nostr":{"pubkey":hex::encode(principal.principal()),"serviceKey":hex::encode(principal.service()),"authentication":"NIP-98","requestScoped":true,"nativeSessionAuthority":false}}),
+    ))
+}
+
+/// Verified explicit native-account read policy. Private fields, no session or
+/// authentication credential. Construct only after original capability recheck.
+pub struct BoundAccountRead {
+    user_id: String,
+    username: String,
+    roles: Vec<String>,
+    permissions: Vec<String>,
+}
+impl BoundAccountRead {
+    pub fn user_id(&self) -> &str {
+        &self.user_id
+    }
+    pub fn username(&self) -> &str {
+        &self.username
+    }
+    pub fn roles(&self) -> &[String] {
+        &self.roles
+    }
+    pub fn permissions(&self) -> &[String] {
+        &self.permissions
+    }
+    pub fn is_moderator(&self) -> bool {
+        self.roles
+            .iter()
+            .any(|r| matches!(r.as_str(), "moderator" | "staff" | "sysop"))
+    }
+    pub fn has_perm(&self, permission: &str) -> bool {
+        self.permissions.iter().any(|p| p == permission)
+    }
+    pub fn require_permission(&self, permission: &str) -> PublicApiResult<()> {
+        if self.has_perm(permission) {
+            Ok(())
+        } else {
+            Err(PublicApiError::forbidden(
+                "This account cannot perform that action",
+            ))
+        }
+    }
+    pub fn require_draft_owner(&self, owner: &str) -> PublicApiResult<()> {
+        if self.user_id == owner {
+            self.require_permission("manga.create")
+        } else if self.is_moderator() {
+            self.require_permission("manga.state.update")
+        } else {
+            Err(PublicApiError::forbidden(
+                "This draft belongs to another account",
+            ))
+        }
+    }
+    pub fn draft_owner_filter(&self) -> PublicApiResult<Option<&str>> {
+        if self.is_moderator() {
+            self.require_permission("manga.state.update")?;
+            Ok(None)
+        } else {
+            self.require_permission("manga.create")?;
+            Ok(Some(self.user_id()))
+        }
+    }
+}
+/// Genuine transaction-rechecked write capability. Never constructed by
+/// deserialization, public UUID lookup, read capability promotion or fake session.
+pub(crate) struct BoundAccountWrite(BoundAccountRead);
+impl BoundAccountWrite {
+    pub(crate) fn user_id(&self) -> &str {
+        self.0.user_id()
+    }
+    pub(crate) fn username(&self) -> &str {
+        self.0.username()
+    }
+    pub(crate) fn is_moderator(&self) -> bool {
+        self.0.is_moderator()
+    }
+    pub(crate) fn has_perm(&self, permission: &str) -> bool {
+        self.0.has_perm(permission)
+    }
+    pub(crate) fn require_permission(&self, permission: &str) -> crate::error::ApiResult<()> {
+        if self.has_perm(permission) {
+            Ok(())
+        } else {
+            Err(crate::error::ApiError::forbidden(
+                "This account cannot perform that action",
+            ))
+        }
+    }
+}
+pub async fn bound_account_read(
+    tx: &tokio_postgres::Transaction<'_>,
+    capability: &AdmittedHttpCapability,
+) -> PublicApiResult<BoundAccountRead> {
+    bound_account(tx, capability, false).await
+}
+pub(crate) async fn bound_account_write(
+    tx: &tokio_postgres::Transaction<'_>,
+    capability: &AdmittedHttpCapability,
+) -> PublicApiResult<BoundAccountWrite> {
+    Ok(BoundAccountWrite(
+        bound_account(tx, capability, true).await?,
+    ))
+}
+const BOUND_ACCOUNT_WRITE_SQL: &str = "SELECT u.id,u.username,u.verified,u.roles,u.permissions,u.disabled FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 FOR SHARE OF b FOR UPDATE OF u";
+async fn bound_account(
+    tx: &tokio_postgres::Transaction<'_>,
+    capability: &AdmittedHttpCapability,
+    write: bool,
+) -> PublicApiResult<BoundAccountRead> {
+    // Shares the same transaction as the eventual draft query/mutation. The
+    // original service/admission row locks remain held until caller commit/rollback.
+    capability
+        .recheck_transaction(tx)
+        .await
+        .map_err(map_error)?;
+    let publisher = hex::encode(capability.principal());
+    // Write takes UPDATE immediately, never SHARE then upgrade. Native report
+    // creation uses the same user lock to serialize duplicate/rate checks.
+    let sql = if write {
+        BOUND_ACCOUNT_WRITE_SQL
+    } else {
+        "SELECT u.id,u.username,u.verified,u.roles,u.permissions,u.disabled FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 FOR SHARE OF b,u"
+    };
+    let row = tx.query_opt(sql, &[&publisher]).await?.ok_or_else(|| {
+        PublicApiError::forbidden("An explicit native account binding is required")
+    })?;
+    account_policy(
+        row.get(0),
+        row.get(1),
+        row.get(2),
+        row.get(3),
+        row.get(4),
+        row.get(5),
+    )
+}
+fn account_policy(
+    user_id: String,
+    username: String,
+    verified: bool,
+    roles: Value,
+    permissions: Value,
+    disabled: bool,
+) -> PublicApiResult<BoundAccountRead> {
+    let roles: Vec<String> =
+        serde_json::from_value(roles).map_err(|_| PublicApiError::unavailable())?;
+    let permissions: Vec<String> =
+        serde_json::from_value(permissions).map_err(|_| PublicApiError::unavailable())?;
+    if disabled
+        || !verified
+        || roles
+            .iter()
+            .any(|r| matches!(r.as_str(), "banned" | "restricted"))
+    {
+        return Err(PublicApiError::forbidden(
+            "This bound account is not active and verified",
+        ));
+    }
+    Ok(BoundAccountRead {
+        user_id,
+        username,
+        roles,
+        permissions,
+    })
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn bound_policy_fails_closed_and_draft_scope_is_explicit() {
+        for (verified, roles, disabled) in [
+            (false, json!(["user"]), false),
+            (true, json!(["banned", "staff"]), false),
+            (true, json!(["restricted"]), false),
+            (true, json!(["user"]), true),
+        ] {
+            assert!(
+                account_policy(
+                    "u".into(),
+                    "User".into(),
+                    verified,
+                    roles,
+                    json!(["manga.create", "manga.state.update"]),
+                    disabled
+                )
+                .is_err()
+            );
+        }
+        let owner = account_policy(
+            "owner".into(),
+            "Owner".into(),
+            true,
+            json!(["user"]),
+            json!(["manga.create"]),
+            false,
+        )
+        .unwrap();
+        assert_eq!(owner.draft_owner_filter().unwrap(), Some("owner"));
+        assert!(owner.require_draft_owner("other").is_err());
+        let moderator = account_policy(
+            "mod".into(),
+            "Mod".into(),
+            true,
+            json!(["moderator"]),
+            json!(["manga.state.update"]),
+            false,
+        )
+        .unwrap();
+        assert_eq!(moderator.draft_owner_filter().unwrap(), None);
+        assert!(moderator.require_draft_owner("other").is_ok());
+        assert!(
+            account_policy("u".into(), "User".into(), true, json!({}), json!([]), false).is_err()
+        );
+    }
+}

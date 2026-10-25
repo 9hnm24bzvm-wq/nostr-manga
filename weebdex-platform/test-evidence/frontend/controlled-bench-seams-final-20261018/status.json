@@ -1,0 +1,42 @@
+{
+  "status": "47-passed-with-two-missing-fixture-errors",
+  "originalFiles": 5,
+  "actualMethods": 49,
+  "passed": 47,
+  "assertionFailures": 0,
+  "setupErrors": [
+    "test_mixed.MixedHarness.test_unique_jpeg_metadata_preserves_original_stream",
+    "test_diagnostic_observer.DiagnosticObserver.test_cli_default_plan_unchanged_and_enabled_observer_not_target_offers"
+  ],
+  "skipped": 0,
+  "suiteElapsedSeconds": 41.206,
+  "guardElapsedSeconds": 41.755,
+  "resourceStop": null,
+  "guardError": null,
+  "ownedSurvivors": [],
+  "minimumFreeBytes": 4587868160,
+  "maximumObservedOwnedFixtureAllocatedBytes": 33579008,
+  "fixtureCapBytes": 67108864,
+  "initialAttempt": "Unqualified allocation sampler race retained separately; no acceptance or retrospective cleanup claim",
+  "missingInputs": [
+    {
+      "path": "manga-protocol-lab/server/tests/fixtures/real-images/met-57682.jpg",
+      "expectedBytes": 1227747,
+      "expectedSha256": "3ac595477a047f9fa78166a88fd2a8a0306d3d6698fca655e430b5c4e1b4603a"
+    },
+    {
+      "path": "manga-protocol-lab/results/rebuild-mixed-prep/proposed-210s-plan.json",
+      "historicalBaselineAvailable": false
+    }
+  ],
+  "actualApplicationRuntime": false,
+  "actualDatabase": false,
+  "externalNetwork": false,
+  "runtimeDifference": "aiohttp3.14.4 vs project3.13.5 unchanged; controlled synthetic HTTP only",
+  "priorPG18SkippedMethodsUnexecuted": 12,
+  "largeHistoryModulesUnexecuted": [
+    "test_compact.py",
+    "test_mixed_reads.py"
+  ],
+  "fullRepositoryOrLoadAcceptance": false
+}

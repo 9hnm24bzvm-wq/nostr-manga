@@ -1,0 +1,72 @@
+{
+  "schema": "recovered-upload-runtime-prerequisite-source-v1",
+  "parent_commit": "5db22c7821669465be460bb8df4e3a48ebed21ac",
+  "source_files": [
+    {
+      "path": "scripts/public-upload-recovery-browser.mjs",
+      "bytes": 25445,
+      "sha256": "8e503077cd0eda3c2bd7c41f274cae8f670391fdc7e69d05d8ef055a3d9e9541"
+    },
+    {
+      "path": "tests/ci/test_public_upload_recovery_journey.mjs",
+      "bytes": 14724,
+      "sha256": "e5dcbaf44668f53d6f6e986be4561ea1e703b8dc06d7263f56809fb413e152ed"
+    },
+    {
+      "path": "tests/runtime/browser_fixture.py",
+      "bytes": 106571,
+      "sha256": "4d04a5769b3651f31d58e4b0f0126262e0555664ef2931b3929c3a190ec15b1f"
+    },
+    {
+      "path": "tests/ci/test_browser_fixture_pg_root_recovery.py",
+      "bytes": 5915,
+      "sha256": "37ef788a7de85777a23cc6e931016ea3cc2368648de78735848a6d40b6658c22"
+    },
+    {
+      "path": "docs/verification/public-upload-disposable-recovery-journey.md",
+      "bytes": 5237,
+      "sha256": "93a338f72c779b7c214f2b53d78c052be00ea555fbb957429344d035b40037d5"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/journey-runtime-prerequisite-source/ui-independent-review.json",
+      "bytes": 1648,
+      "sha256": "58d6f991444c1d2faaae1eb8d9b38a1daaf71e59b266b5ca3737bf64112f2d32"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/journey-runtime-prerequisite-source/ui-36.log",
+      "bytes": 3141,
+      "sha256": "9bdaddf042a6887f62f0127cae77a6c994cbe734d1eee2367cb3cdc8c1157396"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/journey-runtime-prerequisite-source/pg-root-independent-review.json",
+      "bytes": 1406,
+      "sha256": "505556b254e68afcff8d827cb99701e9b26d771489795fc93a71e8ff026afd5d"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/journey-runtime-prerequisite-source/pg-root-7-tool-output-copy.log",
+      "bytes": 1231,
+      "sha256": "dcfaebdd1c0cb85ad91017ff1d11ec4afd7f38f0e1abf3cdacb7bb49793b21b0"
+    }
+  ],
+  "scope": [
+    "Require genuine restored metadata controls and branch-bounded current completion UI.",
+    "Full URL equality after async durable/decode/final drain, including empty query/fragment rejection.",
+    "Explicit absolute PostgreSQL tool-root override; no fake vendor tools, unchanged default/argv/lifecycle."
+  ],
+  "finite": {
+    "ui": {
+      "pass": 36,
+      "fail": 0
+    },
+    "pg_root_ast": {
+      "pass": 7,
+      "fail": 0,
+      "log_origin": "retained tool output copy, no rerun"
+    }
+  },
+  "product": "unchanged from strict/build-qualified 31f94d68",
+  "prior_sources": "ac673626/5db22c78 and their results remain immutable",
+  "runtime": "not run; still requires genuine original backend dependency and reviewed runtime closure"
+}

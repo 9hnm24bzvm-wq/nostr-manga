@@ -1,0 +1,104 @@
+{
+  "schema": "physical-guarded-production-vite-v1",
+  "profile": "default",
+  "source_commit": "34042537b23df594a0c7923773ea4f00c6e47b9c",
+  "source_tree": "b201ba3f9a64614880e4db539030f32d9c07d307",
+  "started_at_utc": "2026-10-18T05:36:13.448887+00:00",
+  "ended_at_utc": "2026-10-18T05:37:09.222952+00:00",
+  "pass": true,
+  "build": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/shared/nostr-manga-recovery-20261017/profile-title-final-build-worktree-20261018/weebdex-platform/scripts/build-frontend.mjs"
+    ],
+    "cwd": "/workspace/shared/nostr-manga-recovery-20261017/profile-title-final-build-worktree-20261018/weebdex-platform",
+    "deadline_seconds": 900,
+    "elapsed_seconds": 47.0,
+    "exit_code": 0,
+    "stop_reason": null,
+    "cleanup_verified": true,
+    "surviving_owned_process_ids": [],
+    "owned_process_births": [
+      [
+        12,
+        9518369
+      ],
+      [
+        19,
+        9518381
+      ],
+      [
+        27,
+        9518390
+      ],
+      [
+        44,
+        9518562
+      ],
+      [
+        62,
+        9520304
+      ]
+    ],
+    "cleanup_signals": [],
+    "minimum_free_bytes": 4717826048,
+    "floor_bytes": 4294967296,
+    "cleanup_reserve_bytes": 134217728,
+    "maximum_owned_rss_bytes": 2605076480,
+    "minimum_available_memory_bytes": 5410373632,
+    "identity": "verified process births and pidfd-owned descendants"
+  },
+  "css_consumer": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/workspace/shared/nostr-manga-recovery-20261017/profile-title-final-build-worktree-20261018/weebdex-platform/tests/ci/test_frontend_generated_css.mjs"
+    ],
+    "cwd": "/workspace/shared/nostr-manga-recovery-20261017/profile-title-final-build-worktree-20261018/weebdex-platform",
+    "deadline_seconds": 30,
+    "elapsed_seconds": 0.102,
+    "exit_code": 0,
+    "stop_reason": null,
+    "cleanup_verified": true,
+    "surviving_owned_process_ids": [],
+    "owned_process_births": [
+      [
+        86,
+        9523588
+      ]
+    ],
+    "cleanup_signals": [],
+    "minimum_free_bytes": 4715085824,
+    "floor_bytes": 4294967296,
+    "cleanup_reserve_bytes": 134217728,
+    "maximum_owned_rss_bytes": 262144,
+    "minimum_available_memory_bytes": 7992766464,
+    "identity": "verified process births and pidfd-owned descendants"
+  },
+  "source_unchanged": true,
+  "canonical_frontend_files": 679,
+  "product_pins_sha256": "473fe029e4b42f01e4b14846f6cdb5ca4dcd6afe91c376e36ce68f8b9de20421",
+  "physical_dependencies": {
+    "roots": 7,
+    "entries": 45438,
+    "regular_files": 40955,
+    "symlinks": 627,
+    "snapshot_sha256": "237d3eb24d76eedbc06753f045f0367519e3632a56cb11608c5f183dede297b8"
+  },
+  "cache_guard_audit_count": 4,
+  "protected_write_attempts": 0,
+  "artifact_directory": "/workspace/shared/nostr-manga-recovery-20261017/profile-title-final-builds-evidence-20261018/artifact-default",
+  "artifact_files": 449,
+  "artifact_bytes": 7266859,
+  "artifact_manifest_sha256": "68f289ccf4bb53b4a227badfa306b008fb6c3351a4e9fb10851b064f1272cfae",
+  "index_sha256": "a040196d05bd53d5ab18fc2ae09c7a93b33e2133c985f27dfbb0c68217004dbc",
+  "browser_executed": false,
+  "dependency_install_download_copy": false,
+  "qa": {
+    "node_heap_MiB": 2048,
+    "terser_workers": 1,
+    "deadline_seconds": 900,
+    "floor_bytes": 4294967296,
+    "cleanup_reserve_bytes": 134217728
+  },
+  "free_after_bytes": 4700803072
+}

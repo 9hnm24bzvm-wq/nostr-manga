@@ -1,0 +1,164 @@
+import { request } from './protocol/indexeddb.js';
+import { titleKeyBytes } from './title-order';
+export const TITLE_INDEX_LIMITS = Object.freeze({ owners: 4, records: 2000000, bytes: 256 * 1024 * 1024, totalBytes: 512 * 1024 * 1024, idleMs: 10 * 60 * 1000, storageMs: 5000, cleanupMs: 250 });
+export type TitleIndexEntry = { id: string; order: IDBValidKey[]; mangaId?: string; selection?: string };
+type Owner = { id: string; token: string; touched: number; bytes: number; count: number; lease: number };
+export class TitleIndexStopped extends Error {}
+const databaseName = 'weebdex-temporary-title-order-v1';
+const range = (id: string) => IDBKeyRange.bound([id], [id + '\0'], false, true);
+let opening = false;
+export class TitleStorageUnsettled extends TitleIndexStopped { constructor() { super('Temporary title storage cleanup is unconfirmed. Loading is stopped; rebuild after pending storage settles.'); } }
+const operations = new Map<object, { unsettled: boolean }>();
+async function storageTransaction<T>(db: IDBDatabase, mode: IDBTransactionMode, operation: (tx: IDBTransaction) => Promise<T>): Promise<T> {
+  if ([...operations.values()].some(value => value.unsettled)) throw new TitleStorageUnsettled();
+  if (operations.size >= TITLE_INDEX_LIMITS.owners) throw new TitleIndexStopped('Temporary title storage is busy. Rebuild after the previous storage work settles.');
+  const tx = db.transaction(['owners', 'keys', 'observations'], mode), owner = {}, state = { unsettled: false };
+  operations.set(owner, state);
+  let committed = false, expired = false;
+  const abort = () => { try { tx.abort(); } catch {} };
+  const terminal = new Promise<void>((resolve, reject) => {
+    tx.oncomplete = () => { committed = true; resolve(); };
+    tx.onabort = () => reject(tx.error ?? Error('Temporary title transaction aborted'));
+    tx.onerror = () => {};
+  });
+  const work = Promise.resolve().then(() => { if (expired) throw Error('Temporary title transaction expired'); return operation(tx); });
+  void work.catch(abort);
+  // Keep both observers/handlers alive through terminal settlement, including
+  // when a broken IDB implementation ignores abort or delays completion.
+  const settled = Promise.allSettled([work, terminal]).then(results => { operations.delete(owner); return results; });
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const wait = async (ms: number) => {
+    try { return await Promise.race([settled, new Promise<null>(resolve => { timer = setTimeout(() => resolve(null), ms); })]); }
+    finally { if (timer !== undefined) clearTimeout(timer); }
+  };
+  let results = await wait(TITLE_INDEX_LIMITS.storageMs);
+  if (!results) { expired = true; abort(); results = await wait(TITLE_INDEX_LIMITS.cleanupMs); }
+  if (!results) { state.unsettled = true; throw new TitleStorageUnsettled(); }
+  if (results[0].status === 'rejected') throw results[0].reason;
+  if (results[1].status === 'rejected') throw results[1].reason;
+  if (!committed) throw new TitleStorageUnsettled();
+  return results[0].value;
+}
+async function open(): Promise<IDBDatabase> {
+  if (opening) throw new TitleIndexStopped('A previous title index opening has not settled. Reopen after storage settles.');
+  opening = true;
+  return new Promise((resolve, reject) => {
+    let expired = false;
+    let query: IDBOpenDBRequest;
+    try { query = indexedDB.open(databaseName, 2); } catch (error) { opening = false; reject(error); return; }
+    const timer = setTimeout(() => { expired = true; try { query.transaction?.abort(); } catch {} reject(new TitleIndexStopped('Temporary title storage did not open in time. Reopen after storage settles.')); }, TITLE_INDEX_LIMITS.storageMs);
+    query.onupgradeneeded = () => {
+      const db = query.result;
+      if (!db.objectStoreNames.contains('observations')) db.createObjectStore('observations', { keyPath: ['owner', 'id'] });
+      if (!db.objectStoreNames.contains('owners')) db.createObjectStore('owners', { keyPath: 'id' });
+      const keys = db.objectStoreNames.contains('keys') ? query.transaction!.objectStore('keys') : db.createObjectStore('keys', { keyPath: ['owner', 'order'] });
+      // A moved comparison key must not admit the same chapter twice.
+      if (!keys.indexNames.contains('identity')) keys.createIndex('identity', ['owner', 'id'], { unique: true });
+      if (expired) query.transaction?.abort();
+    };
+    // Blocked opens stay owned until the actual request settles. The deadline
+    // reports refusal; it does not falsely release the outstanding open owner.
+    query.onblocked = () => {};
+    query.onerror = () => { opening = false; clearTimeout(timer); reject(query.error); };
+    query.onsuccess = () => { opening = false; clearTimeout(timer); query.result.onversionchange = () => query.result.close(); if (expired) query.result.close(); else resolve(query.result); };
+  });
+}
+// One scratch DB, private unpredictable owner IDs, no library-store mutation.
+// Idle owners can be reclaimed by a later open. Expired active UIs must rebuild.
+export class TitleIndex {
+  private disposed = false;
+  private disposal?: Promise<void>;
+  private constructor(private db: IDBDatabase, private owner: Owner, private check: () => void) {}
+  static async create(check: () => void): Promise<TitleIndex> {
+    check(); const db = await open().catch(error => { throw error instanceof TitleIndexStopped ? error : new TitleIndexStopped('Temporary title storage could not open. The saved library is unchanged. Rebuild after storage is available.'); });
+    let owner: Owner | undefined;
+    try {
+      check();
+      owner = { id: crypto.randomUUID(), token: crypto.randomUUID(), touched: Date.now(), bytes: 0, count: 0, lease: 0 };
+      await storageTransaction(db, 'readwrite', async tx => {
+        if (!owner) throw Error('Missing title index owner');
+        const owners = tx.objectStore('owners'), rows = await request(owners.getAll()) as Owner[];
+        check(); let remaining = rows.length;
+        for (const row of rows) if (owner.touched - row.touched > TITLE_INDEX_LIMITS.idleMs) {
+          // Read and CAS deletion share this serialized readwrite transaction:
+          // an already renewed lease can never be removed by a stale snapshot.
+          const current = await request(owners.get(row.id)) as Owner | undefined;
+          if (current?.token === row.token && current.lease === row.lease && current.touched === row.touched) { tx.objectStore('keys').delete(range(row.id)); tx.objectStore('observations').delete(range(row.id)); owners.delete(row.id); remaining--; }
+        }
+        if (remaining >= TITLE_INDEX_LIMITS.owners) throw new TitleIndexStopped('Too many temporary title indexes are open. Close another library view or wait for an idle index to expire.');
+        owners.add(owner);
+      });
+      check(); return new TitleIndex(db, owner, check);
+    } catch (error) {
+      if (owner) {
+        try { await new TitleIndex(db, owner, () => {}).dispose(); } catch (cleanup) { if (cleanup instanceof TitleStorageUnsettled) throw cleanup; }
+      } else db.close();
+      throw error instanceof TitleIndexStopped ? error : new TitleIndexStopped('Temporary title storage failed. The saved library is unchanged. Rebuild after storage is available.');
+    }
+  }
+  private async run<T>(mode: IDBTransactionMode, operation: (tx: IDBTransaction, owner: Owner) => Promise<T>): Promise<T> {
+    if (this.disposed) throw new TitleIndexStopped('This temporary title index was closed. Rebuild the library view.');
+    this.check();
+    try { const value = await storageTransaction(this.db, mode, async tx => {
+        const owner = await request(tx.objectStore('owners').get(this.owner.id)) as Owner | undefined;
+        this.check();
+        if (!owner || owner.token !== this.owner.token) throw new TitleIndexStopped('This temporary title index expired. Rebuild the library view.');
+        const value = await operation(tx, owner); this.check(); return value;
+    }); this.check(); return value; } catch (error) {
+      this.check();
+      if (error instanceof TitleIndexStopped) throw error;
+      throw new TitleIndexStopped('Temporary title storage failed. The saved library is unchanged. Rebuild after storage is available.');
+    }
+  }
+  async append(entries: TitleIndexEntry[], observedIds: string[] = []) {
+    if (observedIds.length > 100 || observedIds.some(id => typeof id !== 'string' || !id.length || id.length > 64)) throw Error('Invalid bounded observed chapter identities');
+    if (entries.length > 100) throw Error('Title index writes require at most 100 keys');
+    for (const entry of entries) if (entry.mangaId !== undefined && (typeof entry.mangaId !== 'string' || !entry.mangaId.length || entry.mangaId.length > 64)) throw Error('Invalid update parent identity');
+    for (const entry of entries) if (entry.selection !== undefined && (typeof entry.selection !== 'string' || entry.selection.length > 256)) throw Error('Invalid update selection fingerprint');
+    const observedBytes = observedIds.reduce((sum, id) => sum + 128 + id.length * 2, 0);
+    const bytes = observedBytes + entries.reduce((sum, entry) => sum + titleKeyBytes(entry.order) + ((entry.mangaId?.length ?? 0) + (entry.selection?.length ?? 0)) * 2, 0);
+    await this.run('readwrite', async (tx, owner) => {
+      const owners = tx.objectStore('owners'), all = await request(owners.getAll()) as Owner[];
+      if (owner.count + entries.length + observedIds.length > TITLE_INDEX_LIMITS.records || owner.bytes + bytes > TITLE_INDEX_LIMITS.bytes || all.reduce((sum, item) => sum + item.bytes, bytes) > TITLE_INDEX_LIMITS.totalBytes) throw new TitleIndexStopped('The exact title index reached its storage budget. No saved titles were removed or silently omitted. Narrow the library filter and rebuild.');
+      this.check();
+      for (const id of observedIds) tx.objectStore('observations').add({ owner: owner.id, id });
+      for (const entry of entries) tx.objectStore('keys').add({ owner: owner.id, ...entry });
+      owners.put({ ...owner, touched: Date.now(), lease: owner.lease + 1, bytes: owner.bytes + bytes, count: owner.count + entries.length + observedIds.length });
+    });
+  }
+  async page(offset: number, limit: number): Promise<TitleIndexEntry[]> {
+    if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isInteger(limit) || limit < 1 || limit > 100) throw Error('Invalid title index page');
+    return this.run('readwrite', async (tx, owner) => {
+      const result: TitleIndexEntry[] = [];
+      const cursor = tx.objectStore('keys').openCursor(range(owner.id)); let skipped = false;
+      await new Promise<void>((resolve, reject) => {
+        cursor.onerror = () => reject(cursor.error);
+        cursor.onsuccess = () => {
+          try {
+            this.check(); const row = cursor.result;
+            if (!row || result.length === limit) return resolve();
+            if (!skipped && offset) { skipped = true; row.advance(offset); return; }
+            if (row.value.mangaId !== undefined && (typeof row.value.mangaId !== 'string' || !row.value.mangaId.length || row.value.mangaId.length > 64)) throw new TitleIndexStopped('Invalid temporary update parent identity');
+            if (row.value.selection !== undefined && (typeof row.value.selection !== 'string' || row.value.selection.length > 256)) throw new TitleIndexStopped('Invalid temporary update selection fingerprint');
+            result.push({ id: row.value.id, order: row.value.order, ...(row.value.mangaId !== undefined ? { mangaId: row.value.mangaId } : {}), ...(row.value.selection !== undefined ? { selection: row.value.selection } : {}) });
+            if (result.length === limit) resolve(); else row.continue();
+          } catch (error) { reject(error); }
+        };
+      });
+      tx.objectStore('owners').put({ ...owner, touched: Date.now(), lease: owner.lease + 1 }); return result;
+    });
+  }
+  dispose(): Promise<void> {
+    if (this.disposal) return this.disposal;
+    this.disposed = true;
+    return this.disposal = (async () => {
+      try {
+        await storageTransaction(this.db, 'readwrite', async tx => {
+          const saved = await request(tx.objectStore('owners').get(this.owner.id)) as Owner | undefined;
+          // A delayed old owner cannot delete another tab's replacement index.
+          if (saved?.token === this.owner.token) { tx.objectStore('keys').delete(range(this.owner.id)); tx.objectStore('observations').delete(range(this.owner.id)); tx.objectStore('owners').delete(this.owner.id); }
+        });
+      } finally { this.db.close(); }
+    })();
+  }
+}

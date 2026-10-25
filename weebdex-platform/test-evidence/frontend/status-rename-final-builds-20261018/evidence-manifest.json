@@ -1,0 +1,116 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1252,
+      "sha256": "35fc015c99e0d51557b949e9d353a6ddd9b4363e8bf697318833faa5c46e53a2"
+    },
+    {
+      "path": "canonical-before.json",
+      "bytes": 95375,
+      "sha256": "af37b108d0c4b4fbd57bd47c97fd40a853711c8a9fdba5c3a1f7eea8c347eaa5"
+    },
+    {
+      "path": "default/artifact-files.json",
+      "bytes": 83419,
+      "sha256": "e0a8821036723395dfdddc0f55cc10f2fd1751a20444b037e769bf561c4839e9"
+    },
+    {
+      "path": "default/build-integration.json",
+      "bytes": 245782,
+      "sha256": "06c9d8ac7ef95f0174938f3c69a79a97ee962cddd7892da6521bd3ed028b8e21"
+    },
+    {
+      "path": "default/build.log.gz",
+      "bytes": 10832,
+      "sha256": "f7b9d6bd89443a68c483cf36444352a779f70c7061c55b94c6eff146b997584b"
+    },
+    {
+      "path": "default/integration-source-manifest.json",
+      "bytes": 547543,
+      "sha256": "ebe6592225ec755ed23aae7d6a1885365bc7230b6e23969e09c404166476b866"
+    },
+    {
+      "path": "default/owned.json",
+      "bytes": 1082,
+      "sha256": "59a486ffe42209fba412f89b664a570a1ae0dd98f1a9d253657f34c2e5611497"
+    },
+    {
+      "path": "default/result.json",
+      "bytes": 3177,
+      "sha256": "24ab418f6e64c0d21dc4ecfa6f2f517233ea31e513d641f5c6faf9bb073c78b5"
+    },
+    {
+      "path": "dependencies-before.json.gz",
+      "bytes": 1733168,
+      "sha256": "7bac981617075a9e9dd5ff8aae206d7caf311c2b75f5dace56bf0668e0d67f91"
+    },
+    {
+      "path": "enabled/artifact-files.json",
+      "bytes": 83198,
+      "sha256": "e51769e81f13df5e2cd4e8c43c6a825a1471c18c3e98f957acb4e552c5af31d4"
+    },
+    {
+      "path": "enabled/build-integration.json",
+      "bytes": 267856,
+      "sha256": "84885fb285986cc4b5d4dc3884edf31b708e9947d23b2393f9d8c977862c078c"
+    },
+    {
+      "path": "enabled/build.log.gz",
+      "bytes": 10187,
+      "sha256": "8724c302286987209c1d0e0560c5c1cb4103eddf34b7b3e65c5ff448eecccb5f"
+    },
+    {
+      "path": "enabled/integration-source-manifest.json",
+      "bytes": 606741,
+      "sha256": "70062ee924c05578ee4a76e8bd8e54c7df2f5efaff13651d07cf6bcc012808fc"
+    },
+    {
+      "path": "enabled/owned.json",
+      "bytes": 1085,
+      "sha256": "89f3b61581c010345e5caf15d8d7f04355d440e84f35ad0278b801c8fab03cf9"
+    },
+    {
+      "path": "enabled/result.json",
+      "bytes": 3180,
+      "sha256": "6c9177f119860db3fdd47dc42da36623faae5b40209f061f5cca96bd13276a5e"
+    },
+    {
+      "path": "frontend-inputs-before.json",
+      "bytes": 128825,
+      "sha256": "e6db8e4a2b91dad84771a2447b31593366cd2ee93f4008d15b55c0a790dba23e"
+    },
+    {
+      "path": "result.json",
+      "bytes": 7571,
+      "sha256": "3cb4ad49a67ce1449f9353584d1d7912d512701f3f0c2a5aa493efdd156825f2"
+    },
+    {
+      "path": "run-builds-owned.py",
+      "bytes": 9984,
+      "sha256": "495c7247b21c3df584dea62368049c6e7bc8baa961295d05564fa080b7d71802"
+    },
+    {
+      "path": "setup.json",
+      "bytes": 884,
+      "sha256": "8210fcac6625e89d4c4c04400d7f5920c9693ea1314891a167677a3c60a59ec3"
+    },
+    {
+      "path": "source-after.json",
+      "bytes": 174141,
+      "sha256": "82860d2237cc332f9ab7f9f3eb4235e12acec93f715d261a131e8f1f0ffbf994"
+    },
+    {
+      "path": "source-before.json",
+      "bytes": 174141,
+      "sha256": "82860d2237cc332f9ab7f9f3eb4235e12acec93f715d261a131e8f1f0ffbf994"
+    },
+    {
+      "path": "strict-build-association.json",
+      "bytes": 1447,
+      "sha256": "cbc817f0ef2b612649ef875418d860f7027ba243219b919a7edeef8a4c11c86a"
+    }
+  ],
+  "fileCount": 22,
+  "manifestExcludesItself": true
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "independent-replacement-preview-reconcile-finite-result-v1",
+  "reviewed_at_utc": "2026-10-17T06:34:19.895059+00:00",
+  "decision": "56_exact_source_data_fake_cases_passed",
+  "review_sha256": "cdacfa0412975aa8b2e73593744b7538c22533ce4dc1596009be14bc3149650a",
+  "log_sha256": "c1bde7299172d043a422d1312175c5aa05df3dc3ff2d7ba55a7412661a35556a",
+  "source_sha256": {
+    "platform-integrations/public-api/upload-anchors.json": "72ae63f73c7cb2940e8e4048b385de7720de3fe5bb9bab26a0810c9f46577455",
+    "tests/ci/test_public_upload_overlay_recovery.mjs": "ee707d85187bb5b6871ca8a4af1b3c2ca530ca1e8bb672293a9815cbc1f98c5a",
+    "tests/ci/test_public_upload_replacement_preview_recovery.mjs": "7f29de29ebfd1df7ed10851045b72a5033b53ca21e0f11a8c24d716eab9843e6",
+    "tests/ci/test_public_upload_provenance_recovery.mjs": "8a4905df4bb6aba5ee35dc85ed398f2155c9b04a18749eb06611b9330efcf98b",
+    "tests/ci/test_public_upload_build_recovery.mjs": "f2605441c3a5ba851aa2cba4a02befa3fdd78787fcf1c56e2a40d72171439ee5",
+    "platform-integrations/public-api/upload-preview.ts": "4c03295c0e666b7b3520d73dd8ddfa5d79d4eb45aef627040a196e22cffb33d8",
+    "platform-integrations/public-api/upload-overlays.mjs": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
+    "scripts/composed-upload-provenance.mjs": "1bd941913fd4f4d80784057ea7d531d73b9fb60e1a3abdce2e4b324971b09e00"
+  },
+  "cases": 56,
+  "passed": 56,
+  "failed": 0,
+  "owner_reported_exit": 0,
+  "limits": [
+    "No actual Svelte/browser or DB result from this suite.",
+    "Old source counterexample remains retained; corrected exact source still needs strict/build association.",
+    "No finite suite rerun by reviewer."
+  ]
+}

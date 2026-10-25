@@ -1,0 +1,21 @@
+{
+  "schema": "recovered-upload-independent-compile-review-v1",
+  "receipt_sha256": "0abfd6103f4e10d8e2a5f4f04b7862df24d7d9f3bac8e99a0e43ae8ec1ecfd33",
+  "log_sha256": "bdd4a77dae68c8318897233976daad50b7de4474b73ae1c01bc87a40b7c42a52",
+  "source_review_sha256": "d425677971cab6a8705e5b8be3880e1157b05b9d275dbca14b26020e8c8d33c1",
+  "verified_source_and_lock_files": 308,
+  "command": [
+    "/workspace/shared/nostr-manga-recovery-20261017/toolchains/rustup/toolchains/1.90.0-x86_64-unknown-linux-gnu/bin/cargo",
+    "check",
+    "--locked",
+    "--manifest-path",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/Cargo.toml",
+    "--lib",
+    "--test",
+    "public_uploads",
+    "-j2"
+  ],
+  "exit_code": 0,
+  "current_source_matches": true,
+  "scope": "Compile-only cargo check for library and public_uploads integration target. No database, HTTP fixture, cryptographic flow or browser test execution is established."
+}

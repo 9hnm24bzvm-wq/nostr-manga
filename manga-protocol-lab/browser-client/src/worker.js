@@ -1,6 +1,8 @@
 import { LocalLibrary } from "./store.js";
 import { buildGraph } from "./codec.js";
-self.onmessage = async ({ data }) => {
+self.onmessage = async (
+  /** @type {MessageEvent<{ database?: string }>} */ { data },
+) => {
   let store;
   try {
     store = await LocalLibrary.open(data.database);
@@ -8,10 +10,13 @@ self.onmessage = async ({ data }) => {
     const graph = buildGraph(snapshot.records);
     self.postMessage(
       { revision: snapshot.revision, graph },
-      graph.objects.map((o) => o.data.buffer),
+      { transfer: graph.objects.map((o) => o.data.buffer) },
     );
   } catch (error) {
-    self.postMessage({ error: error.message });
+    self.postMessage({
+      error:
+        error instanceof Error ? error.message : "Snapshot preparation failed",
+    });
   } finally {
     store?.close();
   }

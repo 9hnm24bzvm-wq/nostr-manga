@@ -31,7 +31,7 @@ async fn manga_view(
     peer: Option<Extension<ClientPeer>>,
     Path(id): Path<String>,
 ) -> ApiResult<Response> {
-    view(&s, &h, peer.map(|p| p.0), "manga", &id).await
+    record_view(&s, &h, peer.map(|p| p.0), "manga", &id, "/api/analytics").await
 }
 async fn chapter_view(
     State(s): State<AppState>,
@@ -39,7 +39,7 @@ async fn chapter_view(
     peer: Option<Extension<ClientPeer>>,
     Path(id): Path<String>,
 ) -> ApiResult<Response> {
-    view(&s, &h, peer.map(|p| p.0), "chapter", &id).await
+    record_view(&s, &h, peer.map(|p| p.0), "chapter", &id, "/api/analytics").await
 }
 fn visitor_cookie(h: &HeaderMap) -> Option<String> {
     let mut cookies = h
@@ -58,12 +58,15 @@ fn visitor_cookie(h: &HeaderMap) -> Option<String> {
         None
     }
 }
-async fn view(
+/// One actual deduplication/rate/visibility transaction shared by both native
+/// and public UUID transports. The visitor cookie is not account authority.
+pub(crate) async fn record_view(
     s: &AppState,
     h: &HeaderMap,
     peer: Option<ClientPeer>,
     kind: &str,
     id: &str,
+    cookie_path: &'static str,
 ) -> ApiResult<Response> {
     v::id(id)?;
     // Cross-site analytics submissions are refused; genuine navigations on the configured app remain public.
@@ -101,9 +104,9 @@ async fn view(
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
     let target = if kind == "manga" {
-        "SELECT id FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND state='published' AND platform.protocol_source_is_visible(protocol_series_id) FOR SHARE"
+        "SELECT id FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND state='published' AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FOR SHARE"
     } else {
-        "SELECT c.id FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND NOT c.is_unavailable AND m.deleted_at IS NULL AND m.state='published' AND platform.protocol_source_is_visible(m.protocol_series_id) FOR SHARE OF c,m"
+        "SELECT c.id FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.deleted_at IS NULL AND platform.protocol_source_is_visible(c.protocol_event_id) AND NOT c.is_unavailable AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(m.protocol_series_id) FOR SHARE OF c,m"
     };
     if tx.query_opt(target, &[&id]).await?.is_none() {
         return Err(ApiError::not_found("View target not found"));
@@ -131,7 +134,7 @@ async fn view(
         } else {
             ""
         };
-        let value=format!("weebdex_visitor={visitor}; Path=/api/analytics; HttpOnly; SameSite=Lax; Max-Age=31536000{secure}").parse().map_err(|_|ApiError::unavailable())?;
+        let value=format!("weebdex_visitor={visitor}; Path={cookie_path}; HttpOnly; SameSite=Lax; Max-Age=31536000{secure}").parse().map_err(|_|ApiError::unavailable())?;
         response.headers_mut().insert(header::SET_COOKIE, value);
     }
     Ok(response)

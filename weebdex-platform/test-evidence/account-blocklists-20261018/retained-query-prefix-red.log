@@ -1,0 +1,26 @@
+(node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✖ actual retained layout prefix override preserves one delimiter for saved-ID hydration and both typed searches (5.150215ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.602611
+
+✖ failing tests:
+
+test at tests/ci/test_account_blocklists_client.mjs:29:1
+✖ actual retained layout prefix override preserves one delimiter for saved-ID hydration and both typed searches (5.150215ms)
+  Error [PublicApiContractError]: Invalid account reference collection
+      at fail (blocklist-client:9:11)
+      at lookup (blocklist-client:74:287)
+      at async Object.reload (blocklist-client:110:41)
+      at async TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/account-blocklists-worktree-20261018/weebdex-platform/tests/ci/test_account_blocklists_client.mjs:29:556)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    status: 502
+  }

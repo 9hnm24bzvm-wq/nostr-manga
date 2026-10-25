@@ -1,0 +1,157 @@
+{
+  "schema": "retained-qualification-counterfactuals-v1",
+  "entries": {
+    "WEEBDEX_KEY_IMPORT_DRIVER_BASELINE_SOURCE": {
+      "commit": "d6bfb53b8a9edc38e2c2e1166a0aea350b986b5f",
+      "path": "weebdex-platform/scripts/public-upload-key-import.mjs",
+      "git_blob": "b225c3ac4b2801e57cb64197a0181af142915fbd",
+      "bytes": 5859,
+      "sha256": "2607cbd87ea2969cb030ea068e342045427f68483a3338be3039977c3faff84e",
+      "file": "sources/WEEBDEX_KEY_IMPORT_DRIVER_BASELINE_SOURCE/public-upload-key-import.mjs.txt"
+    },
+    "WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE": {
+      "commit": "aca99b513a8af6bdae1bc9ec6a3b91e4cce8b099",
+      "path": "weebdex-platform/scripts/public-upload-key-import.mjs",
+      "git_blob": "8d1358193165c055df399214b6cd96dd3849c5f4",
+      "bytes": 6284,
+      "sha256": "d0db904c9961e41e66e708ddf9d8672073d90b965dbe81c1a930f8d9808a694b",
+      "file": "sources/WEEBDEX_KEY_IMPORT_LEDGER_BASELINE_SOURCE/public-upload-key-import.mjs.txt"
+    },
+    "WEEBDEX_PUBLIC_UPLOAD_BASELINE_SOURCE": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "git_blob": "25666394619b50f56eed3494c7d88600bc9904ca",
+      "bytes": 30420,
+      "sha256": "20346189278b318c55aa08a41c60ff6ce0da639746341cae8de1439bf8d439cb",
+      "file": "sources/WEEBDEX_PUBLIC_UPLOAD_BASELINE_SOURCE/public-upload-recovery-browser.mjs.txt"
+    },
+    "WEEBDEX_UPLOAD_GROUP_BASELINE_SOURCE": {
+      "commit": "2d654f245d86967dd28e324d171b3fafb0528778",
+      "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "git_blob": "49bb82367b90849925be08c91d24ec6bcb66886c",
+      "bytes": 28944,
+      "sha256": "f32c89481ee6cfedddcda1ee1b1a692dbeb89a2e74d209ce06597b99f16146f1",
+      "file": "sources/WEEBDEX_UPLOAD_GROUP_BASELINE_SOURCE/public-upload-recovery-browser.mjs.txt"
+    },
+    "WEEBDEX_UPLOAD_OBSERVER_BASELINE_SOURCE": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/scripts/public-upload-recovery-observer.mjs",
+      "git_blob": "2c8d094f24e65d3fb9a2eb9d6c6dd1d858159a43",
+      "bytes": 7967,
+      "sha256": "2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71",
+      "file": "sources/WEEBDEX_UPLOAD_OBSERVER_BASELINE_SOURCE/public-upload-recovery-observer.mjs.txt"
+    },
+    "WEEBDEX_UPLOAD_REFUSAL_BASELINE_SOURCE": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/public-api/nostr-upload-request.ts",
+      "git_blob": "d7e116e1204758c71d5baa509fb806e89ae81667",
+      "bytes": 15087,
+      "sha256": "9418845c867fd7fd0706756197900221e3cd73cd87a48133d5ed3ff6ef0d3056",
+      "file": "sources/WEEBDEX_UPLOAD_REFUSAL_BASELINE_SOURCE/nostr-upload-request.ts.txt"
+    },
+    "WEEBDEX_UPLOAD_SECOND_BEGIN_BASELINE_SOURCE": {
+      "commit": "f74bbb090aa015f440e34bef7b6e79ddb1774b1e",
+      "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+      "git_blob": "495447a2320dcb48ee37f59d8aa62e803ace1a91",
+      "bytes": 32934,
+      "sha256": "808d27e183168c5b53f2e37317789b79d21601b75eb515c53d68824766605307",
+      "file": "sources/WEEBDEX_UPLOAD_SECOND_BEGIN_BASELINE_SOURCE/public-upload-recovery-browser.mjs.txt"
+    },
+    "device-restore/platform-integrations/local-library/LocalLibraryPanel.svelte": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/local-library/LocalLibraryPanel.svelte",
+      "git_blob": "571fdf8a8150fd748a5f7ece278c2bcd36b0d3d2",
+      "bytes": 9208,
+      "sha256": "61216a341f11ad5c2ea854e014a9c704c82eb39ff121ceb9e51062cd96945877",
+      "file": "device-restore/platform-integrations/local-library/LocalLibraryPanel.svelte.txt"
+    },
+    "device-restore/platform-integrations/local-library/device-list-name.ts": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/local-library/device-list-name.ts",
+      "git_blob": "f6da0e98a2a780c7526f7a7cadf85cc296ac2c8d",
+      "bytes": 3445,
+      "sha256": "9957bf7898a000738ad6d9c97a05b00b3e30914d9f54b01001b1fd6fbfb80fb1",
+      "file": "device-restore/platform-integrations/local-library/device-list-name.ts.txt"
+    },
+    "device-restore/platform-integrations/local-library/device-store.ts": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/local-library/device-store.ts",
+      "git_blob": "dbb7304884a16c1b5cd1bac705a777dbc9485d20",
+      "bytes": 19725,
+      "sha256": "4b9f9ab7eb4d01dd1c903cfae86168fb2c81cf391d1731a9bbaf2217e2a1d210",
+      "file": "device-restore/platform-integrations/local-library/device-store.ts.txt"
+    },
+    "device-restore/platform-integrations/local-library/library.ts": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/local-library/library.ts",
+      "git_blob": "29fdccbc84f600dc6902be7d4e522637eb42c895",
+      "bytes": 33365,
+      "sha256": "2c093421cbeeb368b681f09cd1ae7cb3319316979e4c3304ab3de8fabbd23c76",
+      "file": "device-restore/platform-integrations/local-library/library.ts.txt"
+    },
+    "device-restore/platform-integrations/local-library/protocol/codec.js": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/local-library/protocol/codec.js",
+      "git_blob": "e737d87c845ebd01863ab6124eba245f564e704c",
+      "bytes": 16914,
+      "sha256": "b899dc54a81099038cbed3ccbec7eaa2ddef38c7cf5cee4a2355d5a31f04a9c5",
+      "file": "device-restore/platform-integrations/local-library/protocol/codec.js.txt"
+    },
+    "device-restore/platform-integrations/local-library/protocol/limits.js": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/local-library/protocol/limits.js",
+      "git_blob": "4ef1df73cefbb74c5863c733902d8397626c0767",
+      "bytes": 184,
+      "sha256": "c23e71d1e01380f25f450963bd531d38c817196a2decc748d7256e10f5c8e540",
+      "file": "device-restore/platform-integrations/local-library/protocol/limits.js.txt"
+    },
+    "device-restore/platform-integrations/public-api/device-id-migration.ts": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/public-api/device-id-migration.ts",
+      "git_blob": "7e62342bb651bdfa09df85309f2a9df281f99852",
+      "bytes": 23733,
+      "sha256": "df44157598490637bae67c921e79ac1b02570f11c5582067468c0c8327312d5d",
+      "file": "device-restore/platform-integrations/public-api/device-id-migration.ts.txt"
+    },
+    "device-restore/platform-integrations/public-api/device-id-state.ts": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/public-api/device-id-state.ts",
+      "git_blob": "b9b5547b4d55679962dfe11be099de3f11ffd521",
+      "bytes": 13896,
+      "sha256": "fcfe071a89174f33f684cfb2790d8d2f709a3ed12eb3a158d2980c387b55441b",
+      "file": "device-restore/platform-integrations/public-api/device-id-state.ts.txt"
+    },
+    "device-restore/platform-integrations/public-api/device-write-v2.ts": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/public-api/device-write-v2.ts",
+      "git_blob": "046c68d64fdcd2b1609e7e35c0716a349fbe3cda",
+      "bytes": 7768,
+      "sha256": "1ad5c60c4fabe332e3a4220ed7e5f7b7c3a8fe488675beba3c76c883da544eef",
+      "file": "device-restore/platform-integrations/public-api/device-write-v2.ts.txt"
+    },
+    "device-restore/platform-integrations/public-api/library-staging.ts": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/public-api/library-staging.ts",
+      "git_blob": "851623f9d021478cc8a3552b726afc4f1bc1dba0",
+      "bytes": 926,
+      "sha256": "b9418ece73a23f64580aa017013397a74a440f9d315070e70b9ffbe6bd810169",
+      "file": "device-restore/platform-integrations/public-api/library-staging.ts.txt"
+    },
+    "device-restore/platform-integrations/public-api/validation.ts": {
+      "commit": "862bbc8b6f48bcfdfe2f0a8319e3a2fb80b7f557",
+      "path": "weebdex-platform/platform-integrations/public-api/validation.ts",
+      "git_blob": "3a22b7f3c091b33ad11f82abf65adede3c7c1505",
+      "bytes": 2001,
+      "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+      "file": "device-restore/platform-integrations/public-api/validation.ts.txt"
+    },
+    "native-user-site-client": {
+      "commit": "55a55d6578d991285caaef1eff362ad2f9fc6f1c",
+      "path": "weebdex-platform/platform-integrations/public-api/site-client.ts",
+      "git_blob": "ae611a9a48c5191070bfbea2fe15d4b378b8d4c6",
+      "bytes": 18831,
+      "sha256": "cd6379824dfa6218c5b5b373a36be80129f611bb235f81225bc62aab6f67ed00",
+      "file": "sources/native-user-site-client/site-client.ts.txt"
+    }
+  }
+}

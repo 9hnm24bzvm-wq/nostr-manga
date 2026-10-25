@@ -1,0 +1,13 @@
+{
+  "command": "node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+  "existingNodeFileModified": true,
+  "failed": 0,
+  "lifecycleCasesRerun": 0,
+  "newCases": 1,
+  "oldExactEightCaseEvidencePreserved": true,
+  "passed": 12,
+  "sourceCommit": "4351752c3188aea9199383aa27b865e193f58ea7",
+  "templateSha256": "0371f6c818782c4bc0fcd3ce23adaf08731f5dd6d8e3bc8f3c4d7f5b4be86304",
+  "testSha256": "1dd590c4c20aa71174bcaa4bfa523479bca1d3433e91bb03995af66046053bf1",
+  "unaffectedSupervisorSourceSha256": "7e633f75995a78b2e01d54d078a1e5369007544d42e0d6a2fc2c84808c6e25aa"
+}

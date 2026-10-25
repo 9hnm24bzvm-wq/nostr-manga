@@ -1,0 +1,17 @@
+{
+  "weebdex-platform/platform-integrations/public-api/AccountFollowing.svelte": "0303013326bdba28095414e20268692ffb0ef4ddf73a5c6976c41668b69e6a06",
+  "weebdex-platform/platform-integrations/public-api/AccountProfileEditor.svelte": "bd1444116fecc2552bab7f93a774d71105b190e3ccef50180b40b9fb51cf4787",
+  "weebdex-platform/platform-integrations/public-api/account-profile-client.ts": "97a4d169a4312e98acda9c6076bc389f828892de8ff422a996d131a4cf58eaf1",
+  "weebdex-platform/platform-integrations/public-api/anchors.json": "b500b6178385beddedaf6291e5032f36f6c73a3a405d766f2328373015cd2b98",
+  "weebdex-platform/platform-integrations/public-api/bound-account-request.ts": "54d5176b5ec86c9f26148b77962cd4163c267e7ae27d550330dc621c4b38a31c",
+  "weebdex-platform/platform-integrations/public-api/overlays.mjs": "ae0b72c2d0a70c26ce390c56b6aa04fbf59c0eb8b313d554ab73cb38137f59c3",
+  "weebdex-platform/platform-integrations/public-api/source-hashes.json": "da938847e47e9a8e0bb39e7e2624ee27266cb3d44883960112272b3717688ac5",
+  "weebdex-platform/platform-integrations/public-api/user-profile.ts": "fa9dcc21776472db7e5c1430791d312b720af1fb7e6967a0043b6d24ff71d747",
+  "weebdex-platform/scripts/prepare-frontend-integration.mjs": "03946ee25eb9268766405b4ca64c6132a26e016463d6081038a92cd38841a1d5",
+  "weebdex-platform/tests/ci/account-profile-fixture.mjs": "2b62a7a70ac1e99699d0031ff02c6577f0af2bff0be9e88ffb8f96a20e827c94",
+  "weebdex-platform/tests/ci/public-api-recovery.test.mjs": "f00e9249af04a580d38320e972cd58fc595189e6313dec38b63e05ba47a2c834",
+  "weebdex-platform/tests/ci/test_account_profile_client.mjs": "414637bcdf3ef8b39aadb6319f782d195813a0a0e3307ae8bfeb1ba9e3b824ef",
+  "weebdex-platform/tests/ci/test_account_profile_dom.mjs": "ceabe0c52c66301b3d36efc6cd383b4989602e62ce5aac30638877b0a49acd38",
+  "weebdex-platform/tests/ci/test_account_title_composition.mjs": "cf6f1ee99c4bfea5cf3335a84c5003660abd407a1faa2bc4334cde682519645f",
+  "weebdex-platform/tests/ci/test_public_rating_build_seam.mjs": "01cee58213991746c7501d3eca33efec7bc907711695b789fb72e6f637931636"
+}

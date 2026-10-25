@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "base": "fa375e5106000a664731a37261e9379b93bb80f3",
+  "candidateBeforeThisReceipt": "0e2f7d963e06c60cfaeb1a506bb78cb3865fc872",
+  "branch": "recovery/compose-public-relation-ui-20261017",
+  "applied": [
+    {
+      "original": "32e5987cd0ae968384e9b273e474aab0e273aa32",
+      "applied": "ffea99c021b3986bf1a388fb7f73294b335dcce1",
+      "role": "source/tests/probe/documentation"
+    },
+    {
+      "original": "1e1faee0c8f12fe5c27f2ba24c15b0b227e571bf",
+      "applied": "31d876ce8f5bfed4f4fc3dd7f4c2e4cacec06bbd",
+      "role": "raw finite/strict evidence only"
+    },
+    {
+      "original": "c6eb2615dcaa2d14de3e0db05cf8aae47f0b8bea",
+      "applied": "0e2f7d963e06c60cfaeb1a506bb78cb3865fc872",
+      "role": "actual adapter bridge/owner-detail blocker evidence only"
+    }
+  ],
+  "conflicts": [],
+  "changedExistingFiles": [
+    "weebdex-platform/platform-integrations/public-api/catalogue-edges.ts",
+    "weebdex-platform/tests/ci/public-api-recovery.test.mjs"
+  ],
+  "allOtherBaseTrackedFilesBytePreserved": true,
+  "preservedBaseTrackedFiles": 3701,
+  "familyEvidence": {
+    "canonicalFrontend": {
+      "unchangedFiles": 679,
+      "pathAndGitBlobManifestSha256": "de9a0c4ac3d957cd19a9e8f4b2b34f3cddb22e258df6649c30f63044a621de66"
+    },
+    "backendAndMigrations": {
+      "unchangedFiles": 195,
+      "pathAndGitBlobManifestSha256": "916b9390dbb49f3799f9672dfa075e1afd0ea9a5a9105532dcca3322e8a30ab0"
+    },
+    "existingEditorialAccountTitleCoverAdapters": {
+      "unchangedFiles": 163,
+      "pathAndGitBlobManifestSha256": "cf3dc0db32e4016f95bfa1dea6460bf42af5a2329040cf0d92652cf4eed9ae3e"
+    }
+  },
+  "migrationBlobs": {
+    "weebdex-platform/backend/migrations/0097_chapter_removal_review.sql": "be14d99ba7b87bce0fca5ea011938e94228e3fda",
+    "weebdex-platform/backend/migrations/0098_native_manga_ratings.sql": "aeae0a4bca8c2be9074d47d17ced6e532e47bf9d",
+    "weebdex-platform/backend/migrations/0099_native_public_list_follows.sql": "3a261d4072e152a8ff8fd332eed92ae4e9ed5b08",
+    "weebdex-platform/backend/migrations/0100_native_follow_revisions.sql": "bba9bd337d2732cd68a728044754d8d68acf2a53",
+    "weebdex-platform/backend/migrations/0101_title_removal_review.sql": "6f5de22f697719b550aeff66e46079f0f323f484"
+  },
+  "adapterSha256": "dab0693492d0f849d39515f4cc1a1b30bdb2ad55c7a4b0958e19596cc0ab6e1e",
+  "qualification": "Source-only preparation and exact preservation checks. Prior strict/probe receipts remain tied to frozen original source; no combined strict/runtime or backend-repair qualification rerun here.",
+  "pending": "API owner repairing measured owner Manga GET4096 HTTP503; successful128page+128hydration adapter receipt remains scoped. No main/integration/remote state modified."
+}

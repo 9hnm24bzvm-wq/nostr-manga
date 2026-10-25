@@ -1,0 +1,28 @@
+Portable prospective native-profile source recipe
+
+This replaces an internal-path command note. It is not the original execution
+transcript, does not repeat its pass counts, and has not been run for this export.
+Run from the repository root only after separate runtime/resource admission.
+Use existing, reviewed dependency roots; do not install anything.
+
+Required caller environment:
+- WEEBDEX_FRONTEND_ROOT: the reviewed existing frontend root.
+- WEEBDEX_BROWSER_DOM_NODE_MODULES: the reviewed existing DOM dependency root.
+- WEEBDEX_NATIVE_PROFILE_BASELINE_ROOT: the authentic source-associated baseline
+  required by these controls. Do not point this at current source or synthesize
+  a predecessor merely to satisfy the tests.
+- PYTHONDONTWRITEBYTECODE=1.
+
+Prospective commands, with complete suites and no name-pattern filters:
+
+node --experimental-vm-modules --test --test-concurrency=1 weebdex-platform/tests/ci/test_native_profile_actions_client.mjs weebdex-platform/tests/ci/test_native_profile_actions_signed_scope.mjs weebdex-platform/tests/ci/test_native_profile_actions_dom.mjs weebdex-platform/tests/ci/test_native_profile_actions_sources.mjs weebdex-platform/tests/ci/test_account_profile_client.mjs weebdex-platform/tests/ci/test_account_profile_dom.mjs weebdex-platform/tests/ci/test_account_blocklists_client.mjs weebdex-platform/tests/ci/test_native_user_discussion_dom.mjs weebdex-platform/tests/ci/test_account_follow_ui.mjs
+node --experimental-vm-modules --test --test-concurrency=1 weebdex-platform/tests/ci/test_reviewed_integration_source_successors.mjs
+node --experimental-vm-modules --test --test-concurrency=1 weebdex-platform/tests/ci/test_account_title_composition.mjs
+python3 -B -m unittest discover -s weebdex-platform/tests/ci -p 'test_native_profile_actions_source_association.py'
+python3 -B -m unittest discover -s weebdex-platform/tests/ci -p 'test_reviewed_integration_source_successors.py'
+
+The historical note selected only parts of two legacy suites. These prospective
+commands intentionally name the full suites instead; they do not claim those
+additional controls ran historically. Missing fixtures, baseline source or
+dependencies are blockers, not permission to omit tests. The approved owned
+qualification runner must enforce current time, disk and process limits.

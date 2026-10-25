@@ -1,0 +1,46 @@
+{
+  "cleanupSha256": "fbc66d4bde4f7e093561988c2b71e304776cc523ceef83a36839f323acbad67f",
+  "driverSha256": "f8812d1c1121e5653cc9ca8383ab96849922f65531ccf28912744598a49d593a",
+  "endFreeBytes": 4618457088,
+  "error": "Allocation sampler encountered a transient PostgreSQL pg_stat file disappearing during initdb",
+  "errorClass": "FileNotFoundError",
+  "limits": {
+    "hostAvailableBytes": 1073741824,
+    "liveFreeBytes": 4429185024,
+    "newAllocatedBytes": 134217728,
+    "rssBytes": 536870912,
+    "seconds": 180,
+    "startFreeBytes": 4563402752
+  },
+  "maximumFreshAllocatedBytes": 18636800,
+  "maximumOwnedRssBytes": 34168832,
+  "minimumFreeBytes": 4596809728,
+  "ownershipHelperSha256": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+  "physicalCleanup": {
+    "error": null,
+    "forced": false,
+    "ownedBirthCount": 6,
+    "portClosed": true,
+    "remaining": [],
+    "sourceAndDataRetained": true,
+    "unconfirmedBirths": [],
+    "verifiedStopped": true
+  },
+  "postgresVersion": "postgres (PostgreSQL) 17.11 (Debian 17.11-0+deb13u1)",
+  "rawResultSha256": "595916ad63f1116ed7c8bc6ba6cce5216e6011beab4a5ea27d522e0dc47dcb35",
+  "schema": "synthetic-checkpoint-mechanics-v1",
+  "scope": "Fresh synthetic PostgreSQL17 schemas and three tiny storage roots; no full-platform/production recovery claim",
+  "scriptSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+  "seconds": 0.511,
+  "startFreeBytes": 4618465280,
+  "steps": [
+    {
+      "exit": 0,
+      "expectedExit": 0,
+      "logSha256": "bff7373d2309d3b3cdff08f03dfe8fed4fe20c3039a5e11d14526964b2fcca39",
+      "name": "version",
+      "seconds": 0.052
+    }
+  ],
+  "success": false
+}

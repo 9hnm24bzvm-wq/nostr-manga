@@ -1,0 +1,102 @@
+{
+  "utc": "2026-10-17T18:18:01.198068+00:00",
+  "prior_commit": "743408030a455b2c3cc05d0828a367015d291734",
+  "scope": "Persisted native-account rating observations, typed public UUID/Nostr-proof and genuine site-session adapters, CAS/tombstone/idempotency/account-binding guards and actual aggregate updates.",
+  "checks": [
+    {
+      "name": "library_unit",
+      "result": "test result: ok. 120 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 2.01s",
+      "output_sha256": "d97f69ee0c6e3c041e28228bae7e19988035639bd96cb90cd3c5ad730773f7ef"
+    },
+    {
+      "name": "public_account_reads-55dde832bbd6c52c",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.98s",
+      "output_sha256": "754d79409e19321fc9621d791f3766b5aced43f8be1d6ee1f2daee67bd427b58"
+    },
+    {
+      "name": "public_statistics-f01460db3aa7ffa9",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s",
+      "output_sha256": "860144e3d9aa825779e285fa59d9222cf4db0a1ed993d73b58cc71eec0c0db94"
+    },
+    {
+      "name": "public_catalogue_compatibility-7bc8ad9b6a8d2d77",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s",
+      "output_sha256": "ac86d86913f9c5196ed0364342be7f416e9ef93582e9605b9db700920da9973d"
+    },
+    {
+      "name": "public_catalogue_reads-99a3bf88daacfe81",
+      "result": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.66s",
+      "output_sha256": "3d802eb40c801206ab63700fe333d35f75a9f89a1d174168fa8e495e6eb37c50"
+    }
+  ],
+  "postgres_fixture_cleanup": [
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    },
+    {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "test_returncode": 0
+    }
+  ],
+  "source_sha256": {
+    "weebdex-platform/backend/migrations/0098_native_manga_ratings.sql": "11968c5c818f6c15d9e21e88ca0f652c60fd858d4c01ffe5db80f831af4531e2",
+    "weebdex-platform/backend/src/domains/library/ratings.rs": "12ebd495348794638d9afd290604d8df5f4c828b41095faa3df9b1be722cae9f",
+    "weebdex-platform/backend/src/domains/library/mod.rs": "75aea584de89ea8e034e5e5929711339112cdb166202c1eacc2d7dd6905d7642",
+    "weebdex-platform/backend/src/domains/mod.rs": "ed4ad732ee64cf3fec36909fb73e80a2d1b6e09916582e854de8ec4d109a5bda",
+    "weebdex-platform/backend/src/public_api/ratings.rs": "fe3e636729663450785a97654f10a5deddebe809b55cfc83aa7e8909cf047636",
+    "weebdex-platform/backend/src/public_api/mod.rs": "6cb0a1244cbf76a715ada53c2973792e00ba5215c5189395431335f0322b1aae",
+    "weebdex-platform/backend/src/public_api/routes.rs": "a5b808f1f4e09516bd28fab515591bbad485c48b6da3c58d335b0e10f8da6050",
+    "weebdex-platform/backend/src/public_api/statistics.rs": "643dec3cba6d46a35fe6691042860a329e58a9351e8f9b3ce797246822b5099c",
+    "weebdex-platform/backend/tests/public_account_reads.rs": "a31573defed13a3a99b9aca8be26c69121d0fab62051b1f8060c532e443f821a",
+    "weebdex-platform/backend/tests/public_statistics.rs": "de3dc71e03d335dd56ad16b551fa63f36333b64f13e16b248ca0d4ab3e0332f5",
+    "weebdex-platform/docs/mangadex-native-account-ratings.md": "7b1511d3185fa18e8b713b80e62be63cbd255c3e7d7fa3b28ad462f5dcb08bf4"
+  },
+  "covered_seams": [
+    "Original Nostr exact method/body/service/URI and replay checks",
+    "Explicit native binding, verified/active policy, current write permission, revocation",
+    "Captured expectedAccountId rejects signer rebinding even when both per-account versions are0",
+    "Canonical UUID and imported aliases, unknown/hidden selection, owner privacy",
+    "Strict JSON integers/unknown fields, stale versions and deletion/recreation tombstones",
+    "Fresh-proof no-op idempotency preserves all rating clocks and versions",
+    "Concurrent owners update real mean and distribution atomically",
+    "Native same-origin browser session parity and read-only scoped-client write denial",
+    "No fabricated user vote from cached aggregate or global Bayesian model"
+  ],
+  "limits": [
+    "These checks cover this isolated branch; integration must rerun the exact combined source.",
+    "Historical submitted observations remain in the aggregate when an account later becomes inactive.",
+    "MangaDex global Bayesian population/model and forum IDs have no equivalent; no score or identity is invented.",
+    "No production/browser/load readiness or full API completion claim.",
+    "Rustfmt unavailable; git diff --check passes; existing compiler warnings remain.",
+    "No external publication, remote push or real account/credential mutation."
+  ]
+}

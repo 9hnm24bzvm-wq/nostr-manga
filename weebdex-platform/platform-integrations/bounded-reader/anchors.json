@@ -1,0 +1,308 @@
+[
+  {
+    "path": "src/lib/components/reader/context.svelte.ts",
+    "label": "owned semantic navigation types",
+    "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "count": 1,
+    "before": "export type ReaderStateProps = {",
+    "after": "import type { BoundedReaderController, ReaderView } from \"$boundedReader/controller\";\r\n\r\nexport type ReaderStateProps = {",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/context.svelte.ts",
+    "label": "reactive current chapter and bounded navigation contract",
+    "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "count": 1,
+    "before": "\tchapter: Chapter;\r\n\taggregated: () => ChapterAggregateResponse | undefined;",
+    "after": "\tchapter: () => Chapter;\r\n\tnavigation: BoundedReaderController;\r\n\tnavigationView: () => ReaderView;",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/context.svelte.ts",
+    "label": "no retained aggregate compatibility property",
+    "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "count": 1,
+    "before": "\treadonly aggregated = $derived.by(() => this.props.aggregated());",
+    "after": "\treadonly navigationState = $derived.by(() => this.props.navigationView());\r\n\tget navigation() { return this.props.navigation; }",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/context.svelte.ts",
+    "label": "replace index-length-derived neighbors",
+    "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "count": 1,
+    "before": "\treadonly chapterIndex = $derived.by(() => {\r\n\t\tconst index = this.aggregated?.chapters.findIndex(e => this.chapter.id in e.entries);\r\n\t\treturn index !== undefined && index >= 0 ? index : undefined;\r\n\t});\r\n\treadonly firstChapter = $derived.by(() =>\r\n\t\tthis.chapterIndex !== undefined && this.aggregated?.chapters\r\n\t\t\t? this.findChapter(this.aggregated.chapters.length - 1)\r\n\t\t\t: undefined\r\n\t);\r\n\treadonly lastChapter = $derived.by(() =>\r\n\t\tthis.chapterIndex !== undefined && this.aggregated?.chapters ? this.findChapter(0) : undefined\r\n\t);\r\n\treadonly prevChapter = $derived.by(() =>\r\n\t\tthis.chapterIndex !== undefined && this.aggregated?.chapters ? this.findChapter(this.chapterIndex + 1) : undefined\r\n\t);\r\n\treadonly nextChapter = $derived.by(() =>\r\n\t\tthis.chapterIndex !== undefined && this.aggregated?.chapters ? this.findChapter(this.chapterIndex - 1) : undefined\r\n\t);\r\n\r\n",
+    "after": "\treadonly prevChapter = $derived(this.navigationState.previous ?? undefined);\r\n\treadonly nextChapter = $derived(this.navigationState.next ?? undefined);\r\n\r\n",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/context.svelte.ts",
+    "label": "last-page intent checks live chapter getter",
+    "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "count": 1,
+    "before": "consumeReaderLastPage(props.chapter.id)",
+    "after": "consumeReaderLastPage(props.chapter().id)",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/context.svelte.ts",
+    "label": "chapter getter follows current provider",
+    "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "count": 1,
+    "before": "return this.props.chapter;",
+    "after": "return this.props.chapter();",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/context.svelte.ts",
+    "label": "semantic first last previous next replace findChapter changeChapter",
+    "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "count": 1,
+    "before": "\tfindChapter(idx: number): ReaderChapterInfo | undefined {\r\n\t\tif (!Number.isSafeInteger(idx) || !this.aggregated?.chapters || idx < 0 || idx >= this.aggregated.chapters.length) {\r\n\t\t\treturn;\r\n\t\t}\r\n\r\n\t\tconst aggregate = this.aggregated.chapters[idx];\r\n\t\tconst entries = Object.entries(aggregate.entries);\r\n\t\tif (!entries.length) return;\r\n\t\tif (entries.length > 1) {\r\n\t\t\tconst currentGroups = this.chapter.relationships.groups ?? [];\r\n\t\t\tconst scores: { id: string; entry: ChapterAggregateEntry; score: number }[] = [];\r\n\r\n\t\t\tfor (const [id, entry] of entries) {\r\n\t\t\t\tconst groups = entry.groups.map(idx => this.aggregated?.groups[idx]);\r\n\t\t\t\tconst score = groups.filter(group => group && currentGroups.some(current => group.id && current.id ? group.id === current.id : group.name === current.name)).length;\r\n\t\t\t\tscores.push({ id, entry, score });\r\n\t\t\t}\r\n\t\t\tscores.sort((a, b) => b.score - a.score);\r\n\r\n\t\t\tif (scores[0].id !== this.chapter.id) {\r\n\t\t\t\treturn {\r\n\t\t\t\t\tid: scores[0].id,\r\n\t\t\t\t\tvolume: aggregate.volume,\r\n\t\t\t\t\tchapter: aggregate.chapter,\r\n\t\t\t\t\tlanguage: this.aggregated?.languages[scores[0].entry.language],\r\n\t\t\t\t\tgroups: scores[0].entry.groups.map(idx => this.aggregated?.groups[idx].name ?? \"\")\r\n\t\t\t\t};\r\n\t\t\t}\r\n\t\t} else if (entries[0][0] !== this.chapter.id) {\r\n\t\t\treturn {\r\n\t\t\t\tid: entries[0][0],\r\n\t\t\t\tvolume: aggregate.volume,\r\n\t\t\t\tchapter: aggregate.chapter,\r\n\t\t\t\tlanguage: this.aggregated?.languages[entries[0][1].language],\r\n\t\t\t\tgroups: entries[0][1].groups.map(idx => this.aggregated?.groups[idx].name ?? \"\")\r\n\t\t\t};\r\n\t\t}\r\n\t}\r\n\r\n\tasync changeChapter(idx: number) {\r\n\t\tconst result = this.findChapter(idx);\r\n\t\tif (result) {\r\n\t\t\tawait goto(resolve(`/chapter/${result.id}/1`));\r\n\t\t}\r\n\t}\r\n\tasync gotoPreviousChapter() {\r\n\t\treturn this.chapterIndex !== undefined && this.changeChapter(this.chapterIndex + 1);\r\n\t}\r\n\tasync gotoNextChapter() {\r\n\t\treturn this.chapterIndex !== undefined && this.changeChapter(this.chapterIndex - 1);\r\n\t}\r\n\r\n",
+    "after": "\tgotoPreviousChapter() { return this.navigation.semantic('previous'); }\r\n\tgotoNextChapter() { return this.navigation.semantic('next'); }\r\n\tgotoFirstChapter() { return this.navigation.semantic('first'); }\r\n\tgotoLastChapter() { return this.navigation.semantic('last'); }\r\n\tprivate backToTitle() { return goto(resolve(`/title/${this.chapter.relationships.manga.id}${Utils.makeSlug(this.chapter.relationships.manga.title)}`)); }\r\n\r\n",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/context.svelte.ts",
+    "label": "previous page validates live boundary and exact last-page destination",
+    "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "count": 1,
+    "before": "\t\t\t\tif (this.chapterIndex !== undefined) {\r\n\t\t\t\t\tif (this.chapterIndex === Number(this.aggregated?.chapters.length) - 1) {\r\n\t\t\t\t\t\tawait goto(\r\n\t\t\t\t\t\t\tresolve(\r\n\t\t\t\t\t\t\t\t`/title/${this.chapter.relationships.manga.id}${Utils.makeSlug(this.chapter.relationships.manga.title)}`\r\n\t\t\t\t\t\t\t)\r\n\t\t\t\t\t\t);\r\n\t\t\t\t\t} else if (get(this.prefs).auto_advance) {\r\n\t\t\t\t\t\tconst previous = this.findChapter(this.chapterIndex + 1);\r\n\t\t\t\t\t\tif (previous) await navigateReaderLastPage(previous.id, resolve(`/chapter/${previous.id}/1`));\r\n\t\t\t\t\t}\r\n\t\t\t\t}",
+    "after": "\t\t\t\tif (this.navigationState.current && (get(this.prefs).auto_advance || this.navigationState.previous === null)) {\r\n\t\t\t\t\tawait this.navigation.semantic('previous', true, () => this.backToTitle());\r\n\t\t\t\t}",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/context.svelte.ts",
+    "label": "next page keeps images and endcard readable when current is excluded",
+    "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "count": 1,
+    "before": "\t\t\t\tif (this.chapterIndex !== undefined) {\r\n\t\t\t\t\tif (this.isViewingLastPage || get(skipEndOfChapterPage)) {\r\n\t\t\t\t\t\tif (this.chapterIndex === 0) {\r\n\t\t\t\t\t\t\tawait goto(\r\n\t\t\t\t\t\t\t\tresolve(\r\n\t\t\t\t\t\t\t\t\t`/title/${this.chapter.relationships.manga.id}${Utils.makeSlug(this.chapter.relationships.manga.title)}`\r\n\t\t\t\t\t\t\t\t)\r\n\t\t\t\t\t\t\t);\r\n\t\t\t\t\t\t} else if (get(this.prefs).auto_advance) {\r\n\t\t\t\t\t\t\tawait this.gotoNextChapter();\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t} else {\r\n\t\t\t\t\t\tthis.isViewingLastPage = true;\r\n\t\t\t\t\t\tawait this.scrollIntoView(this.currentPage);\r\n\t\t\t\t\t}\r\n\t\t\t\t}",
+    "after": "\t\t\t\tif (!this.isViewingLastPage && !get(skipEndOfChapterPage)) {\r\n\t\t\t\t\tthis.isViewingLastPage = true;\r\n\t\t\t\t\tawait this.scrollIntoView(this.currentPage);\r\n\t\t\t\t} else if (this.navigationState.current && (get(this.prefs).auto_advance || this.navigationState.next === null)) {\r\n\t\t\t\t\tawait this.navigation.semantic('next', false, () => this.backToTitle());\r\n\t\t\t\t}",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/reader-provider.svelte",
+    "label": "provider owns real bounded controller",
+    "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+    "count": 1,
+    "before": "\timport { setReader } from \"./context.svelte\";",
+    "after": "\timport { setReader } from \"./context.svelte\";\r\n\timport { createBoundedReader } from \"$boundedReader/runtime.svelte\";",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/reader-provider.svelte",
+    "label": "remove aggregate cache and pending fetch owner",
+    "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+    "count": 1,
+    "before": "\tlet aggregated = $state<ChapterAggregateResponse>();\r\n\tlet aggregateGeneration = 0, aggregateDisposed = false;\r\n\tonDestroy(() => { aggregateDisposed = true; aggregateGeneration++; aggregated = undefined; });\r\n",
+    "after": "\tlet providerDisposed = false;\r\n\tonDestroy(() => { providerDisposed = true; });\r\n\tconst navigation = createBoundedReader({ manga: () => chapter.relationships.manga.id, current: () => chapter, filters: () => new URLSearchParams({ tlang: chapter.language }), queryEpoch: () => page.url.search + page.url.hash });\r\n",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/reader-provider.svelte",
+    "label": "provider gives live minimal selector view",
+    "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+    "count": 1,
+    "before": "\t\tchapter: chapter,\r\n\t\taggregated: () => aggregated",
+    "after": "\t\tchapter: () => chapter,\r\n\t\tnavigation,\r\n\t\tnavigationView: () => $navigation",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/reader-provider.svelte",
+    "label": "provider initial page restoration has no aggregate fetch",
+    "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+    "count": 1,
+    "before": "\tonMount(() => {\r\n\t\tconst generation = ++aggregateGeneration;\r\n\t\tconst alive = () => !aggregateDisposed && generation === aggregateGeneration;\r\n\t\tvoid (async () => {\r\n\t\t\tawait tick(); if (!alive()) return;\r\n\t\t\tif (reader.isViewingLastPage) {\r\n\t\t\t\tconst lastIndex = Math.max(reader.pages.length - 1, 0);\r\n\t\t\t\treader.currentPage = reader.pages[lastIndex];\r\n\t\t\t\treplaceState(`/chapter/${chapter.id}/${lastIndex + 1}`, { ...page.state, page: lastIndex + 1 });\r\n\t\t\t} else if (!page.params.page) replaceState(`/chapter/${chapter.id}/1`, { ...page.state, page: 1 });\r\n\t\t\tconst mangaId = chapter.relationships.manga.id, chapterId = chapter.id;\r\n\t\t\tconst q = new URLSearchParams(); q.set(\"tlang\", chapter.language);\r\n\t\t\tconst contextKey = JSON.stringify([mangaId, [...q.entries()]]);\r\n\t\t\taggregated = undefined;\r\n\t\t\tconst res = await API.Chapter.Aggregate(mangaId, q);\r\n\t\t\tif (!alive() || chapter.id !== chapterId || JSON.stringify([chapter.relationships.manga.id, [[\"tlang\", chapter.language]]]) !== contextKey) return;\r\n\t\t\t// Every mounted reader rechecks current authority; failures/hidden results are never cached.\r\n\t\t\taggregated = res?.status === StatusCodes.OK && res.body ? res.body : undefined;\r\n\t\t})().catch(error => { if (alive()) { aggregated = undefined; console.error(error); } });\r\n\t});\r\n\r\n",
+    "after": "\tonMount(() => {\r\n\t\tvoid (async () => {\r\n\t\t\tconst chapterId = chapter.id, original = window.location.href;\r\n\t\t\tawait tick();\r\n\t\t\tif (providerDisposed || chapter.id !== chapterId || window.location.href !== original) return;\r\n\t\t\tif (reader.isViewingLastPage) {\r\n\t\t\t\tconst index = Math.max(reader.pages.length - 1, 0), position = index + 1;\r\n\t\t\t\treader.currentPage = reader.pages[index];\r\n\t\t\t\tconst target = new URL(original); target.pathname = `/chapter/${encodeURIComponent(chapterId)}/${position}`;\r\n\t\t\t\treplaceState(target.href, { ...page.state, page: position });\r\n\t\t\t} else if (!page.params.page) {\r\n\t\t\t\tconst target = new URL(original); target.pathname = `/chapter/${encodeURIComponent(chapterId)}/1`;\r\n\t\t\t\treplaceState(target.href, { ...page.state, page: 1 });\r\n\t\t\t}\r\n\t\t})().catch(() => {});\r\n\t});\r\n\r\n",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+    "label": "replace aggregate-only ChapterSelector with actual bounded consumer",
+    "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+    "count": 1,
+    "before": "<script lang=\"ts\">\r\n\timport { Constants } from \"$lib\";\r\n\timport { buttonVariants } from \"$lib/components/ui/button\";\r\n\timport * as ButtonGroup from \"$lib/components/ui/button-group\";\r\n\timport * as Combobox from \"$lib/components/ui/combobox\";\r\n\timport { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from \"@lucide/svelte\";\r\n\timport { useReader } from \"./context.svelte\";\r\n\r\n\tconst reader = $derived(useReader());\r\n\tconst readerPrefs = $derived(reader.prefs);\r\n\tconst firstChapter = $derived(reader.firstChapter);\r\n\tconst lastChapter = $derived(reader.lastChapter);\r\n\tconst nextChapter = $derived(reader.nextChapter);\r\n\tconst prevChapter = $derived(reader.prevChapter);\r\n\tconst chapterIndex = $derived(reader.chapterIndex);\r\n\tconst chapter = $derived(reader.chapter);\r\n\tconst aggregated = $derived(reader.aggregated);\r\n</script>\r\n\r\n<ButtonGroup.Root class=\"bg-input/30 overflow-hidden rounded-md\">\r\n\t<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last chapter\" : \"First chapter\"}\r\n\t>\r\n\t\t<ChevronsLeft />\r\n\t</a>\r\n\t<ButtonGroup.Separator />\r\n\t<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Next chapter\" : \"Previous chapter\"}\r\n\t>\r\n\t\t<ChevronLeft />\r\n\t</a>\r\n</ButtonGroup.Root>\r\n<Combobox.Root\r\n\ttype=\"single\"\r\n\tvalue={chapterIndex?.toString()}\r\n\tonValueChange={value => reader.changeChapter(Number(value))}\r\n\tdisabled={!aggregated?.chapters.length}\r\n>\r\n\t<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })} aria-label=\"Select chapter\">\r\n\t\t<span class=\"text-foreground w-0 flex-auto truncate\">\r\n\t\t\t{#if chapter.chapter}\r\n\t\t\t\t{#if chapter.volume}\r\n\t\t\t\t\tVol. {chapter.volume}\r\n\t\t\t\t{/if}\r\n\t\t\t\tCh. {chapter.chapter}\r\n\t\t\t{:else}\r\n\t\t\t\tOneshot\r\n\t\t\t{/if}\r\n\t\t</span>\r\n\t</Combobox.Trigger>\r\n\t{#if aggregated}\r\n\t\t<Combobox.Content>\r\n\t\t\t{#each aggregated.chapters as entry, i}\r\n\t\t\t\t<Combobox.Item value={i.toString()}>\r\n\t\t\t\t\t<span class=\"w-0 flex-auto truncate\" class:underline={chapterIndex === i}>\r\n\t\t\t\t\t\t{#if entry.chapter}\r\n\t\t\t\t\t\t\t{#if entry.volume}\r\n\t\t\t\t\t\t\t\tVol. {entry.volume}\r\n\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\tCh. {entry.chapter}\r\n\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\tOneshot\r\n\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t</span>\r\n\t\t\t\t</Combobox.Item>\r\n\t\t\t{/each}\r\n\t\t</Combobox.Content>\r\n\t{/if}\r\n</Combobox.Root>\r\n<ButtonGroup.Root class=\"bg-input/30 overflow-hidden rounded-md\">\r\n\t<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Previous chapter\" : \"Next chapter\"}\r\n\t>\r\n\t\t<ChevronRight />\r\n\t</a>\r\n\t<ButtonGroup.Separator />\r\n\t<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First chapter\" : \"Last chapter\"}\r\n\t>\r\n\t\t<ChevronsRight />\r\n\t</a>\r\n</ButtonGroup.Root>\r\n",
+    "after": "<script lang=\"ts\">\r\n  import ChapterSelector from \"$boundedReader/ChapterSelector.svelte\";\r\n</script>\r\n<ChapterSelector />\r\n",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/reader/reader-group-selector.svelte",
+    "label": "replace aggregate-only EditionSelector with actual bounded consumer",
+    "sha256": "605842d40813d1f4d810a61a5e0c3f7cf36d49f21b26da25990d619aa017d372",
+    "count": 1,
+    "before": "<script lang=\"ts\">\r\n\timport { goto } from \"$app/navigation\";\r\n\timport { buttonVariants } from \"$lib/components/ui/button\";\r\n\timport * as Combobox from \"$lib/components/ui/combobox\";\r\n\timport { cn } from \"$lib/Utils\";\r\n\timport { GitCompare, Users } from \"@lucide/svelte\";\r\n\timport { useReader } from \"./context.svelte\";\r\n\r\n\tconst {\r\n\t\tclass: className\r\n\t}: {\r\n\t\tclass?: string;\r\n\t} = $props();\r\n\r\n\tconst reader = useReader();\r\n\tconst entries = $derived.by(() => {\r\n\t\tif (\r\n\t\t\treader.chapterIndex === undefined ||\r\n\t\t\treader.chapterIndex < 0 ||\r\n\t\t\treader.chapterIndex >= Number(reader.aggregated?.chapters.length)\r\n\t\t) {\r\n\t\t\treturn;\r\n\t\t}\r\n\r\n\t\tconst aggregate = reader.aggregated?.chapters[reader.chapterIndex];\r\n\t\tif (!aggregate) {\r\n\t\t\treturn;\r\n\t\t}\r\n\t\treturn Object.entries(aggregate.entries);\r\n\t});\r\n\r\n\tconst changeChapter = (id: string) => {\r\n\t\tif (reader.chapter.id !== id) {\r\n\t\t\tgoto(`/chapter/${id}/1`);\r\n\t\t}\r\n\t};\r\n</script>\r\n\r\n{#if Number(entries?.length) > 1}\r\n\t<Combobox.Root type=\"single\" value={reader.chapter.id} onValueChange={value => changeChapter(value)}>\r\n\t\t<Combobox.Trigger\r\n\t\t\tclass={buttonVariants({ class: cn(\"text-accent-foreground border-none\", className), variant: \"default\" })}\r\n\t\t>\r\n\t\t\t<GitCompare class=\"text-inherit\" />\r\n\t\t\tChange Group\r\n\t\t</Combobox.Trigger>\r\n\t\t{#if reader.aggregated}\r\n\t\t\t<Combobox.Content>\r\n\t\t\t\t{#each entries as [id, entry]}\r\n\t\t\t\t\t<Combobox.Item value={id}>\r\n\t\t\t\t\t\t<div class=\"w-0 flex-auto\">\r\n\t\t\t\t\t\t\t{#each entry.groups as idx}\r\n\t\t\t\t\t\t\t\t<div class=\"flex items-center gap-2\">\r\n\t\t\t\t\t\t\t\t\t<Users class=\"shrink-0\" />\r\n\t\t\t\t\t\t\t\t\t<span class=\"w-0 flex-auto truncate\">\r\n\t\t\t\t\t\t\t\t\t\t{reader.aggregated.groups[idx].name}\r\n\t\t\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t\t{/each}\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t</Combobox.Item>\r\n\t\t\t\t{/each}\r\n\t\t\t</Combobox.Content>\r\n\t\t{/if}\r\n\t</Combobox.Root>\r\n{/if}\r\n",
+    "after": "<script lang=\"ts\">\r\n  import EditionSelector from \"$boundedReader/EditionSelector.svelte\";\r\n  let { class: className }: { class?: string } = $props();\r\n</script>\r\n<EditionSelector class={className} />\r\n",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/reader/reader-pagination.svelte",
+    "label": "pagination imports same bounded group-page consumer",
+    "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+    "count": 1,
+    "before": "\timport { useReader } from \"./context.svelte\";",
+    "after": "\timport { useReader } from \"./context.svelte\";\r\n\timport GroupPage from \"$boundedReader/GroupPage.svelte\";",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/reader-pagination.svelte",
+    "label": "pagination removes duplicate aggregate index selector",
+    "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+    "count": 1,
+    "before": "\t\t\t<Combobox.Root\r\n\t\t\t\ttype=\"single\"\r\n\t\t\t\tvalue={reader.chapterIndex?.toString()}\r\n\t\t\t\tonValueChange={value => reader.changeChapter(Number(value))}\r\n\t\t\t\tdisabled={!reader.aggregated?.chapters.length}\r\n\t\t\t>\r\n\t\t\t\t<Combobox.Trigger\r\n\t\t\t\t\taria-label=\"Select chapter\"\r\n\t\t\t\t\tclass={buttonVariants({ class: \"!h-10 w-0 flex-auto rounded-none border-none\", variant: \"outline\" })}\r\n\t\t\t\t>\r\n\t\t\t\t\t<span class=\"text-foreground w-0 flex-auto truncate\">\r\n\t\t\t\t\t\t{#if reader.chapter.chapter}\r\n\t\t\t\t\t\t\t{#if reader.chapter.volume}\r\n\t\t\t\t\t\t\t\tVol. {reader.chapter.volume}\r\n\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\tCh. {reader.chapter.chapter}\r\n\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\tOneshot\r\n\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t</span>\r\n\t\t\t\t</Combobox.Trigger>\r\n\t\t\t\t{#if reader.aggregated}\r\n\t\t\t\t\t<Combobox.Content>\r\n\t\t\t\t\t\t{#each reader.aggregated.chapters as entry, i}\r\n\t\t\t\t\t\t\t<Combobox.Item value={i.toString()}>\r\n\t\t\t\t\t\t\t\t<span class=\"w-0 flex-auto truncate\" class:underline={reader.chapterIndex === i}>\r\n\t\t\t\t\t\t\t\t\t{#if entry.chapter}\r\n\t\t\t\t\t\t\t\t\t\t{#if entry.volume}\r\n\t\t\t\t\t\t\t\t\t\t\tVol. {entry.volume}\r\n\t\t\t\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\t\t\t\tCh. {entry.chapter}\r\n\t\t\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t\t\tOneshot\r\n\t\t\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t</Combobox.Item>\r\n\t\t\t\t\t\t{/each}\r\n\t\t\t\t\t</Combobox.Content>\r\n\t\t\t\t{/if}\r\n\t\t\t</Combobox.Root>",
+    "after": "\t\t\t<GroupPage controller={reader.navigation} />",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+    "label": "semantic keyboard first and last retain RTL direction",
+    "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+    "count": 1,
+    "before": "\t\t\t\tif ($readerPrefs.direction === Constants.Reader.Direction.RTL) reader.changeChapter(0);\r\n\t\t\t\telse if (reader.aggregated?.chapters.length) reader.changeChapter(reader.aggregated.chapters.length - 1);",
+    "after": "\t\t\t\tif ($readerPrefs.direction === Constants.Reader.Direction.RTL) void reader.gotoLastChapter();\r\n\t\t\t\telse void reader.gotoFirstChapter();",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+    "label": "semantic keyboard last and first retain LTR direction",
+    "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+    "count": 1,
+    "before": "\t\t\t\tif ($readerPrefs.direction === Constants.Reader.Direction.RTL) {\r\n\t\t\t\t\tif (reader.aggregated?.chapters.length) reader.changeChapter(reader.aggregated.chapters.length - 1);\r\n\t\t\t\t} else reader.changeChapter(0);",
+    "after": "\t\t\t\tif ($readerPrefs.direction === Constants.Reader.Direction.RTL) void reader.gotoFirstChapter();\r\n\t\t\t\telse void reader.gotoLastChapter();",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "endcard semantic action and status imports",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport { label, plainAction } from \"$boundedReader/presentation\";\r\n\timport ReaderNavigationStatus from \"$boundedReader/Status.svelte\";",
+    "markup": false
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "endcard prevChapter owned semantic control 1",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\thref=\"/chapter/{reader.prevChapter.id}/1\"\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t<ArrowLeftIcon class=\"shrink-0\" />\r\n\t\t\t\t\t{Utils.chapterHeadlineWithoutVolume(reader.prevChapter)}\r\n\t\t\t\t</a>",
+    "after": "<button type=\"button\" disabled={reader.navigationState.pending}\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\t\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t\tplainAction(e, () => reader.gotoPreviousChapter());\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t<ArrowLeftIcon class=\"shrink-0\" />\r\n\t\t\t\t\t{label(reader.prevChapter)}\r\n\t\t\t\t</button>",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "endcard prevChapter owned semantic control 2",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\tclass={buttonVariants({ class: \"min-w-23 border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/chapter/{reader.prevChapter.id}/1\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<ArrowLeftIcon class=\"shrink-0\" />\r\n\t\t\t\t<span class=\"flex-auto text-center\">{Utils.chapterHeadlineWithoutVolume(reader.prevChapter)}</span>\r\n\t\t\t</a>",
+    "after": "<button type=\"button\" disabled={reader.navigationState.pending}\r\n\t\t\t\tclass={buttonVariants({ class: \"min-w-23 border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t\tplainAction(e, () => reader.gotoPreviousChapter());\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<ArrowLeftIcon class=\"shrink-0\" />\r\n\t\t\t\t<span class=\"flex-auto text-center\">{label(reader.prevChapter)}</span>\r\n\t\t\t</button>",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "endcard nextChapter owned semantic control 1",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\thref=\"/chapter/{reader.nextChapter.id}/1\"\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t{Utils.chapterHeadlineWithoutVolume(reader.nextChapter)}\r\n\t\t\t\t\t<ArrowRightIcon class=\"shrink-0\" />\r\n\t\t\t\t</a>",
+    "after": "<button type=\"button\" disabled={reader.navigationState.pending}\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\t\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t\tplainAction(e, () => reader.gotoNextChapter());\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t{label(reader.nextChapter)}\r\n\t\t\t\t\t<ArrowRightIcon class=\"shrink-0\" />\r\n\t\t\t\t</button>",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "endcard nextChapter owned semantic control 2",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\tclass={buttonVariants({ class: \"min-w-23 border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/chapter/{reader.nextChapter.id}/1\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<span class=\"flex-auto text-center\">{Utils.chapterHeadlineWithoutVolume(reader.nextChapter)}</span>\r\n\t\t\t\t<ArrowRightIcon class=\"shrink-0\" />\r\n\t\t\t</a>",
+    "after": "<button type=\"button\" disabled={reader.navigationState.pending}\r\n\t\t\t\tclass={buttonVariants({ class: \"min-w-23 border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t\tplainAction(e, () => reader.gotoNextChapter());\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<span class=\"flex-auto text-center\">{label(reader.nextChapter)}</span>\r\n\t\t\t\t<ArrowRightIcon class=\"shrink-0\" />\r\n\t\t\t</button>",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "endcard pending error excluded and restart presentation",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "</script>",
+    "after": "</script>\r\n<ReaderNavigationStatus controller={reader.navigation} refresh />",
+    "markup": true
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "title imports native Continue and retained device admission",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport TitleReadingActions from \"$boundedReader/TitleReadingActions.svelte\";\r\n\timport { plainAction } from \"$boundedReader/presentation\";\r\n\timport { historySourceKey } from \"$boundedReader/history\";\r\n\timport { readerLibrarySource, readerLibrarySelection, assertLibraryAdmission } from \"$localLibrary/library\";\r\n\timport { captureNavigationEpoch } from \"$platform/navigation-authority\";",
+    "markup": false
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "retain device aggregate state with selection and history admission",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "\tlet isStartReading = $state(false);\r\n\tlet isChapterSelectionDialogOpen = $state(false);\r\n\tlet targetAggregatedChapter = $state<ChapterAggregate>();\r\n\tlet aggregated = $state<ChapterAggregateResponse>();\r\n\tlet readGeneration = 0, readDisposed = false;\r\n\tconst readContext = () => JSON.stringify([manga.id, page.url.search, $prefs, $libraryIdentity.mode, $libraryIdentity.accountId, $localLibraryState.scopeStatus]);\r\n\t$effect(() => { readContext(); readGeneration++; aggregated = undefined; targetAggregatedChapter = undefined; isChapterSelectionDialogOpen = false; });\r\n\tonDestroy(() => { readDisposed = true; readGeneration++; });\r\n\r\n",
+    "after": "\tlet isStartReading = $state(false);\r\n\tlet isChapterSelectionDialogOpen = $state(false);\r\n\tlet targetAggregatedChapter = $state<ChapterAggregate>();\r\n\tlet aggregated = $state<ChapterAggregateResponse>();\r\n\tlet readGeneration = 0, readDisposed = false;\r\n\tlet deviceChoiceCheck: (() => void) | undefined;\r\n\tconst readContext = () => JSON.stringify([manga.id, page.url.search, $prefs, $libraryIdentity.mode, $libraryIdentity.accountId, $localLibraryState.scopeStatus, $readerLibrarySelection.epoch, historySourceKey(readerLibrarySource())]);\r\n\t$effect(() => { readContext(); readGeneration++; aggregated = undefined; targetAggregatedChapter = undefined; isChapterSelectionDialogOpen = false; deviceChoiceCheck = undefined; });\r\n\tonDestroy(() => { readDisposed = true; readGeneration++; });\r\n\r\n\tlet boundedReadingPending = $state(false), deviceReadError = $state(\"\");\r\n\tconst deviceReadUnavailable = $derived($readHistory === undefined || !$localLibraryState.ready || $localLibraryState.scopeStatus !== \"verified\" || $readerLibrarySelection.pending);\r\n\tconst captureDeviceReading = () => {\r\n\t\tconst source = readerLibrarySource(), key = historySourceKey(source), history = $readHistory, context = readContext(), pathname = window.location.pathname, navigationEpoch = captureNavigationEpoch();\r\n\t\tif (source.mode !== \"device\" || source.selectionPending || !source.ready || source.scopeStatus !== \"verified\" || history === undefined) throw Error(\"Device completion history is not available. No empty-history fallback was used.\");\r\n\t\treturn () => { assertLibraryAdmission(source.admission); if (historySourceKey(readerLibrarySource()) !== key || $readHistory !== history || readDisposed || readContext() !== context || window.location.pathname !== pathname || captureNavigationEpoch() !== navigationEpoch) throw Error(\"The device history or catalogue scope changed. Retry reading.\"); };\r\n\t};\r\n\tconst clearDeviceSelection = () => {\r\n\t\tif (isStartReading) return false;\r\n\t\treadGeneration++; aggregated = undefined; targetAggregatedChapter = undefined; isChapterSelectionDialogOpen = false; deviceChoiceCheck = undefined; deviceReadError = \"\"; return true;\r\n\t};\r\n\tconst guardDeviceChoice = (event: MouseEvent) => {\r\n\t\ttry { if (!isChapterSelectionDialogOpen || !targetAggregatedChapter || !deviceChoiceCheck || boundedReadingPending) throw Error(\"Device chooser is no longer admitted\"); deviceChoiceCheck(); }\r\n\t\tcatch { event.preventDefault(); event.stopPropagation(); clearDeviceSelection(); }\r\n\t};\r\n\r\n",
+    "markup": false
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "preserve actual automatic device algorithm and fence every awaited boundary",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "\tconst startRead = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!isPublished || isEmpty) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisStartReading = true;\r\n\t\t\ttry {\r\n\t\t\t\t{\r\n\t\t\t\t\tconst generation = ++readGeneration, context = readContext();\r\n\t\t\t\t\taggregated = undefined; targetAggregatedChapter = undefined; isChapterSelectionDialogOpen = false;\r\n\t\t\t\t\tconst { pathname } = window.location;\r\n\t\t\t\t\tconst q = new URLSearchParams();\r\n\t\t\t\t\tprefs.applyChapterPreferences(q);\r\n\r\n\t\t\t\t\tif (page.url.searchParams.has(\"tlang\")) {\r\n\t\t\t\t\t\tq.delete(\"tlang\");\r\n\t\t\t\t\t\tpage.url.searchParams.getAll(\"tlang\").forEach(lang => q.append(\"tlang\", lang));\r\n\t\t\t\t\t}\r\n\t\t\t\t\tif (page.url.searchParams.has(\"group\")) {\r\n\t\t\t\t\t\tq.delete(\"group\");\r\n\t\t\t\t\t\tpage.url.searchParams.getAll(\"group\").forEach(group => q.append(\"group\", group));\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\tconst res = await API.Chapter.Aggregate(manga.id, q);\r\n\t\t\t\t\tif (readDisposed || generation !== readGeneration || context !== readContext() || window.location.pathname !== pathname) {\r\n\t\t\t\t\t\treturn;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\taggregated = res.body;\r\n\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t}\r\n\r\n\t\t\t\tif (aggregated?.chapters.length) {\r\n\t\t\t\t\tconst history = $readHistory?.[manga.id];\r\n\r\n\t\t\t\t\tif (history) {\r\n\t\t\t\t\t\tconst filtered = aggregated.chapters.filter(e => !Object.keys(e.entries).some(id => id in history));\r\n\t\t\t\t\t\tconsole.info(aggregated.chapters[aggregated.chapters.length - 1]);\r\n\r\n\t\t\t\t\t\tif (filtered.length) {\r\n\t\t\t\t\t\t\ttargetAggregatedChapter = filtered[filtered.length - 1];\r\n\t\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[0];\r\n\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[aggregated.chapters.length - 1];\r\n\r\n\t\t\t\t\tif (targetAggregatedChapter) {\r\n\t\t\t\t\t\tconst entries = Object.entries(targetAggregatedChapter.entries);\r\n\t\t\t\t\t\tif (entries.length === 1) await goto(`/chapter/${entries[0][0]}/1`);\r\n\t\t\t\t\t\telse isChapterSelectionDialogOpen = true;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisStartReading = false;\r\n\t\t\t}\r\n\t\t});\r\n",
+    "after": "\tconst startRead = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!isPublished || isEmpty || boundedReadingPending) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisStartReading = true; deviceReadError = \"\";\r\n\t\t\tlet assertDevice: (() => void) | undefined;\r\n\t\t\ttry {\r\n\t\t\t\tassertDevice = captureDeviceReading(); assertDevice();\r\n\t\t\t\t{\r\n\t\t\t\t\tconst generation = ++readGeneration, context = readContext();\r\n\t\t\t\t\taggregated = undefined; targetAggregatedChapter = undefined; isChapterSelectionDialogOpen = false;\r\n\t\t\t\t\tconst { pathname } = window.location;\r\n\t\t\t\t\tconst q = new URLSearchParams();\r\n\t\t\t\t\tprefs.applyChapterPreferences(q);\r\n\r\n\t\t\t\t\tif (page.url.searchParams.has(\"tlang\")) {\r\n\t\t\t\t\t\tq.delete(\"tlang\");\r\n\t\t\t\t\t\tpage.url.searchParams.getAll(\"tlang\").forEach(lang => q.append(\"tlang\", lang));\r\n\t\t\t\t\t}\r\n\t\t\t\t\tif (page.url.searchParams.has(\"group\")) {\r\n\t\t\t\t\t\tq.delete(\"group\");\r\n\t\t\t\t\t\tpage.url.searchParams.getAll(\"group\").forEach(group => q.append(\"group\", group));\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\tconst res = await API.Chapter.Aggregate(manga.id, q);\r\n\t\t\t\t\tassertDevice();\r\n\t\t\t\t\tif (readDisposed || generation !== readGeneration || context !== readContext() || window.location.pathname !== pathname) {\r\n\t\t\t\t\t\treturn;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\taggregated = res.body;\r\n\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t}\r\n\r\n\t\t\t\tif (aggregated?.chapters.length) {\r\n\t\t\t\t\tconst history = $readHistory?.[manga.id];\r\n\r\n\t\t\t\t\tif (history) {\r\n\t\t\t\t\t\tconst filtered = aggregated.chapters.filter(e => !Object.keys(e.entries).some(id => id in history));\r\n\r\n\t\t\t\t\t\tif (filtered.length) {\r\n\t\t\t\t\t\t\ttargetAggregatedChapter = filtered[filtered.length - 1];\r\n\t\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[0];\r\n\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[aggregated.chapters.length - 1];\r\n\r\n\t\t\t\t\tif (targetAggregatedChapter) {\r\n\t\t\t\t\t\tassertDevice();\r\n\t\t\t\t\t\tconst entries = Object.entries(targetAggregatedChapter.entries);\r\n\t\t\t\t\t\tif (entries.length === 1) await goto(`/chapter/${entries[0][0]}/1`);\r\n\t\t\t\t\t\telse { deviceChoiceCheck = assertDevice; isChapterSelectionDialogOpen = true; }\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (assertDevice) { try { assertDevice(); } catch { return; } }\r\n\t\t\t\tdeviceReadError = \"Automatic device reading could not complete. Retry or narrow language/group filters; alternatively choose Start from first chapter, which ignores completion.\";\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisStartReading = false;\r\n\t\t\t}\r\n\t\t});\r\n",
+    "markup": false
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "one mode-specific primary and explicit bounded first-chapter alternative",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "\t<Button\r\n\t\tclass=\"border-none\"\r\n\t\ttype=\"button\"\r\n\t\tvariant=\"outline\"\r\n\t\tonclick={startRead}\r\n\t\tdisabled={isStartReading || !isPublished || isEmpty}\r\n\t>\r\n\t\t{#if isStartReading}\r\n\t\t\t<Spinner />\r\n\t\t{:else}\r\n\t\t\t<BookOpen />\r\n\t\t{/if}\r\n\t\t{#if $readHistory?.[manga.id]}\r\n\t\t\tContinue Reading\r\n\t\t{:else}\r\n\t\t\tStart Reading\r\n\t\t{/if}\r\n\t</Button>",
+    "after": "\t<TitleReadingActions mangaId={manga.id} disabled={!isPublished} legacyPending={isStartReading} deviceHistoryReady={!deviceReadUnavailable} deviceError={deviceReadError} {clearDeviceSelection} onPending={pending => { boundedReadingPending = pending; }}>\r\n\t\t{#snippet devicePrimary(blocked: boolean, prepareDevice: () => boolean)}\r\n\t<Button\r\n\t\tclass=\"border-none\"\r\n\t\ttype=\"button\"\r\n\t\tvariant=\"outline\"\r\n\t\tonclick={event => plainAction(event, () => { if (prepareDevice()) void startRead(); })}\r\n\t\tdisabled={isStartReading || !isPublished || isEmpty || blocked || deviceReadUnavailable}\r\n\t>\r\n\t\t{#if isStartReading}\r\n\t\t\t<Spinner />\r\n\t\t{:else}\r\n\t\t\t<BookOpen />\r\n\t\t{/if}\r\n\t\t{#if $readHistory?.[manga.id]}\r\n\t\t\tContinue Reading\r\n\t\t{:else}\r\n\t\t\tStart Reading\r\n\t\t{/if}\r\n\t</Button>\r\n\t\t{/snippet}\r\n\t</TitleReadingActions>",
+    "markup": true
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "retain device-only aggregate chooser with current admission",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "<Dialog.Root bind:open={isChapterSelectionDialogOpen}>\r\n\t<Dialog.Content class=\"flex max-h-[calc(100dvh-2rem)] !max-w-[min(80rem,calc(100dvw-2rem))] flex-col overflow-auto\">\r\n\t\t<Dialog.Header>\r\n\t\t\t<Dialog.Title>Select Chapter</Dialog.Title>\r\n\t\t</Dialog.Header>\r\n\t\t{#if aggregated?.chapters.length && targetAggregatedChapter}\r\n\t\t\t<div class=\"mt-1 space-y-0.5\">\r\n\t\t\t\t{#each Object.entries(targetAggregatedChapter.entries) as [id, entry]}\r\n\t\t\t\t\t<ChapterListEntry\r\n\t\t\t\t\t\tclass=\"bg-input/30 hover:bg-input/55 rounded-md\"\r\n\t\t\t\t\t\tchapter={{\r\n\t\t\t\t\t\t\tid: id,\r\n\t\t\t\t\t\t\tchapter: targetAggregatedChapter.chapter,\r\n\t\t\t\t\t\t\tvolume: targetAggregatedChapter.volume,\r\n\t\t\t\t\t\t\tcreated_at: null!,\r\n\t\t\t\t\t\t\tpublished_at: entry.published_at!,\r\n\t\t\t\t\t\t\tupdated_at: null!,\r\n\t\t\t\t\t\t\tlanguage: aggregated.languages[entry.language],\r\n\t\t\t\t\t\t\trelationships: {\r\n\t\t\t\t\t\t\t\tmanga: manga,\r\n\t\t\t\t\t\t\t\tgroups: entry.groups.map(idx => aggregated!.groups[idx]),\r\n\t\t\t\t\t\t\t\tthread: null!\r\n\t\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\tversion: undefined!\r\n\t\t\t\t\t\t}}\r\n\t\t\t\t\t/>\r\n\t\t\t\t{/each}\r\n\t\t\t</div>\r\n\t\t{/if}\r\n\t</Dialog.Content>\r\n</Dialog.Root>",
+    "after": "{#if $localLibraryState.mode === \"device\" && !$readerLibrarySelection.pending && !deviceReadUnavailable && !boundedReadingPending}\r\n<Dialog.Root bind:open={isChapterSelectionDialogOpen}>\r\n\t<Dialog.Content onclickcapture={guardDeviceChoice} onauxclickcapture={guardDeviceChoice} class=\"flex max-h-[calc(100dvh-2rem)] !max-w-[min(80rem,calc(100dvw-2rem))] flex-col overflow-auto\">\r\n\t\t<Dialog.Header>\r\n\t\t\t<Dialog.Title>Select Chapter</Dialog.Title>\r\n\t\t</Dialog.Header>\r\n\t\t{#if aggregated?.chapters.length && targetAggregatedChapter}\r\n\t\t\t<div class=\"mt-1 space-y-0.5\">\r\n\t\t\t\t{#each Object.entries(targetAggregatedChapter.entries) as [id, entry]}\r\n\t\t\t\t\t<ChapterListEntry\r\n\t\t\t\t\t\tclass=\"bg-input/30 hover:bg-input/55 rounded-md\"\r\n\t\t\t\t\t\tchapter={{\r\n\t\t\t\t\t\t\tid: id,\r\n\t\t\t\t\t\t\tchapter: targetAggregatedChapter.chapter,\r\n\t\t\t\t\t\t\tvolume: targetAggregatedChapter.volume,\r\n\t\t\t\t\t\t\tcreated_at: null!,\r\n\t\t\t\t\t\t\tpublished_at: entry.published_at!,\r\n\t\t\t\t\t\t\tupdated_at: null!,\r\n\t\t\t\t\t\t\tlanguage: aggregated.languages[entry.language],\r\n\t\t\t\t\t\t\trelationships: {\r\n\t\t\t\t\t\t\t\tmanga: manga,\r\n\t\t\t\t\t\t\t\tgroups: entry.groups.map(idx => aggregated!.groups[idx]),\r\n\t\t\t\t\t\t\t\tthread: null!\r\n\t\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\tversion: undefined!\r\n\t\t\t\t\t\t}}\r\n\t\t\t\t\t/>\r\n\t\t\t\t{/each}\r\n\t\t\t</div>\r\n\t\t{/if}\r\n\t</Dialog.Content>\r\n</Dialog.Root>\r\n{/if}",
+    "markup": true
+  },
+  {
+    "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+    "label": "semantic keyboard actions yield the Shift modifier",
+    "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+    "count": 1,
+    "markup": false,
+    "before": "\t\t\tev.ctrlKey ||",
+    "after": "\t\t\tev.ctrlKey ||\r\n\t\t\tev.shiftKey ||"
+  },
+  {
+    "path": "src/lib/components/reader/reader-page-selector.svelte",
+    "label": "page selector highlights the current spread independently of chapter navigation",
+    "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+    "count": 1,
+    "markup": true,
+    "before": "class:underline={reader.chapterIndex === i}",
+    "after": "class:underline={reader.currentSpread === spread}"
+  },
+  {
+    "path": "src/lib/components/reader/reader-page-selector.svelte",
+    "label": "page selector highlights the current page independently of chapter navigation",
+    "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+    "count": 1,
+    "markup": true,
+    "before": "class:underline={reader.chapterIndex === page.index}",
+    "after": "class:underline={reader.currentPage?.index === page.index}"
+  },
+  {
+    "path": "src/lib/components/reader/reader-keyboard-listener.svelte",
+    "label": "native disclosures own focused reader keyboard events",
+    "sha256": "4d10f5e6efed6fe727c984f91d9711e20a2cc17e8200f0d5dd0380f90ecc26e4",
+    "count": 1,
+    "markup": false,
+    "before": "target.closest(\"input, textarea, select, button, a[href],",
+    "after": "target.closest(\"input, textarea, select, button, summary, a[href],"
+  }
+]

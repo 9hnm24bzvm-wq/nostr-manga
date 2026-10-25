@@ -1,0 +1,496 @@
+{
+  "schema": "owned-exact-account-lock-corrected-v1",
+  "started_at_utc": "2026-10-17T05:09:14.388435+00:00",
+  "command": [
+    "/bin/bash",
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+    "/usr/bin/python3",
+    "-B",
+    "/workspace/shared/nostr-manga-recovery-20261017/run-exact-account-lock-seam-03.py"
+  ],
+  "source_pins": {
+    "scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+    "tests/ci/test_auth_fixture_guard_recovery.py": "6aba040535e2e1fae354aa8ddb7095ddfe51c3d564f2a3000c7d1fda2eaa227c"
+  },
+  "probe_sha256": "8c2ae9c946310f65dbc9a0078a3d14a6be3d0f00d0d1eeb47596a8d2d9a05b81",
+  "free_before": 26506334208,
+  "pass": true,
+  "observed_births": [
+    {
+      "pid": 5,
+      "ppid": 2,
+      "group": 5,
+      "session": 5,
+      "start_ticks": 716463,
+      "state": "S"
+    },
+    {
+      "pid": 8,
+      "ppid": 5,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 716467,
+      "state": "R"
+    },
+    {
+      "pid": 9,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 716467,
+      "state": "D"
+    },
+    {
+      "pid": 11,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 716469,
+      "state": "S"
+    },
+    {
+      "pid": 12,
+      "ppid": 11,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 716469,
+      "state": "R"
+    },
+    {
+      "pid": 16,
+      "ppid": 15,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 716472,
+      "state": "R"
+    },
+    {
+      "pid": 15,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 716472,
+      "state": "S"
+    },
+    {
+      "pid": 17,
+      "ppid": 8,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 716482,
+      "state": "S"
+    },
+    {
+      "pid": 18,
+      "ppid": 17,
+      "group": 8,
+      "session": 8,
+      "start_ticks": 716482,
+      "state": "R"
+    },
+    {
+      "pid": 21,
+      "ppid": 5,
+      "group": 21,
+      "session": 21,
+      "start_ticks": 716547,
+      "state": "Z"
+    },
+    {
+      "pid": 22,
+      "ppid": 21,
+      "group": 22,
+      "session": 22,
+      "start_ticks": 716549,
+      "state": "S"
+    },
+    {
+      "pid": 23,
+      "ppid": 21,
+      "group": 23,
+      "session": 23,
+      "start_ticks": 716549,
+      "state": "S"
+    },
+    {
+      "pid": 25,
+      "ppid": 21,
+      "group": 25,
+      "session": 25,
+      "start_ticks": 716549,
+      "state": "R"
+    },
+    {
+      "pid": 26,
+      "ppid": 21,
+      "group": 26,
+      "session": 26,
+      "start_ticks": 716549,
+      "state": "R"
+    },
+    {
+      "pid": 27,
+      "ppid": 21,
+      "group": 27,
+      "session": 27,
+      "start_ticks": 716549,
+      "state": "R"
+    },
+    {
+      "pid": 28,
+      "ppid": 5,
+      "group": 28,
+      "session": 28,
+      "start_ticks": 716553,
+      "state": "R"
+    },
+    {
+      "pid": 30,
+      "ppid": 5,
+      "group": 30,
+      "session": 30,
+      "start_ticks": 716555,
+      "state": "S"
+    },
+    {
+      "pid": 31,
+      "ppid": 21,
+      "group": 31,
+      "session": 31,
+      "start_ticks": 716555,
+      "state": "R"
+    },
+    {
+      "pid": 32,
+      "ppid": 5,
+      "group": 32,
+      "session": 32,
+      "start_ticks": 716558,
+      "state": "S"
+    },
+    {
+      "pid": 38,
+      "ppid": 21,
+      "group": 38,
+      "session": 38,
+      "start_ticks": 716567,
+      "state": "S"
+    },
+    {
+      "pid": 41,
+      "ppid": 21,
+      "group": 41,
+      "session": 41,
+      "start_ticks": 716615,
+      "state": "S"
+    },
+    {
+      "pid": 42,
+      "ppid": 21,
+      "group": 42,
+      "session": 42,
+      "start_ticks": 716617,
+      "state": "S"
+    }
+  ],
+  "direct_child_pid": 5,
+  "direct_child_birth_confirmed": true,
+  "direct_child_birth": {
+    "pid": 5,
+    "ppid": 2,
+    "group": 5,
+    "session": 5,
+    "start_ticks": 716463,
+    "state": "R"
+  },
+  "exit_code": 0,
+  "terminal_errors": [],
+  "observed_listeners": [
+    {
+      "family": "tcp",
+      "address": "0100007F",
+      "port": 34863,
+      "inode": "229375",
+      "owner": {
+        "pid": 21,
+        "ppid": 5,
+        "group": 21,
+        "session": 21,
+        "start_ticks": 716547,
+        "state": "S"
+      }
+    },
+    {
+      "family": "tcp",
+      "address": "0100007F",
+      "port": 38625,
+      "inode": "231466",
+      "owner": {
+        "pid": 32,
+        "ppid": 5,
+        "group": 32,
+        "session": 32,
+        "start_ticks": 716558,
+        "state": "S"
+      }
+    }
+  ],
+  "terminal_fd_observations": [
+    {
+      "birth": {
+        "pid": 11,
+        "ppid": 8,
+        "group": 8,
+        "session": 8,
+        "start_ticks": 716469,
+        "state": "S"
+      },
+      "current": null,
+      "error_class": "FileNotFoundError"
+    },
+    {
+      "birth": {
+        "pid": 12,
+        "ppid": 11,
+        "group": 8,
+        "session": 8,
+        "start_ticks": 716469,
+        "state": "R"
+      },
+      "current": null,
+      "error_class": "FileNotFoundError"
+    },
+    {
+      "birth": {
+        "pid": 8,
+        "ppid": 5,
+        "group": 8,
+        "session": 8,
+        "start_ticks": 716467,
+        "state": "R"
+      },
+      "current": {
+        "pid": 8,
+        "ppid": 5,
+        "group": 8,
+        "session": 8,
+        "start_ticks": 716467,
+        "state": "Z"
+      },
+      "error_class": "PermissionError"
+    },
+    {
+      "birth": {
+        "pid": 30,
+        "ppid": 5,
+        "group": 30,
+        "session": 30,
+        "start_ticks": 716555,
+        "state": "S"
+      },
+      "current": {
+        "pid": 30,
+        "ppid": 5,
+        "group": 30,
+        "session": 30,
+        "start_ticks": 716555,
+        "state": "Z"
+      },
+      "error_class": "PermissionError"
+    },
+    {
+      "birth": {
+        "pid": 31,
+        "ppid": 21,
+        "group": 31,
+        "session": 31,
+        "start_ticks": 716555,
+        "state": "R"
+      },
+      "current": {
+        "pid": 31,
+        "ppid": 21,
+        "group": 31,
+        "session": 31,
+        "start_ticks": 716555,
+        "state": "Z"
+      },
+      "error_class": "PermissionError"
+    },
+    {
+      "birth": {
+        "pid": 26,
+        "ppid": 21,
+        "group": 26,
+        "session": 26,
+        "start_ticks": 716549,
+        "state": "R"
+      },
+      "current": null,
+      "error_class": "FileNotFoundError"
+    },
+    {
+      "birth": {
+        "pid": 27,
+        "ppid": 21,
+        "group": 27,
+        "session": 27,
+        "start_ticks": 716549,
+        "state": "R"
+      },
+      "current": null,
+      "error_class": "FileNotFoundError"
+    },
+    {
+      "birth": {
+        "pid": 21,
+        "ppid": 5,
+        "group": 21,
+        "session": 21,
+        "start_ticks": 716547,
+        "state": "Z"
+      },
+      "current": null,
+      "error_class": "FileNotFoundError"
+    }
+  ],
+  "guard_terminal_returncode": 0,
+  "all_observed_listener_ports_refused": true,
+  "remaining_saved_births": [],
+  "new_fixture_directories": [
+    "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-a44l487f"
+  ],
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 0,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "error": null,
+    "test_timeout_seconds": 180,
+    "captured_births": [
+      {
+        "pid": 8,
+        "start_ticks": 716467,
+        "group": 8,
+        "session": 8
+      },
+      {
+        "pid": 17,
+        "start_ticks": 716482,
+        "group": 8,
+        "session": 8
+      },
+      {
+        "pid": 18,
+        "start_ticks": 716482,
+        "group": 8,
+        "session": 8
+      },
+      {
+        "pid": 21,
+        "start_ticks": 716547,
+        "group": 21,
+        "session": 21
+      },
+      {
+        "pid": 22,
+        "start_ticks": 716549,
+        "group": 22,
+        "session": 22
+      },
+      {
+        "pid": 23,
+        "start_ticks": 716549,
+        "group": 23,
+        "session": 23
+      },
+      {
+        "pid": 25,
+        "start_ticks": 716549,
+        "group": 25,
+        "session": 25
+      },
+      {
+        "pid": 26,
+        "start_ticks": 716549,
+        "group": 26,
+        "session": 26
+      },
+      {
+        "pid": 27,
+        "start_ticks": 716549,
+        "group": 27,
+        "session": 27
+      },
+      {
+        "pid": 28,
+        "start_ticks": 716553,
+        "group": 28,
+        "session": 28
+      },
+      {
+        "pid": 30,
+        "start_ticks": 716555,
+        "group": 30,
+        "session": 30
+      },
+      {
+        "pid": 32,
+        "start_ticks": 716558,
+        "group": 32,
+        "session": 32
+      },
+      {
+        "pid": 38,
+        "start_ticks": 716567,
+        "group": 38,
+        "session": 38
+      },
+      {
+        "pid": 41,
+        "start_ticks": 716615,
+        "group": 41,
+        "session": 41
+      },
+      {
+        "pid": 42,
+        "start_ticks": 716617,
+        "group": 42,
+        "session": 42
+      }
+    ],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": [],
+    "test_returncode": 0,
+    "postgres_returncode": 0,
+    "startup_timeout_seconds": 10,
+    "cleanup_phase_seconds": [
+      15,
+      5,
+      5
+    ]
+  },
+  "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-a44l487f/cleanup.json",
+  "cleanup_sha256": "396edb1648ffda052481e9cd1e2df8455a2a3d158c73c983dba9eddb45a1f8b0",
+  "captured_births_absent": true,
+  "saved_probe_births_absent": true,
+  "port_refused": true,
+  "source_unchanged": true,
+  "compiled_source_receipt_sha256": "2b2594f77bd2e64f8f10313f60115cb81491b29446b5a79a6ee6fcda870118b1",
+  "test_summary": {
+    "exact_cases": 1,
+    "passed": 1,
+    "failed": 0,
+    "application_test_pass": true,
+    "scope": "Exact-schema FK insertion plus six blocked authority/write probes and final rollback/state assertions."
+  },
+  "ended_at_utc": "2026-10-17T05:09:17.233196+00:00",
+  "free_after": 26451177472,
+  "log_sha256": "ffaaff8f5979019e71f1ba23a83d6784f3326d123bd1451e060a4b0854c60e5e",
+  "expected_test_exit_code": 0,
+  "application_test_pass": true,
+  "receipt_persisted": true
+}

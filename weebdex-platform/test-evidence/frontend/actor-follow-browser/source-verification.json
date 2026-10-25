@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "status": "local-source-and-seams-passed-browser-unrun",
+  "utc": "2026-10-14T11:10:48.464836+00:00",
+  "base_commit": "56f9cb248334eff951be571a567697b73f710fab",
+  "checks": [
+    {
+      "name": "actor-follow-browser-harness",
+      "command": [
+        "node",
+        "--test",
+        "tests/ci/test_browser_actor_follow_journeys.mjs"
+      ],
+      "exit_code": 0,
+      "output_sha256": "ca0c77ad3b3f35c607a0122445f1a202ce5b449b8eb08a0321823803fb9339ac",
+      "cases": 25
+    },
+    {
+      "name": "legacy-library-diagnostic-wiring",
+      "command": [
+        "node",
+        "tests/ci/test_browser_library_diagnostics.mjs"
+      ],
+      "exit_code": 0,
+      "output_sha256": "3868ae7ce3b0b0f3d831e40a50ed1dfbcb854b52a89243fb704a5e94047d275c",
+      "cases": 61
+    },
+    {
+      "name": "compact-fixture-diagnostic-wiring",
+      "command": [
+        "node",
+        "tests/ci/test_browser_compact_fixture_diagnostics.mjs"
+      ],
+      "exit_code": 0,
+      "output_sha256": "db12cf1a5c68d1aec8c8abae7b43ba38ff9f28697d95f08f62879a8bf244fe73",
+      "cases": 33
+    },
+    {
+      "name": "journey-closed-diagnostics",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_journey_diagnostics.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "output_sha256": "6a70a2febede161821cbbe387d9a3f91cafb4ce40894213c3d9c60b9ff418611",
+      "cases": 11
+    },
+    {
+      "name": "hosted-controller-evidence-contracts",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/ci",
+        "-p",
+        "test_hosted_browser.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "output_sha256": "1a7ba7a0bfafc3728ad27f35d0e64e164bd7bf34f4452188863dcb53771eda00",
+      "cases": 24
+    },
+    {
+      "name": "existing-composed-follow-controller",
+      "command": [
+        "node",
+        "--test",
+        "tests/ci/test_actor_follow_readiness.mjs"
+      ],
+      "exit_code": 0,
+      "output_sha256": "e25333d0a980e85adbf55cc4ac8d8188ffa4b0ac077394edf6704e5537e31da0",
+      "cases": 52
+    },
+    {
+      "name": "canonical-frontend-preservation",
+      "command": [
+        "python3",
+        "scripts/verify-frontend-parity.py"
+      ],
+      "exit_code": 0,
+      "output_sha256": "f222f2b3bb57e3aab334e503970a172cef004bd7703e4af619f1475a74135583"
+    },
+    {
+      "name": "actor-phase-plan-only",
+      "command": [
+        "python3",
+        "scripts/ci/run-hosted-browser.py",
+        "--batch",
+        "actor-follow",
+        "--plan-only"
+      ],
+      "exit_code": 0,
+      "output_sha256": "1ac047fb9ae6608a16f385aaebab3f143ae2287fc047fa86295918cb9598ce92"
+    },
+    {
+      "name": "actor-journey-syntax",
+      "command": [
+        "node",
+        "--check",
+        "scripts/browser-actor-follow-journeys.mjs"
+      ],
+      "exit_code": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "ui-journey-syntax",
+      "command": [
+        "node",
+        "--check",
+        "scripts/browser-ui11-16-journeys.mjs"
+      ],
+      "exit_code": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "patch-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "production-paths-unchanged",
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "56f9cb248334eff951be571a567697b73f710fab",
+        "--",
+        "frontend",
+        "platform-integrations",
+        "backend",
+        "tests/runtime"
+      ],
+      "exit_code": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "additional_compact_http_classification_cases": 511,
+  "historical_38_phase_plan_unchanged": true,
+  "canonical_attachment_files_verified": 676,
+  "full_canonical_679_tree_verified_by_hosted_contract": true,
+  "production_frontend_integration_backend_fixture_paths_unchanged": true,
+  "runtime_browser_started": false,
+  "application_or_database_fixture_started": false,
+  "package_install": false,
+  "hosted_ci_started": false,
+  "public_write": false,
+  "development_corrections": [
+    "A negative-control browser stand-in exposed Block during loading; corrected the stand-in and reran all five controls.",
+    "A new Python scope test omitted its local validator binding; restored the binding and reran all 24 cases.",
+    "Independent review found a legacy whole-inventory diagnostic assertion; retained its original probes and added the explicit supplemental inventory."
+  ],
+  "limitations": [
+    "Node browser-harness wiring cases use explicit browser/API stand-ins, not live selectors or network acceptance.",
+    "Existing 52 composed-script cases use controlled stores/API completions, not browser execution.",
+    "Real Group/User route timings, native responses, browser operation and owned terminal cleanup still require supported hosted acceptance.",
+    "No in-place actor-switch or same-actor pending-write Session ordering browser claim is made."
+  ]
+}

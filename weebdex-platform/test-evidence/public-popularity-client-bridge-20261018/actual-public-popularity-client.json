@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "kind": "actual-public-popularity-client-loopback-probe",
+  "status": "passed",
+  "startedAt": "2026-10-18T02:33:20.935Z",
+  "scriptSha256": "04c8d44ce06028d6775e70b18132ac07ee4c062a9c7b5b173173f338ffdd4653",
+  "sources": {
+    "client.ts": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+    "validation.ts": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+    "popularity.ts": "5ebc5ae60c8aa71c120bd07349dd91dd7cad3ef2984022321074654e9ad6fa8b",
+    "query.ts": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193"
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/top?ids%5B%5D=8f7a2b2b-8de1-86ba-9594-7afda7948c7f&limit=10&rank=read&time=24h",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 324,
+      "bodySha256": "86b0e8a918e0533479ac2e3cb6f1284977bec88803f4d4ef6a19a0b9a2ca1ddc",
+      "elapsedMs": 22.951
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/top?ids%5B%5D=8f7a2b2b-8de1-86ba-9594-7afda7948c7f&limit=10&rank=read&time=7d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 324,
+      "bodySha256": "c4091f9008566c2b9de39ff38bb0c60307cb0ac48fec66c6873685d63ac42865",
+      "elapsedMs": 5.261
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/top?ids%5B%5D=8f7a2b2b-8de1-86ba-9594-7afda7948c7f&limit=10&rank=read&time=30d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 326,
+      "bodySha256": "ed953489edfd45dc8e63577178236c7d96571692113bc438ed5a9c81fb39734a",
+      "elapsedMs": 5.42
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/analytics/manga/8f7a2b2b-8de1-86ba-9594-7afda7948c7f/views",
+      "cookieSent": false,
+      "status": 204,
+      "rawBytes": 0,
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 6.196
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/top?ids%5B%5D=8f7a2b2b-8de1-86ba-9594-7afda7948c7f&limit=10&rank=read&time=24h",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 1213,
+      "bodySha256": "b193c298078f9e76fa23b74f1e309217bb06099fa7d1034a38aaa648a2f4ee50",
+      "elapsedMs": 9.235
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/top?ids%5B%5D=8f7a2b2b-8de1-86ba-9594-7afda7948c7f&limit=10&rank=read&time=7d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 1212,
+      "bodySha256": "b2be959d6b0754dc394dabfb9cdce26f469751811259c7b395edb47fbf6f52b7",
+      "elapsedMs": 11.105
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/top?ids%5B%5D=8f7a2b2b-8de1-86ba-9594-7afda7948c7f&limit=10&rank=read&time=30d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 1215,
+      "bodySha256": "60dbcc03ae5f1aaf9cffe5c2f53f4acef6cd64285c1e684455c5c5a8aabd01da",
+      "elapsedMs": 8.462
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/analytics/manga/8f7a2b2b-8de1-86ba-9594-7afda7948c7f/views",
+      "cookieSent": true,
+      "status": 204,
+      "rawBytes": 0,
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 4.331
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/top?ids%5B%5D=8f7a2b2b-8de1-86ba-9594-7afda7948c7f&limit=10&rank=read&time=24h",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 1213,
+      "bodySha256": "d5319842f61ebbd0bab086361e6becf937b067b416fd9868a80b315313a6e7e8",
+      "elapsedMs": 6.907
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/top?ids%5B%5D=8f7a2b2b-8de1-86ba-9594-7afda7948c7f&limit=10&rank=read&time=7d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 1212,
+      "bodySha256": "20f252768bbbd38597b9facb4cbd9bdf11959e48c016c7edc6d9f090f6f161bd",
+      "elapsedMs": 8.211
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/manga/top?ids%5B%5D=8f7a2b2b-8de1-86ba-9594-7afda7948c7f&limit=10&rank=read&time=30d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 1215,
+      "bodySha256": "bcfdf56aac8cfe6ee0d5dad9164f646a5dc92162781c4ee585abc7fa670c1a59",
+      "elapsedMs": 7.713
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/top?ids%5B%5D=864de132-57c0-8326-aa8f-cbd412d4a93e&limit=10&rank=read&time=24h",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 969,
+      "bodySha256": "86779a55a2a5b27c2cecc9bbd3aa6feb24c8820581e9db4fd1568d58ef2f53fd",
+      "elapsedMs": 9.965
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/top?ids%5B%5D=864de132-57c0-8326-aa8f-cbd412d4a93e&limit=10&rank=read&time=7d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 968,
+      "bodySha256": "1e904ae50ed12fc4bab444b5477ff9c5233075d0ec8e1e2d1d472edc66557f82",
+      "elapsedMs": 9.664
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/top?ids%5B%5D=864de132-57c0-8326-aa8f-cbd412d4a93e&limit=10&rank=read&time=30d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 971,
+      "bodySha256": "46ac67dad2ef3859dde3902a2914ee4cffbaf6462d4bffefc1327ef7f92263e2",
+      "elapsedMs": 9.431
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/analytics/chapter/864de132-57c0-8326-aa8f-cbd412d4a93e/views",
+      "cookieSent": true,
+      "status": 204,
+      "rawBytes": 0,
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 3.099
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/top?ids%5B%5D=864de132-57c0-8326-aa8f-cbd412d4a93e&limit=10&rank=read&time=24h",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 969,
+      "bodySha256": "a3716b1e2ae6b0715415f0d088ec6b6d30a52105c7993cf7704ed5af1c4aeafc",
+      "elapsedMs": 9.914
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/top?ids%5B%5D=864de132-57c0-8326-aa8f-cbd412d4a93e&limit=10&rank=read&time=7d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 968,
+      "bodySha256": "6d7579c3f2ebd8e487b1bf3514f9405ac9313b7cc7b8c40f4d1118b3c172c0b9",
+      "elapsedMs": 17.237
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/top?ids%5B%5D=864de132-57c0-8326-aa8f-cbd412d4a93e&limit=10&rank=read&time=30d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 971,
+      "bodySha256": "bfbf941dadddd77a4a1cd8e19a3cdd2637227adcbe051ab434594fdfb23e0339",
+      "elapsedMs": 9.343
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/analytics/chapter/864de132-57c0-8326-aa8f-cbd412d4a93e/views",
+      "cookieSent": true,
+      "status": 204,
+      "rawBytes": 0,
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "elapsedMs": 4.577
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/top?ids%5B%5D=864de132-57c0-8326-aa8f-cbd412d4a93e&limit=10&rank=read&time=24h",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 969,
+      "bodySha256": "f156897934b0cd60464767fb3bd33ecdf82ac2bf1bb1c4b4a76585e955f77c53",
+      "elapsedMs": 9.803
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/top?ids%5B%5D=864de132-57c0-8326-aa8f-cbd412d4a93e&limit=10&rank=read&time=7d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 968,
+      "bodySha256": "d261e5546bd472d893dfd726cc291ca7ea8d62effd3a7f590f00beb8ded1c0cf",
+      "elapsedMs": 10.221
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/chapter/top?ids%5B%5D=864de132-57c0-8326-aa8f-cbd412d4a93e&limit=10&rank=read&time=30d",
+      "cookieSent": false,
+      "status": 200,
+      "rawBytes": 971,
+      "bodySha256": "1a78aa049013a2c16ac2a2686f7d39e0c00182402b62f43a6b94622035585d17",
+      "elapsedMs": 8.964
+    }
+  ],
+  "observations": [
+    {
+      "kind": "manga",
+      "phase": "before",
+      "time": "24h",
+      "total": 0,
+      "views": "0"
+    },
+    {
+      "kind": "manga",
+      "phase": "before",
+      "time": "7d",
+      "total": 0,
+      "views": "0"
+    },
+    {
+      "kind": "manga",
+      "phase": "before",
+      "time": "30d",
+      "total": 0,
+      "views": "0"
+    },
+    {
+      "kind": "manga",
+      "phase": "after-first",
+      "time": "24h",
+      "total": 1,
+      "views": "1"
+    },
+    {
+      "kind": "manga",
+      "phase": "after-first",
+      "time": "7d",
+      "total": 1,
+      "views": "1"
+    },
+    {
+      "kind": "manga",
+      "phase": "after-first",
+      "time": "30d",
+      "total": 1,
+      "views": "1"
+    },
+    {
+      "kind": "manga",
+      "phase": "after-repeat",
+      "time": "24h",
+      "total": 1,
+      "views": "1"
+    },
+    {
+      "kind": "manga",
+      "phase": "after-repeat",
+      "time": "7d",
+      "total": 1,
+      "views": "1"
+    },
+    {
+      "kind": "manga",
+      "phase": "after-repeat",
+      "time": "30d",
+      "total": 1,
+      "views": "1"
+    },
+    {
+      "kind": "chapter",
+      "phase": "before",
+      "time": "24h",
+      "total": 1,
+      "views": "3"
+    },
+    {
+      "kind": "chapter",
+      "phase": "before",
+      "time": "7d",
+      "total": 1,
+      "views": "3"
+    },
+    {
+      "kind": "chapter",
+      "phase": "before",
+      "time": "30d",
+      "total": 1,
+      "views": "3"
+    },
+    {
+      "kind": "chapter",
+      "phase": "after-first",
+      "time": "24h",
+      "total": 1,
+      "views": "4"
+    },
+    {
+      "kind": "chapter",
+      "phase": "after-first",
+      "time": "7d",
+      "total": 1,
+      "views": "4"
+    },
+    {
+      "kind": "chapter",
+      "phase": "after-first",
+      "time": "30d",
+      "total": 1,
+      "views": "4"
+    },
+    {
+      "kind": "chapter",
+      "phase": "after-repeat",
+      "time": "24h",
+      "total": 1,
+      "views": "4"
+    },
+    {
+      "kind": "chapter",
+      "phase": "after-repeat",
+      "time": "7d",
+      "total": 1,
+      "views": "4"
+    },
+    {
+      "kind": "chapter",
+      "phase": "after-repeat",
+      "time": "30d",
+      "total": 1,
+      "views": "4"
+    }
+  ],
+  "cookiePolicy": {
+    "nodeInMemoryJar": true,
+    "productionSameOriginCredentials": true,
+    "visitorCookieObserved": true,
+    "valuesRetained": false,
+    "path": "/api/v1/analytics",
+    "httpOnly": true,
+    "sameSite": "Lax",
+    "secure": false
+  },
+  "boundary": "Production public client/ranking adapter over owned loopback HTTP; explicit Node visitor jar and Origin stand-ins, no native-browser or production acceptance claim.",
+  "origin": "http://127.0.0.1:43779",
+  "targets": {
+    "manga": "8f7a2b2b-8de1-86ba-9594-7afda7948c7f",
+    "chapter": "864de132-57c0-8326-aa8f-cbd412d4a93e"
+  },
+  "elapsedMs": 252.578,
+  "rawResponseBytes": 16978
+}

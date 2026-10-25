@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "base_commit": "53c04b1ce5e0c394c3707a1ae2a441f57a5839da",
+  "base_tree": "56056bd473639d7aa342a390b123368811f67e2d",
+  "historical_migration_files_unchanged": 85,
+  "pr28_migration86_sha256": "04d617d8836d47d7ab572c03ac7dc2e3a5b362415bffe34f99d94d3ed07b87b6",
+  "manifest_order": [
+    85,
+    86,
+    87,
+    88
+  ],
+  "read_rs_only_import_and_join_shape_changed": true,
+  "fields_visibility_count_sort_filters_pagination_unchanged": true,
+  "sql_body_equivalence_unit_tests_passed": true,
+  "new_migration88_sha256": "033688ecb3cc8a81a449af56c85f133ba056c3a29c5994e15051ffaabc58cbf4",
+  "frozen_previous_query_sha256": "80b1c6f6d0652ea44d4060f5efe3c3f57be3bf907972a51985c447d212a90958"
+}

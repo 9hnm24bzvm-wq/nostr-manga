@@ -1,0 +1,35 @@
+{
+  "source_commit": "a424eb67586d36e269b3fc56c3cf20561e1c052d",
+  "source_tree": "00012dd2cd11f80d1fcf0c47e625f52e4864a3f6",
+  "pins": {
+    "index": "5f7a148c12562c06816827d6cdbd922c3a2c709d38ba59bbc9feaa9bddf93f57",
+    "manifest": "31128e4c24ac3c2266f799e5b8e92874dd00f73f166a25d8fb3540e202d5f112",
+    "normal": "88c324412462158c2f557e77dd2b595b2a6c6377ec5d2ddba0455ec223c6c4e8",
+    "provisioner": "c4a776d37d7fbe0dce7842ab09a896de6941de7ea915129c6d50455b7082a3f8"
+  },
+  "build": {
+    "offline": true,
+    "locked": true,
+    "toolchain": "1.90.0",
+    "exit_code": 0,
+    "guard_unchanged": true,
+    "guard_source_sha256": "dcfe71335710e5ac5f9e201a06c533005417823508cf5b676fff002c90d3d559"
+  },
+  "stage_only_delta": {
+    "source_commit": "a424eb67586d36e269b3fc56c3cf20561e1c052d",
+    "source_tree": "00012dd2cd11f80d1fcf0c47e625f52e4864a3f6",
+    "file": "weebdex-platform/scripts/browser-acceptance.mjs",
+    "original_sha256": "2f733baa5a264073ebd733a0a807d07548a00ed3f5d538e26a0e4a1ada15f81b",
+    "staged_sha256": "34e487eceb3e6c56abdbb5faa6d74600c51e6bf935e782062160b3cf5c587989",
+    "before": "browser = await chromium.launch({ executablePath, headless: true,",
+    "after": "browser = await chromium.launch({ executablePath, headless: true, chromiumSandbox: true,",
+    "reason": "Explicitly enable Chromium sandbox; default Playwright launch disables it",
+    "tracked_original_changed": false,
+    "security_weakening_allowed": false
+  },
+  "browser": {
+    "sandbox_explicitly_enabled": true,
+    "runtime": "existing pinned Playwright1.62.1 and local system Chromium; differs from hosted revision1234"
+  },
+  "scope": "Focused actual local browser acceptance, not full hosted suite"
+}

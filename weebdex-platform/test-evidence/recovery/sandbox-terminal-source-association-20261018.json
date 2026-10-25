@@ -1,0 +1,314 @@
+{
+  "schema": 1,
+  "status": "exact-shared-input-association-with-scoped-exceptions",
+  "publishedRecoveryBase": "85cda6399d0b5522aa3857c3f95eb289366302e6",
+  "publishedRecoveryBaseTree": "12b3034915ecf16f8379eefc9615501c05e3476b",
+  "sourceBeforeMetadata": "2ee88d848532a7e408ee74db144bedafc1cc4bc8",
+  "treeBeforeMetadata": "027b04815665b2e0ee283fa295d5555ff7030f27",
+  "sourceManifest": "sandbox-terminal-current-source-pins-20261018.json",
+  "sourceManifestSha256": "c0420c1a6a0b5d98c3508f05aac0a56c515eb600beaa4c6f8e74082344adbe89",
+  "sourceInputs": 1290,
+  "sourceScope": "Prior 1268 retained source paths refreshed plus all newly changed non-evidence paths. This metadata and evidence are outside the map.",
+  "freshFrontendQualification": {
+    "evidence": "../frontend/approved-current-restore-builds-20261018/result.json",
+    "qualifiedSource": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+    "product": {
+      "qualifiedInputs": 925,
+      "unchanged": 925,
+      "exceptions": []
+    },
+    "trackedNonEvidence": {
+      "qualifiedInputs": 2333,
+      "unchanged": 2325,
+      "exceptions": [
+        {
+          "path": "manga-protocol-lab/docs/pending-blossom-scope-choice.md",
+          "qualifiedSha256": "20d3bac7678bd0c22ac2d33b039ee22835a0c8b235a2579231f41db9d5129af2",
+          "currentSha256": "ae9d383e98cc6219d9c3f75af4f3660211ff05e353fac831bd8e64f59427d639"
+        },
+        {
+          "path": "manga-protocol-lab/docs/pending-endpoint-discovery-choices.md",
+          "qualifiedSha256": "c095308478fbf4e4acbd48419eb45d432606e6d76f9b0d59862b4f19d38964c4",
+          "currentSha256": "5e86ebae5e5bec6013581f5cbcbadef554534828f82f119367ed0ef9885a2f41"
+        },
+        {
+          "path": "manga-protocol-lab/docs/rebuild/CHECKPOINTS.json",
+          "qualifiedSha256": "33e513dde8eec0478b0a9c3197c1bf53152c0810de2a88abb1a1aeb5de07b363",
+          "currentSha256": "61b67ea0a55f0641d643cc40eb73963292949e09beb5aaf1a18e17d63d141ce4"
+        },
+        {
+          "path": "manga-protocol-lab/docs/rebuild/PARITY-REFACTOR-BACKEND.md",
+          "qualifiedSha256": "a97372f668e7e61f3766eaee4f33ff6581ab024055df184f28834571bc966532",
+          "currentSha256": "d0a32735726095f40552a365cb0baa6b14de3933b7956f30c1d2b4636bcea2ef"
+        },
+        {
+          "path": "manga-protocol-lab/docs/rebuild/PARITY-REQUIREMENTS.md",
+          "qualifiedSha256": "f16a74567bcb1a5174fa597ac9fd5b92ddf2a32662ab1a19d053bac656a781b8",
+          "currentSha256": "1aa5b7c26aa5d35be5347798de4f053826158f36af858c61fc5910c6430f92bf"
+        },
+        {
+          "path": "manga-protocol-lab/docs/rebuild/STATUS.md",
+          "qualifiedSha256": "2dcf24b8f996d53c9c60a1ad4a34a1ed4f77828657bd44b94893b5fcc8e316c6",
+          "currentSha256": "4eef4affabd3ca6b8982948bb76a1227deaa92c442bb77bbca39e0e2804c7a30"
+        },
+        {
+          "path": "manga-protocol-lab/docs/rebuild/requirements-baseline/spec.md",
+          "qualifiedSha256": "641f99878ba096e5c3c42081b66862e5ea54a124a2d0a5e56d21c87250cf08bf",
+          "currentSha256": "2c9a294387d75565cb4e840dad5e4aaa00615babeb60e58d3359598072b1e4ad"
+        },
+        {
+          "path": "weebdex-platform/docs/mixed-load-readiness-20261018.md",
+          "qualifiedSha256": "93ca1cc937c6e4397580bf5d278552c0eb47b31a013adc9a99b46434378fcb7c",
+          "currentSha256": "3df4b196df6e449a061182d52adb9adb6a06f46de1e214a4cd819dbc5262458f"
+        }
+      ]
+    },
+    "allCurrentFrontendProductBytesMatch": true,
+    "newFilesOutsideQualifiedProductMap": [
+      ".github/workflows/hosted-sandbox-preflight.yml",
+      "manga-protocol-lab/docs/pending-blossom-scope-choice.md",
+      "manga-protocol-lab/docs/pending-endpoint-discovery-choices.md",
+      "manga-protocol-lab/docs/rebuild/CHECKPOINTS.json",
+      "manga-protocol-lab/docs/rebuild/PARITY-REFACTOR-BACKEND.md",
+      "manga-protocol-lab/docs/rebuild/PARITY-REQUIREMENTS.md",
+      "manga-protocol-lab/docs/rebuild/STATUS.md",
+      "manga-protocol-lab/docs/rebuild/requirements-baseline/spec.md",
+      "weebdex-platform/docs/fixtures/integrated-read-fanout-v1.json",
+      "weebdex-platform/docs/integrated-load-transport-budget.md",
+      "weebdex-platform/docs/integrated-read-fanout-20261018.md",
+      "weebdex-platform/docs/mixed-load-readiness-20261018.md",
+      "weebdex-platform/docs/native-account-closure-policy-choices-20261018.md",
+      "weebdex-platform/docs/verification/hosted-sandbox-preflight-proposal-20261018.md",
+      "weebdex-platform/docs/verification/private-provenance-redaction-20261018.md",
+      "weebdex-platform/scripts/ci/qualify-integrated-load-budget.py",
+      "weebdex-platform/scripts/ci/run-sandbox-preflight.py",
+      "weebdex-platform/scripts/ci/sandbox-preflight.mjs",
+      "weebdex-platform/scripts/integrated_load_budget.py",
+      "weebdex-platform/tests/ci/test_integrated_load_budget.py",
+      "weebdex-platform/tests/ci/test_integrated_read_fanout_plan.mjs",
+      "weebdex-platform/tests/ci/test_sandbox_preflight.mjs",
+      "weebdex-platform/tests/ci/test_sandbox_preflight.py"
+    ],
+    "boundary": "Both fresh production strict and Vite/CSS profiles associate by all 925 exact product inputs. New load tooling, documentation and preflight scripts/tests remain separately qualified; the whole current tree was not run as one suite."
+  },
+  "historicalFullCiMaps": {
+    "product": {
+      "qualifiedInputs": 922,
+      "unchanged": 913,
+      "exceptions": [
+        {
+          "path": "weebdex-platform/platform-integrations/public-api/client.ts",
+          "qualifiedSha256": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+          "currentSha256": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad"
+        },
+        {
+          "path": "weebdex-platform/scripts/browser-acceptance.mjs",
+          "qualifiedSha256": "33ae625d030bf222adc1678bf3cd9446f808c46faf03844191ead925455115d9",
+          "currentSha256": "2a9aeb0de972d27f5d3869ee3b6609a74eb8d25fc39c39717a9e84467d8b9be7"
+        },
+        {
+          "path": "weebdex-platform/scripts/browser-journeys.mjs",
+          "qualifiedSha256": "4371099ee492e92a950b5183a2bf1b96462acbb94f1739b0c0f39e9a20d834d7",
+          "currentSha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/native-feed-diagnostics.py",
+          "qualifiedSha256": "22c617e689c54df1c8af776d5df7cdb2b79ca8ea59e656cbdd8618205fbbd11c",
+          "currentSha256": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/runner-diagnostics.py",
+          "qualifiedSha256": "9271b0ee7f39954d9ee470284ac2a2b5550e0c8e14895427804cc3a2b0d1576b",
+          "currentSha256": "23852ebaeec6cc5147d039a9eeff93019965e12b6927934c9e659a7100ccf854"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/validate-ci-evidence.py",
+          "qualifiedSha256": "9fc684992fe02ca39ef2435c4c7b041ec279994004be158c7898c7501a68ce1a",
+          "currentSha256": "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77"
+        },
+        {
+          "path": "weebdex-platform/scripts/private-checkpoint.py",
+          "qualifiedSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+          "currentSha256": "f8c9184cea4169c9b544e587473b2c0d80ac346259b31b634c811b70270c3357"
+        },
+        {
+          "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+          "qualifiedSha256": "30b0626a5c131cb38a581a0db1cf36c7f1918f84ddc789f82d123c4584916f79",
+          "currentSha256": "20346189278b318c55aa08a41c60ff6ce0da639746341cae8de1439bf8d439cb"
+        },
+        {
+          "path": "weebdex-platform/scripts/runner-lifecycle.mjs",
+          "qualifiedSha256": "b89cd51a6e55ebf02331c6d37e06ca4bb524c2daa7d8caee1e678d45f39065d0",
+          "currentSha256": "384df9c700e337df1717d0e57cb62260f4d581916c18153e465de66bff6abf15"
+        }
+      ]
+    },
+    "execution": {
+      "qualifiedInputs": 1242,
+      "unchanged": 1217,
+      "exceptions": [
+        {
+          "path": "manga-protocol-lab/bench/library-node/MIXED.md",
+          "qualifiedSha256": "f447c2263354dad6914c3f4ba7262de3b0a4490da2563ef65bfcfd215ca72504",
+          "currentSha256": "018559a05e4b4cb621b0b7c5c7bf86bc78b6673e5cf03d5bf3c6e4476fbf7547"
+        },
+        {
+          "path": "manga-protocol-lab/bench/library-node/README.md",
+          "qualifiedSha256": "cdbffc8497395a66eac4c36c981786858f22f0c5b862ee316af321f0239e1032",
+          "currentSha256": "205aa49ee3bce3e3b98c6dfdbbe8376aa452a2b7757db2f1ed1d7ca6d71dea3c"
+        },
+        {
+          "path": "manga-protocol-lab/bench/library-node/mixed.py",
+          "qualifiedSha256": "d5592e7a72b6828640bf89b54331996059389f7271a61ee7dcc795e661ae9d1d",
+          "currentSha256": "a55afd995e9b5505ef8e0be2a96dd9c4809abd09a2ccf444b2e19cfde71b590b"
+        },
+        {
+          "path": "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py",
+          "qualifiedSha256": "cc887d16336bdad53c1dfaccfea02c4ac9e010cf6c844ac3a0206e5aa1bc911f",
+          "currentSha256": "92c7d81ed72ccfa22b9610b1d91712579a4d272c2360d594a3c0973a4586cc04"
+        },
+        {
+          "path": "manga-protocol-lab/bench/library-node/test_mixed.py",
+          "qualifiedSha256": "77fe28fae8f9075c1fb18feeebe5f879bb0f10a355565f74902324cc68fb1374",
+          "currentSha256": "68dce03ec75901e1135a6ac30aed6ee7e2b9ebebe8d63f7efee72714acbd04db"
+        },
+        {
+          "path": "manga-protocol-lab/scripts/bootstrap.sh",
+          "qualifiedSha256": "a4d56b91647d443223c4ddd2bf8682aa16811532bed55b34a6c8c141dbe1b384",
+          "currentSha256": "c1ddc8252d85f183abd55b4732e0b15fd019bc83b3f82a284b0244aa58d46ba0"
+        },
+        {
+          "path": "weebdex-platform/platform-integrations/public-api/client.ts",
+          "qualifiedSha256": "edb2d4b3532892ece1a6470972db9156f3d1cc60b43c25c2e19dcfe259fe7c15",
+          "currentSha256": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad"
+        },
+        {
+          "path": "weebdex-platform/scripts/browser-acceptance.mjs",
+          "qualifiedSha256": "33ae625d030bf222adc1678bf3cd9446f808c46faf03844191ead925455115d9",
+          "currentSha256": "2a9aeb0de972d27f5d3869ee3b6609a74eb8d25fc39c39717a9e84467d8b9be7"
+        },
+        {
+          "path": "weebdex-platform/scripts/browser-journeys.mjs",
+          "qualifiedSha256": "4371099ee492e92a950b5183a2bf1b96462acbb94f1739b0c0f39e9a20d834d7",
+          "currentSha256": "6d91bc7b669a155dc86f4d42493e4eb5c5a929bac44ffa883b80b8e0998bf21d"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/native-feed-diagnostics.py",
+          "qualifiedSha256": "22c617e689c54df1c8af776d5df7cdb2b79ca8ea59e656cbdd8618205fbbd11c",
+          "currentSha256": "4b523a854350e31c6b2b595c277f75bc66fc256cea6e1c763b28eef06372202c"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/runner-diagnostics.py",
+          "qualifiedSha256": "9271b0ee7f39954d9ee470284ac2a2b5550e0c8e14895427804cc3a2b0d1576b",
+          "currentSha256": "23852ebaeec6cc5147d039a9eeff93019965e12b6927934c9e659a7100ccf854"
+        },
+        {
+          "path": "weebdex-platform/scripts/ci/validate-ci-evidence.py",
+          "qualifiedSha256": "9fc684992fe02ca39ef2435c4c7b041ec279994004be158c7898c7501a68ce1a",
+          "currentSha256": "0680e55915180c517714560e9d83fa6b52a29cc412cefc2731652af531a13c77"
+        },
+        {
+          "path": "weebdex-platform/scripts/private-checkpoint.py",
+          "qualifiedSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+          "currentSha256": "f8c9184cea4169c9b544e587473b2c0d80ac346259b31b634c811b70270c3357"
+        },
+        {
+          "path": "weebdex-platform/scripts/public-upload-recovery-browser.mjs",
+          "qualifiedSha256": "30b0626a5c131cb38a581a0db1cf36c7f1918f84ddc789f82d123c4584916f79",
+          "currentSha256": "20346189278b318c55aa08a41c60ff6ce0da639746341cae8de1439bf8d439cb"
+        },
+        {
+          "path": "weebdex-platform/scripts/runner-lifecycle.mjs",
+          "qualifiedSha256": "b89cd51a6e55ebf02331c6d37e06ca4bb524c2daa7d8caee1e678d45f39065d0",
+          "currentSha256": "384df9c700e337df1717d0e57cb62260f4d581916c18153e465de66bff6abf15"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_browser_actor_follow_journeys.mjs",
+          "qualifiedSha256": "ee010e25b29ddfa09cb71ab1980506d0101ce345d52d13953e020ea77c9a2bae",
+          "currentSha256": "56f32a65b635e9549306165790509a401fffb199880d314b5cd83ed893d161fa"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_browser_library_follow_diagnostics.mjs",
+          "qualifiedSha256": "264321df786164d2bf5c79b1e2a210c7224a388145b6de568f28076d528f8940",
+          "currentSha256": "ba6c483dc1eb118d5a5345c5cfcd805494dd29af96dcad507e2be028abbab5e9"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+          "qualifiedSha256": "8f377f873e747a05e4175b2be0856ed6541782ccff0b083ecdef6ee18b68d101",
+          "currentSha256": "1dd590c4c20aa71174bcaa4bfa523479bca1d3433e91bb03995af66046053bf1"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_hosted_browser.py",
+          "qualifiedSha256": "f90749db354035557400c0af9f57d8c0a2e3a977b1bfc09d7cccc692d0efeb86",
+          "currentSha256": "d2740cf8b7cb0799484f81524faa2a78a2169f101b87481f3d2217792306eb6c"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_journey_diagnostics.py",
+          "qualifiedSha256": "897506786584b684931dba67b022672818bc17200a46e7736e7b930d591367ef",
+          "currentSha256": "2b1bba707414f7a2aec91acceb95157f5ca64116e6f592c0cb0214c50eedb558"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_native_feed_diagnostics.py",
+          "qualifiedSha256": "786c71228692f93efad49cb330e19ebcde15b658e24cdeac5e425f729134fe2a",
+          "currentSha256": "1101cbb285c830e4453903c16c6053fc545281b100c523ed0a1a670f686688f6"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_private_checkpoint.py",
+          "qualifiedSha256": "3767ddeb35f9e99af092d4e49b9177a8cf52f4c7bcfe3fc13acc2aebfd2a1c27",
+          "currentSha256": "98b284a1bf31a9b08b086e1d28a6026d9ca7cc25eeb5240e305386bd031cc886"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_public_upload_hosted_profile.py",
+          "qualifiedSha256": "e80ea2ad19ee9277be3b5f35efff8eee37f3f2d83e68dafea5550975bc7117df",
+          "currentSha256": "6bb9693e7d6a7f99c38f1145be5ed700c7ef9fc68116dc8b2a2c6a0b92523cd2"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_runner_diagnostics.py",
+          "qualifiedSha256": "d22d226f5afad25440a2fe0859fa07e3b0684bb7dac34511167322bca10572b5",
+          "currentSha256": "65c6d6ef30b71ada40cfa2fe5de297c968088366e4581f3006bac4e652608f56"
+        },
+        {
+          "path": "weebdex-platform/tests/ci/test_runner_lifecycle.mjs",
+          "qualifiedSha256": "a78310be5a18909cb2202983ecb05cf31059428d0217d90528cd9888305f971f",
+          "currentSha256": "d77eea2a0d06f855a9da063b6a4194a9d592304d04ad033e4d1816224073df4d"
+        }
+      ]
+    },
+    "qualifiedSnapshotRemainsHistorical": true
+  },
+  "pg18ControlledDiagnostics": {
+    "evidence": "../operations/pg18-diagnostics-20261018/result.json",
+    "source": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+    "inputs": {
+      "qualifiedInputs": 82,
+      "unchanged": 82,
+      "exceptions": []
+    },
+    "applicationRestoreOrCapacityQualified": false
+  },
+  "preflightFinite": {
+    "evidence": "../ci/sandbox-preflight-finite-20261018/result.json",
+    "exactSource": "7b6bd82690a0493ae92ca18c7e41289ace77dc34",
+    "inputs": {
+      "qualifiedInputs": 10,
+      "unchanged": 9,
+      "exceptions": [
+        {
+          "path": ".github/workflows/hosted-browser-e2e.yml",
+          "qualifiedSha256": "19f3cada257be951ee397ef5a10830efb5af0c6033c1978bbdbc3cd8f54951c1",
+          "currentSha256": "df7481090327214e528ec4d8025d5d05212cbdf7f035294677451e74a59c2c27"
+        }
+      ]
+    },
+    "exceptionBoundary": "The only ten-pin difference is the separately retained recovery application workflow profile. All six new preflight files and exact browser package/runtime inputs match the qualified proposal. Both literal app workflow profiles are accepted by the finite test.",
+    "hostedExecutionRepresented": false
+  },
+  "currentPlatformNodeTestFiles": 136,
+  "currentPlatformPythonTestFiles": 12,
+  "currentWholeSuiteExecuted": false,
+  "canonicalFrontendEqualsPublishedRecovery": true,
+  "backendEqualsPublishedRecovery": true,
+  "protocolSourceEqualsPublishedRecovery": true,
+  "existingApplicationWorkflowEqualsPublishedRecovery": true,
+  "newPreflightWorkflowAdmitsOnlyDedicatedBranch": true
+}

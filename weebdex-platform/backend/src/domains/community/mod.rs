@@ -16,7 +16,8 @@ use axum::{
     routing::get,
 };
 use serde_json::{Value, json};
-use tokio_postgres::Transaction;
+pub(crate) mod mutations;
+use mutations::{self as core, visible};
 
 pub fn router() -> Router<AppState> {
     Router::new()
@@ -65,51 +66,6 @@ fn reply_id(value: &str) -> ApiResult<i64> {
         .filter(|v| *v > 0 && *v <= i32::MAX as i64)
         .ok_or_else(|| ApiError::bad_request("Invalid reply identifier"))
 }
-async fn visible(db: &impl tokio_postgres::GenericClient, id: &str) -> ApiResult<()> {
-    v::id(id)?;
-    if !db
-        .query_one("SELECT platform.community_thread_visible($1)", &[&id])
-        .await?
-        .get::<_, bool>(0)
-    {
-        return Err(ApiError::not_found("Thread not found"));
-    }
-    Ok(())
-}
-async fn locked(tx: &Transaction<'_>, id: &str) -> ApiResult<bool> {
-    visible(tx, id).await?;
-    Ok(tx
-        .query_one(
-            "SELECT locked FROM platform.catalog_threads WHERE id=$1 FOR UPDATE",
-            &[&id],
-        )
-        .await?
-        .get(0))
-}
-fn authority(a: &SessionPrincipal, owner: &str, action: &str) -> ApiResult<()> {
-    if a.is_moderator() && a.has_perm(&format!("reply.{action}")) {
-        return Ok(());
-    }
-    if a.user_id == owner {
-        a.require_permission(&format!("self.reply.{action}"))
-    } else {
-        Err(ApiError::forbidden(
-            "Only the reply owner or an authorized moderator may change it",
-        ))
-    }
-}
-async fn audit(
-    tx: &Transaction<'_>,
-    a: &SessionPrincipal,
-    id: &str,
-    reply: i64,
-    operation: &str,
-    old: Option<i32>,
-    new: Option<i32>,
-) -> ApiResult<()> {
-    tx.execute("INSERT INTO platform.community_audit(actor_id,thread_id,reply_id,operation,old_version,new_version) VALUES($1,$2,$3,$4,$5,$6)",&[&a.user_id,&id,&reply,&operation,&old,&new]).await?;
-    Ok(())
-}
 async fn thread_get(State(s): State<AppState>, Path(id): Path<String>) -> ApiResult<Json<Value>> {
     let db = s.db.client().await?;
     visible(&**db, &id).await?;
@@ -149,23 +105,11 @@ async fn thread_vote(
     let vote = vote(&p)?;
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
-    if locked(&tx, &id).await? {
-        return Err(ApiError::forbidden("Thread is locked"));
-    }
-    let owner: String = tx
-        .query_one(
-            "SELECT author_id FROM platform.catalog_threads WHERE id=$1",
-            &[&id],
-        )
-        .await?
-        .get(0);
-    if owner == a.user_id {
-        return Err(ApiError::forbidden("You cannot vote on your own thread"));
-    }
-    tx.execute("INSERT INTO platform.community_thread_votes(thread_id,user_id,vote) VALUES($1,$2,$3) ON CONFLICT(thread_id,user_id) DO UPDATE SET vote=EXCLUDED.vote,updated_at=clock_timestamp()",&[&id,&a.user_id,&vote]).await?;
+    core::thread_vote_in(&tx, &a, &id, vote, None).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
 }
+
 async fn thread_unvote(
     State(s): State<AppState>,
     h: HeaderMap,
@@ -173,15 +117,13 @@ async fn thread_unvote(
 ) -> ApiResult<StatusCode> {
     let a = mutable_actor(&s, &h).await?;
     a.require_permission("reply.create")?;
-    let db = s.db.client().await?;
-    visible(&**db, &id).await?;
-    db.execute(
-        "DELETE FROM platform.community_thread_votes WHERE thread_id=$1 AND user_id=$2",
-        &[&id, &a.user_id],
-    )
-    .await?;
+    let mut db = s.db.client().await?;
+    let tx = db.transaction().await?;
+    core::thread_vote_in(&tx, &a, &id, 0, None).await?;
+    tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
 }
+
 async fn replies(
     State(s): State<AppState>,
     h: HeaderMap,
@@ -236,25 +178,11 @@ async fn create_reply(
     };
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
-    if locked(&tx, &id).await? {
-        return Err(ApiError::forbidden("Thread is locked"));
-    }
-    if let Some(parent) = parent {
-        if tx.query_opt("SELECT id FROM platform.community_replies WHERE id=$1 AND thread_id=$2 AND state='active' FOR SHARE",&[&parent,&id]).await?.is_none(){return Err(ApiError::bad_request("Parent reply must be active and belong to this thread"));}
-    }
-    let n:i32=tx.query_one("UPDATE platform.catalog_threads SET next_reply_number=next_reply_number+1,updated_at=clock_timestamp() WHERE id=$1 RETURNING next_reply_number-1",&[&id]).await?.get(0);
-    let r:i64=tx.query_one("INSERT INTO platform.community_replies(thread_id,reply_number,parent_id,author_id,body) VALUES($1,$2,$3,$4,$5) RETURNING id",&[&id,&n,&parent,&a.user_id,&body]).await?.get(0);
-    audit(&tx, &a, &id, r, "create", None, Some(1)).await?;
-    let data = tx
-        .query_one(
-            "SELECT platform.community_reply_json($1,$2)",
-            &[&r, &a.user_id],
-        )
-        .await?
-        .get(0);
+    let data = core::create_in(&tx, &a, &id, &body, parent).await?;
     tx.commit().await?;
     Ok((StatusCode::CREATED, Json(data)))
 }
+
 async fn update_reply(
     State(s): State<AppState>,
     h: HeaderMap,
@@ -268,30 +196,11 @@ async fn update_reply(
     let body = v::string(&p, "body", 50000, true)?.unwrap();
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
-    let thread_locked = locked(&tx, &id).await?;
-    let row=tx.query_opt("SELECT author_id,version,state FROM platform.community_replies WHERE thread_id=$1 AND id=$2 FOR UPDATE",&[&id,&r]).await?.ok_or_else(||ApiError::not_found("Reply not found"))?;
-    authority(&a, &row.get::<_, String>(0), "update")?;
-    if thread_locked && !a.is_moderator() {
-        return Err(ApiError::forbidden("Thread is locked"));
-    }
-    if row.get::<_, String>(2) != "active" {
-        return Err(ApiError::conflict("Only active replies may be edited"));
-    }
-    if row.get::<_, i32>(1) != version {
-        return Err(ApiError::conflict("Reply changed; reload before editing"));
-    }
-    tx.execute("UPDATE platform.community_replies SET body=$3,version=version+1,updated_at=clock_timestamp() WHERE thread_id=$1 AND id=$2",&[&id,&r,&body]).await?;
-    audit(&tx, &a, &id, r, "update", Some(version), Some(version + 1)).await?;
-    let data = tx
-        .query_one(
-            "SELECT platform.community_reply_json($1,$2)",
-            &[&r, &a.user_id],
-        )
-        .await?
-        .get(0);
+    let data = core::update_in(&tx, &a, &id, r, &body, version).await?;
     tx.commit().await?;
     Ok(Json(data))
 }
+
 async fn remove_reply(
     State(s): State<AppState>,
     h: HeaderMap,
@@ -301,28 +210,11 @@ async fn remove_reply(
     let r = reply_id(&r)?;
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
-    locked(&tx, &id).await?;
-    let row=tx.query_opt("SELECT author_id,version,state FROM platform.community_replies WHERE thread_id=$1 AND id=$2 FOR UPDATE",&[&id,&r]).await?.ok_or_else(||ApiError::not_found("Reply not found"))?;
-    let owner: String = row.get(0);
-    authority(&a, &owner, "remove")?;
-    if !row.get::<_, String>(2).starts_with("deleted_") {
-        let state = if owner == a.user_id {
-            "deleted_by_user"
-        } else {
-            "deleted_by_moderator"
-        };
-        let version: i32 = row.get(1);
-        tx.execute("UPDATE platform.community_replies SET state=$3,version=version+1,updated_at=clock_timestamp() WHERE thread_id=$1 AND id=$2",&[&id,&r,&state]).await?;
-        tx.execute(
-            "DELETE FROM platform.community_reply_votes WHERE reply_id=$1",
-            &[&r],
-        )
-        .await?;
-        audit(&tx, &a, &id, r, "remove", Some(version), Some(version + 1)).await?;
-    }
+    core::remove_in(&tx, &a, &id, r, None).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
 }
+
 async fn delete_reply(
     State(s): State<AppState>,
     h: HeaderMap,
@@ -338,22 +230,11 @@ async fn delete_reply(
     let r = reply_id(&r)?;
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
-    locked(&tx, &id).await?;
-    let row = tx
-        .query_opt(
-            "DELETE FROM platform.community_replies WHERE thread_id=$1 AND id=$2 RETURNING version,reply_number",
-            &[&id, &r],
-        )
-        .await?
-        .ok_or_else(|| ApiError::not_found("Reply not found"))?;
-    // Retained deep-link code computes pages from dense reply ordinals.
-    let removed_number: i32 = row.get(1);
-    tx.execute("UPDATE platform.community_replies SET reply_number=reply_number-1 WHERE thread_id=$1 AND reply_number>$2",&[&id,&removed_number]).await?;
-    tx.execute("UPDATE platform.catalog_threads SET next_reply_number=next_reply_number-1,updated_at=clock_timestamp() WHERE id=$1",&[&id]).await?;
-    audit(&tx, &a, &id, r, "delete", Some(row.get(0)), None).await?;
+    core::delete_in(&tx, &a, &id, r, None).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
 }
+
 async fn reply_vote(
     State(s): State<AppState>,
     h: HeaderMap,
@@ -366,20 +247,11 @@ async fn reply_vote(
     let vote = vote(&p)?;
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
-    if locked(&tx, &id).await? {
-        return Err(ApiError::forbidden("Thread is locked"));
-    }
-    let row=tx.query_opt("SELECT author_id,state FROM platform.community_replies WHERE thread_id=$1 AND id=$2 FOR SHARE",&[&id,&r]).await?.ok_or_else(||ApiError::not_found("Reply not found"))?;
-    if row.get::<_, String>(0) == a.user_id {
-        return Err(ApiError::forbidden("You cannot vote on your own reply"));
-    }
-    if row.get::<_, String>(1) != "active" {
-        return Err(ApiError::conflict("Reply cannot receive votes"));
-    }
-    tx.execute("INSERT INTO platform.community_reply_votes(reply_id,user_id,vote) VALUES($1,$2,$3) ON CONFLICT(reply_id,user_id) DO UPDATE SET vote=EXCLUDED.vote,updated_at=clock_timestamp()",&[&r,&a.user_id,&vote]).await?;
+    core::reply_vote_in(&tx, &a, &id, r, vote, None, None).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
 }
+
 async fn reply_unvote(
     State(s): State<AppState>,
     h: HeaderMap,
@@ -390,22 +262,7 @@ async fn reply_unvote(
     let r = reply_id(&r)?;
     let mut db = s.db.client().await?;
     let tx = db.transaction().await?;
-    locked(&tx, &id).await?;
-    if tx
-        .query_opt(
-            "SELECT id FROM platform.community_replies WHERE thread_id=$1 AND id=$2 FOR SHARE",
-            &[&id, &r],
-        )
-        .await?
-        .is_none()
-    {
-        return Err(ApiError::not_found("Reply not found"));
-    }
-    tx.execute(
-        "DELETE FROM platform.community_reply_votes WHERE reply_id=$1 AND user_id=$2",
-        &[&r, &a.user_id],
-    )
-    .await?;
+    core::reply_vote_in(&tx, &a, &id, r, 0, None, None).await?;
     tx.commit().await?;
     Ok(StatusCode::NO_CONTENT)
 }

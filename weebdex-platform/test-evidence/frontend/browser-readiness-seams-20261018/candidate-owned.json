@@ -1,0 +1,25 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "weebdex-platform/tests/ci/test_browser_exact_device_progress.mjs",
+    "weebdex-platform/tests/ci/test_browser_identity_key_controls.mjs",
+    "weebdex-platform/tests/ci/test_browser_device_continuity.mjs",
+    "weebdex-platform/tests/ci/test_browser_reader_continuation.mjs",
+    "weebdex-platform/tests/ci/test_browser_library_follow_diagnostics.mjs",
+    "weebdex-platform/tests/ci/test_browser_account_recovery.mjs",
+    "weebdex-platform/tests/ci/test_browser_select_controls.mjs"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261018/browser-readiness-seams-worktree",
+  "deadline_seconds": 20.0,
+  "elapsed_seconds": 1.068,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "terminal_receipt": true,
+  "owned_process_group": 6,
+  "cleanup_signals": [],
+  "surviving_owned_process_ids": [],
+  "cleanup_verified": true,
+  "prior_or_unrelated_processes_touched": false
+}

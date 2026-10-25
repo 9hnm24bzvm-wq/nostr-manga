@@ -1,0 +1,25 @@
+{
+  "schema": "independent-finite-result-v1",
+  "verdict": "pass_owner_pure_result",
+  "source_review": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/auth-fixture-guard-independent-source-review-20261017.json",
+    "sha256": "6dfd147de0bdeae16f9ea02ad38c1f184b0938af80bee65a8b2e620e84528427",
+    "bytes": 2154
+  },
+  "owner_receipt": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/auth-fixture-guard-finite-first-run-20261017.receipt.json",
+    "sha256": "d115d0c4f72ac56a0cd02b31c70ca80898700f3e3d3742ac2ecdbeef7d30a8e9",
+    "bytes": 1346
+  },
+  "log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/auth-fixture-guard-finite-first-run-20261017.tool-output.log",
+    "sha256": "096673593ab1b836d8ba491528c48da9e1eaf16e3732c6833258f54c95a59704",
+    "bytes": 2987
+  },
+  "pass": 18,
+  "fail": 0,
+  "log_origin": "exact original tool output copied once; no rerun",
+  "source_pins_current_exact": true,
+  "scope": "Mocked procfs/clock/signals/subprocess/socket seams; real PG lifecycle separately pending.",
+  "time_utc": "2026-10-17T04:23:39.692777+00:00"
+}

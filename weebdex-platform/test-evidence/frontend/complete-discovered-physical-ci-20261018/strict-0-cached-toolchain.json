@@ -1,0 +1,37 @@
+[
+  {
+    "package": "typescript",
+    "version": "5.9.3",
+    "package_sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+  },
+  {
+    "package": "svelte-check",
+    "version": "4.4.6",
+    "package_sha256": "1c8f55df817a82597c582df09b961e7e1523e79eb80cd3784aab29cf885ee7fd"
+  },
+  {
+    "package": "svelte",
+    "version": "5.55.1",
+    "package_sha256": "8e65d26f5f1d5841ac6921b666283d014751a1c3c44fbae9525f9dec60cacbb9"
+  },
+  {
+    "package": "@sveltejs/kit",
+    "version": "2.56.1",
+    "package_sha256": "cb3deba5bc9d31732badebc07fe79d68358e296ddde124aaccf2c83b20390b9f"
+  },
+  {
+    "package": "vite",
+    "version": "7.3.1",
+    "package_sha256": "116af0821317eea464b9e69afda7c68b70b1caf51abe3218001b0e2175d3bed6"
+  },
+  {
+    "package": "magic-string",
+    "version": "0.30.21",
+    "package_sha256": "86814aaf7dacba9d31fbf361c3285981f1cbbda0a87108caa4131d297bd9eba2"
+  },
+  {
+    "package": "@jridgewell/trace-mapping",
+    "version": "0.3.31",
+    "package_sha256": "7f5eacc669d36013f9b792ab15721a97d48b26b093100122aa6c8691ebe656be"
+  }
+]

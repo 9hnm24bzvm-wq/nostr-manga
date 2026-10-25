@@ -1,0 +1,74 @@
+[
+  {
+    "download_bytes": 467,
+    "elapsed_ms": 7.103795996954432,
+    "method": "GET",
+    "path": "/libraries/16886cf46ed42c7919147763063d3256c4d5d39387f0172325b9e4b898227f27",
+    "status": 200,
+    "upload_bytes": 0
+  },
+  {
+    "download_bytes": 3275,
+    "elapsed_ms": 1.6354920007870533,
+    "method": "GET",
+    "path": "/library/blobs/a08b3bd3c10f03b9dfefd2c1d88539f87f11173fc0076f4856923db755d31dfc",
+    "status": 200,
+    "upload_bytes": 0
+  },
+  {
+    "download_bytes": 77283,
+    "elapsed_ms": 2.824118000717135,
+    "method": "POST",
+    "path": "/library/read",
+    "status": 200,
+    "upload_bytes": 213
+  },
+  {
+    "download_bytes": 467,
+    "elapsed_ms": 1.498384001024533,
+    "method": "GET",
+    "path": "/libraries/654f313a31153e076e4e3f391d9fddcd9d3bce6705a8a806cfaaeb03678dfdc7",
+    "status": 200,
+    "upload_bytes": 0
+  },
+  {
+    "download_bytes": 14061,
+    "elapsed_ms": 1.547759002278326,
+    "method": "GET",
+    "path": "/library/blobs/12bc715cd086b1758bcc706afb680ac825c6a98c4795f320398702028529c57b",
+    "status": 200,
+    "upload_bytes": 0
+  },
+  {
+    "download_bytes": 335611,
+    "elapsed_ms": 4.486409998207819,
+    "method": "POST",
+    "path": "/library/read",
+    "status": 200,
+    "upload_bytes": 213
+  },
+  {
+    "download_bytes": 467,
+    "elapsed_ms": 1.249969001946738,
+    "method": "GET",
+    "path": "/libraries/654f313a31153e076e4e3f391d9fddcd9d3bce6705a8a806cfaaeb03678dfdc7",
+    "status": 200,
+    "upload_bytes": 0
+  },
+  {
+    "download_bytes": 14061,
+    "elapsed_ms": 0.8625839982414618,
+    "method": "GET",
+    "path": "/library/blobs/12bc715cd086b1758bcc706afb680ac825c6a98c4795f320398702028529c57b",
+    "status": 200,
+    "upload_bytes": 0
+  },
+  {
+    "download_bytes": 334099,
+    "elapsed_ms": 2.4222510000981856,
+    "method": "POST",
+    "path": "/library/read",
+    "status": 200,
+    "upload_bytes": 213
+  }
+]

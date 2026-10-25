@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "baseline_commit": "94c00b8b0688b121499743ed213e465eec69bc37",
+  "baseline_tree": "6950c9b7a819874d630831e61ea1907a0c8c40fc",
+  "verified_hosted_run": 38584846100,
+  "actual_baseline": {
+    "reader_controlled403_checks_passed": 7,
+    "reader_controlled404_checks_passed": 7,
+    "reader_delayed_checks_passed": 7,
+    "reader_normal_navigation_passed": true,
+    "reader_normal_destination_passed": false,
+    "account_failures_phase_passed": true,
+    "home_failed_original_step_indices": [
+      1,
+      3
+    ],
+    "pg_fault_activated": true,
+    "pg_fault_terminal_clean": true
+  },
+  "corrections": [
+    "Reader normal-destination selects current retained sidebar h1 title link to preserve SPA realm.",
+    "Home503 three native failures are initial request plus two explicit visible safe-read retries, with per-gesture response/idle ownership and no-background-replay assertion."
+  ],
+  "unproven": [
+    "Restricted recovery-cookie403 home failure receives fourteen fixed diagnostic boundaries only."
+  ],
+  "checkpoint_counts": {
+    "ui10-reader-transition": 37,
+    "ui14-home-failures": 28
+  },
+  "original_assertion_wait_preservation": {
+    "browser-ui10-journeys.mjs": {
+      "insist": {
+        "original_calls": 80,
+        "candidate_calls": 80,
+        "original_ordered_normalized_preserved": true
+      },
+      "until": {
+        "original_calls": 16,
+        "candidate_calls": 16,
+        "original_ordered_normalized_preserved": true
+      },
+      "stable": {
+        "original_calls": 0,
+        "candidate_calls": 0,
+        "original_ordered_normalized_preserved": true
+      },
+      "original_step_expressions_preserved": 25
+    },
+    "browser-ui11-16-journeys.mjs": {
+      "insist": {
+        "original_calls": 106,
+        "candidate_calls": 107,
+        "original_ordered_normalized_preserved": true
+      },
+      "until": {
+        "original_calls": 43,
+        "candidate_calls": 43,
+        "original_ordered_normalized_preserved": true
+      },
+      "stable": {
+        "original_calls": 10,
+        "candidate_calls": 11,
+        "original_ordered_normalized_preserved": true
+      },
+      "original_step_expressions_preserved": 26
+    }
+  },
+  "checks": [
+    {
+      "name": "new_reader_home_seams",
+      "passed": true,
+      "tests": 39
+    },
+    {
+      "name": "reader_account_seams_with_nested_destination_failures",
+      "passed": true,
+      "tests": 64
+    },
+    {
+      "name": "eight_relevant_node_suites",
+      "passed": true,
+      "tests": 133
+    },
+    {
+      "name": "ci_python_projection_gates",
+      "passed": true,
+      "tests": 44
+    },
+    {
+      "name": "existing_semantic_seams",
+      "passed": true,
+      "cases": 132
+    },
+    {
+      "name": "canonical_attachment_parity",
+      "passed": true,
+      "files": 676
+    }
+  ],
+  "product_behavior_changed": false,
+  "original_assertions_or_timeouts_weakened": false,
+  "canonical_frontend_changed": false,
+  "shared_select_helpers_changed": false,
+  "compact_feed_changed": false,
+  "browser_started": false,
+  "services_started": false,
+  "database_started": false,
+  "network_requests_made": false,
+  "hosted_workflow_started": false,
+  "external_publication": false,
+  "real_browser_acceptance": "Fresh reviewed hosted run required; none inferred from these source/stand-in seams.",
+  "source_sha256": {
+    "scripts/browser-ui10-journeys.mjs": "ac208409fc0cc5347428891578c84aa9d3bd31d57b2139b37960287fb167fcb0",
+    "scripts/browser-ui11-16-journeys.mjs": "3de59f65fc54dfebcee0e99b7a92cf3438b53fdbc8aad94cc21d98e8f2df87c6",
+    "scripts/browser-home-controls.mjs": "75b82dcb8b1a7565bc26ef9c50469a4b67c1e6865f29ba76621bd8eae44c4524",
+    "scripts/ci/journey-diagnostics.py": "04ca8a8beca13749f18cedbb8411fde8f076c8fe3e3da5586aac71c9b6dca450",
+    "tests/ci/test_browser_reader_home_diagnostics.mjs": "f838befeadb27c5b6542bc84837d2092f89f0918b99f3af1a3347919c3739579",
+    "tests/ci/test_browser_reader_account_diagnostics.mjs": "1ffa73a93d35a10a7429fa79e3a5c3bb60fdd3194e226c1b82fae3a383352ec1",
+    "tests/ci/test_browser_ui10_recovery_diagnostics.mjs": "a6af78f9dc772025473657fe96db92b40c52e246a1ba414cf3a03126354c4b08",
+    "tests/ci/test_browser_library_diagnostics.mjs": "b104b3d55fd740db8c59f5dfc3ab5e345e25019eae09065e9c9f31d285e7e7f9",
+    "docs/reader-home-followup.md": "05c794adb28d4c8a1a35a6e270da2aa8a04bc7e08d5abb48358072f876a9bd9a"
+  }
+}

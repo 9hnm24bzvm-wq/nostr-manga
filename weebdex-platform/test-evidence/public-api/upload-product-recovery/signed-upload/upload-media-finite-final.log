@@ -1,0 +1,38 @@
+(node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ one original PNG becomes exact multipart bytes with original filename, MIME, size and explicit boundary (2.306839ms)
+✔ serializer snapshots original metadata and copies original bytes without rebuilding FormData (0.307963ms)
+✔ canonical image MIME format guards preserve each supplied byte sequence (0.692281ms)
+✔ filename bounds count original UTF-8 bytes and reject header injection before reading the file (1.129419ms)
+✔ MIME and nonempty 25 MiB bounds reject invalid metadata before reading (141.501241ms)
+✔ actual byte count, ArrayBuffer and MIME signature must agree with original metadata (1.068817ms)
+✔ multipart boundary is bounded/canonical and cannot collide with original image bytes (1.147917ms)
+✔ current local thumbnail remains until a validated signed Blob replaces it; transferred cleanup happens once (0.880414ms)
+✔ borrowed local thumbnail is never revoked by its borrowing lease (0.304578ms)
+✔ same exact key and owner are idempotent while loading and after readiness (0.376276ms)
+✔ a preview read failure is visible, preserves a current local thumbnail, resolves without a fake upload failure and never retries (0.319641ms)
+✔ stable-key change sessionId discards a late fulfilled preview without assigning it (0.388725ms)
+✔ stable-key change fileId discards a late fulfilled preview without assigning it (0.21917ms)
+✔ stable-key change fileHash discards a late fulfilled preview without assigning it (0.188323ms)
+✔ stable-key change fileSize discards a late fulfilled preview without assigning it (0.558711ms)
+✔ stable-key change mimeType discards a late fulfilled preview without assigning it (0.165359ms)
+✔ same file with a different owner invalidates the original load and ignores its late rejection (0.308164ms)
+✔ owner/document invalidation before signed GET invocation prevents the read and releases owned thumbnails (0.155203ms)
+✔ owner/document invalidation during GET discards the Blob and emits no stale readiness or failure (0.313491ms)
+✔ a URL created at the exact owner-loss boundary is revoked and never assigned (0.28562ms)
+✔ unmount disposes local resources and ignores late preview resolve (0.152759ms)
+✔ unmount disposes local resources and ignores late preview reject (0.07315ms)
+✔ legitimate context replacement releases the previous signed URL and clear releases the replacement exactly once (0.232089ms)
+✔ a second live lease may borrow a URL but cannot steal or revoke its original ownership (0.316787ms)
+✔ non-Blob, wrong-size and wrong-MIME signed preview results remain truthful errors with no object URL (0.311699ms)
+✔ invalid preview context or implicit local URL ownership never starts a request (0.448925ms)
+✔ cleanup dispatcher releases a lease-owned URL once and declines native, borrowed or already-released URLs (0.231438ms)
+✔ cleanup dispatcher targets the owning live lease and cannot release another lease by a stale URL (0.209755ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 298.731633

@@ -1,0 +1,18 @@
+{
+  "files": {
+    "weebdex-platform/tests/ci/test_auth_fixture_guard_recovery.py": 27,
+    "weebdex-platform/tests/ci/test_browser_fixture_early_response_recovery.py": 28,
+    "weebdex-platform/tests/ci/test_browser_fixture_pg_root_recovery.py": 7,
+    "weebdex-platform/tests/ci/test_hosted_browser.py": 24,
+    "weebdex-platform/tests/ci/test_journey_diagnostics.py": 16,
+    "weebdex-platform/tests/ci/test_native_feed_diagnostics.py": 8,
+    "weebdex-platform/tests/ci/test_private_checkpoint.py": 18,
+    "weebdex-platform/tests/ci/test_public_upload_hosted_profile.py": 10,
+    "weebdex-platform/tests/ci/test_runner_diagnostics.py": 8
+  },
+  "testsRun": 146,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "status": "passed"
+}

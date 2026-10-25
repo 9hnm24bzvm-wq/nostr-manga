@@ -1,0 +1,23 @@
+{
+  "cleanup_verified": true,
+  "surviving_owned_processes": [],
+  "census_errors": 0,
+  "process_exit_code": -15,
+  "signals": [
+    {
+      "pid": 7,
+      "birth": 3616636,
+      "signal": "SIGTERM"
+    },
+    {
+      "pid": 8,
+      "birth": 3616640,
+      "signal": "SIGTERM"
+    },
+    {
+      "pid": 8,
+      "birth": 3616640,
+      "signal": "SIGKILL"
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "schema": "combined-protocol-matrix-partial-qualification-v1",
+  "utc": "2026-10-18T01:30:59.379769+00:00",
+  "source_commit": "836ba3a19f3a7634896d899689ee10e4ff381947",
+  "production_source": "9e3d164+c8eccb3",
+  "integration_backend_equivalent_commit": "ad82a2160188ca6e75c64d852dd13aeaf5d8f917",
+  "api_baseline": "9ec4c3fff905f2b8b65bb4c3e7371b7273755a21",
+  "api_baseline_qualification_not_carried_as_successor_http_pass": true,
+  "planned_http_cases": 18,
+  "passed_http_cases": 2,
+  "remaining_http_cases": 16,
+  "all_matrix_passed": false,
+  "source_inputs": 903,
+  "source_inputs_unchanged": true,
+  "source_manifest_sha256": "0cb02d5c20deb3a1852e8f750bcabac803dfa7149f758ffb5d269d3c8769a112",
+  "units": {
+    "passed": 138,
+    "ignored": 2,
+    "seconds": 1.97,
+    "log_sha256": "a001d6bf18746884d468eee1f3dcec967c046e05e4816e7e2a43aa9c4764de84",
+    "executable_sha256": "9d2699770de5acf79acdc057e29b49395f5f6e11f87c7f9708795e2824f9bd60"
+  },
+  "runtime_status": "All guards physically stopped, closed ports, forced=false, zero survivors/unknown births/cleanup errors. No active compiler, PostgreSQL or strfry.",
+  "source_successor_note": "Chapter rechecks current authority after final target lock; new deterministic concurrent-claim HTTP regression passes inside the actual chapter lifecycle.",
+  "pause_reason": "Frontend/status successor is imminent; current available4,589,969,408bytes is only26,567,680bytes above4GiB+256MiB start threshold. No further linked targets or deletion started.",
+  "http": {
+    "chapter-successor-http-01": {
+      "schema": "owned-integrated-pipeline-http-run-v1",
+      "started_at_utc": "2026-10-18T01:27:40.757960+00:00",
+      "source_commit": "836ba3a19f3a7634896d899689ee10e4ff381947",
+      "command": [
+        "bash",
+        "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+        "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_chapter_writes-c05f34738ef4361f",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "test_executable_sha256": "9aec49252679a73e6ca6a7bbfa4a7256370c638d8eb186cc9bdf8091eb31514a",
+      "pass": true,
+      "diagnostic_previous_query": false,
+      "runner_sha256": "7aea2946001dd17ccf75f5bc425d33fa7b609b02d2c9f1dc6cb72695ba358079",
+      "source_file_count": 903,
+      "disk_guard": {
+        "floor_bytes": 4294967296,
+        "cleanup_reserve_bytes": 134217728,
+        "min_observed_free_bytes": 4734627840,
+        "signalled": false,
+        "identity": "pidfd-owned guard child"
+      },
+      "exit_code": 0,
+      "source_changed": [],
+      "test_executable_sha256_after": "9aec49252679a73e6ca6a7bbfa4a7256370c638d8eb186cc9bdf8091eb31514a",
+      "executable_unchanged": true,
+      "ended_at_utc": "2026-10-18T01:27:43.577910+00:00",
+      "log_sha256": "7f0c4c87681c17ef337f36c64968e1d6f0af86df5fb5cad5fda154bec16609d3",
+      "child_reaped": true,
+      "cleanup_receipt_sha256": "c36312c9dace0221df955ddc41ef9777bbf4afcc1286e27dbf5c086707424fb2",
+      "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-rl2qhjk9/cleanup.json",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 1,
+        "seconds": 1.65
+      },
+      "cases": []
+    },
+    "title-cover-disposition-http-01": {
+      "schema": "owned-integrated-pipeline-http-run-v1",
+      "started_at_utc": "2026-10-18T01:29:29.009445+00:00",
+      "source_commit": "836ba3a19f3a7634896d899689ee10e4ff381947",
+      "command": [
+        "bash",
+        "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/scripts/run-auth-tests.sh",
+        "/workspace/shared/nostr-manga-recovery-20261017/mdex-api-cargo-target/debug/deps/public_manga_writes-4dea7fe51a404b04",
+        "--ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "test_executable_sha256": "7a323211680d35f992d66cd9adbf3a90da52f70163f6e5b069a1effea6e1f5c5",
+      "pass": true,
+      "diagnostic_previous_query": false,
+      "runner_sha256": "7aea2946001dd17ccf75f5bc425d33fa7b609b02d2c9f1dc6cb72695ba358079",
+      "source_file_count": 903,
+      "disk_guard": {
+        "floor_bytes": 4294967296,
+        "cleanup_reserve_bytes": 134217728,
+        "min_observed_free_bytes": 4592558080,
+        "signalled": false,
+        "identity": "pidfd-owned guard child"
+      },
+      "exit_code": 0,
+      "source_changed": [],
+      "test_executable_sha256_after": "7a323211680d35f992d66cd9adbf3a90da52f70163f6e5b069a1effea6e1f5c5",
+      "executable_unchanged": true,
+      "ended_at_utc": "2026-10-18T01:29:32.438945+00:00",
+      "log_sha256": "db608643c9cf25122166296195e63d7a5b0dc8e3dbd63f7558fc08ac963234c6",
+      "child_reaped": true,
+      "cleanup_receipt_sha256": "466eb74eb1fffb0d83e6d66d60d0415dc49023b4f0581ced08973b743cb1e969",
+      "cleanup_path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-rx8hyak4/cleanup.json",
+      "cleanup": {
+        "postgres_cleanup": "verified_stopped",
+        "exit": 0,
+        "forced": false,
+        "closed_port": true,
+        "remaining_owned_processes": [],
+        "cleanup_errors": [],
+        "unconfirmed_births": [],
+        "unconfirmed_child_pids": []
+      },
+      "tests": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 1,
+        "seconds": 2.37
+      },
+      "cases": [
+        "signed_title_create_edit_submit_publish_and_overlay_preserve_original_authority"
+      ]
+    }
+  },
+  "scope": [
+    "Real signed chapter/source deletion/removal/claim/account-intent lifecycle, including final-lock ownership race",
+    "Real signed title/cover/disposition/fresh-original/retry lifecycle",
+    "No duplicate independent entire matrix; no fresh browser acceptance",
+    "Future status successor and16 unrun cases are not accepted by this evidence"
+  ]
+}

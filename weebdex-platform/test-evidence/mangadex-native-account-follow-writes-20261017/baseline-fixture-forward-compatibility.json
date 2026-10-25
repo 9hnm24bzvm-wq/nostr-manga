@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-17T18:56:41.655258+00:00",
+  "qualified_prior_commit": "265804862294a9fa82dcaeabdd3843779be047b2",
+  "scope": "Test-only migration baseline prefix selection anchored to version100 instead of the final array element.",
+  "source_sha256": "0bcfb2d02609e6d390b945f8e1e6c5dd7256e5d3dd95a5cdb7d89eeb7561b87e",
+  "read_only_checks": {
+    "current_prefix_semantically_identical": true,
+    "simulated_101_preserves_required_pre_100_baseline": true,
+    "git_diff_check": "passed"
+  },
+  "limits": [
+    "No backend/runtime behavior changes.",
+    "No new Rust build or HTTP fixture started during disk-floor hold; prior source qualification remains at the explicitly named commit."
+  ]
+}

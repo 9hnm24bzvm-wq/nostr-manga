@@ -1,0 +1,60 @@
+{
+  "schema": "public-upload-observer-boundaries-result-v1",
+  "at_utc": "2026-10-17T17:27:21.397589+00:00",
+  "base_commit": "8d963f3fd2aacaca75edba7d8a4f091ae4786aea",
+  "node_version": "v24.19.0",
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "tests/ci/test_public_upload*.mjs"
+  ],
+  "glob_files": [
+    "tests/ci/test_public_upload_adapter_recovery.mjs",
+    "tests/ci/test_public_upload_build_recovery.mjs",
+    "tests/ci/test_public_upload_media_recovery.mjs",
+    "tests/ci/test_public_upload_observer_boundaries.mjs",
+    "tests/ci/test_public_upload_overlay_recovery.mjs",
+    "tests/ci/test_public_upload_provenance_recovery.mjs",
+    "tests/ci/test_public_upload_recovery_controls.mjs",
+    "tests/ci/test_public_upload_recovery_journey.mjs",
+    "tests/ci/test_public_upload_replacement_preview_recovery.mjs",
+    "tests/ci/test_public_upload_replacement_wire_recovery.mjs",
+    "tests/ci/test_public_upload_request_recovery.mjs"
+  ],
+  "new_boundary_tests": 31,
+  "combined_tests": 303,
+  "passed": 303,
+  "failed": 0,
+  "cancelled": 0,
+  "skipped": 0,
+  "exit_code": 0,
+  "log": {
+    "path": "combined-303.log",
+    "sha256": "c3226029ac78563a634b96a7062d69d201445b6c98fc1ed000ea0b0056cdd331"
+  },
+  "source_sha256": {
+    "tests/ci/test_public_upload_observer_boundaries.mjs": "7dfbcf78ecb99c15464d17ce254fd0b0206519fc2de2c55bf67cdb13db739858",
+    "scripts/public-upload-recovery-observer.mjs": "2536bb20ef35db77f697ed30bb1eb14ad00bf8a2828eaa12d490bf32666b4c71",
+    "scripts/public-upload-recovery-browser.mjs": "30b0626a5c131cb38a581a0db1cf36c7f1918f84ddc789f82d123c4584916f79",
+    "docs/verification/browser-e2e-readiness-20261017.md": "4aae3eb34d794b968916dadeff52d05a407b703ab781b5a95463dcbf46f9606d"
+  },
+  "initial_command_failure": {
+    "command": [
+      "node",
+      "--test",
+      "tests/ci/test_public_upload*.mjs"
+    ],
+    "tests_observed": 220,
+    "passed": 216,
+    "failed": 4,
+    "exit_code": 1,
+    "cause": "Existing VM-module tests require --experimental-vm-modules; constructors unavailable without it.",
+    "retained_log_basename": "browser-e2e-upload-regression-20261017.log",
+    "retained_log_sha256": "f099c3c7b8746020756445a2792f00aa9ce5993ce822a8ffd5fe08565ac7f39c"
+  },
+  "runtime_result": "unrun; approved execution wrapper failed before Python; no runtime retry",
+  "qualification": "Explicit source/stand-in harness checks only. No genuine browser, signature, HTTP, database or physical cleanup pass.",
+  "approved_runtime_inputs_unchanged": true,
+  "publication": false
+}

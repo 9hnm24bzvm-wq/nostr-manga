@@ -1,0 +1,30 @@
+{
+  "evidence_kind": "direct first-run stdout/stderr capture with original exit returned",
+  "originally_file_backed": true,
+  "logging_only_rerun_performed": false,
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/ci/test_auth_fixture_guard_recovery.py -v",
+  "wrapper": "Redirect stdout/stderr to the named log, capture Python exit, print the log and return that original exit.",
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform",
+  "tool_chunk_id": "5cffe9",
+  "tool_exit_code": 0,
+  "tool_wall_time_seconds": 0.098380054,
+  "reported_test_count": 27,
+  "reported_test_duration_seconds": 0.074,
+  "reported_result": "OK",
+  "output_file": "auth-fixture-guard-cross-session-first-run.tool-output.log",
+  "output_sha256": "3b1f073641a9da3ba340c838e7911e6573f65e0f750065b47bc6cfda4106675f",
+  "source_sha256": {
+    "scripts/run-auth-tests.sh": "119f49f47d217c3650cd8f34f526b120cab41a585e7f5003759df062edd26ec5",
+    "tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e",
+    "tests/ci/test_auth_fixture_guard_recovery.py": "6aba040535e2e1fae354aa8ddb7095ddfe51c3d564f2a3000c7d1fda2eaa227c"
+  },
+  "scope": "Finite fake-procfs, exact-birth ledger, clock, signal, socket and subprocess seams only; no real PostgreSQL, browser, service launch, build or install. Does not qualify corrected-source real fixture cleanup.",
+  "reviewer": "/root/review_runtime_test_boundaries",
+  "review_authorization": "Exact 27-case command and direct logging wrapper source-cleared before execution; helper 17ff9c2e and test 6aba0405.",
+  "preserved_original_evidence": [
+    "auth-fixture-guard-finite-first-run-20261017.receipt.json",
+    "auth-fixture-guard-normal-stop-baseline/scope.json",
+    "pg-guard-qualification-01/receipt.json"
+  ],
+  "preserved_unexecuted_held_candidate": "auth-fixture-guard-cross-session-held-candidate/scope.json"
+}

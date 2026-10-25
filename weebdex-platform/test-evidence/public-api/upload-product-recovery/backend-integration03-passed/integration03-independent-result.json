@@ -1,0 +1,70 @@
+{
+  "schema": "recovered-upload-full-http-independent-result-v1",
+  "verdict": "one_genuine_signed_http_contract_test_pass_and_teardown_verified",
+  "reviewed_at_utc": "2026-10-17T05:18:28.256757+00:00",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-backend-integration-03/receipt.json",
+      "sha256": "fdc7ecbbba5c39f41832083e3a20149f887aa7e559c8e3014a8056befb3700dd"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-backend-integration-03/run.log",
+      "sha256": "db76d9ed1a59ea3f2ed7bef9ac61a43f041e001976af2dede917acf16586123b"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-backend-integration-03/probe.json",
+      "sha256": "b6818488f1b1e1cfaae849c7f267988e8679b9ff23ac9d5b5b1dd3f48500f217"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-runtime/auth-1rhg8uo3/cleanup.json",
+      "sha256": "605858b8081cc013af75bf96d4241784da6930964474c1fcd0f255a3a3c694c3"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-backend-integration03-independent-plan-review-20261017.json",
+      "sha256": "c90289b38d3641c4f0841fdf6ef5f0150ce516305d21cab96acb77c551679cfb"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/backend-test-compile-05/receipt.json",
+      "sha256": "2b2594f77bd2e64f8f10313f60115cb81491b29446b5a79a6ee6fcda870118b1"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/tests/public_uploads.rs",
+      "sha256": "c34b6ba0b670ca8b782ace7fc5457422d5ff4bccb7ec349b640412dcdeb4f22d"
+    }
+  ],
+  "source_commit": "c2c60221c27f532c060df86ce9683acfcaca65bb",
+  "source_pins_verified": 308,
+  "actual_test": {
+    "name": "exact_nostr_upload_contracts_ownership_validation_and_original_commit",
+    "passed": 1,
+    "failed": 0,
+    "exit_code": 0,
+    "duration_seconds": 2.02
+  },
+  "completed_assertion_scope": [
+    "Actual NIP98 body-byte binding, invalid signer/replay and foreign ownership refusals.",
+    "Signed bound-account/version and exact-session metadata/order/expiry/prepared/admission/binding/grant recovery checks; private preview bytes/range/privacy headers.",
+    "Real successful HTTP200 commit with three ordered originals, exact target manga relation, accepted_pending_projection status and isUnavailable true.",
+    "Exact-session committed state and same receipt/target association; current publisher-authority revocation suppresses receipt without erasing committed session state.",
+    "Stored original event signature verification, kind1001 and exact publisher; fresh ordered original-file reads equal expected real PNG/JPEG inputs.",
+    "Same payload commit retry preserves identity/event, changed order409, foreign commit404, committed cancel409, public unreadable chapter404, no remaining upload files or temporary files."
+  ],
+  "physical": {
+    "observed_births": 23,
+    "guard_captured_births": 15,
+    "captured_subset_observed": true,
+    "all_saved_births_absent_at_owner_terminal": true,
+    "postgres_port": 53701,
+    "axum_port": 33753,
+    "both_exact_owned_listener_ports_refused": true,
+    "forced": false,
+    "postgres_returncode": 0,
+    "terminal_errors": []
+  },
+  "limits": [
+    "The successful commit is accepted pending projection, not a public readable chapter or HTTP202.",
+    "No browser journey, real page replacement, public chapter edit or broad legacy suite qualification is inferred.",
+    "Historical integration01 application503 and integration02 no-test observation failure remain unchanged.",
+    "Physical outcome checked through same-runtime owner observations and nested receipts; reviewer started no runtime."
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "independent-source-result-review-v1",
+  "source_review": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-adapter-independent-source-review-20261017.json",
+    "sha256": "7abf237027118c6676d1808255595bf2c798170d350faa5abc11d601cef8c0d0",
+    "bytes": 4472
+  },
+  "sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-client.ts",
+      "sha256": "3f4705526fe542f5631d35b57a5998c7376c8e924b8c7ccd5d69e9e7df24a7aa",
+      "bytes": 65285
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/upload-multipart.ts",
+      "sha256": "460b130db0e71ff98b85662129060e4a85c8ee9e502f161b9cd33873ffd6c7c0",
+      "bytes": 5322
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/tests/ci/test_public_upload_adapter_recovery.mjs",
+      "sha256": "afb62f7c026b4f672b00e6faf174b931f7086c4a6160b1d1169b7202df6236ac",
+      "bytes": 65879
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/platform-integrations/public-api/validation.ts",
+      "sha256": "73d054cf6a6595cda9270752beef878ecbaeaba12e2b29fe58e3deb57fc1acce",
+      "bytes": 2001
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-replacement-worktree/weebdex-platform/frontend/src/lib/constants/Error.ts",
+      "sha256": "a1a45c45acec60f4f432844183decee07589f0779ad31785b6484fa001904a61",
+      "bytes": 584
+    }
+  ],
+  "log": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-adapter-pure-first-20261017.log",
+    "sha256": "65523e63cf38af54b0399ce52eaacb00b7a02f296d9eb9a9dc1a51d29e8cf89f",
+    "bytes": 6414
+  },
+  "observed": {
+    "tests": 57,
+    "pass": 57,
+    "fail": 0
+  },
+  "scope": "One source-owner finite fake-transport invocation, including post-POST unsent fence negatives and bounded lock failure handling. No actual transport/browser/SQL qualification.",
+  "combined_finite_scope": {
+    "adapter": 57,
+    "media_and_wire": 32,
+    "ui": 35,
+    "provenance": 12,
+    "total": 136
+  }
+}

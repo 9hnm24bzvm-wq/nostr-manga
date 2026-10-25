@@ -1,0 +1,17 @@
+{
+  "files": {
+    "actual.log.gz": {
+      "bytes": 244,
+      "sha256": "0f7637226e9dd909004c8ed98ee7d1a14535a3e817fa32091fbf919e89dad3f9"
+    },
+    "owned.json": {
+      "bytes": 600,
+      "sha256": "35b4a6d605cb21c2ee976e5f61cd3bf5e5c6b3fd1c7aee27aa531401a6d62289"
+    },
+    "result.json": {
+      "bytes": 1627,
+      "sha256": "72af4c0b065d9d169e8cb9564c6477b829c9cdab831d5f921917407b0766eaa1"
+    }
+  },
+  "excludesSelf": true
+}

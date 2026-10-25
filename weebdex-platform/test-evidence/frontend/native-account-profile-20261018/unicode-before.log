@@ -1,0 +1,72 @@
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ signed self preview captures actual shared user revision and actual allowlisted public fields (3.16562ms)
+✔ changed-only signed PUT binds actual account target and revision, trimming values and preserving omissions (0.67814ms)
+✔ explicit empty-string clears contacts while omission preserves independent fields (0.329586ms)
+✔ unknown fields null wrong types oversized UTF8 and same-value empty patches fail before dispatch (1.454447ms)
+✔ no save before a valid preview and no silent adoption of another bound account (0.481614ms)
+✔ malformed target preview fails closed (0.304578ms)
+✔ malformed account preview fails closed (0.182244ms)
+✔ malformed entityProof preview fails closed (0.163185ms)
+✔ malformed envelopeProof preview fails closed (0.183596ms)
+✔ malformed revision preview fails closed (0.253732ms)
+✔ malformed privateField preview fails closed (0.215304ms)
+✔ malformed publisher preview fails closed (0.162044ms)
+✔ malformed changedPreview preview fails closed (1.087205ms)
+✔ denied 401 write fences another save until explicit read without replay (0.340913ms)
+✔ denied 403 write fences another save until explicit read without replay (0.187051ms)
+✔ denied 409 write fences another save until explicit read without replay (0.136325ms)
+✔ denied 429 write fences another save until explicit read without replay (0.110827ms)
+✔ denied 503 write fences another save until explicit read without replay (0.15305ms)
+✔ unconfirmed lost receipt never reports success or automatically replays (0.306911ms)
+✔ unconfirmed changed receipt never reports success or automatically replays (0.170526ms)
+✔ unconfirmed revision receipt never reports success or automatically replays (0.128293ms)
+✔ unconfirmed field receipt never reports success or automatically replays (0.130887ms)
+✔ unconfirmed account receipt never reports success or automatically replays (0.153942ms)
+✔ same-signer account rebind and native/auth shared revision changes reject old previews (0.277588ms)
+✔ pending request excludes a second write, and late signer/context invalidation drops dispatch (0.251418ms)
+✔ saved public profile presentation retains read-only and genuine native identity markers without private authority (0.333812ms)
+✔ public publisher profiles never inherit native biography/contact or edit eligibility (0.131759ms)
+✖ native Unicode trim exactly matches Rust NEL whitespace (0.250968ms)
+✖ native Unicode trim exactly matches non-whitespace BOM (0.859903ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 27
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 148.220202
+
+✖ failing tests:
+
+test at weebdex-platform/tests/ci/test_account_profile_client.mjs:16:183
+✖ native Unicode trim exactly matches Rust NEL whitespace (0.250968ms)
+  Error [PublicApiContractError]: Invalid confirmed native public profile receipt.
+      at fail (account-profile-client:11:11)
+      at Object.save (account-profile-client:116:253)
+      at async TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/native-profile-editor-worktree-20261018/weebdex-platform/tests/ci/test_account_profile_client.mjs:16:307)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    status: 502
+  }
+
+test at weebdex-platform/tests/ci/test_account_profile_client.mjs:16:183
+✖ native Unicode trim exactly matches non-whitespace BOM (0.859903ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'Native preserve'
+  - '﻿Native preserve﻿'
+  
+      at TestContext.<anonymous> (file:///workspace/shared/nostr-manga-recovery-20261017/native-profile-editor-worktree-20261018/weebdex-platform/tests/ci/test_account_profile_client.mjs:16:348)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Native preserve',
+    expected: '﻿Native preserve﻿',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

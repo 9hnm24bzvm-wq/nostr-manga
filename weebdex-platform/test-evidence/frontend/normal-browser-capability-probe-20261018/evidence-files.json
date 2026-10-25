@@ -1,0 +1,37 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 1982,
+      "sha256": "894830eb652dab24e4e17415543d971e801f5b1ecd3ad4a3aff0a9b43e117dd6"
+    },
+    "installed-capabilities.json": {
+      "bytes": 1316,
+      "sha256": "1f3a490613ac4534b509a135ab54939508fef0a961d190c66216aa72a3bb4575"
+    },
+    "owned.json": {
+      "bytes": 749,
+      "sha256": "8a844f01b3f817bd8573969795dceb70dd28b8a26c8869d3342058bc24d286fd"
+    },
+    "probe.log.gz": {
+      "bytes": 1629,
+      "sha256": "5f8041cbb778db37b19ffe62256e8d15b8b89bb93b3a4d976ebd4abebc3551e4"
+    },
+    "probe.mjs": {
+      "bytes": 2407,
+      "sha256": "f6e6693e50533f88ce81253cb5a35ee1bb183910549f7a2df15437fe50596d69"
+    },
+    "result.json": {
+      "bytes": 5320,
+      "sha256": "c9d96395ce9ce1d4e19f1ae17a1a4c3956a9f3befeb02cc5652fc0fcd0431b15"
+    },
+    "run-owned.py": {
+      "bytes": 2944,
+      "sha256": "dcde7e9a3cec3a617f1db687b96a885eb813bc5c1382e8b469a3e9b1bfa15f52"
+    }
+  },
+  "raw_log": {
+    "bytes": 5320,
+    "sha256": "c9d96395ce9ce1d4e19f1ae17a1a4c3956a9f3befeb02cc5652fc0fcd0431b15",
+    "retained": "probe.log.gz"
+  }
+}

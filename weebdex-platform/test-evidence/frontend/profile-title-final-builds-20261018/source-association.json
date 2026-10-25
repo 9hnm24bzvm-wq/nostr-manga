@@ -1,0 +1,31 @@
+{
+  "tested_commit": "34042537b23df594a0c7923773ea4f00c6e47b9c",
+  "tested_tree": "b201ba3f9a64614880e4db539030f32d9c07d307",
+  "source_preserved": true,
+  "canonical_frontend_files": 679,
+  "tracked_product_inputs": 922,
+  "product_source_pins_pretty_sha256": "473fe029e4b42f01e4b14846f6cdb5ca4dcd6afe91c376e36ce68f8b9de20421",
+  "product_source_pins_sorted_compact_sha256": "f47d4c9070fe3ec7cd0b54a096995b3da2921ed409bce8087ec26c9980b47177",
+  "actual_strict_product_pin_source": "/workspace/shared/nostr-manga-recovery-20261017/composed-frontend-validation-worktree-20261017/weebdex-platform/test-evidence/frontend/complete-discovered-physical-ci-20261018/strict-product-source-pins.json",
+  "actual_strict_product_pin_sha256": "473fe029e4b42f01e4b14846f6cdb5ca4dcd6afe91c376e36ce68f8b9de20421",
+  "all_922_strict_product_hashes_equal": true,
+  "strict_source_association": "15030c5-equivalent product source on frozen34042537; account qualificationd491b597 is separate actual strict/finite evidence",
+  "raw_broad_snapshot_entries": 1280,
+  "generated_helper_bytecode_not_counted_as_product_source": [
+    "weebdex-platform/scripts/ci/__pycache__/prepare-hosted-browser.cpython-312.pyc"
+  ],
+  "physical_roots": 7,
+  "physical_dependency_entries": 45438,
+  "physical_regular_files": 40955,
+  "physical_symlinks": 627,
+  "physical_snapshot_sha256": "237d3eb24d76eedbc06753f045f0367519e3632a56cb11608c5f183dede297b8",
+  "all_before_after_physical_bytes_modes_exact_mtimeNs_symlink_targets_equal": true,
+  "in_process_guard_plus_observed_snapshots_not_OS_syscall_sandbox": true,
+  "no_dependency_install_download_copy_or_cache_mutation": true,
+  "shared_historical_build_receipts_restored_to_340_bytes": true,
+  "post_340_evidence_only_integration_association": {
+    "commit": "e703eb53d3665ba9b454f20327108d5464114a99",
+    "frontend_tool_test_diff_from_340": false,
+    "association": "independently checked by integration owner; no rebuild needed for evidence-only addition"
+  }
+}

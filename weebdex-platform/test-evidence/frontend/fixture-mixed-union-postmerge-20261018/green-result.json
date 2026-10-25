@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "validationSource": "0474ebc895fdead291dd66c69e0dc87866fba068",
+  "composedBase": "f1d54c027402829ca76fd3cf2f228a92ceef973a",
+  "phase": "full corrected postmerge union",
+  "methods": {
+    "run": 46,
+    "passed": 46,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "uniqueModules": 5,
+  "unittestElapsedSeconds": 35.782,
+  "guardElapsedSeconds": 36.329,
+  "sourcePinCount": 71,
+  "sourcePinsUnchanged": true,
+  "dependencyEntryCount": 47,
+  "dependencyBytesAndMetadataUnchanged": true,
+  "runtimeVersionDifference": {
+    "aiohttpActual": "3.14.4",
+    "aiohttpProjectRequired": "3.13.5"
+  },
+  "noNewInstall": true,
+  "noActualApplicationLoad": true,
+  "historicalRedRetained": true,
+  "originalStaticV1Retained": true,
+  "originalHistoricalPlanRecovered": false,
+  "fullImageCorpusRecovered": false,
+  "authenticJpeg": {
+    "path": "manga-protocol-lab/server/tests/fixtures/real-images/met-57682.jpg",
+    "bytes": 1227747,
+    "sha256": "3ac595477a047f9fa78166a88fd2a8a0306d3d6698fca655e430b5c4e1b4603a"
+  },
+  "sourceDeltaFromRed": {
+    "manga-protocol-lab/bench/library-node/fixtures/README.md": {
+      "red": "230959d68be2f5060524fac3d06d7b7273a152685b3f60382862de3e6cf19f2d",
+      "green": "6808067e9bb82e14e6684bed3161938b7e8ca56f0ce8b7b92fa46754ff66782e"
+    },
+    "manga-protocol-lab/bench/library-node/fixtures/mixed-210s-bounded-plan-v2.json": {
+      "red": null,
+      "green": "630fad1bced464d773c2d6907b6c522fa531b05099bd45e1efb0727f8edc54ad"
+    },
+    "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py": {
+      "red": "3e4128e30e9f1b891d6f053e14ba50ad2fc9db4795331ae3aaa7b9d91e7c0b69",
+      "green": "92c7d81ed72ccfa22b9610b1d91712579a4d272c2360d594a3c0973a4586cc04"
+    }
+  },
+  "ownedSurvivors": [],
+  "stopReason": null,
+  "qualificationBoundary": "Finite controlled-loopback/process harness methods only; no integrated-app load, capacity, historical load-plan recovery or browser acceptance"
+}

@@ -51,7 +51,7 @@ other acceptance phases.
   deliberately lost successful response reconciles its exact counterpart without
   replay. A request aborted before the service remains outcome-unknown when no
   counterpart exists; explicit retry reuses the same signed event and recipient.
-  Authored comment withdrawal uses the actual account-deletion endpoint/feed.
+  Authored comment withdrawal uses the original `/account-deletions` kind5 request endpoint/feed; it does not delete the native site account.
 - `signed-context`: a delayed genuine source read cannot attach its results after
   target change. Cancel and target-change controls discard unsigned review and
   consent. A held external signer return preserves exact signed intent at its

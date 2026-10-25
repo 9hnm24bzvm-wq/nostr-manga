@@ -1,0 +1,55 @@
+{
+  "configuration_sha256": "03a34343251e65b83fdc71388fcd2fabb1395d17f411182e0e56b766c8308160",
+  "bindings": [
+    {
+      "alias": "@lucide/svelte",
+      "physical_target": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/@lucide/svelte/dist/lucide-svelte.js",
+      "protected_roots": [
+        "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules"
+      ]
+    },
+    {
+      "alias": "svelte-sonner",
+      "physical_target": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/svelte-sonner/dist/index.js",
+      "protected_roots": [
+        "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules"
+      ]
+    },
+    {
+      "alias": "axios",
+      "physical_target": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/axios/index.js",
+      "protected_roots": [
+        "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules"
+      ]
+    },
+    {
+      "alias": "http-status-codes",
+      "physical_target": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules/http-status-codes/build/es/index.js",
+      "protected_roots": [
+        "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/frontend-restore3/node_modules"
+      ]
+    },
+    {
+      "alias": "@noble/curves",
+      "physical_target": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/curves",
+      "protected_roots": [
+        "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ]
+    },
+    {
+      "alias": "@noble/hashes",
+      "physical_target": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules/@noble/hashes",
+      "protected_roots": [
+        "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-library-noble-2.0.1/node_modules"
+      ]
+    },
+    {
+      "alias": "@scure/base",
+      "physical_target": "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-signing-base-2.0.0/node_modules/@scure/base",
+      "protected_roots": [
+        "/workspace/shared/nostr-manga-recovery-20261017/frontend-build-worktree/weebdex-platform/.build/local-signing-base-2.0.0/node_modules"
+      ]
+    }
+  ],
+  "full_primary_root_explicit": true
+}

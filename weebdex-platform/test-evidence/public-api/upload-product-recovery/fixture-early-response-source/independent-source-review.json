@@ -1,0 +1,32 @@
+{
+  "schema": "fixture-early-response-independent-source-audit-v1",
+  "reviewed_at_utc": "2026-10-17T05:32:45.455000+00:00",
+  "verdict": "source_clear_for_exact_pure_test",
+  "refs": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/runtime/browser_fixture.py",
+      "sha256": "00268d6e868cb85d770930f2e718d3453b0fd05605bffaf4c37b147919768b66"
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/tests/ci/test_browser_fixture_early_response_recovery.py",
+      "sha256": "dc3bb08abcdd1a045114c14aef82f5de51e5e32b3649686920dec5ef4740d4e4"
+    }
+  ],
+  "authored_test_methods": 25,
+  "allowed_command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/ci/test_browser_fixture_early_response_recovery.py -v",
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform",
+  "test_scope": "AST-only extraction of the actual helper and nested check. HTTPConnection/socket/Timer are fakes; real threading.Lock/Event allocate no thread. No full fixture import, socket, child, DB or browser. A first-run stdout/stderr log in the recovery directory may be retained without rerun.",
+  "source_checks": [
+    "Only the exact oversized POST uses the same-connection helper; all other checks retain their transport and expected statuses.",
+    "Canonical loopback origin, exact 1048577-byte body, one HTTPConnection, explicit POST/path/Origin/Content-Type/Content-Length; only BrokenPipeError/ConnectionResetError are retained before attempting an actual response. No request replay or synthetic status.",
+    "One five-second absolute watchdog interrupts the captured original socket through header/body work. Connection establishment has remaining-budget timeout; every blocking operation checks the shared deadline. Timer cancellation/join is bounded to one second and unsettled/expired observation cannot pass.",
+    "Response body is bounded to one MiB, canonical single Content-Length is checked and actual consumed bytes/remaining length must complete. A truncated fixed-length response remains failure.",
+    "Both response and connection cleanup are attempted, primary transport exception remains primary, and any cleanup failure prevents a successful result.",
+    "Closed named method/path/request size/expected status metadata precedes each call. Failed transport keeps observed status null unless actually parsed, and records class without arbitrary error text."
+  ],
+  "limits": [
+    "The original browser01 failing request was not retained; this prospective correction does not prove its cause.",
+    "Fake transport tests are not an actual early-response or browser qualification. A separately reviewed sole-owner real check is required.",
+    "Actual browser rerun and source checkpoint/input association remain pending."
+  ]
+}

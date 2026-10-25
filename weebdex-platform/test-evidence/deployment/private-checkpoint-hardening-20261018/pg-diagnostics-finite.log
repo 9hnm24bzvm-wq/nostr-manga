@@ -1,0 +1,22 @@
+test_activity_empty_excludes_sampler_and_other_database (test_pg_diagnostics.DiagnosticCli.test_activity_empty_excludes_sampler_and_other_database) ... skipped 'isolated owned PostgreSQL fixture required'
+test_activity_groups_idle_active_and_lock_wait_without_identities (test_pg_diagnostics.DiagnosticCli.test_activity_groups_idle_active_and_lock_wait_without_identities) ... skipped 'isolated owned PostgreSQL fixture required'
+test_actual_cli_5s_child_timeout_reaps_process (test_pg_diagnostics.DiagnosticCli.test_actual_cli_5s_child_timeout_reaps_process) ... skipped 'isolated owned PostgreSQL fixture required'
+test_actual_cli_async_cancellation_waits_for_psql_reaping (test_pg_diagnostics.DiagnosticCli.test_actual_cli_async_cancellation_waits_for_psql_reaping) ... skipped 'isolated owned PostgreSQL fixture required'
+test_actual_lock_timeout_bounded_and_activity_remains_available (test_pg_diagnostics.DiagnosticCli.test_actual_lock_timeout_bounded_and_activity_remains_available) ... skipped 'isolated owned PostgreSQL fixture required'
+test_actual_postgres_rejects_writes_in_both_modes (test_pg_diagnostics.DiagnosticCli.test_actual_postgres_rejects_writes_in_both_modes) ... skipped 'isolated owned PostgreSQL fixture required'
+test_actual_sql_statement_timeout_reaps_psql (test_pg_diagnostics.DiagnosticCli.test_actual_sql_statement_timeout_reaps_psql) ... skipped 'isolated owned PostgreSQL fixture required'
+test_cli_rejects_malformed_snapshot_without_fabricating_counters (test_pg_diagnostics.DiagnosticCli.test_cli_rejects_malformed_snapshot_without_fabricating_counters) ... skipped 'isolated owned PostgreSQL fixture required'
+test_failed_connection_is_explicit_without_connection_secrets (test_pg_diagnostics.DiagnosticCli.test_failed_connection_is_explicit_without_connection_secrets) ... skipped 'isolated owned PostgreSQL fixture required'
+test_read_only_sampler_reports_arranged_backlogs (test_pg_diagnostics.DiagnosticCli.test_read_only_sampler_reports_arranged_backlogs) ... skipped 'isolated owned PostgreSQL fixture required'
+test_wal_checkpointer_and_settings_are_actual_cluster_snapshots (test_pg_diagnostics.DiagnosticCli.test_wal_checkpointer_and_settings_are_actual_cluster_snapshots) ... skipped 'isolated owned PostgreSQL fixture required'
+test_wal_snapshot_retains_independent_real_reset_epochs (test_pg_diagnostics.DiagnosticCli.test_wal_snapshot_retains_independent_real_reset_epochs) ... skipped 'isolated owned PostgreSQL fixture required'
+test_activity_field_required_and_array_validated (test_pg_diagnostics.DiagnosticShape.test_activity_field_required_and_array_validated) ... ok
+test_default_backlog_contract_unchanged (test_pg_diagnostics.DiagnosticShape.test_default_backlog_contract_unchanged) ... ok
+test_missing_nonfinite_boolean_negative_and_invalid_identity_are_errors (test_pg_diagnostics.WalSnapshotShape.test_missing_nonfinite_boolean_negative_and_invalid_identity_are_errors) ... ok
+test_only_known_bounded_snapshot_fields_are_preserved (test_pg_diagnostics.WalSnapshotShape.test_only_known_bounded_snapshot_fields_are_preserved) ... ok
+test_settings_missing_or_unbounded_are_errors_and_reset_identity_is_raw (test_pg_diagnostics.WalSnapshotShape.test_settings_missing_or_unbounded_are_errors_and_reset_identity_is_raw) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.103s
+
+OK (skipped=12)

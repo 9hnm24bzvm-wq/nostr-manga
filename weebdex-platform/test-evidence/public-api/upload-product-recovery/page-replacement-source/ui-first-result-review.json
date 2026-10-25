@@ -1,0 +1,43 @@
+{
+  "schema": "independent-source-result-review-v1",
+  "scope": "Replacement UI source-extracted seams and data-transform provenance only",
+  "source_review": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-ui-provenance-independent-source-review-20261017.json",
+    "sha256": "4e7ae1f0de4bd2c4d9e235c8b0e4cf2cc899606e5109054af29f12d910d0ee01",
+    "bytes": 3251
+  },
+  "retained_sources": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-ui-first-candidate/test_public_upload_overlay_recovery.mjs",
+      "sha256": "e167de92e5ea61ddd45285c8cad8dc280bb905ff3ea6e8d1df367055234f1180",
+      "bytes": 21157
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-ui-first-candidate/upload-anchors.json",
+      "sha256": "3c33f293d8d6892c4a3a05628bcc580df839d5f88a2798d1a93edffdfb5c3b4f",
+      "bytes": 40546
+    }
+  ],
+  "results": [
+    {
+      "log": {
+        "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-ui-pure-first-20261017.log",
+        "sha256": "5a24b169e3b7364528ed2bb321ae71affaa86b7cc539c481a123267dd60cb0e7",
+        "bytes": 3909
+      },
+      "passed": 35
+    },
+    {
+      "log": {
+        "path": "/workspace/shared/nostr-manga-recovery-20261017/replacement-provenance-pure-first-20261017.log",
+        "sha256": "34c09b2e3f8d26220f02fb674368572d691a73cea28a0fa00ac9541cf96298f0",
+        "bytes": 993
+      },
+      "passed": 12
+    }
+  ],
+  "limitations": [
+    "No Svelte/browser/HTTP/SQL execution",
+    "This is the earlier object-replacing UI candidate; the keyed-card successor is reviewed separately."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "source": "platform-integrations/public-api/signed-account-scope.ts",
+  "predecessor_commit": "18044ec0a2850d4d644862e40b32627ef8032121",
+  "predecessor_blob": "ce916824d688c8a1dff2653ac1b81d25cf56c5e0",
+  "predecessor_sha256": "be686da5670dcb6ad396d509959da334fd83f82611f2a9b0e8897a59c3c155e0",
+  "successor_sha256": "96520f09d7a151be24f2bba8f1c111a7e6365b8c5a5e897423ff3e0c7af96e64",
+  "purpose": "Exact source comparison only; not a runtime substitute or historical qualification claim."
+}

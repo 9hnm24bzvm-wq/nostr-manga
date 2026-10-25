@@ -1,0 +1,19 @@
+TOOL-OUTPUT COPY: exact original command output copied from tool chunk b7fb6f; not a file-backed capture. No rerun.
+Command: PYTHONDONTWRITEBYTECODE=1 python3 weebdex-platform/tests/ci/test_browser_fixture_pg_root_recovery.py
+Working directory: /workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree
+Exit code: 0
+Tool wall time: 0.038910471 seconds
+
+BEGIN EXACT TOOL OUTPUT
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK
+END EXACT TOOL OUTPUT
+
+SOURCE-REVIEW RECEIPT COPY: received from /root/review_runtime_test_boundaries before the single test run.
+Source-cleared exact fixture 4d04a576 and seven-case test 37ef788a for the stated AST-only Python command. The override is selected only when explicitly present, invalid values fail closed, and the original default and argv-based PG calls remain intact. Tests compile only the resolver AST and inspect source structure; no supervisor import or runtime work. Capture the first output directly if desired; no logging-only rerun.
+
+Reviewed fixture SHA256: 4d04a5769b3651f31d58e4b0f0126262e0555664ef2931b3929c3a190ec15b1f
+Reviewed test SHA256: 37ef788a7de85777a23cc6e931016ea3cc2368648de78735848a6d40b6658c22

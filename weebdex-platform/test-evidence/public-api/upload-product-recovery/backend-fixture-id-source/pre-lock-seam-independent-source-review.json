@@ -1,0 +1,81 @@
+{
+  "schema": "upload-fixture-id-and-account-lock-independent-source-review-v1",
+  "reviewed_at": "2026-10-17T04:49:20Z",
+  "verdict": "source_clear_for_guarded_compile_and_exact_test_plan; actual lock outcome pending",
+  "source_head": "1c715c79f43d978e01cc2deb86f524d5c83559d4",
+  "files": [
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/src/public_api/auth.rs",
+      "sha256": "b8a053ac097515df7dd014854318a31411060ea34f027211faf38e50a782d9a7",
+      "bytes": 12280
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/tests/public_uploads.rs",
+      "sha256": "3b1571d719d019ea065ea4ad1003f89c70a75f36fe94abb2b01a1faceb035251",
+      "bytes": 36539
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/migrations/0070_protocol_bridge.sql",
+      "sha256": "764d31aaab0ad62693f70d903ac3619eb5a7c1f9031a7b68486a838baa26b99d",
+      "bytes": 12304
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/src/domains/uploads/storage.rs",
+      "sha256": "0310aa66e42a376ddf7a45c2484d5ab949aee5d0fabf642a5677df28136cd0c9",
+      "bytes": 26522
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/backend/src/protocol/publication.rs",
+      "sha256": "a97b9b63d0666d2e62b4a68cc6725a53b01896492938a24fbd507ccfc73e7320",
+      "bytes": 61891
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-backend-integration-01/pg-error-classes.json",
+      "sha256": "75305b1dfc0676930a8599261bc477acd709eb4beec627dd8295dcaafe6ec4d3",
+      "bytes": 436
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/failed-public_uploads.rs.retained",
+      "sha256": "b42d3dfafc50675953b0d6c4f4e9fea046ce95be6b325f8c9b00b0a9636f36ed",
+      "bytes": 31722
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/integration01-failed.log",
+      "sha256": "0df8e047b1c3d8071b6b38c8be79b52679ed5031a62e97ec06eb0a3af2145068",
+      "bytes": 875
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/integration01-pg-error-classes.json",
+      "sha256": "75305b1dfc0676930a8599261bc477acd709eb4beec627dd8295dcaafe6ec4d3",
+      "bytes": 436
+    },
+    {
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/upload-product-worktree/weebdex-platform/test-evidence/public-api/upload-product-recovery/backend-fixture-id-source/integration01-receipt.json",
+      "sha256": "a613e84d02fcff40de4940bb74c653484d59bd0f2ca43da9784a5aae0a453433",
+      "bytes": 7000
+    }
+  ],
+  "findings": [
+    "Original fixture manga ID UploadManga is 11 characters, violating the real publication command catalog_id length10 constraint. Retained PostgreSQL diagnostic confirms that exact constraint failure in failed integration01.",
+    "Fixture now uses actual storage::valid_id with ten-byte ASCII alphanumeric UploadMng1 and UploadGrp1 before fixture database setup; parameterized SQL and bindings reuse those constants.",
+    "Pure identifier regression binds the migration constraint and rejects original eleven-character, short, punctuation and non-ASCII IDs.",
+    "Production auth change only factors the exact unchanged FOR UPDATE literal into a private constant. Capability recheck, binding FOR SHARE, actor policy, parameterization and grants are unchanged.",
+    "Ignored concurrency seam extracts exactly one private query and asserts production caller use; holds one actor transaction while an independent actual-schema command FK insert and six authority/write probes run under lock_timeout200ms and statement_timeout500ms.",
+    "Every probe transaction is rolled back including unexpected success. Owner transaction is rolled back before expected old-lock FK assertion. Final account, binding and absent command checks are present.",
+    "The fixture also creates its ordinary local Axum listener and temporary synthetic key/storage files. It requires the existing disposable owned PostgreSQL guard and normal test process teardown; this is not a pure test."
+  ],
+  "bounded_next_steps": {
+    "pure_test": "catalog_fixture_identifiers_match_publication_schema",
+    "database_test": "account_write_lock_allows_publication_fk_and_excludes_authority_changes",
+    "database_expected_old_lock": "FK insertion should fail under old FOR UPDATE; retain actual SQLSTATE/error and all rollback/teardown results",
+    "runtime_owner": "/root/recover_browser_gate_result",
+    "actual_execution_requires": "fresh compiled binary/source pins and exact owned wrapper review"
+  },
+  "claims_excluded": [
+    "No actual concurrency test executed by reviewer",
+    "No lock-mode correction approved or applied by this receipt",
+    "No inference that failed integration01 published or passed",
+    "No blanket application/browser qualification"
+  ],
+  "review_method": "Read-only source/diff/retained evidence inspection and exact auth literal reconstruction; no repository test, Cargo, database or browser execution."
+}

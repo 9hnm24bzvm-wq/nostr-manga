@@ -1,0 +1,91 @@
+(node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ late previous-key preferences cannot repopulate reset relay or job state (97.005472ms)
+✔ key change between preferences and jobs rejects the old refresh continuation (1.873467ms)
+✔ same-key reconnect invalidates a pending refresh and newer refresh epoch wins (1.540787ms)
+✔ canonical rows/counts require returned key generation even before reset effect executes (1.271812ms)
+(node:13) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ public references include chapter parent without saved series and never convert unresolved native IDs (159.918486ms)
+✔ chapter projection requires actual parent event plus preferred public alias; unrelated parents excluded (34.205887ms)
+✔ full provenance fingerprint changes for parent, publisher and canonical alias, not input order (40.960174ms)
+✔ actual worker opens existing v2 without downgrade, projects original IDs with unchanged codec and excludes legacy (69.198827ms)
+✔ worker owner, scope, revision and durable migration conflicts prevent graph preparation (109.587627ms)
+✔ fingerprint-only recheck never opens storage and owner-marked snapshots reject legacy publication mode (16.388578ms)
+(node:14) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ anonymous namespace-only UUID series, list/member and page progress save without transport or signer (16.012938ms)
+✔ new legacy IDs and credentials fail atomically while unresolved legacy rows stay intact (8.222751ms)
+✔ stale revision, changed owner/scope and durable migration fences reject before mutation (2.857226ms)
+✔ chapter parent cannot be rebound and membership requires an existing list (9.16429ms)
+✔ root removal cascades local membership with exact archives, issues and monotonic tombstones (2.056172ms)
+✔ same-clock updates advance monotonically and forbidden clear/cursor or owner mutation rolls back (5.882525ms)
+✔ context generation change rolls back records, revision and every sidecar (0.564579ms)
+✔ explicit service adoption updates owner marker atomically and preserves truthful origin-only archives (6.962901ms)
+✔ anonymous full-v2 export and reviewed restore retain owner/provenance and deletion fences (27.645842ms)
+✔ reviewed restore refuses parent rebinding, foreign scopes, fabricated review and stale CAS (4.49588ms)
+✔ actual DeviceStore v2 facade writes, snapshots and confirms offline saved scope; legacy opener stays fenced (2.08815ms)
+✔ namespace mismatch persists a cross-tab write fence and missing live identity cannot clear it (1.027174ms)
+(node:17) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ validated old-key acceptance is durably retained after response despite a new selected key (90.473444ms)
+✔ key change before the final send boundary prevents HTTP while retaining exact retry state (12.499746ms)
+✔ completion cannot access another job, change owner, or expose signing/network methods (3.679162ms)
+(node:31) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ original configured library capability profile is exact-key/origin/version scoped (4.779907ms)
+✔ read-only support probe omits credentials and rejects oversized/HTML/status responses (14.63324ms)
+✔ selection change aborts capability probe; it does not sign or establish account admission (5.971569ms)
+(node:37) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ canonical databases are distinct per key and origin; unsigned preferences contain no canonical owner (1.615148ms)
+✔ key switching isolates records and returning to a key recovers only its exact canonical data (15.898472ms)
+✔ generation changes, including same-key reconnect, invalidate pending reads and opens (0.485891ms)
+✔ unsigned settings and old legacy data are never automatically promoted into key-owned canonical stores (0.535846ms)
+(node:39) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ versioned read-only mapper preserves requested aliases, exact source and parent provenance (20.958276ms)
+✔ unmapped local-only UUID remains explicit and empty references never fetch (0.968446ms)
+✔ wrong service, namespace, kind, missing parent, invented or incomplete resources fail closed (7.706128ms)
+✔ legacy IDs, duplicate input, invalid origins and oversize input fail before network (0.694785ms)
+✔ captured scope cannot be rebound during fetch; caller scope generation is checked (9.597062ms)
+✔ bounded response rejects HTML, non-JSON, HTTP refusal and oversized bodies (1.561388ms)
+(node:45) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ UUID preview maps verified originals/parents and key-scoped canonical DB without signing or delivery (239.723352ms)
+✔ explicit consent is required; supported reviewed publication queues only its selected key (42.954827ms)
+✔ key change rejects old reviewed publication and canonical row removal; backups show selected key only (45.85205ms)
+✔ device revision or key change inside signing prompt retains no queued job or delivery (56.268373ms)
+✔ unsupported relay refuses before snapshot signature, and unresolved origin-only scope refuses publication (25.870237ms)
+✔ service adoption reviews preserve unresolved legacy rows but hydrate only typed public UUIDs (8.04628ms)
+(node:76) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+✔ generation rejection-samples WebCrypto bytes and produces validated npub without selecting an identity (163.944486ms)
+✔ missing secure randomness and persistently invalid scalars fail closed (39.485785ms)
+✔ hex import strictly admits only scalars between one and the curve order (18.176763ms)
+✔ nsec import checks prefix, Bech32 checksum, padding, length, case and scalar (16.130367ms)
+✔ pending draft has no signing authority and discard preserves an existing selected identity (16.662165ms)
+✔ a newer selected identity cannot be overwritten by an older pending key draft (14.083308ms)
+✔ activation installs only public identity in the common registry and transfers key ownership (14.00576ms)
+✔ real NIP-01 canonical hash and Schnorr signature pass existing signExact and verifyEvent (26.502943ms)
+✔ invalid or oversized templates are rejected before accessing private-key signing (13.179208ms)
+✔ Lock zeros selected mutable secret and invalidates all old signer handles (13.999471ms)
+✔ replacing local identity or connecting an extension clears old bytes and fences deferred signing (15.095941ms)
+✔ stale draft and action lifetime cannot export, activate or create a deferred signature (13.681322ms)
+✔ public npub encoding validates the actual curve point and capability metadata is truthful (11.931663ms)
+ℹ tests 57
+ℹ suites 0
+ℹ pass 57
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 873.149175

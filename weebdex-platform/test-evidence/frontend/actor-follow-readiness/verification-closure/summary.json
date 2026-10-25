@@ -1,0 +1,88 @@
+{
+  "after_inventory_sha256": "ec4004a06952251dc5453f0c496916ac4103680bc7cbf53207f859d26f2fe96f",
+  "all_audits_protected_write_attempts": 0,
+  "all_guard_process_audits": 13,
+  "artifact_validated_maps": 592,
+  "base_feature_commit": "3b4457a4c0f623977910d4417db6bdfe11ac20a3",
+  "before_inventory_sha256": "ec4004a06952251dc5453f0c496916ac4103680bc7cbf53207f859d26f2fe96f",
+  "cache_byte_and_metadata_changes": [],
+  "cache_inventory_entries": 42805,
+  "checker_source_sha256": "ad526c8bc80d8792c0bc81e61ee4533717e27e95c5fe0a02a0e7d1e0db064bc6",
+  "evidence": ".build/follow-readiness-semantic-verified/evidence",
+  "guard_source_sha256": "6fe2a5f0756d661a3455e569e01d96247413a61cf00263fdccc8c932554b77dd",
+  "limits": "No browser/services/install/public writes. Cache guard is in-process protection with byte+metadata before/after comparison; not OS syscall enforcement. Negative guard probes intentionally reject writes to an isolated local probe cache, never to either real dependency cache.",
+  "receipts": [
+    {
+      "command": [
+        "node",
+        "/workspace/scratch/3eafc9756ff3/actor-follow-readiness-worktree/weebdex-platform/scripts/check-composed-frontend.mjs"
+      ],
+      "completed_utc": "2026-10-14T04:00:22.382964+00:00",
+      "exit_code": 0,
+      "label": "strict-check",
+      "started_utc": "2026-10-14T04:00:04.794913+00:00",
+      "stderr_sha256": "d74072b6b5d5f4b6a164a7af3ff177ec6527bdfcf5808c1db60004e433f7987d",
+      "stdout_sha256": "8ad1b500d2370d6886701d372b2e73a97d14bffb0f25901faa3fbbf03e783502"
+    },
+    {
+      "command": [
+        "node",
+        "/workspace/scratch/3eafc9756ff3/actor-follow-readiness-worktree/weebdex-platform/tests/ci/test_composed_semantic_projection.mjs",
+        "/workspace/scratch/3eafc9756ff3/actor-follow-readiness-worktree/weebdex-platform/.build/follow-readiness-semantic-verified"
+      ],
+      "completed_utc": "2026-10-14T04:00:24.224824+00:00",
+      "exit_code": 0,
+      "label": "artifact-validator",
+      "started_utc": "2026-10-14T04:00:23.823241+00:00",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "a3b3a8a429dd04eef7ad7cccd3cac7ea66854f45dec181c3ac3b05b12e290591"
+    },
+    {
+      "command": [
+        "node",
+        "/workspace/scratch/3eafc9756ff3/actor-follow-readiness-worktree/weebdex-platform/tests/ci/test_semantic_validation_fail_closed.mjs",
+        "/workspace/scratch/3eafc9756ff3/actor-follow-readiness-worktree/weebdex-platform/.build/follow-readiness-semantic-verified"
+      ],
+      "completed_utc": "2026-10-14T04:00:26.107194+00:00",
+      "exit_code": 0,
+      "label": "negative-controls",
+      "started_utc": "2026-10-14T04:00:24.224948+00:00",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "eb65b8abfebe6044e628fd485046305151d69004bcf668d59476bc1cd6e1bd43"
+    },
+    {
+      "command": [
+        "node",
+        "/workspace/scratch/3eafc9756ff3/actor-follow-readiness-worktree/weebdex-platform/tests/ci/test_composed_semantic_projection.mjs",
+        "/workspace/scratch/3eafc9756ff3/actor-follow-readiness-worktree/weebdex-platform/.build/follow-readiness-semantic-verified"
+      ],
+      "completed_utc": "2026-10-14T04:00:27.970401+00:00",
+      "exit_code": 0,
+      "label": "artifact-validator-final",
+      "started_utc": "2026-10-14T04:00:27.576905+00:00",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "a3b3a8a429dd04eef7ad7cccd3cac7ea66854f45dec181c3ac3b05b12e290591"
+    }
+  ],
+  "status": "passed",
+  "strict_errors": 0,
+  "strict_warnings": 15,
+  "transformed_targets": 110,
+  "utc": "2026-10-14T04:00:29.154877+00:00",
+  "validator_sha256": "f40dc1d039c3f1b2ac3284eca45dd7f584e7d6c79a905816c9a346c849a67ade",
+  "negative_controls_source_sha256": "71bc8d9f844a83a05fc54ab9c41ca29f0c43b3340d54abe414a97b327e92c3d4",
+  "actual_production_overlay_targets_derived_from": [
+    "platform-integrations/frontend-overlays.mjs:frontendOverlayManifest",
+    "platform-integrations/frontend-reader-overlays.mjs:readerOverlayManifest",
+    "platform-integrations/local-library/overlays.mjs:localLibraryOverlayManifest"
+  ],
+  "map_expectation_identity": "592 maps; baseline591 plus platform-integrations/frontend-behavior/actor-follow-state.ts",
+  "cache_before_inventory_path": ".build/follow-readiness-verification-proof/cache-before.json",
+  "cache_after_inventory_path": ".build/follow-readiness-verification-proof/cache-after.json",
+  "negative_controls": {
+    "rejected": 10,
+    "real_dependency_caches_written": false,
+    "isolated_probe_write_denied": true
+  },
+  "production_inputs_identical_to_feature_commit": true
+}

@@ -1,0 +1,7 @@
+
+running 1 test
+test signed_account_reads_scope_native_follows_and_never_disclose_other_private_state ... 113-operation routing probe passed; sha256=cd8fa35674b2fb6fab7b19813a5a1143efd7d60279e029d0376a8d96a342940e
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.78s
+

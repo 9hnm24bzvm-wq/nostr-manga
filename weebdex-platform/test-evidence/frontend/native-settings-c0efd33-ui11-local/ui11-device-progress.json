@@ -1,0 +1,251 @@
+{
+  "schema": 1,
+  "phase": "ui11-device-progress",
+  "actual_browser": true,
+  "passed": true,
+  "steps": [
+    {
+      "index": 0,
+      "status": "passed",
+      "observation": {
+        "real_account": true,
+        "device_scope_verified": true
+      }
+    },
+    {
+      "index": 1,
+      "status": "passed",
+      "observation": {
+        "actual_page": 1,
+        "completed": false,
+        "real_timer_or_lock_gate": "timer",
+        "settings_mode_roundtrip_same_document": true,
+        "old_lifetime": {
+          "baseline_after_reviewed_backup_cleanup": true,
+          "held_before_release": true,
+          "stale_rows": 0,
+          "stale_revision_writes": 0,
+          "stale_account_posts": 0,
+          "reader_reentry_not_yet_performed": true
+        },
+        "new_reader_lifetime_durable": true,
+        "durable_after_reload": true
+      }
+    },
+    {
+      "index": 2,
+      "status": "passed",
+      "observation": {
+        "actual_page": 3,
+        "completed": true,
+        "real_timer_or_lock_gate": "timer",
+        "settings_mode_roundtrip_same_document": true,
+        "old_lifetime": {
+          "baseline_after_reviewed_backup_cleanup": true,
+          "held_before_release": true,
+          "stale_rows": 0,
+          "stale_revision_writes": 0,
+          "stale_account_posts": 0,
+          "reader_reentry_not_yet_performed": true
+        },
+        "new_reader_lifetime_durable": true,
+        "durable_after_reload": true
+      }
+    },
+    {
+      "index": 3,
+      "status": "passed",
+      "observation": {
+        "actual_page": 1,
+        "completed": false,
+        "real_timer_or_lock_gate": "lock",
+        "settings_mode_roundtrip_same_document": true,
+        "old_lifetime": {
+          "baseline_after_reviewed_backup_cleanup": false,
+          "held_before_release": true,
+          "stale_rows": 0,
+          "stale_revision_writes": 0,
+          "stale_account_posts": 0,
+          "reader_reentry_not_yet_performed": true
+        },
+        "new_reader_lifetime_durable": true,
+        "durable_after_reload": true
+      }
+    },
+    {
+      "index": 4,
+      "status": "passed",
+      "observation": {
+        "actual_page": 3,
+        "completed": true,
+        "real_timer_or_lock_gate": "lock",
+        "settings_mode_roundtrip_same_document": true,
+        "old_lifetime": {
+          "baseline_after_reviewed_backup_cleanup": false,
+          "held_before_release": true,
+          "stale_rows": 0,
+          "stale_revision_writes": 0,
+          "stale_account_posts": 0,
+          "reader_reentry_not_yet_performed": true
+        },
+        "new_reader_lifetime_durable": true,
+        "durable_after_reload": true
+      }
+    }
+  ],
+  "fixed_checks": [
+    {
+      "check_id": "device-progress-signup-context",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page1-setup",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page1-select-page",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page1-no-prior-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page1-gate-captured",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page1-old-intent-cancelled",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page1-page-retained",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page1-durable-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page1-reload-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page1-stable-revision",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page3-setup",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page3-select-page",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page3-no-prior-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page3-gate-captured",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page3-old-intent-cancelled",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page3-page-retained",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page3-durable-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page3-reload-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-timer-page3-stable-revision",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page1-setup",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page1-select-page",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page1-no-prior-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page1-gate-captured",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page1-old-intent-cancelled",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page1-page-retained",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page1-durable-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page1-reload-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page1-stable-revision",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page3-setup",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page3-select-page",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page3-no-prior-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page3-gate-captured",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page3-old-intent-cancelled",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page3-page-retained",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page3-durable-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page3-reload-progress",
+      "status": "passed"
+    },
+    {
+      "check_id": "device-progress-lock-page3-stable-revision",
+      "status": "passed"
+    }
+  ],
+  "raw_receipt_hash_role": {
+    "role": "ui11-device-progress-acceptance",
+    "sha256": "11c1b6e290a28d06f9e1e9c787e10c0eb58eda8c306d20a843907693377d92cd"
+  },
+  "raw_messages_exported": false
+}

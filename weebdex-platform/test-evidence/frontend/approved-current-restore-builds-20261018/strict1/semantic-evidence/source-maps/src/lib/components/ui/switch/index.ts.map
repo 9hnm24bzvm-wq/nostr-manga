@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "sources": [
+    "../../../../../../../production-composed/src/lib/components/ui/switch/index.ts"
+  ],
+  "sourcesContent": [
+    "import Root from \"./switch.svelte\";\n\nexport {\n\tRoot,\n\t//\n\tRoot as Switch,\n};\n"
+  ],
+  "names": [],
+  "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;;AAElC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC;AACF,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACf,CAAC;",
+  "file": "../../../../../../../project/src/lib/components/ui/switch/index.ts"
+}

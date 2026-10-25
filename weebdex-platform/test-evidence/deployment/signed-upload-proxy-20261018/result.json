@@ -1,0 +1,34 @@
+{
+  "schema": "signed-upload-deployment-proxy-source-seams-v1",
+  "utc": "2026-10-18T02:53:33.564921+00:00",
+  "baseline": "f2a4f7da8f2d3d788780584de0e4523837c18c10",
+  "command": "node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+  "finiteCasesPassed": 10,
+  "finiteCasesFailed": 0,
+  "rawLogSha256": "e18626bbb3989455293ed5d84352ea6e5d537c58fb05735f7d49c444f642088f",
+  "inputs": {
+    "weebdex-platform/deployment/nginx.example.conf": "fbc30c727104c694ee9c79160284b7f817c44258d239a9aa4f69a3824abfa09b",
+    "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs": "35c717eb12ebf3b2ad6623bd60a58c7dbfc41ed409164dde0e9badad786c0046",
+    "weebdex-platform/backend/src/router.rs": "2aec3622061746079843f14b8f3273656fc618bd5046d3813237a24439eaeb04",
+    "weebdex-platform/backend/src/config.rs": "48a338965f6b4c7e21765d87311251f284e6217a746bfecc7cc87a6c91da552b",
+    "weebdex-platform/backend/src/public_api/uploads.rs": "3c2a58867fe7f0eff958eed2b28a34bd85dad3b40a0a005bd9e06cc1da55f330",
+    "weebdex-platform/backend/src/public_api/upload_extensions.rs": "bd3dfde6cf9c03a5efa755507e1039434f4e2bba2180128e01547d6823f4bb4c",
+    "weebdex-platform/backend/src/public_api/cover_writes.rs": "a374fa246751d500013606760b7d52b1ae676b96a44ee4df6b583eefe0e52963"
+  },
+  "backendAndOriginalProtocolUnchanged": true,
+  "nginxSyntaxExecution": {
+    "status": "not_run",
+    "reason": "No nginx executable in PATH or the checked recovered vendor nginx1.30.5/1.28.0 paths; installation/build was not authorized."
+  },
+  "scope": [
+    "Quote all existing brace-bearing regex location arguments.",
+    "Exact public UUID upload96MiB/replacement40MiB/cover40MiB proxy ceilings with180s inactivity timeout.",
+    "Preserve normal JSON1MiB/30s, original short-ID locations, streaming/headers/proxy destinations/WebSocket/admin/log controls.",
+    "Rust retains its existing method-specific body/deadline/authentication guards."
+  ],
+  "limitations": [
+    "Finite directive/selection/source-contract seams are not the official nginx parser.",
+    "No network listener, installed nginx, real proxy request, TLS handshake or deployed configuration was tested.",
+    "Proxy inactivity timeout is distinct from the existing finite Rust total intake deadline."
+  ]
+}

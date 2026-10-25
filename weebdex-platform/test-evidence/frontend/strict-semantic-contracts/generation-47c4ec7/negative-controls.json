@@ -1,0 +1,79 @@
+{
+  "application_source_commit": "47c4ec7a65e2a5f298939fae118c76a7373b9ccc",
+  "status": "passed",
+  "rejected_negative_controls": 10,
+  "real_dependency_caches_written": false,
+  "results": [
+    {
+      "probe": "empty-canonical-inventory",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Actual canonical inventory must contain 679 records"
+    },
+    {
+      "probe": "missing-map-manifest-entry",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Actual manifest must contain 591 mapped application sources"
+    },
+    {
+      "probe": "empty-cache-inventory",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Actual cache inventory must not be empty"
+    },
+    {
+      "probe": "no-cache-process-audits",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: At least one configured cache-guard process audit is required"
+    },
+    {
+      "probe": "empty-audit-protected-roots",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Each audit must cover both exact dependency roots"
+    },
+    {
+      "probe": "empty-declared-cache-roots",
+      "status": "rejected",
+      "exit_code": 1,
+      "first_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:"
+    },
+    {
+      "probe": "guard-missing-protected-roots",
+      "status": "rejected",
+      "exit_code": 1
+    },
+    {
+      "probe": "guard-empty-protected-roots",
+      "status": "rejected",
+      "exit_code": 1
+    },
+    {
+      "probe": "guard-missing-audit-directory",
+      "status": "rejected",
+      "exit_code": 1
+    },
+    {
+      "probe": "guard-valid-root-blocks-write",
+      "status": "rejected",
+      "exit_code": 1
+    }
+  ],
+  "guard_denied_write_receipt": {
+    "pid": 99,
+    "protected_roots": [
+      "<project>/.build/semantic-negative-controls-OEh9tY/protected-probe-cache"
+    ],
+    "checked_node_mutations": 1,
+    "protected_write_attempts": 1,
+    "denied": [
+      {
+        "operation": "writeFileSync",
+        "resolved": "<project>/.build/semantic-negative-controls-OEh9tY/protected-probe-cache/must-not-exist"
+      }
+    ]
+  },
+  "evidence": ".build/semantic-negative-controls-OEh9tY/negative-controls.json"
+}

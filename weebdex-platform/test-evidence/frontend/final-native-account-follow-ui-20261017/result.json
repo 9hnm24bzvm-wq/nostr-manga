@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "qualified_source_commit": "f6ecdb560f0be5dd767698003ee52a08d42f5531",
+  "finite_tests": 342,
+  "passed": 342,
+  "failed": 0,
+  "full_strict": {
+    "gates": [
+      "0",
+      "1"
+    ],
+    "errors_each": 0,
+    "existing_warnings_each": 15
+  },
+  "canonical_frontend_files": 679,
+  "canonical_frontend_unchanged": true,
+  "installed_dependencies": false,
+  "copied_dependency_caches": false,
+  "runtime_browser_database_started": false,
+  "cleanup_performed": false,
+  "source_pins": {
+    "account-follow-client.ts": "bd410d4df7e32f76a3e252dceaa3d78711471480e09f1e8f63cd6c7b2cb4a380",
+    "AccountFollow.svelte": "b8050832b23299630e69fd9826228e7a772d4ccb7c2fa826c3ef78c07e881220",
+    "user-profile.ts": "9b5216dd82867d05324e081c7cb138a9ae225d45949e6382250522b4dc30172e",
+    "list-follow-client.ts": "67185bd5132bc0001907b41218e1b53b2cecbac392c9f122ffa757d94856f748",
+    "rating-client.ts": "1044bd96d3072adf646f1d1ef4bfb2def400901d414ce2299385af84f24c5342"
+  },
+  "browser_qa": "still unrun; genuine browser/IDB dependency approval remains separate",
+  "integration_and_backup_holds": "not lifted or taken over"
+}

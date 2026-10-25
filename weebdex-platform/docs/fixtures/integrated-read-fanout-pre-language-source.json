@@ -1,0 +1,71 @@
+{
+  "schema": "integrated-read-fanout-source-association-v1",
+  "sourceCommit": "281295de7104ea2ac299a2027368503891ff2b25",
+  "recipe": "integrated-read-fanout-v1.json",
+  "recipe_sha256": "024b5b70c8c0583bed90b774f9f20c5081d0880d54fd00be80eaace4e71984a6",
+  "historical_recipe_sourceCommit": "5cbd05d91c38e22eb6a7509aa6e9f8c21b12e3b4",
+  "status": "current-source-association-only-not-executed-app-load",
+  "browser_measured": false,
+  "capacity_qualified": false,
+  "sourcePins": {
+    "weebdex-platform/platform-integrations/public-api/site-client.ts": "cd6379824dfa6218c5b5b373a36be80129f611bb235f81225bc62aab6f67ed00",
+    "weebdex-platform/platform-integrations/public-api/client.ts": "f54e89b253fd5efd134d2d70ef4984e1fef49c4a5862d97277f5c747e065fcad",
+    "weebdex-platform/platform-integrations/public-api/query.ts": "a6ff8c6c1a21fdddff87eb43f09d65a4c7023cdcef72cb35563a6b13281b7193",
+    "weebdex-platform/platform-integrations/public-api/normalize.ts": "70529c89a5787c75c3835d925f802ac5020684844f4536abc8ba524965d4091a",
+    "weebdex-platform/platform-integrations/public-api/media.ts": "85791b87e3703b80ed22b985946421c4a8830330c2ba402b6d558fbd33cca513",
+    "weebdex-platform/platform-integrations/public-api/library-catalogue.ts": "8127da1de74382e0a701f408917de951a47bf32b7be88d5b1e638bdb30de258b",
+    "weebdex-platform/platform-integrations/public-api/library-staging.ts": "b9418ece73a23f64580aa017013397a74a440f9d315070e70b9ffbe6bd810169",
+    "weebdex-platform/platform-integrations/public-api/overlays.mjs": "a8e4d816b2733b11cbf0e82495a3fec369aca9c53ad748eef8867a8bb6b9c606",
+    "weebdex-platform/platform-integrations/public-api/anchors.json": "249bb68008e63b70f8ff21dfc048ced29fc532f97814e89cb23644c987f375b6",
+    "weebdex-platform/platform-integrations/public-api/source-hashes.json": "52e7e3c895eda1e08072ef2cdef4c1b0d246d5784efd5d85666ad5cf53c948a0",
+    "weebdex-platform/platform-integrations/public-api/upload-overlays.mjs": "8f7d6ada91c2a8543593441d393488e3e94736a00593aaa28587a586e849307f",
+    "weebdex-platform/platform-integrations/frontend-overlays.mjs": "9afd0fb8e3ab74ba093ec036a245dc67f711fbaaf62d01a28310a4d300f7513b",
+    "weebdex-platform/platform-integrations/frontend-reader-overlays.mjs": "ca00368c31284cf3e6a8733198de9b2e411883236be810cacff8ec501474f801",
+    "weebdex-platform/platform-integrations/local-library/overlays.mjs": "8ddfff15a60f1fe8d4921c654fee2eab4625b0fb7f37dcd7b8cfb288eab5f46d",
+    "weebdex-platform/platform-integrations/local-library/library.ts": "7a731e22f8242e278068779393ff1b3b75e3e9306d608598bdb066d5e18a3eef",
+    "weebdex-platform/platform-integrations/local-library/MangaFollow.ts": "c6b26e09d33ce9ef0dbc77593bfa9d87e27d6a24b2f5949452ce1f73e304e89a",
+    "weebdex-platform/platform-integrations/local-library/ChapterHistory.ts": "99fef1dedee26c196350aafe23496480512d75704f4a25bc3f72e22a1f4b78bf",
+    "weebdex-platform/platform-integrations/local-library/catalog.ts": "c43467046ba3010af1fefb56e7cc0661d2468fc62882f0c8725e3af627445676",
+    "weebdex-platform/platform-integrations/local-library/LibraryRuntime.svelte": "13e4f2677623ce83723cc49d5d5cc08f9319c60e0f047cca1627f108cae75fd8",
+    "weebdex-platform/frontend/src/lib/components/reader/reader-provider.svelte": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+    "weebdex-platform/frontend/src/lib/components/reader/reader-queue.svelte": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+    "weebdex-platform/frontend/src/lib/components/reader/reader-history.svelte": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "weebdex-platform/frontend/src/lib/components/reader/reader-analytics.svelte": "9df6d3c94b6f4908e4c3a8ea9d277c58fdc8dc3dff531dd11101fc285ef86917",
+    "weebdex-platform/frontend/src/lib/components/MangaSearch.svelte": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+    "weebdex-platform/frontend/src/lib/components/MangaSearchFilter.svelte": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+    "weebdex-platform/frontend/src/lib/stores/global.ts": "cb8a1eda7fae685c3fd62164080e3852a074406e98d1477acd494f76f0483671",
+    "weebdex-platform/frontend/src/lib/stores/Session.ts": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+    "weebdex-platform/frontend/src/lib/API/Auth.ts": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+    "weebdex-platform/frontend/src/routes/(app)/search/+page.svelte": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+    "weebdex-platform/frontend/src/routes/(app)/library/+page.svelte": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "weebdex-platform/frontend/src/routes/(app)/chapter/[id]/[page]/+page.ts": "605f9b391430cb36e4cbbd36b5ec1c3f0fe751a87f37e34f1245984af642bdca",
+    "weebdex-platform/frontend/src/routes/(app)/chapter/[id]/[page]/+page@.svelte": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+    "weebdex-platform/frontend/src/lib/components/reader/context.svelte.ts": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+    "weebdex-platform/platform-integrations/frontend-behavior/reader-navigation.ts": "58120d8cc91c0c80344b933db97e8e30cd412e1583db59c2f5cc427ea1e8967f",
+    "weebdex-platform/scripts/build-frontend.mjs": "631dda7e5764001c599d28faa3351fc8852356d4bc02375d7f2679f2c0dc8a7e",
+    "weebdex-platform/platform-integrations/public-api/reader-order.ts": "683382f797be46571dbfaebb2d06bbe8cafd31753778dbf4dd3f0c0bd7f09279",
+    "weebdex-platform/platform-integrations/public-api/search-reads.ts": "240a79aa1389de673e8de403ebc8c8680db2cf9175effab3bf6f2aaa04b85f52"
+  },
+  "changes_from_historical_recipe": {
+    "weebdex-platform/platform-integrations/public-api/normalize.ts": {
+      "original_sha256": "2e7aebbf1e1d7b090410598500356a75eefd819abb5c0efe8e39134975f6e39b",
+      "current_sha256": "70529c89a5787c75c3835d925f802ac5020684844f4536abc8ba524965d4091a",
+      "reason": "Approved rich-editor group normalization preserves role-only membership edges without fabricating user names; no enumerated reader/search/library request lane changes."
+    },
+    "weebdex-platform/platform-integrations/public-api/overlays.mjs": {
+      "original_sha256": "d84c9df12bd54bb78b076e4d753030768d11850e9823b455655eba2e73425b9c",
+      "current_sha256": "a8e4d816b2733b11cbf0e82495a3fec369aca9c53ad748eef8867a8bb6b9c606",
+      "reason": "Approved report/draft source registry and overlay additions do not change the enumerated reader/search/library request recipes."
+    },
+    "weebdex-platform/platform-integrations/public-api/anchors.json": {
+      "original_sha256": "f03ea5f6c0dd9fbac409211aaebae472d8f68909a93c06ab4c14d5a01c80edfa",
+      "current_sha256": "249bb68008e63b70f8ff21dfc048ced29fc532f97814e89cb23644c987f375b6",
+      "reason": "Reviewed report/draft overlays plus slug-route re-export share the same signed loader; enumerated public reader/search/library request recipes are unchanged. Source association only, not executed load."
+    },
+    "weebdex-platform/platform-integrations/public-api/source-hashes.json": {
+      "original_sha256": "151e2bee2232916a2446621a35379e2658bf273b12cecb0f2fcea2323e680844",
+      "current_sha256": "52e7e3c895eda1e08072ef2cdef4c1b0d246d5784efd5d85666ad5cf53c948a0",
+      "reason": "Reviewed report/draft overlays plus slug-route re-export share the same signed loader; enumerated public reader/search/library request recipes are unchanged. Source association only, not executed load."
+    }
+  }
+}

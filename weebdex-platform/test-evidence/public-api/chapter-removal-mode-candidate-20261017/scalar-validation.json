@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "0e978d36c57d935f830650248a442fa20a923387",
+  "files": {
+    "platform-integrations/public-api/upload-client.ts": "af792fb9e1ebd24d17cb2d11b0838351ba19f5445786465a73ba70c3e3d4bc18",
+    "tests/ci/test_public_upload_adapter_recovery.mjs": "5cb5207b74413d092957ff1471f37e2cc285b8ef695b492a196ccce697108a5f"
+  },
+  "combinedFinitePassed": 224,
+  "adapterCases": 68,
+  "addedCount": 0,
+  "addedAssertions": "Existing effect contract also refuses null, bool, array and coercible object before dispatch.",
+  "backendAndSvelteUnchangedFrom": "df4adab27bfdc6fbc5e327d5d1dd33b7186a34da",
+  "rustRuntimeStrict": "held-unqualified"
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "independent-exact-upload-integration-result-v1",
+  "reviewed_at_utc": "2026-10-17T04:40:52.183465+00:00",
+  "verdict": "application_test_failed_physical_cleanup_verified",
+  "receipt_sha256": "a613e84d02fcff40de4940bb74c653484d59bd0f2ca43da9784a5aae0a453433",
+  "log_sha256": "0df8e047b1c3d8071b6b38c8be79b52679ed5031a62e97ec06eb0a3af2145068",
+  "cleanup_sha256": "9db2c7ba02bd864fcda8e9908f6264b3ebf9552bd2f119d2d4f0adca5114346e",
+  "test_name": "exact_nostr_upload_contracts_ownership_validation_and_original_commit",
+  "test_exit": 101,
+  "tests_passed": 0,
+  "tests_failed": 1,
+  "failure": {
+    "route": "POST /api/v1/upload/{session}/commit",
+    "actual_status": 503,
+    "expected_status": 200,
+    "detail": "Resource projection is unavailable",
+    "source_callsite": "backend/tests/public_uploads.rs:359 (shared assertion at line38)"
+  },
+  "progress_scope": [
+    "The source sequence reached its first expected-success commit after earlier signed recovery/refusal checks.",
+    "Later committed snapshot, stored signed event, ordered originals and idempotent commit assertions were not reached."
+  ],
+  "cleanup": {
+    "verified_stopped": true,
+    "forced": false,
+    "observed_births": 21,
+    "guard_captured_births": 14,
+    "all_saved_births_absent": true,
+    "exact_pg_port_refused": true,
+    "unconfirmed_births": []
+  },
+  "source_files_rehashed": 308,
+  "limits": [
+    "The HTTP503 does not establish absence of original publication: the handler calls core commit before presentation mapping and transaction commit.",
+    "Raw disposable database remains retained for separately authorized owner forensics; no retry or cleanup is authorized by this review.",
+    "No browser result or successful application test is claimed."
+  ],
+  "execution_by_reviewer": false
+}

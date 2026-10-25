@@ -1,0 +1,35 @@
+{
+  "schema": "title-disposition-provisional-finite-v1",
+  "source": "6f62f892c6523fd5d5533ae4677369e0b2ea85df",
+  "utc": "2026-10-17T19:09:56.366411+00:00",
+  "source_sha256": {
+    "backend/src/public_api/title_disposition.rs": "a3e6957b577bff1b26d9220266b08f299df7cb3ee8a6172651b2987b78d7f013",
+    "backend/src/domains/catalog/mutations.rs": "1149234ee6643b52c1883d7f2b30f1c791f7c093a107897c3ebb12139dde23ce",
+    "backend/src/domains/moderation/mod.rs": "a23adeda06459b1d9948b473de40716d19234a4f67e3af0b52f2f02318ba9a18",
+    "backend/tests/public_manga_writes.rs": "deb1063c449d3d11c2fe4cb0b56bc5a1b1ffdc7d333b457773465a97bec4fe19",
+    "backend/migrations/0101_title_removal_review.sql": "e514a04fd91cb6da2a321fccf7ad97588a63560c5c53e61f910453ab13372b43",
+    "platform-integrations/public-api/title-client.ts": "b9e89807ef6d8067fb914e07ee166e9f49d6d256a94921acdf6c8e15286c95cd",
+    "platform-integrations/public-api/PublicTitleEditor.svelte": "3529f8e0794fc11ffbe828919244a69f91c12bfb77e4178ca17a5b2eef18276c",
+    "platform-integrations/public-api/PublicTitleDisposition.svelte": "017ff025ac02fac77a7a732dd3ff0ee0bf6d5091345e2a828fa3d20f0de065f5"
+  },
+  "passed": {
+    "title_finite": 69,
+    "combined_title_cover_transport_finite": 140,
+    "actual_svelte_parse_components": 2,
+    "svelte_parse_warnings": 0,
+    "git_diff_check": true
+  },
+  "unrun": [
+    "Rust compilation/unit tests",
+    "owned real PostgreSQL/NIP-98/strfry HTTP lifecycle",
+    "strict frontend semantics in either catalogue mode",
+    "production frontend build",
+    "browser acceptance"
+  ],
+  "blocker": {
+    "kind": "shared-disk-floor",
+    "free_bytes": 4029739008,
+    "required_floor_bytes": 4294967296
+  },
+  "qualification": "Source and explicit finite stand-ins only; this is not a release-ready or real HTTP pass claim."
+}

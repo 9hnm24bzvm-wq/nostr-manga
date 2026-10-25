@@ -1,0 +1,77 @@
+{
+  "source_commit": "a424eb67586d36e269b3fc56c3cf20561e1c052d",
+  "source_tree": "00012dd2cd11f80d1fcf0c47e625f52e4864a3f6",
+  "selected_scope_passed": false,
+  "full_suite_passed": false,
+  "phases": [
+    {
+      "batch": "local-compact",
+      "phase": "relocation-visual-probe",
+      "status": "failed",
+      "actual_steps": 6,
+      "failed_steps": [
+        {
+          "index": 0,
+          "status": "failed"
+        }
+      ],
+      "page_error_count": 0,
+      "harness_error_observed": false,
+      "runner_report_present": true,
+      "owned_runner_terminal": true,
+      "runner_exit_zero": false,
+      "evidence_scope": "actual browser controls and persisted-result assertions; pixel parity remains unverified",
+      "runner_diagnostics": {
+        "schema": 1,
+        "record_valid": true,
+        "stage": "complete",
+        "fatal_kind": "none",
+        "fatal_code": "none",
+        "fatal_stage": "none",
+        "exit_observed": true,
+        "exit_code": 1,
+        "owned_exit_code": 1,
+        "report_finalized": true,
+        "report_passed": false,
+        "proxy_diagnostics": {
+          "schema": 1,
+          "record_valid": true,
+          "expected_connect_resets": 0,
+          "connect_denials": 5,
+          "remaining_socket_count": 0,
+          "observations_truncated": false,
+          "shutdown_started": true,
+          "closed": true
+        },
+        "private_values_omitted": true,
+        "raw_messages_exported": false
+      }
+    }
+  ],
+  "cleanup": {
+    "cleanup": {
+      "verified_stopped": true,
+      "ports_closed": true,
+      "keys_removed": true,
+      "remaining_owned_process_count": 0,
+      "final_teardown_clean": true,
+      "lifecycle_clean": false,
+      "expected_port_roles": [
+        "platform",
+        "mail",
+        "postgres",
+        "original"
+      ]
+    },
+    "outer_cleanup": {
+      "forced": false,
+      "verified_stopped": true,
+      "remaining_owned_process_count": 0
+    },
+    "supervisor_terminal": true,
+    "supervisor_exit_zero": false
+  },
+  "scope": "Supplemental visual probe failed actual mobile Manage heading arrival; UI11 device phases were not run",
+  "original44step_pass_preserved_separately": true,
+  "private_runtime_values_omitted": true
+}

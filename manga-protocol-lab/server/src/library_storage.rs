@@ -76,6 +76,11 @@ pub struct LibraryObjects {
     pub(crate) response_bytes: Arc<tokio::sync::Semaphore>,
 }
 impl LibraryObjects {
+    /// Identity check only; does not grant any read/write/account capability.
+    pub fn shares_storage(&self, store: &Arc<UploadStore>) -> bool {
+        Arc::ptr_eq(&self.storage, store)
+    }
+
     pub fn new(repo: Repository, storage: Arc<UploadStore>) -> Arc<Self> {
         Self::build(repo, storage, LibraryConcurrency::default())
     }

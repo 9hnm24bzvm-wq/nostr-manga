@@ -1,0 +1,43 @@
+{
+  "checkedAtUtc": "2026-10-17T22:24:18Z",
+  "environmentCatalog": {
+    "environments": [],
+    "codingEnvironments": [],
+    "nextCursor": null
+  },
+  "supportedCua": {
+    "statusCallSucceeded": true,
+    "cloudChromiumAlreadyRunning": true,
+    "browserType": "cdp",
+    "existingTabBeforeProbe": "chrome://newtab/",
+    "existingTabInterfaceSucceeded": true
+  },
+  "ownedLoopbackProbe": {
+    "url": "http://127.0.0.1:44769/",
+    "browserResult": "net::ERR_CONNECTION_REFUSED",
+    "separateOrdinaryExecResult": "ConnectionRefusedError [Errno111]",
+    "serverWasStillLiveAtBothChecks": true,
+    "requestsReceived": 0,
+    "socketClosedAfter90Seconds": true
+  },
+  "ordinaryExecNamespaceObservations": [
+    {
+      "net": "net:[4026532770]",
+      "pid": "pid:[4026532769]"
+    },
+    {
+      "net": "net:[4026532769]",
+      "pid": "pid:[4026532768]"
+    }
+  ],
+  "inference": "Ordinary commands run in separate network namespaces, so their loopback service cannot be assumed reachable by the existing cloud browser. A co-located supported host-service route remains unverified.",
+  "supportedPortForwardToolAdvertised": false,
+  "browserTroubleshootingDocumentationRead": true,
+  "previousOutsideCommandLauncherRepairVerified": false,
+  "previousFailedBootstrapRetried": false,
+  "deniedFilesystemPathReadOrModified": false,
+  "securityOrNetworkSettingsChanged": false,
+  "externalPublicationOrTunnel": false,
+  "genuineAppBrowserAcceptance": false,
+  "nextBoundary": "Review frozen integrated account/chapter source independently; use actual browser only when a supported co-located local service route is verified."
+}

@@ -1,0 +1,18 @@
+{
+  "application_source_commit": "47c4ec7a65e2a5f298939fae118c76a7373b9ccc",
+  "command": [
+    "node",
+    "scripts/check-composed-frontend.mjs"
+  ],
+  "cwd": "<project>",
+  "deadline_seconds": 180.0,
+  "elapsed_seconds": 17.762,
+  "process_exit_code": 0,
+  "deadline_exceeded": false,
+  "terminal_receipt": true,
+  "owned_process_group": 6,
+  "cleanup_signals": [],
+  "surviving_owned_process_ids": [],
+  "cleanup_verified": true,
+  "prior_or_unrelated_processes_touched": false
+}

@@ -2,7 +2,7 @@
 mod derivatives;
 pub(crate) mod media;
 mod proxy;
-mod sessions;
+pub(crate) mod sessions;
 pub mod storage;
 use crate::{db::Migration, state::AppState};
 use axum::{
@@ -75,6 +75,10 @@ pub fn media_router() -> Router<AppState> {
     Router::new()
         .route(
             "/data/{chapter}/{name}",
+            get(media::chapter).head(media::chapter),
+        )
+        .route(
+            "/data-saver/{chapter}/{name}",
             get(media::chapter).head(media::chapter),
         )
         .route("/uploads/{name}", get(media::preview).head(media::preview))

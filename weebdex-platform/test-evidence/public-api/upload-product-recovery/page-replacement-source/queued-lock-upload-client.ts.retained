@@ -1,0 +1,465 @@
+// Explicit public UUID/NIP-98 upload adapter. The native cookie API is never a fallback.
+import { onDestroy, createContext } from 'svelte';
+import { Error as VisibleError } from '$lib/constants/Error';
+import { capabilities, selectedSigner } from '../local-library/publication';
+import { proveService, origin as canonicalOrigin } from '../local-library/protocol/nostr.js';
+import { createNostrUploadRequest, type UploadRequestContext, type UploadRequestIdentity, type PublicUploadRequest, type PublicUploadResponse } from './nostr-upload-request';
+import { serializeUploadMultipart, serializeUploadReplacementMultipart, type UploadImageFile } from './upload-multipart';
+import { publicCatalogueRead } from './site-client';
+import { publicUuid, record, resource, PublicApiContractError } from './validation';
+export const [getUploadOwner, setUploadOwner] = createContext<PublicUploadOwner>();
+
+type Policy = Awaited<ReturnType<typeof capabilities>>;
+type Scope = { origin: string; serviceKey: string; catalogNamespace: string; proofOrigin: string };
+type Response<T = unknown> = { status: number; body?: T; headers?: Record<string, string | null>; accepted?: true; sessionId?: string; publicationStatus?: string; receipt?: unknown };
+export type UploadSnapshot = { draft: ChapterDraft; page_order: string[] };
+export type UploadAccountFacts = { canBegin: boolean; canManage: boolean; publication: Record<string, unknown>; limits: Record<string, unknown>; permissions: string[] };
+type FileFacts = { mimeType: string; fileSize: number; dimensions?: { width: number; height: number }; previewUrl?: string };
+declare global {
+  interface User { permissions?: string[] }
+  interface UploadSessionFile {
+    public_upload?: FileFacts;
+    upload_recovery?: { state: 'unsent' | 'rejected' | 'unknown'; session: string; before_ids: string[]; hash?: string };
+  }
+}
+type PublicFile = UploadSessionFile & { public_upload?: FileFacts };
+type PublicSession = UploadSession & { manga_id: string; chapter_id?: string; draft?: ChapterDraft | null; page_order: string[]; can_mutate: boolean; can_cancel: boolean; can_retry_commit: boolean; is_expired: boolean; expires_at: string; state: string; publication_status?: string; target_status: string; receipt?: Chapter; committed_result?: Chapter; public_upload: { groupIds: string[]; receipt: unknown; receiptStatus: 'none' | 'available' | 'unavailable'; commitState?: string } };
+type Fence = { sessionId: string; state: 'uncertain' | 'accepted-unavailable'; attempt?: string };
+export type UploadReplacementStatus = Readonly<{ state: 'uncertain'; sessionId: string; fileId: string; expectedVersion: number }>;
+export type UploadReplacementResult = { session: PublicSession; file: UploadSessionFile };
+type ReplacementFile = { id: string; name: string; hash: string; size: number; mime: string };
+type ReplacementFence = UploadReplacementStatus & { attempt: string; targetId: string; targetKind: 'manga' | 'chapter'; mangaId: string; chapterId?: string; draftHash: string; groupIds: string[]; order: string[]; before: ReplacementFile[]; replacement: ReplacementFile };
+export interface UploadFenceStore { get(key: string): string | null; set(key: string, value: string): void; delete(key: string): void }
+export interface PublicUploadOwner {
+  readonly id: string; readonly actor: string;
+  assert(): void; alive(): boolean; dispose(): void;
+  commitState(): Fence['state'] | undefined;
+  pendingCommitSession(): string | undefined;
+  pendingReplacement(): UploadReplacementStatus | undefined;
+  request<T = unknown>(route: string, method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', payload?: unknown): Promise<Response<T>>;
+}
+export interface PublicUploadDependencies {
+  capabilities(): Promise<Policy>;
+  proveService(origin: string, key: string): Promise<{ origin: string; serviceKey: string }>;
+  selectedSigner(): UploadRequestIdentity;
+  publicOrigin(): string;
+  createRequest(context: UploadRequestContext): (request: PublicUploadRequest) => Promise<PublicUploadResponse>;
+  catalogueRead(operation: string, options: { id: string }): Promise<Response>;
+  multipart: typeof serializeUploadMultipart;
+  replacementMultipart: typeof serializeUploadReplacementMultipart;
+  digest(bytes: Uint8Array): Promise<string>;
+  decodeImage(blob: Blob): Promise<{ width: number; height: number }>;
+  destroy(callback: () => void): void;
+  newAttempt(): string;
+  fences: UploadFenceStore;
+  replacementFences: UploadFenceStore;
+  replacementLock<T>(key: string, action: () => T): Promise<T>;
+}
+const defaultFences: UploadFenceStore = {
+  get: key => window.sessionStorage.getItem(key),
+  set: (key, value) => window.sessionStorage.setItem(key, value),
+  delete: key => window.sessionStorage.removeItem(key),
+};
+const defaults: PublicUploadDependencies = {
+  capabilities, proveService, selectedSigner, publicOrigin: () => window.location.origin,
+  createRequest: context => createNostrUploadRequest(context),
+  catalogueRead: (operation, options) => publicCatalogueRead(operation, options),
+  multipart: serializeUploadMultipart, replacementMultipart: serializeUploadReplacementMultipart,
+  digest: async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new Uint8Array(bytes)))].map(byte => byte.toString(16).padStart(2, '0')).join(''),
+  decodeImage: async blob => { const image = await createImageBitmap(blob); try { return { width: image.width, height: image.height }; } finally { image.close(); } },
+  destroy: onDestroy, newAttempt: () => crypto.randomUUID(), fences: defaultFences,
+  replacementFences: { get: key => window.localStorage.getItem(key), set: (key, value) => window.localStorage.setItem(key, value), delete: key => window.localStorage.removeItem(key) },
+  replacementLock: async <T>(key: string, action: () => T): Promise<T> => { const locks = globalThis.navigator?.locks; if (!locks) fail('Cross-tab replacement locking is unavailable. No replacement was sent.', 409); return await locks.request(key, { mode: 'exclusive' }, () => action()); },
+};
+const encoder = new TextEncoder();
+const unknownPage = 'Outcome unknown. This image may already be staged. An exact owner receipt is required before removing or replacing it. No image POST was replayed.';
+const unknownReplacement = 'This page replacement is unresolved. The original page and preview were kept. Writes are frozen until an explicit exact-session read confirms the replacement. No replacement POST was replayed.';
+const unknownCommit = 'The publication outcome is unresolved. This exact upload is read-only until its saved receipt is explicitly reconciled. No commit was replayed.';
+const mimeExtensions: Record<string, string> = { 'image/png': '.png', 'image/jpeg': '.jpg', 'image/gif': '.gif', 'image/webp': '.webp' };
+function fail(message: string, status = 502): never { throw new PublicApiContractError(message, status); }
+// Successful bodies are validated by their routes; errors keep their actual opaque bodies.
+// This legacy caller view does not establish or change the wire contract.
+function callerView<T>(response: Response): Response<T> { return response as Response<T>; }
+function integer(value: unknown, minimum = 0): number { if (!Number.isSafeInteger(value) || Number(value) < minimum) fail('Invalid upload integer'); return Number(value); }
+function text(value: unknown, label: string): string { if (typeof value !== 'string' || !value || /[\u0000-\u001f\u007f]/.test(value)) fail(`Invalid ${label}`); return value as string; }
+function boolean(value: unknown): boolean { if (typeof value !== 'boolean') fail('Invalid upload authority flag'); return value as boolean; }
+function strings(value: unknown): string[] { if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) fail('Invalid account grants'); return [...value] as string[]; }
+function ids(value: unknown, maximum = 500): string[] { if (!Array.isArray(value) || value.length > maximum) fail('Invalid upload UUID list'); const result = value.map(publicUuid); if (new Set(result).size !== result.length) fail('Duplicate upload UUID'); return result; }
+function draft(input: unknown): ChapterDraft { const row = record(input, 'upload draft'); const output: ChapterDraft = {}; for (const [key, value] of Object.entries(row)) { if (!['title', 'volume', 'chapter', 'language'].includes(key) || value !== null && typeof value !== 'string') fail('Invalid saved chapter draft'); if (typeof value === 'string') Object.assign(output, { [key]: value }); } return output; }
+function actualError(body: unknown): string | undefined { if (!body || typeof body !== 'object') return; const row = body as Record<string, unknown>; if (typeof row.error === 'string') return row.error; if (Array.isArray(row.errors)) { const first = row.errors[0]; if (first && typeof first === 'object' && typeof first.detail === 'string') return first.detail; } }
+export function resumeError(status?: number, body?: unknown): VisibleError { return new VisibleError(status === 403 ? 'Upload authorization refused' : status === 409 ? 'Upload session changed' : 'Upload was not confirmed', actualError(body) ?? 'Your staged work was kept. Reload its exact current state before retrying.'); }
+export const snapshot = (input: ChapterDraft, files: UploadSessionFile[]): UploadSnapshot => ({ draft: draft(Object.fromEntries(['volume', 'chapter', 'title', 'language'].flatMap(key => typeof input[key as keyof ChapterDraft] === 'string' ? [[key, input[key as keyof ChapterDraft]]] : []))), page_order: files.map(file => file.id) });
+export const signature = (value: UploadSnapshot) => JSON.stringify(value);
+const sameDraft = (a?: ChapterDraft | null, b?: ChapterDraft | null) => signature(snapshot(a ?? {}, [])) === signature(snapshot(b ?? {}, []));
+
+// Production uses the defaults above. Tests provide explicit fake transports;
+// no test fixture is used as proof that a browser or server accepted an upload.
+export function createPublicUploadAdapter(injected: Partial<PublicUploadDependencies> = {}) {
+  const deps = { ...defaults, ...injected };
+  type Account = { user: User; actor: string; scope: Scope; identity: UploadRequestIdentity; facts: UploadAccountFacts; assertCurrent: () => void; key: string };
+  type Owned = { account: Account; targetId: string; targetKind: 'manga' | 'chapter'; sessionId?: string; fence?: Fence; commitAttempt?: object; replacement?: ReplacementFence; replacementAttempt?: object; latest?: PublicSession; groups: Map<string, ScanlationGroup>; request: ReturnType<PublicUploadDependencies['createRequest']>; assert: () => void };
+  const accounts = new WeakMap<object, Account>(), owners = new WeakMap<PublicUploadOwner, Owned>();
+  const replacementAuthority = new WeakMap<PublicSession, Pick<PublicSession, 'can_mutate' | 'can_cancel' | 'can_retry_commit'>>();
+  function scope(policy: Policy): Scope {
+    if (!policy.available || !policy.schema_ready || !policy.origin || !policy.service_key || !policy.catalog_namespace || !/^[0-9a-f]{64}$/.test(policy.service_key)) fail('The configured publication service is unavailable', 503);
+    return { origin: canonicalOrigin(deps.publicOrigin()), proofOrigin: canonicalOrigin(policy.origin), serviceKey: policy.service_key, catalogNamespace: publicUuid(policy.catalog_namespace) };
+  }
+  function equalScope(a: Scope, b: Scope) { return a.origin === b.origin && a.proofOrigin === b.proofOrigin && a.serviceKey === b.serviceKey && a.catalogNamespace === b.catalogNamespace; }
+  async function refresh(account: Account) { account.identity.check(); account.assertCurrent(); if (!equalScope(account.scope, scope(await deps.capabilities()))) fail('Configured upload scope changed. Review the original target again.', 409); account.identity.check(); account.assertCurrent(); }
+  function transport(account: Account, assertCurrent: () => void) {
+    return deps.createRequest({ scope: account.scope, identity: account.identity, assertCurrent, beforeSend: async signal => { if (signal.aborted) fail('Upload cancelled', 409); assertCurrent(); await refresh(account); assertCurrent(); } });
+  }
+  function readFence(account: Account): Fence | undefined {
+    const stored = deps.fences.get(account.key); if (stored === null) return;
+    let row: Record<string, unknown>; try { row = record(JSON.parse(stored)); } catch { return fail('Saved upload recovery state is unreadable. No mutation was sent.', 409); }
+    const sessionId = publicUuid(row.sessionId); if (!['uncertain', 'accepted-unavailable'].includes(String(row.state))) fail('Saved upload recovery state is invalid', 409);
+    if (row.attempt !== undefined && (typeof row.attempt !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(row.attempt))) fail('Saved upload attempt is invalid', 409);
+    return { sessionId, state: row.state as Fence['state'], ...(typeof row.attempt === 'string' ? { attempt: row.attempt } : {}) };
+  }
+  function fence(owned: Owned, value?: Fence) {
+    // Persist before dispatch. A failed store write prevents the new commit.
+    if (value) deps.fences.set(owned.account.key, JSON.stringify(value)); else deps.fences.delete(owned.account.key);
+    owned.fence = value;
+    if (!value) { owned.commitAttempt = undefined; if (owned.latest) delete owned.latest.public_upload.commitState; }
+    if (owned.latest && value) { owned.latest.can_mutate = false; owned.latest.can_cancel = false; owned.latest.can_retry_commit = false; owned.latest.receipt = undefined; owned.latest.committed_result = undefined; owned.latest.public_upload.commitState = value.state; }
+  }
+  const replacementKey = (account: Account) => account.key.replace('public-upload-recovery.v1:', 'public-upload-replacement.v1:');
+  function replacementFacts(file: UploadSessionFile): ReplacementFile {
+    const name = text(file.original_file_name, 'replacement filename'), hash = text(file.file_hash, 'replacement digest'), mime = text(file.public_upload?.mimeType, 'replacement MIME'), size = integer(Number(file.file_size), 1);
+    if (encoder.encode(name).byteLength > 255 || /["\\/]/.test(name) || !/^[0-9a-f]{64}$/.test(hash) || !mimeExtensions[mime] || size > 25 * 1024 * 1024) fail('Invalid replacement file facts', 409);
+    return { id: publicUuid(file.id), name, hash, size, mime };
+  }
+  function readReplacement(account: Account): ReplacementFence | undefined {
+    const stored = deps.replacementFences.get(replacementKey(account)); if (stored === null) return;
+    try {
+      if (stored.length > 320 * 1024) fail('Replacement recovery state exceeds budget', 409);
+      const row = record(JSON.parse(stored)), order = ids(row.order), before = row.before;
+      if (row.state !== 'uncertain' || typeof row.attempt !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(row.attempt) || !['manga', 'chapter'].includes(String(row.targetKind)) || typeof row.draftHash !== 'string' || !/^[0-9a-f]{64}$/.test(row.draftHash) || !Array.isArray(before) || before.length !== order.length) fail('Invalid replacement recovery context', 409);
+      const facts = (value: unknown): ReplacementFile => { const file = record(value); if (typeof file.size !== 'number') fail('Invalid replacement byte count', 409); return replacementFacts({ id: file.id, original_file_name: file.name, file_hash: file.hash, file_size: String(file.size), public_upload: { mimeType: file.mime, fileSize: file.size } } as UploadSessionFile); };
+      const expectedVersion = integer(row.expectedVersion, 1); if (expectedVersion > 2147483647) fail('Invalid replacement session version', 409);
+      const fileId = publicUuid(row.fileId), previous = before.map(facts), replacement = facts(row.replacement);
+      if (!order.includes(fileId) || replacement.id !== fileId || previous.some((file, index) => file.id !== order[index])) fail('Replacement recovery order is inconsistent', 409);
+      return { state: 'uncertain', sessionId: publicUuid(row.sessionId), fileId, expectedVersion, attempt: row.attempt, targetId: publicUuid(row.targetId), targetKind: row.targetKind as ReplacementFence['targetKind'], mangaId: publicUuid(row.mangaId), ...(row.chapterId === undefined ? {} : { chapterId: publicUuid(row.chapterId) }), draftHash: row.draftHash, groupIds: ids(row.groupIds, 10), order, before: previous, replacement };
+    } catch { fail('Saved page replacement recovery state is unreadable. No mutation was sent.', 409); }
+  }
+  function replacementPending(owned: Owned): ReplacementFence | undefined {
+    const saved = readReplacement(owned.account);
+    // A stale owner cannot adopt a different tab's attempt or silently forget its own.
+    if (owned.replacement && JSON.stringify(saved) !== JSON.stringify(owned.replacement)) fail('Page replacement recovery changed in another view. Reload the original editor.', 409);
+    return saved;
+  }
+  function freezeReplacement(owned: Owned, session: PublicSession) {
+    if (!replacementAuthority.has(session)) replacementAuthority.set(session, { can_mutate: session.can_mutate, can_cancel: session.can_cancel, can_retry_commit: session.can_retry_commit });
+    session.can_mutate = false; session.can_cancel = false; session.can_retry_commit = false;
+  }
+  async function installReplacement(owned: Owned, value: ReplacementFence, token: object, assertCurrent: () => void) {
+    await deps.replacementLock(replacementKey(owned.account), () => {
+      // Only this short synchronous storage transaction holds the cross-tab lock.
+      // Never retain it during signing, network dispatch or an owner read.
+      assertCurrent(); assertMutable(owned);
+      deps.replacementFences.set(replacementKey(owned.account), JSON.stringify(value)); owned.replacement = value; owned.replacementAttempt = token;
+      if (JSON.stringify(readReplacement(owned.account)) !== JSON.stringify(value)) fail('Page replacement fence was not persisted exactly', 409);
+      if (owned.latest) freezeReplacement(owned, owned.latest);
+    });
+    assertCurrent();
+  }
+  async function clearReplacement(owned: Owned, pending: ReplacementFence, unsent = false, confirmed?: PublicSession, assertCurrent = () => {}) {
+    await deps.replacementLock(replacementKey(owned.account), () => {
+      if (!unsent) { owned.assert(); assertCurrent(); }
+      if (JSON.stringify(readReplacement(owned.account)) !== JSON.stringify(pending) || !unsent && (owned.fence || readFence(owned.account))) fail('Page replacement recovery changed. Its fence was kept.', 409);
+      deps.replacementFences.delete(replacementKey(owned.account)); owned.replacement = undefined; owned.replacementAttempt = undefined;
+      if (!owned.fence && !readFence(owned.account)) for (const session of new Set([owned.latest, confirmed])) { if (session) { const authority = replacementAuthority.get(session); if (authority) Object.assign(session, authority); } }
+    });
+    if (!unsent) { owned.assert(); assertCurrent(); assertMutable(owned); }
+  }
+  const ownedBy = (owner?: PublicUploadOwner): Owned => { if (!owner || !owners.has(owner)) fail('An explicit signed upload owner is required', 409); owner.assert(); return owners.get(owner)!; };
+  function assertMutable(owned: Owned) {
+    if (replacementPending(owned)) throw new VisibleError('Reconcile page replacement first', unknownReplacement);
+    if (owned.fence || readFence(owned.account)) throw new VisibleError('Reconcile publication first', unknownCommit);
+    if (owned.latest && (owned.targetKind === 'manga' ? owned.latest.manga_id !== owned.targetId || !!owned.latest.chapter_id && !owned.latest.is_committed : owned.latest.chapter_id !== owned.targetId)) fail('The discovered upload belongs to a different editor target. Open its original editor before changing it.', 409);
+  }
+  async function raw(owned: Owned, path: string, method: PublicUploadRequest['method'], payload?: unknown, responseType: 'json' | 'image' = 'json', ownCommit?: { token: object; sessionId: string; attempt: string }) {
+    const guard = () => {
+      owned.assert();
+      if (method === 'GET') { if (path === '/upload' && (owned.fence || readFence(owned.account) || replacementPending(owned))) throw new VisibleError('Reconcile publication first', unknownCommit); return; }
+      if (!ownCommit) return assertMutable(owned);
+      if (replacementPending(owned)) throw new VisibleError('Reconcile page replacement first', unknownReplacement);
+      const pending = readFence(owned.account);
+      if (owned.commitAttempt !== ownCommit.token || pending?.sessionId !== ownCommit.sessionId || pending.state !== 'uncertain' || pending.attempt !== ownCommit.attempt || owned.sessionId !== ownCommit.sessionId) throw new VisibleError('Publication context changed', unknownCommit);
+    };
+    guard(); const request = method === 'GET' && path !== '/upload' ? owned.request : transport(owned.account, guard);
+    const response = await request({ url: owned.account.scope.origin + '/api/v1' + path, method, responseType, ...(payload === undefined ? {} : { body: encoder.encode(JSON.stringify(payload)), contentType: 'application/json' }) }); guard(); return response;
+  }
+  function basicSession(input: unknown): string { const row = record(input, 'upload session resource'); if (row.type !== 'upload_session') fail('Invalid upload session resource'); const attrs = record(row.attributes); integer(attrs.version, 1); boolean(attrs.isCommitted); boolean(attrs.isDeleted); boolean(attrs.isProcessed); return publicUuid(row.id); }
+  function normalizeFile(input: unknown, sessionId: string, detailed: boolean): PublicFile {
+    const source = record(input, 'upload file'), row = detailed ? source : record(source.attributes, 'upload file attributes');
+    const id = publicUuid(source.id); if (!detailed && source.type !== 'upload_session_file') fail('Wrong upload file resource kind');
+    const name = text(row.originalFileName, 'original filename'), hash = text(row.fileHash, 'original digest'), mime = text(row.mimeType, 'image MIME');
+    if (!/^[0-9a-f]{64}$/.test(hash) || !mimeExtensions[mime]) fail('Invalid original image receipt');
+    const size = integer(row.fileSize, 1); if (size > 25 * 1024 * 1024) fail('Upload receipt exceeds image budget');
+    const facts: FileFacts = { mimeType: mime, fileSize: size };
+    if (detailed) { const dims = record(row.dimensions, 'original image dimensions'); facts.dimensions = { width: integer(dims.width, 1), height: integer(dims.height, 1) }; const expected = `/api/v1/nostr/uploads/${sessionId}/files/${id}/preview`; if (row.previewUrl !== expected) fail('Preview URL escaped its exact upload/file scope'); facts.previewUrl = expected; }
+    return { id, original_file_name: name, file_hash: hash, file_name: name, file_ext: mimeExtensions[mime], file_size: String(size), public_upload: facts };
+  }
+  function normalizeSession(input: unknown, expected: string): PublicSession {
+    const envelope = record(input, 'upload snapshot'); if (envelope.result !== 'ok') fail('Invalid upload snapshot envelope'); const row = record(envelope.session, 'upload snapshot session');
+    const id = publicUuid(row.id); if (id !== expected) fail('Upload snapshot changed the requested session', 409);
+    const mangaId = publicUuid(row.mangaId), chapterId = row.chapterId === null ? undefined : publicUuid(row.chapterId), groupIds = ids(row.groupIds, 10), order = ids(row.pageOrder);
+    if (!Array.isArray(row.files) || row.files.length > 500) fail('Invalid staged image list'); const files = row.files.map(file => normalizeFile(file, id, true));
+    if (files.length !== order.length || new Set(files.map(file => file.id)).size !== files.length || order.some(file => !files.some(row => row.id === file))) fail('Staged order does not cover the exact current image set');
+    const isCommitted = boolean(row.isCommitted), isProcessed = boolean(row.isProcessed), isDeleted = boolean(row.isDeleted), canMutate = boolean(row.canMutate), canCancel = boolean(row.canCancel), canRetry = boolean(row.canRetryCommit), isExpired = boolean(row.isExpired), state = text(row.state, 'upload state');
+    if (state !== 'open' && state !== 'committed' && state !== 'deleted' || isCommitted !== (state === 'committed') || isDeleted !== (state === 'deleted') || (isCommitted || state === 'deleted' || isExpired) && (canMutate || canCancel) || canMutate && !canRetry) fail('Inconsistent upload state');
+    const receipt = row.receipt === null ? null : resource(row.receipt, 'chapter'); if (receipt && (!isCommitted || !receipt.relationships.some(relation => relation.type === 'manga' && publicUuid(relation.id) === mangaId) || chapterId && publicUuid(receipt.id) !== chapterId)) fail('Upload receipt escaped its exact target');
+    const receiptStatus = row.receiptStatus; if (receiptStatus !== 'none' && receiptStatus !== 'available' && receiptStatus !== 'unavailable' || !!receipt !== (receiptStatus === 'available') || isCommitted && receiptStatus === 'none' || !isCommitted && receiptStatus !== 'none') fail('Invalid exact receipt availability');
+    const publication = row.publicationStatus === null ? undefined : text(row.publicationStatus, 'publication status');
+    return { id, created_at: text(row.createdAt, 'upload creation time'), updated_at: text(row.updatedAt, 'upload update time'), version: integer(row.version, 1), is_committed: isCommitted, is_processed: isProcessed, is_deleted: isDeleted, manga_id: mangaId, ...(chapterId ? { chapter_id: chapterId } : {}), draft: row.draft === null ? null : draft(row.draft), page_order: order, can_mutate: canMutate, can_cancel: canCancel, can_retry_commit: canRetry, is_expired: isExpired, expires_at: text(row.expiresAt, 'upload expiry'), state, publication_status: publication, target_status: text(row.targetStatus, 'upload target status'), relationships: { files: order.map(id => files.find(file => file.id === id)!) }, public_upload: { groupIds, receipt, receiptStatus } };
+  }
+  async function exact(owned: Owned, sessionId: string): Promise<PublicSession> {
+    owned.fence = owned.fence ?? readFence(owned.account);
+    const replacement = replacementPending(owned);
+    const id = publicUuid(sessionId); if (owned.sessionId && owned.sessionId !== id || owned.fence && owned.fence.sessionId !== id || replacement && replacement.sessionId !== id) fail('The owned upload session changed', 409);
+    const response = await raw(owned, `/nostr/uploads/${id}`, 'GET'); if (response.status !== 200) throw resumeError(response.status, response.body);
+    const session = normalizeSession(response.body, id); owned.sessionId = id; owned.latest = session;
+    if (session.is_committed && !owned.fence) fence(owned, { sessionId: id, state: 'accepted-unavailable' });
+    for (const groupId of session.public_upload.groupIds) if (!owned.groups.has(groupId)) {
+      owned.assert(); await refresh(owned.account); owned.assert();
+      const groupResponse = await deps.catalogueRead('group.get', { id: groupId }); owned.assert(); await refresh(owned.account); owned.assert();
+      if (groupResponse.status !== 200) throw resumeError(groupResponse.status, groupResponse.body);
+      const group = record(groupResponse.body, 'actual upload group'), actual = resource(record(group.public_api, 'actual group provenance').resource, 'scanlation_group');
+      if (publicUuid(group.id) !== groupId || publicUuid(actual.id) !== groupId || text(group.name, 'group name') !== actual.attributes.name) fail('Upload group presentation changed its exact UUID or name');
+      owned.groups.set(groupId, groupResponse.body as ScanlationGroup);
+    }
+    session.relationships.groups = session.public_upload.groupIds.map(groupId => owned.groups.get(groupId)!);
+    const pending = owned.fence ?? readFence(owned.account); if (pending) { owned.fence = pending; session.can_mutate = false; session.can_cancel = false; session.can_retry_commit = false; session.public_upload.commitState = pending.state; }
+    if (replacementPending(owned)) freezeReplacement(owned, session);
+    return session;
+  }
+  async function discover(owned: Owned): Promise<Response<PublicSession>> {
+    owned.fence = owned.fence ?? readFence(owned.account);
+    // A remembered exact session is never replaced by the ambiguous current-session route.
+    const replacement = replacementPending(owned);
+    if (owned.fence || replacement || owned.sessionId) return { status: 200, body: await exact(owned, (owned.fence?.sessionId ?? replacement?.sessionId ?? owned.sessionId)!) };
+    const response = await raw(owned, '/upload', 'GET'); if (response.status !== 200) return response as Response<PublicSession>;
+    const id = basicSession(response.body); owned.sessionId = id; return { ...response, body: await exact(owned, id) };
+  }
+  async function presentation(owned: Owned, input: unknown, mangaId: string): Promise<{ body?: Chapter; publicationStatus?: string; receipt: unknown }> {
+    const receipt = resource(input, 'chapter'), id = publicUuid(receipt.id); if (!receipt.relationships.some(relation => relation.type === 'manga' && publicUuid(relation.id) === mangaId)) fail('Commit receipt changed its manga');
+    const nostr = receipt.attributes.nostr === undefined ? undefined : record(receipt.attributes.nostr, 'publication receipt');
+    const publicationStatus = nostr?.publicationStatus === undefined ? undefined : text(nostr.publicationStatus, 'publication receipt status');
+    if (receipt.attributes.isUnavailable === true || ['accepted_pending_projection', 'pending_projection'].includes(publicationStatus ?? '')) return { receipt, publicationStatus };
+    const response = await deps.catalogueRead('chapter.get', { id }); owned.assert(); await refresh(owned.account); owned.assert();
+    const row = record(response.body, 'actual chapter presentation'), relationships = record(row.relationships, 'actual chapter relationships'), manga = record(relationships.manga, 'actual chapter manga');
+    const actual = resource(record(row.public_api, 'actual chapter provenance').resource, 'chapter');
+    if (response.status !== 200 || publicUuid(row.id) !== id || publicUuid(actual.id) !== id || integer(actual.attributes.version, 1) < integer(receipt.attributes.version, 1) || integer(row.version, 1) !== actual.attributes.version || publicUuid(manga.id) !== mangaId || !actual.relationships.some(relation => relation.type === 'manga' && publicUuid(relation.id) === mangaId) || row.is_unavailable === true || row.external_url || !Array.isArray(row.data) || !row.data.length || row.data.some(value => { const page = record(value, 'reader page'); return typeof page.public_url !== 'string' || !Array.isArray(page.dimensions) || page.dimensions.length !== 2 || page.dimensions.some(dimension => !Number.isSafeInteger(dimension) || Number(dimension) <= 0); })) fail('Accepted chapter presentation is not yet available');
+    return { receipt, publicationStatus, body: response.body as Chapter };
+  }
+  async function loadUploadAccount(assertCurrent = () => {}): Promise<User> {
+    assertCurrent(); const identity = deps.selectedSigner(); identity.check(); const captured = scope(await deps.capabilities()); assertCurrent();
+    const proof = await deps.proveService(captured.proofOrigin, captured.serviceKey); identity.check(); assertCurrent(); if (proof.origin !== captured.proofOrigin || proof.serviceKey !== captured.serviceKey) fail('Upload service proof differs from configured service');
+    const account: Account = { user: undefined as unknown as User, actor: '', scope: captured, identity, facts: undefined as unknown as UploadAccountFacts, assertCurrent, key: `weebdex.public-upload-recovery.v1:${captured.origin}:${captured.serviceKey}:${captured.catalogNamespace}:${identity.owner}` };
+    await refresh(account); const request = transport(account, () => { identity.check(); assertCurrent(); });
+    const response = await request({ url: captured.origin + '/api/v1/nostr/account-context', method: 'GET' }); identity.check(); assertCurrent(); if (response.status !== 200) throw resumeError(response.status, response.body);
+    const result = record(response.body, 'bound upload account'), user = record(result.user, 'bound user'), nostr = record(result.nostr, 'bound Nostr identity'), upload = record(result.upload, 'upload grants');
+    if (result.result !== 'ok' || nostr.pubkey !== identity.owner || nostr.serviceKey !== captured.serviceKey || publicUuid(nostr.catalogNamespace) !== captured.catalogNamespace || nostr.authentication !== 'NIP-98' || nostr.requestScoped !== true || nostr.nativeSessionAuthority !== false || nostr.catalogueScope !== 'instance-local' || upload.conditional !== true) fail('Upload account context does not match the selected signer/service/catalogue');
+    const permissions = strings(user.permissions), roles = strings(user.roles), publication = record(upload.publication), limits = record(upload.limits);
+    const canBegin = boolean(upload.canBegin), canManage = boolean(upload.canManage); if (canBegin !== permissions.includes('chapter.create') || canManage !== permissions.includes('self.chapter.update') || publication.requiresOperatorOrAuthorizedGroup !== true) fail('Upload eligibility was not backed by actual native grants');
+    const view: User = { id: publicUuid(user.id), name: text(user.username, 'bound username'), version: integer(user.version, 1), roles, permissions };
+    account.actor = view.id; account.user = view; account.facts = { canBegin, canManage, permissions, publication, limits }; accounts.set(view, account); return view;
+  }
+  function publicUploadOwner(target: () => string, user: User, targetKind: 'manga' | 'chapter' = 'manga'): PublicUploadOwner {
+    const account = accounts.get(user); if (!account) fail('Load the selected signer’s bound upload account first', 409);
+    const id = publicUuid(target()); let disposed = false;
+    const assert = () => { if (disposed || publicUuid(target()) !== id || user.id !== account.actor) fail('The upload editor target changed. No request was replayed.', 409); account.identity.check(); account.assertCurrent(); if (canonicalOrigin(deps.publicOrigin()) !== account.scope.origin) fail('Public upload origin changed', 409); };
+    const initialFence = readFence(account), initialReplacement = readReplacement(account);
+    const owned: Owned = { account, assert, targetId: id, targetKind, groups: new Map(), request: transport(account, assert), sessionId: initialFence?.sessionId ?? initialReplacement?.sessionId, fence: initialFence, replacement: initialReplacement };
+    const owner: PublicUploadOwner = { id, actor: account.actor, assert, alive: () => { try { assert(); return true; } catch { return false; } }, dispose: () => { disposed = true; }, commitState: () => (owned.fence ?? readFence(account))?.state, pendingCommitSession: () => (owned.fence ?? readFence(account))?.sessionId, pendingReplacement: () => { const value = replacementPending(owned); return value ? Object.freeze({ state: value.state, sessionId: value.sessionId, fileId: value.fileId, expectedVersion: value.expectedVersion }) : undefined; }, request: async <T>(route: string, method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE', payload?: unknown): Promise<Response<T>> => {
+      assert(); if (!route.startsWith('/upload') || /[?#\\]/.test(route)) fail('Unsupported signed upload route', 422);
+      if (route === '/upload' && method === 'GET') return callerView<T>(await discover(owned));
+      assertMutable(owned);
+      if (route === '/upload/check-approval-required' && method === 'POST') { const value = record(payload); const locale = text(value.language ?? value.locale, 'upload language'); const manga = owned.latest?.manga_id ?? id; const response = await raw(owned, route, method, { manga, locale }); if (response.status === 200 && (record(response.body).result !== 'ok' || typeof record(response.body).requiresApproval !== 'boolean')) fail('Invalid actual approval decision'); return callerView<T>(response); }
+      if ((route === '/upload/begin' || route.startsWith('/upload/begin/')) && method === 'POST') {
+        const value = record(payload); let body: unknown;
+        if (route === '/upload/begin') { if (targetKind !== 'manga' || !account.facts.canBegin || !account.facts.canManage || publicUuid(value.manga) !== id) fail('The bound native account cannot begin this target upload', 403); body = { manga: id, groups: ids(value.groups, 10) }; }
+        else { if (value.replace === true) fail('Replace-all has no public upload command. No native request was sent.', 422); if (targetKind !== 'chapter' || publicUuid(route.slice('/upload/begin/'.length)) !== id || !account.facts.canManage) fail('The bound native account cannot edit this upload target', 403); body = { version: integer(value.version, 1) }; }
+        if (owned.sessionId) fail('An owned upload already exists. Resume or explicitly cancel it first.', 409);
+        const response = await raw(owned, route, method, body); if (response.status !== 200) return callerView<T>(response);
+        owned.sessionId = basicSession(response.body); return callerView<T>({ ...response, body: await exact(owned, owned.sessionId) });
+      }
+      const match = /^\/upload\/([^/]+)(?:\/([^/]+))?$/.exec(route); if (!match) fail('Unsupported signed upload route', 422);
+      const sessionId = publicUuid(match[1]), action = match[2]; if (owned.sessionId !== sessionId) fail('The upload request escaped its owned session', 409);
+      if (action === 'commit' && method === 'POST') {
+        const value = record(payload); if (value.termsAccepted !== true) fail('Explicit upload terms acceptance is required', 422);
+        const candidate = { draft: draft(value.draft), page_order: ids(value.page_order) }; if (!candidate.page_order.length || !candidate.draft.language) fail('A language and staged page order are required', 422);
+        const current = await exact(owned, sessionId); if (!current.can_mutate || !current.can_retry_commit || !sameDraft(current.draft, candidate.draft) || JSON.stringify(current.page_order) !== JSON.stringify(candidate.page_order)) fail('Commit must match the acknowledged private draft and exact page order', 409);
+        const body = { chapterDraft: { volume: candidate.draft.volume || null, chapter: candidate.draft.chapter || null, title: candidate.draft.title || null, translatedLanguage: candidate.draft.language }, pageOrder: candidate.page_order, termsAccepted: true };
+        // No await between the final shared-fence check and installing this
+        // attempt. Only this private token may dispatch through its own fence.
+        assertMutable(owned); const token = {}, attempt = deps.newAttempt(); if (!/^[A-Za-z0-9_-]{1,128}$/.test(attempt)) fail('Invalid upload attempt identity', 409); owned.commitAttempt = token; fence(owned, { sessionId, state: 'uncertain', attempt });
+        try {
+          const response = await raw(owned, route, 'POST', body, 'json', { token, sessionId, attempt });
+          if (response.status === 202) { fence(owned, { sessionId, state: 'accepted-unavailable' }); return callerView<T>({ ...response, body: undefined, accepted: true, sessionId }); }
+          if (response.status !== 200) { if (response.status >= 400 && response.status < 500 && record(response.body).result === 'error' && Array.isArray(record(response.body).errors)) { fence(owned); return callerView<T>(response); } throw resumeError(response.status, response.body); }
+          const receipt = resource(response.body, 'chapter'); integer(receipt.attributes.version, 1); if (!receipt.relationships.some(relation => relation.type === 'manga' && publicUuid(relation.id) === current.manga_id)) fail('Accepted receipt changed its target');
+          fence(owned, { sessionId, state: 'accepted-unavailable' });
+          const result = await presentation(owned, response.body, current.manga_id);
+          if (!result.body) fence(owned, { sessionId, state: 'accepted-unavailable' }); else { fence(owned); owned.sessionId = undefined; owned.latest = undefined; }
+          return callerView<T>({ ...response, ...result, body: result.body, accepted: true, sessionId });
+        } catch (error) { const persisted = readFence(account); if (error && typeof error === 'object' && 'status' in error && error.status === 202 && persisted?.sessionId === sessionId && (persisted.attempt === attempt || persisted.state === 'accepted-unavailable')) fence(owned, { sessionId, state: 'accepted-unavailable' }); else if (owned.fence?.state === 'uncertain' && error && typeof error === 'object' && 'outcome' in error && error.outcome === 'unsent' && persisted?.attempt === attempt) fence(owned); else if (persisted) owned.fence = persisted; throw error; }
+      }
+      if (method === 'PATCH' && action === undefined) { const value = record(payload); const current = await exact(owned, sessionId); if (!current.can_mutate || !account.facts.canManage) fail('Upload is read-only', 409); const body = { version: integer(value.version, 1), draft: draft(value.draft), pageOrder: ids(value.page_order ?? value.pageOrder) }; const response = await raw(owned, `/nostr/uploads/${sessionId}`, 'PATCH', body); return callerView<T>(response.status === 200 ? { ...response, body: (owned.latest = normalizeSession(response.body, sessionId)) } : response); }
+      if (method === 'DELETE' && (action === undefined || action === 'batch' || /^[0-9a-f-]{36}$/i.test(action))) {
+        const current = await exact(owned, sessionId); if (!(action ? current.can_mutate : current.can_cancel) || !account.facts.canManage) fail('Upload is read-only', 409);
+        const known = new Set(current.page_order); let body: string[] | undefined; if (action === 'batch') body = ids(payload); else if (action) body = [publicUuid(action)]; if (body && (!body.length || body.some(file => !known.has(file)))) fail('Deletion must name exact current staging files', 409);
+        const response = await raw(owned, route, 'DELETE', action === 'batch' ? body : undefined); if (response.status === 200) { if (record(response.body).result !== 'ok') fail('Deletion was not confirmed'); if (!action) { owned.sessionId = undefined; owned.latest = undefined; } } return callerView<T>(response);
+      }
+      fail('Unsupported public upload operation. No native mutation was sent.', 422);
+    } };
+    owners.set(owner, owned); deps.destroy(owner.dispose); return owner;
+  }
+  async function currentUpload(owner?: PublicUploadOwner): Promise<PublicSession | undefined> { const owned = ownedBy(owner), response = await discover(owned); if (response.status === 404 && !owned.sessionId && !owned.fence) return; if (response.status !== 200 || !response.body) throw resumeError(response.status, response.body); return response.body; }
+  async function reconcileUploadReceipt(owner: PublicUploadOwner, sessionId: string): Promise<PublicSession> {
+    const owned = ownedBy(owner), id = publicUuid(sessionId), pending = owned.fence ?? readFence(owned.account); if (!pending || pending.sessionId !== id) fail('No exact unresolved publication matches this recovery request', 409);
+    const session = await exact(owned, id); if (!session.is_committed || !session.public_upload.receipt) throw new VisibleError('Publication is still unresolved', unknownCommit);
+    const shown = await presentation(owned, session.public_upload.receipt, session.manga_id); if (!shown.body) { fence(owned, { sessionId: id, state: 'accepted-unavailable' }); return session; }
+    session.receipt = shown.body; session.committed_result = shown.body; session.can_mutate = false; session.can_cancel = false; session.can_retry_commit = false; fence(owned); owned.sessionId = undefined; return session;
+  }
+  async function saveResume(session: UploadSession, value: UploadSnapshot, owner?: PublicUploadOwner): Promise<PublicSession> {
+    const owned = ownedBy(owner); assertMutable(owned); const previous = session as PublicSession, fresh = await exact(owned, publicUuid(session.id));
+    if (!fresh.can_mutate || !sameDraft(fresh.draft, previous.draft) && !sameDraft(fresh.draft, value.draft)) throw resumeError(409);
+    const known = new Set(previous.page_order ?? []), prior = (previous.page_order ?? []).filter(id => fresh.page_order.includes(id)), remote = fresh.page_order.filter(id => known.has(id));
+    if (JSON.stringify(prior) !== JSON.stringify(remote) && JSON.stringify(fresh.page_order) !== JSON.stringify(value.page_order)) throw resumeError(409);
+    if (value.page_order.length !== fresh.page_order.length || new Set(value.page_order).size !== value.page_order.length || value.page_order.some(id => !fresh.page_order.includes(publicUuid(id)))) throw resumeError(409);
+    const response = await owner!.request<PublicSession>(`/upload/${session.id}`, 'PATCH', { version: fresh.version, ...value }); if (response.status !== 200 || !response.body) throw resumeError(response.status, response.body); return response.body;
+  }
+  async function cancelResume(session: UploadSession, owner?: PublicUploadOwner) { ownedBy(owner); const response = await owner!.request(`/upload/${publicUuid(session.id)}`, 'DELETE'); if (response.status !== 200) throw resumeError(response.status, response.body); }
+  function matchPage(page: UploadSessionFile, fresh: PublicSession): PublicFile {
+    const recovery = page.upload_recovery; if (!recovery || recovery.state !== 'unknown' || recovery.session !== fresh.id) throw new VisibleError('Page outcome is still unknown', unknownPage);
+    const matches = (fresh.relationships.files as PublicFile[] ?? []).filter(file => !recovery.before_ids.includes(file.id) && file.file_hash === recovery.hash && file.original_file_name === page.original_file_name && Number(file.file_size) === page.file?.size && file.public_upload?.mimeType === page.file?.type);
+    if (matches.length !== 1) throw new VisibleError('Page outcome is still unknown', unknownPage); return { ...matches[0], thumbnail: page.thumbnail };
+  }
+  async function resolveUploadPage(session: UploadSession, page: UploadSessionFile, owner: PublicUploadOwner): Promise<UploadSessionFile> { const owned = ownedBy(owner); if (page.upload_recovery?.state !== 'unknown') return page; return matchPage(page, await exact(owned, publicUuid(session.id))); }
+  async function runUploadBatch(session: UploadSession, pages: UploadSessionFile[], owner: PublicUploadOwner, progress?: (delta: number) => void, assertCurrent = () => {}): Promise<UploadSessionFile[]> {
+    const owned = ownedBy(owner), guard = () => { owner.assert(); assertCurrent(); assertMutable(owned); }; guard(); const batchRequest = transport(owned.account, guard), id = publicUuid(session.id); if (owned.sessionId !== id || pages.some(page => page.upload_recovery?.state === 'unknown')) throw new VisibleError('Page cannot be replayed', unknownPage);
+    markUnsentUploadPages(pages, id);
+    for (const page of pages) {
+      if (!page.file) fail('An original local image is required', 422);
+      let dispatched = false;
+      try {
+        guard(); const fresh = await exact(owned, id); guard(); if (!fresh.can_mutate || !owned.account.facts.canManage) fail('Current mutable owner staging was not confirmed', 409);
+        const serialized = await deps.multipart(page.file); guard(); const original = await page.file.arrayBuffer(); guard(); const digest = await deps.digest(new Uint8Array(original)); guard();
+        page.error = undefined; page.upload_recovery = { state: 'unknown', session: id, before_ids: [...fresh.page_order], hash: digest };
+        dispatched = true; const response = await batchRequest({ url: owned.account.scope.origin + `/api/v1/upload/${id}`, method: 'POST', body: serialized.body, contentType: serialized.contentType }); guard();
+        if (response.status !== 200) { if (response.status >= 400 && response.status < 500 && record(response.body).result === 'error' && Array.isArray(record(response.body).errors)) { page.upload_recovery.state = 'rejected'; page.error = actualError(response.body) ?? `Image refused (HTTP ${response.status})`; throw resumeError(response.status, response.body); } throw new VisibleError('Image upload is unconfirmed', unknownPage); }
+        const envelope = record(response.body); if (!Array.isArray(envelope.data) || !Array.isArray(envelope.errors) || !['ok', 'error'].includes(String(envelope.result))) fail('Malformed image attachment receipt');
+        if (envelope.data.length === 0 && envelope.errors.length === 1) { const rejection = record(envelope.errors[0]), context = record(rejection.context); if (envelope.result !== 'error' || integer(rejection.status) < 400 || context.originalFileName !== serialized.file.name) fail('Invalid per-image rejection'); page.upload_recovery.state = 'rejected'; page.error = text(rejection.detail, 'image rejection'); throw resumeError(400, response.body); }
+        if (envelope.result !== 'ok' || envelope.data.length !== 1 || envelope.errors.length) fail('Ambiguous attachment receipt');
+        const receipt = normalizeFile(envelope.data[0], id, false); if (receipt.file_hash !== digest || receipt.original_file_name !== serialized.file.name || Number(receipt.file_size) !== serialized.file.size || receipt.public_upload?.mimeType !== serialized.file.type || fresh.page_order.includes(receipt.id)) fail('Attachment receipt does not identify these exact original image bytes');
+        const next = await exact(owned, id); guard(); const confirmed = matchPage(page, next); if (confirmed.id !== receipt.id) fail('Attachment response differs from owner snapshot');
+        Object.assign(page, confirmed, { file: undefined, error: undefined, upload_recovery: undefined }); progress?.(serialized.file.size);
+      } catch (error) {
+        const unsent = !dispatched || error && typeof error === 'object' && 'outcome' in error && error.outcome === 'unsent';
+        if (unsent) { page.upload_recovery = { state: 'unsent', session: id, before_ids: [] }; page.error = 'Not sent. Select a replacement or remove this local placeholder explicitly.'; }
+        else if (page.upload_recovery?.state !== 'rejected') { if (owner.alive()) { try { guard(); const latest = await exact(owned, id); guard(); const confirmed = matchPage(page, latest); Object.assign(page, confirmed, { file: undefined, error: undefined, upload_recovery: undefined }); progress?.(Number(confirmed.file_size)); continue; } catch { /* Missing or ambiguous evidence never proves rejection. */ } } page.error = unknownPage; }
+        throw error;
+      }
+    }
+    return pages;
+  }
+  const orderedFacts = (session: PublicSession): ReplacementFile[] => session.page_order.map(id => { const page = session.relationships.files?.find(file => file.id === id); if (!page) fail('Replacement order lost a page', 409); return replacementFacts(page); });
+  const sessionIdentity = (session: PublicSession) => JSON.stringify({ id: session.id, manga: session.manga_id, chapter: session.chapter_id, version: session.version, draft: signature(snapshot(session.draft ?? {}, [])), groups: session.public_upload.groupIds, order: session.page_order, files: orderedFacts(session) });
+  const sameFacts = (a: ReplacementFile, b: ReplacementFile) => JSON.stringify(a) === JSON.stringify(b);
+  async function replacementProof(owned: Owned, pending: ReplacementFence, session: PublicSession, successfulResponse = false) {
+    const unchanged = sameFacts(pending.before.find(file => file.id === pending.fileId)!, pending.replacement), expectedVersion = pending.expectedVersion + (unchanged ? 0 : 1);
+    // A no-op's old version cannot prove a lost request has finished. Only its
+    // definitive original success response can authorize this unchanged case.
+    if (unchanged && !successfulResponse) throw new VisibleError('Page replacement is still unresolved', unknownReplacement);
+    if (session.id !== pending.sessionId || owned.targetId !== pending.targetId || owned.targetKind !== pending.targetKind || session.manga_id !== pending.mangaId || session.chapter_id !== pending.chapterId || session.is_committed || session.is_deleted || session.version !== expectedVersion || JSON.stringify(session.page_order) !== JSON.stringify(pending.order) || JSON.stringify(session.public_upload.groupIds) !== JSON.stringify(pending.groupIds)) throw new VisibleError('Page replacement is still unresolved', unknownReplacement);
+    const current = orderedFacts(session), expected = pending.before.map(file => file.id === pending.fileId ? pending.replacement : file);
+    if (current.some((file, index) => !sameFacts(file, expected[index])) || await deps.digest(encoder.encode(signature(snapshot(session.draft ?? {}, [])))) !== pending.draftHash) throw new VisibleError('Page replacement is still unresolved', unknownReplacement);
+    owned.assert(); if (JSON.stringify(replacementPending(owned)) !== JSON.stringify(pending)) fail('Page replacement recovery changed during readback', 409);
+    return session.relationships.files!.find(file => file.id === pending.fileId)!;
+  }
+  async function replaceUploadPage(session: UploadSession, target: UploadSessionFile, file: UploadImageFile, owner: PublicUploadOwner, assertCurrent = () => {}): Promise<UploadReplacementResult> {
+    const owned = ownedBy(owner); assertMutable(owned);
+    const previous = session as PublicSession, sessionId = publicUuid(previous.id), fileId = publicUuid(target.id), expectedVersion = integer(previous.version, 1), beforeIdentity = sessionIdentity(previous), beforeTarget = replacementFacts(target);
+    const selected = { owner: owned.account.identity.owner, generation: owned.account.identity.generation, signer: owned.account.identity.signer };
+    const originalFile = { name: file?.name, type: file?.type, size: file?.size, read: file?.arrayBuffer };
+    let pending: ReplacementFence | undefined, token: object | undefined;
+    const inputs = () => {
+      owned.assert(); assertCurrent();
+      const identity = owned.account.identity;
+      if (!isRemoteUploadFile(target) || identity.owner !== selected.owner || identity.generation !== selected.generation || identity.signer !== selected.signer || owned.sessionId !== sessionId || sessionIdentity(previous) !== beforeIdentity || !sameFacts(replacementFacts(target), beforeTarget) || file.name !== originalFile.name || file.type !== originalFile.type || file.size !== originalFile.size || file.arrayBuffer !== originalFile.read) fail('Page replacement context changed. No replacement was replayed.', 409);
+    };
+    const guard = () => {
+      inputs();
+      if (!pending) return assertMutable(owned);
+      if (owned.fence || readFence(owned.account) || owned.replacementAttempt !== token || JSON.stringify(replacementPending(owned)) !== JSON.stringify(pending)) throw new VisibleError('Page replacement context changed', unknownReplacement);
+    };
+    guard(); if (!isRemoteUploadFile(target) || !previous.page_order.includes(fileId) || !sameFacts(orderedFacts(previous).find(page => page.id === fileId)!, beforeTarget)) fail('Replacement must name one exact current staged page', 409);
+    // Validate and serialize once. The digest comes from the exact file slice in
+    // that multipart body, never a second file read or rebuilt FormData payload.
+    const serialized = await deps.replacementMultipart(file, expectedVersion); guard();
+    const hash = await deps.digest(serialized.fileBytes); guard();
+    if (serialized.file.name !== originalFile.name || serialized.file.type !== originalFile.type || serialized.file.size !== originalFile.size || !/^[0-9a-f]{64}$/.test(hash)) fail('Replacement bytes changed during validation', 409);
+    const fresh = await exact(owned, sessionId); guard();
+    if (!fresh.can_mutate || !owned.account.facts.canManage || sessionIdentity(fresh) !== beforeIdentity) fail('Replacement requires the exact current mutable session version and page set', 409);
+    const draftHash = await deps.digest(encoder.encode(signature(snapshot(fresh.draft ?? {}, [])))); guard();
+    await refresh(owned.account); guard();
+    const attempt = deps.newAttempt(); if (!/^[A-Za-z0-9_-]{1,128}$/.test(attempt)) fail('Invalid replacement attempt identity', 409);
+    const value: ReplacementFence = { state: 'uncertain', sessionId, fileId, expectedVersion, attempt, targetId: owned.targetId, targetKind: owned.targetKind, mangaId: fresh.manga_id, ...(fresh.chapter_id ? { chapterId: fresh.chapter_id } : {}), draftHash, groupIds: [...fresh.public_upload.groupIds], order: [...fresh.page_order], before: orderedFacts(fresh), replacement: { id: fileId, name: serialized.file.name, hash, size: serialized.file.size, mime: serialized.file.type } };
+    token = {}; pending = value;
+    let requested = false, originalUnsent = false;
+    try {
+      await installReplacement(owned, value, token, inputs); guard();
+      const request = transport(owned.account, guard);
+      let response: PublicUploadResponse;
+      try { requested = true; response = await request({ url: owned.account.scope.origin + `/api/v1/nostr/uploads/${sessionId}/files/${fileId}/replace`, method: 'POST', body: serialized.body, contentType: serialized.contentType }); }
+      catch (error) { originalUnsent = !!error && typeof error === 'object' && 'outcome' in error && error.outcome === 'unsent'; throw error; }
+      guard();
+      if (response.status !== 200) {
+        const body = record(response.body);
+        if (response.status >= 400 && response.status < 500 && body.result === 'error' && Array.isArray(body.errors) && body.errors.length && body.errors.every(value => { const error = record(value); return Number.isSafeInteger(error.status) && error.status === response.status && typeof error.title === 'string' && typeof error.detail === 'string'; })) { await clearReplacement(owned, pending, false, undefined, inputs); inputs(); throw resumeError(response.status, response.body); }
+        throw new VisibleError('Page replacement was not confirmed', unknownReplacement);
+      }
+      const body = record(response.body), receipt = normalizeFile(body.file, sessionId, false), resultVersion = expectedVersion + (sameFacts(beforeTarget, pending.replacement) ? 0 : 1);
+      if (body.result !== 'ok' || integer(body.sessionVersion, 1) !== resultVersion || !sameFacts(replacementFacts(receipt), pending.replacement)) fail('Replacement response did not identify the exact stable page and original bytes');
+      const next = await exact(owned, sessionId); guard(); const confirmed = await replacementProof(owned, pending, next, true); guard(); await clearReplacement(owned, pending, false, next, inputs); inputs();
+      return { session: next, file: confirmed };
+    } catch (error) {
+      // Only the original POST transport's affirmative unsent evidence unlocks
+      // without a receipt. Later read/proof/caller errors are never such evidence.
+      // An unchanged old snapshot cannot disprove a
+      // delayed dispatched replacement, and nothing here replays its POST.
+      if (pending && owned.replacement?.attempt === pending.attempt && (!requested || originalUnsent)) { await clearReplacement(owned, pending, true); inputs(); }
+      throw error;
+    }
+  }
+  async function reconcileUploadReplacement(owner: PublicUploadOwner): Promise<UploadReplacementResult> {
+    const owned = ownedBy(owner), pending = replacementPending(owned);
+    if (!pending || owned.fence || readFence(owned.account) || pending.targetId !== owned.targetId || pending.targetKind !== owned.targetKind) fail('No exact unresolved page replacement matches this editor', 409);
+    const session = await exact(owned, pending.sessionId), file = await replacementProof(owned, pending, session);
+    await clearReplacement(owned, pending, false, session); owned.assert(); assertMutable(owned); return { session, file };
+  }
+  async function uploadPreview(owner: PublicUploadOwner, session: UploadSession | string, input: UploadSessionFile, signal?: AbortSignal): Promise<Blob> {
+    const owned = ownedBy(owner), sessionId = publicUuid(typeof session === 'string' ? session : session.id), fileId = publicUuid(input.id), fresh = await exact(owned, sessionId), file = (fresh.relationships.files as PublicFile[]).find(file => file.id === fileId);
+    if (!file || file.file_hash !== input.file_hash || file.file_size !== input.file_size || !file.public_upload?.dimensions || !file.public_upload.previewUrl) fail('Preview no longer matches the exact staged original', 409);
+    const previewGuard = () => { owned.assert(); if (replacementPending(owned)) throw new VisibleError('Reconcile page replacement first', unknownReplacement); const latest = owned.latest?.relationships.files?.find(page => page.id === fileId); if (!latest || latest.file_hash !== input.file_hash || latest.file_size !== input.file_size || latest.original_file_name !== input.original_file_name || latest.public_upload?.mimeType !== input.public_upload?.mimeType) fail('Preview page changed during loading', 409); };
+    previewGuard();
+    const facts = file.public_upload, response = await owned.request({ url: owned.account.scope.origin + facts.previewUrl, method: 'GET', responseType: 'image', signal, responseLimit: facts.fileSize }); previewGuard();
+    const cache = new Set((response.headers['cache-control'] ?? '').toLowerCase().split(',').map(value => value.trim())), vary = new Set((response.headers.vary ?? '').toLowerCase().split(',').map(value => value.trim()));
+    if (!cache.has('private') || !cache.has('no-store') || !vary.has('authorization') || response.headers['x-content-type-options']?.trim().toLowerCase() !== 'nosniff') fail('Signed preview privacy headers were not confirmed');
+    const mime = response.headers['content-type']?.split(';', 1)[0].trim().toLowerCase(); if (response.status !== 200 || !(response.body instanceof Uint8Array) || response.body.byteLength !== facts.fileSize || mime !== facts.mimeType || await deps.digest(response.body) !== file.file_hash) fail('Signed preview did not match the original image receipt');
+    previewGuard(); const blob = new Blob([new Uint8Array(response.body)], { type: facts.mimeType }), dimensions = await deps.decodeImage(blob); previewGuard(); if (dimensions.width !== facts.dimensions!.width || dimensions.height !== facts.dimensions!.height) fail('Decoded preview dimensions differ from the original receipt'); return blob;
+  }
+  function uploadAccountFacts(user: User) { const account = accounts.get(user); if (!account) fail('No bound upload account context', 409); return structuredClone(account.facts); }
+  return { loadUploadAccount, publicUploadOwner, uploadAccountFacts, currentUpload, saveResume, cancelResume, reconcileUploadReceipt, runUploadBatch, resolveUploadPage, replaceUploadPage, reconcileUploadReplacement, uploadPreview };
+}
+
+export function markUnsentUploadPages(pages: UploadSessionFile[], session: string) { for (const page of pages) if (page.file && page.upload_recovery?.state !== 'unknown') { page.error = 'Not sent because this batch has not reached this image. Remove or replace this local placeholder explicitly.'; page.upload_recovery = { state: 'unsent', session, before_ids: [] }; } }
+export function isRemoteUploadFile(value: UploadSessionFile): boolean { try { publicUuid(value.id); return !value.file && !value.error && !value.upload_recovery && /^[0-9a-f]{64}$/.test(value.file_hash) && /^\d+$/.test(value.file_size) && Number.isSafeInteger(Number(value.file_size)) && Number(value.file_size) > 0; } catch { return false; } }
+export function prepareResume(session: UploadSession): PublicSession { const value = session as PublicSession, order = new Map(value.page_order.map((id, index) => [id, index])); value.relationships.files = [...value.relationships.files ?? []].sort((a, b) => order.get(a.id)! - order.get(b.id)!); return value; }
+export function acknowledge(session: UploadSession, saved: UploadSession) { const current = session as PublicSession, next = saved as PublicSession; for (const key of ['version', 'draft', 'page_order', 'can_mutate', 'can_cancel', 'can_retry_commit', 'publication_status', 'state', 'is_expired', 'expires_at', 'public_upload'] as const) Object.assign(current, { [key]: next[key] }); }
+export function resumeNotice(session: UploadSession) { const value = session as PublicSession; if (value.public_upload?.commitState) return unknownCommit; if (value.is_committed) return 'The exact saved chapter receipt was restored. Reader navigation requires its current readable catalogue presentation.'; if (!value.can_mutate) return 'This saved upload is read-only with its current state or authorization. Its staged work has been kept.'; return 'Your original images, metadata and page order are staged privately on this instance.'; }
+export function immutableCommit(session: UploadSession, value: UploadSnapshot): UploadSnapshot { const current = session as PublicSession; if (!current.can_mutate || !current.can_retry_commit || current.is_committed || current.public_upload?.commitState) throw new VisibleError('Reconcile publication first', resumeNotice(session)); return { draft: draft(value.draft), page_order: ids(value.page_order) }; }
+const production = createPublicUploadAdapter();
+export const { loadUploadAccount, publicUploadOwner, uploadAccountFacts, currentUpload, saveResume, cancelResume, reconcileUploadReceipt, runUploadBatch, resolveUploadPage, replaceUploadPage, reconcileUploadReplacement, uploadPreview } = production;

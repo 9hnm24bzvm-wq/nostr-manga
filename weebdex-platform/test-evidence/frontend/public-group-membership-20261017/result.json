@@ -1,0 +1,76 @@
+{
+  "schema": "public-group-membership-display-audit-v1",
+  "source_base": "3fc2b72fe5cd4c8d7b72673ce5755f7c66e58edd",
+  "finite_tests": {
+    "passed": 70,
+    "failed": 0,
+    "prior": 62,
+    "added": 8,
+    "stand_ins": true
+  },
+  "pre_fix_reproduction": {
+    "exit_code": 1,
+    "selected_tests": 1,
+    "failed": 1,
+    "modules_from_source_base": [
+      "site-client",
+      "client"
+    ],
+    "original_modules": {
+      "site-client": "55853bde2e237562437cc7aeb44eb0d051c140c93a6fc26a386dd9b1708f72d0",
+      "client": "5337f711748bdf73f9df63d8b764d747fc44501f544913f7e60e535261213cfa"
+    }
+  },
+  "strict": {
+    "exit_code": 0,
+    "errors": 0,
+    "warnings": 15,
+    "canonical_frontend_files": 679,
+    "canonical_frontend_unchanged": true
+  },
+  "production_markup_preparation": {
+    "exit_code": 0,
+    "public_api_gate": true,
+    "exact_added_availability_guards": [
+      {
+        "path": "src/routes/(app)/group/[id]/+page.svelte",
+        "sha256": "bd0a7bcac1e816fb89ea7443c78f36ccad976fa08bfa2cf35d07ba25f40f01c2",
+        "count": 1,
+        "before": "{#if !$group.relationships?.members?.some(member => member.is_leader)}",
+        "after": "{#if retainedGroupCanClaim($group, !$group.relationships?.members?.some(member => member.is_leader))}",
+        "helper": "group-presentation",
+        "approved_public_availability_exception": "public_group_claim_requires_command_adapter"
+      },
+      {
+        "path": "src/routes/(app)/group/[id]/Group.svelte",
+        "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+        "count": 1,
+        "before": "{#if !$group.relationships?.members?.some(member => member.is_leader)}",
+        "after": "{#if retainedGroupCanClaim($group, !$group.relationships?.members?.some(member => member.is_leader))}",
+        "helper": "group-presentation",
+        "approved_public_availability_exception": "public_group_claim_requires_command_adapter"
+      }
+    ],
+    "all_existing_exceptions_retained": true,
+    "canonical_sources_written": false
+  },
+  "recipe_provenance_tests": {
+    "passed": 12,
+    "failed": 0
+  },
+  "logs": {
+    "before.log": "48e670b2a60fa342c7ca9e56c90897ac136004330d87e9176da02dcb1efe0020",
+    "finite.log": "aa1b615c256c63653458d8d8cf5f71653efbe008a96cfbe195f433c525e944d9",
+    "strict.log": "f809a59bf3ccffb8e5bbad622416cbcaf66c90ae694f76032476d785d8561517",
+    "provenance.log": "4bdf48040c64f385c0cf747fa36fa6352624c8495d2940d9378e0d408dbb142b"
+  },
+  "integration_manifest_sha256": "05208e092e9ee8a9b85f608331b77c41e511439c6c7ac996ebcc919c58a6e931",
+  "browser_executed": false,
+  "live_http_executed": false,
+  "limitations": [
+    "Actual backend leader/member include wire contract is consumed; finite transport fixtures are not live HTTP proof.",
+    "Protocol-publisher members keep actual public-key names and no invented native version.",
+    "Displayed membership grants no client authority.",
+    "Public Claim/report submission remains unavailable; both native Claim and unclaimed text guards fail closed."
+  ]
+}

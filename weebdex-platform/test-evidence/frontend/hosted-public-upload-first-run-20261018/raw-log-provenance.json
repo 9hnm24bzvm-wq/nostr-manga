@@ -1,0 +1,10 @@
+{
+  "source": "GitHub decoded completed job logs endpoint",
+  "runId": 39142927874,
+  "jobId": 117720871011,
+  "sha256": "a12782a8eb216271b20e1b30caa8b5eb4abf7270b2e636948f84b6fac7f34303",
+  "bytes": 21587,
+  "rawLogPublished": false,
+  "publicNormalizedOutcomeIn": "preparation.json",
+  "limitation": "Raw preparation log and private PG cleanup receipt were deliberately not uploaded by the workflow; their individual contents cannot be reconstructed from the artifact."
+}

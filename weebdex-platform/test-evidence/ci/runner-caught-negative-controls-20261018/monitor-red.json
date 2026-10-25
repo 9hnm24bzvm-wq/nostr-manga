@@ -1,0 +1,21 @@
+{
+  "source": "d57a1f0ba55b65c2d4f4927afc1b350712569c0e",
+  "status": "reproduced-two-defects",
+  "process_exits": [
+    {
+      "monitor_installed": false,
+      "exit_status": 1,
+      "signal": null
+    },
+    {
+      "monitor_installed": true,
+      "exit_status": 7,
+      "signal": null
+    }
+  ],
+  "code_reads": 2,
+  "fixed_enum_preserved": false,
+  "raw_value_would_export": true,
+  "raw_messages_or_stderr_exported": false,
+  "browser_executed": false
+}

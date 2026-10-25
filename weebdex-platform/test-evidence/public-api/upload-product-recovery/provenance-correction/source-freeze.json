@@ -1,0 +1,44 @@
+{
+  "schema": "recovered-upload-provenance-correction-v1",
+  "parent_commit": "8c0f21607b919bfb8ea60b3443d84c49a3a4a0b3",
+  "scope": "exact one inactive replacement recipe retains preceding production stage and final public refusal; global provenance remains enforced",
+  "finite": {
+    "cases": 12,
+    "passed": 12,
+    "command": "node --test tests/ci/test_public_upload_provenance_recovery.mjs"
+  },
+  "preserved_failure": "enabled strict attempt01 before Svelte checking; default-off already passed",
+  "runtime_qualification": "pending enabled strict retry",
+  "files": [
+    {
+      "path": "scripts/composed-upload-provenance.mjs",
+      "bytes": 3331,
+      "sha256": "8fb2e8ea2057f5fd32a5621532fe1f90dc659a83454369312cb5f628e9e19100"
+    },
+    {
+      "path": "scripts/check-composed-frontend.mjs",
+      "bytes": 28310,
+      "sha256": "f8e9e589e224bb1f88f0fa2bd2f06295ce341fcda2cb848bad4e21fd5add7cbe"
+    },
+    {
+      "path": "tests/ci/test_public_upload_provenance_recovery.mjs",
+      "bytes": 6305,
+      "sha256": "4f8e4d81eb6d722925a0d707f02f88e42c9f30829149e0341bd2d7a0dcc95033"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/provenance-correction/strict-enabled-01.log",
+      "bytes": 1033,
+      "sha256": "0a408a498bd5abbc14259ba326b5fd1e447520e6db65d9bb91f1a5c311839875"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/provenance-correction/preflight-12.log",
+      "bytes": 991,
+      "sha256": "43303d0259e08eb76c39e9af3b599a2b2a41abf262bd9065e8cba737c16154eb"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/provenance-correction/independent-review.json",
+      "bytes": 1753,
+      "sha256": "c97a589d1a53632338d3fb38127d96fe9c59ecb28de3730dc8cd5ca504359ccb"
+    }
+  ]
+}

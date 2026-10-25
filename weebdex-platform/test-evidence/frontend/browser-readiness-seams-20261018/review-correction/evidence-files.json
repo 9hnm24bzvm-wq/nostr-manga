@@ -1,0 +1,38 @@
+{
+  "README.md": {
+    "bytes": 1915,
+    "sha256": "0dee05a5855d8f8f70d4b63cc452c318402887ba8e997767d8b4381903deee58"
+  },
+  "baseline-recipe.json": {
+    "bytes": 674,
+    "sha256": "19ec21979179cd8836c850090dd80371dbc585d7e51f4bf21af2b23d4a72836d"
+  },
+  "candidate-owned.json": {
+    "bytes": 967,
+    "sha256": "fc730a0de32f3fae59c6814d846bd27106740da04567cc92e904d78049c54f87"
+  },
+  "candidate.log.gz": {
+    "bytes": 2217,
+    "sha256": "ca5431cb0f1f19d8ecbc288a841f7db009b71a58737056bb4db7ac5b117db76a"
+  },
+  "continuity-route-red.log.gz": {
+    "bytes": 621,
+    "sha256": "5378e55b23b7be1b0894bfcdbb5b22835d8a97d9e964412a8f7c69995121dd9b"
+  },
+  "identity-red.log.gz": {
+    "bytes": 963,
+    "sha256": "122c2f29d4fb1684b61604b41a2d11d7472d030e3abc53bce5c59a5b1690e9c6"
+  },
+  "raw-log-manifest.json": {
+    "bytes": 452,
+    "sha256": "2979e416e07abc0d2426af708679e096fb71c005c9ddfd5fba5b910be8cf8c76"
+  },
+  "result.json": {
+    "bytes": 1729,
+    "sha256": "48b14c0eed28d78df8720a1d03f112982717375f79c33d5768a2570abb60319f"
+  },
+  "source-pins.json": {
+    "bytes": 1350,
+    "sha256": "464518a2ab43428c899fcb01d5129bfc102cfb8a4d1e19ee323759453179f6bb"
+  }
+}

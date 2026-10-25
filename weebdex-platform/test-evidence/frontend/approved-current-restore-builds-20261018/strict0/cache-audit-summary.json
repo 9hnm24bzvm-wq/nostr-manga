@@ -1,0 +1,29 @@
+{
+  "records": [
+    {
+      "path": "strict0/cache-audit/26.json",
+      "sha256": "70cef3637d112d03ca2411904af3d71c0b172c87687a8e92f7652e63681c4db0",
+      "pid": 26,
+      "checked_node_mutations": 141
+    },
+    {
+      "path": "strict0/cache-audit/34.json",
+      "sha256": "6fc3ba9ca0ac8679e9b4f93617696a2d67edab6fd5e835d519b6507324f0ed69",
+      "pid": 34,
+      "checked_node_mutations": 350
+    },
+    {
+      "path": "strict0/cache-audit/6.json",
+      "sha256": "7077b498c43f8512bc68c8c5ecfa9357f5a90eb19c77dd9b3b81d0207736f051",
+      "pid": 6,
+      "checked_node_mutations": 7672
+    },
+    {
+      "path": "strict0/cache-audit/65.json",
+      "sha256": "21b71229cd9015157eeb7ec0a60123737dc62bd0cfba168550bb56add56ca766",
+      "pid": 65,
+      "checked_node_mutations": 0
+    }
+  ],
+  "protected_write_attempts": 0
+}

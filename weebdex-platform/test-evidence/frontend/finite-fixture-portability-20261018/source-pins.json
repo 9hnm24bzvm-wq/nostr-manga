@@ -1,0 +1,7 @@
+{
+  "manga-protocol-lab/bench/library-node/fixtures/README.md": "230959d68be2f5060524fac3d06d7b7273a152685b3f60382862de3e6cf19f2d",
+  "manga-protocol-lab/bench/library-node/fixtures/mixed-210s-bounded-plan-v1.json": "50303533772c9454f367109b3267a6671828524f2387d8853198c3bff26e034f",
+  "manga-protocol-lab/bench/library-node/test_diagnostic_observer.py": "3e4128e30e9f1b891d6f053e14ba50ad2fc9db4795331ae3aaa7b9d91e7c0b69",
+  "manga-protocol-lab/bench/library-node/test_mixed.py": "b09af0e9844a0d1e9fa714e3d9841894c74722d6fc189cf729e8a2d5236af62c",
+  "manga-protocol-lab/server/tests/fixtures/real-images/met-57682.jpg": "3ac595477a047f9fa78166a88fd2a8a0306d3d6698fca655e430b5c4e1b4603a"
+}

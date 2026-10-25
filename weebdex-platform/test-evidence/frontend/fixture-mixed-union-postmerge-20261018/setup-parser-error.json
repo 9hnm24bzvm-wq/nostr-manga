@@ -1,0 +1,7 @@
+{
+  "status": "retained-setup-only-error",
+  "error": "SyntaxError in validation setup dict: m.__file__for lacked whitespace",
+  "testCasesExecuted": 0,
+  "productOrTestSourcesChanged": false,
+  "repair": "Corrected setup transcription; no test assertion changed"
+}

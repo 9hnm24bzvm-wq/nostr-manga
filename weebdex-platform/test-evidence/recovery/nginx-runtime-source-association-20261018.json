@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "baselineExecutionSource": "15030c51a622d5303ff645c57e9665a8884aaf7d",
+  "baselineViteSource": "34042537b23df594a0c7923773ea4f00c6e47b9c",
+  "qualifiedNginxRuntimeSource": "59c9c910b571fac5b97cbe78b2f01a694fadfa91",
+  "qualifiedNginxEvidenceCommit": "0b1c1edcbf9cce61712e7d4d192d580a5743b119",
+  "unchangedProductInputs": 922,
+  "baselineExecutionInputs": 1242,
+  "unchangedExistingExecutionInputs": 1240,
+  "changedExistingExecutionInputs": [
+    {
+      "path": "manga-protocol-lab/scripts/bootstrap.sh",
+      "qualifiedSha256": "a4d56b91647d443223c4ddd2bf8682aa16811532bed55b34a6c8c141dbe1b384",
+      "currentSha256": "c1ddc8252d85f183abd55b4732e0b15fd019bc83b3f82a284b0244aa58d46ba0"
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+      "qualifiedSha256": "8f377f873e747a05e4175b2be0856ed6541782ccff0b083ecdef6ee18b68d101",
+      "currentSha256": "1dd590c4c20aa71174bcaa4bfa523479bca1d3433e91bb03995af66046053bf1"
+    }
+  ],
+  "addedFiniteTests": [
+    {
+      "path": "weebdex-platform/tests/ci/test_nginx_bootstrap_pin.mjs",
+      "sha256": "421e8279795071869e2ef5fc402dfef6b2fe476c645a08e77ad9e821f7031648",
+      "separatelyPassedFiniteCases": 6
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_serving_supervisor_paths.mjs",
+      "sha256": "3c3b542a3c18d552a63a2bfb16ce04579e444079b0e0fae7041d6200894cdc56",
+      "separatelyPassedFiniteCases": 2
+    }
+  ],
+  "additionalRuntimeSourcePins": {
+    "manga-protocol-lab/src/serving_supervisor.py": "7e633f75995a78b2e01d54d078a1e5369007544d42e0d6a2fc2c84808c6e25aa",
+    "manga-protocol-lab/tests/operator_support.py": "e73a042b1f09fa55ae534e93010b7b441d7fd997b04a4add1ea5160306d4138b",
+    "manga-protocol-lab/tests/test_serving_supervisor.py": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+    "weebdex-platform/deployment/nginx.example.conf": "0371f6c818782c4bc0fcd3ce23adaf08731f5dd6d8e3bc8f3c4d7f5b4be86304",
+    "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+  },
+  "changedRuntimeSourceAbsentFromBaselineExecutionMap": {
+    "path": "manga-protocol-lab/src/serving_supervisor.py",
+    "verified19bSha256": "24689ab2bdfefef145c20a2ff307068c51f51bb6699e7bdcde29462190570a5e",
+    "currentSha256": "7e633f75995a78b2e01d54d078a1e5369007544d42e0d6a2fc2c84808c6e25aa"
+  },
+  "currentRecordedSourcePinUnionCount": 1247,
+  "unionMethod": "Unique baseline1242 execution-map paths plus two added finite-test paths and five actual nginx source-pin paths; includes three runtime paths absent from the old map. This is an association union, not an all-repository execution claim.",
+  "boundary": "Original frontend product/build inputs and Rust/API application bytes unchanged. Bootstrap and serving supervisor have separately reviewed source and scoped finite/runtime results. Prior full CI/strict/build and backend results remain bound to their exact source snapshots.",
+  "historicalLifecycleSourcePins": {
+    "manga-protocol-lab/src/serving_supervisor.py": "7e633f75995a78b2e01d54d078a1e5369007544d42e0d6a2fc2c84808c6e25aa",
+    "manga-protocol-lab/tests/operator_support.py": "e73a042b1f09fa55ae534e93010b7b441d7fd997b04a4add1ea5160306d4138b",
+    "manga-protocol-lab/tests/test_serving_supervisor.py": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+    "weebdex-platform/deployment/nginx.example.conf": "dae095acb8f45300d7180db7dbc48efb2c19618b174dad40c13620d9b05de97b",
+    "weebdex-platform/tests/runtime/auth_fixture_guard.py": "17ff9c2eb04a4bdefaa3b61e975e77567f873208a83454afcdd6ca19c5cfc33e"
+  },
+  "qualifiedRedirectParserSource": "4351752c3188aea9199383aa27b865e193f58ea7",
+  "qualifiedRedirectParserEvidenceCommit": "e6045016b3e1328777beb590f4675a149fa2d762",
+  "lifecyclePinAssociationBoundary": "Only nginx.example.conf differs from the five historical lifecycle/parser pins; current config is separately parser-qualified by the redirect follow-up. The serving-supervisor source and original eight test methods remain byte-identical.",
+  "changedCurrentLifecyclePinPaths": [
+    "weebdex-platform/deployment/nginx.example.conf"
+  ],
+  "requalifiedExistingFiniteTest": {
+    "path": "weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs",
+    "sha256": "1dd590c4c20aa71174bcaa4bfa523479bca1d3433e91bb03995af66046053bf1",
+    "casesPassed": 12,
+    "evidence": "../deployment/nginx-runtime-portability-20261018/redirect-logging/finite-checks.json"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "scope": "prospective-public-signed-features-workflow-test-successor-v1",
+  "browser_executed": false,
+  "hosted_executed": false,
+  "historical_pinset": "source-pins-initial.json",
+  "historical_pinset_sha256": "3c41c318d9bffdacfe613c2fbc7a03371dc5604e461d2aa3024ce1da154ed301",
+  "current_pinset": "source-pins.json",
+  "current_pinset_sha256": "07a8f07ff187cd49a8ec93a33309021021b9e8e70ccc139b7e4fab47a81bb790",
+  "source_commit": "c5ff2170a7d2624abe238528ae960d3bef8c916f",
+  "changes": [
+    {
+      "prior": {
+        "path": "weebdex-platform/tests/ci/test_native_upload_diagnostic_workflow.py",
+        "bytes": 8116,
+        "sha256": "dd0b7513878eb2b917017983830135de78f7cf6187191aa2236b000ec63b9549"
+      },
+      "current": {
+        "path": "weebdex-platform/tests/ci/test_native_upload_diagnostic_workflow.py",
+        "bytes": 12392,
+        "sha256": "194289c9cc71deca014700c46d77e8cc983ac555e2aca903a79513907826664b"
+      },
+      "reason": "Reviewed exact signed-feature workflow successor associations, full YAML parser checks, immutable malformed-workflow counterfactual and mutually exclusive parsed job-gate coverage only; no workflow or product edit."
+    }
+  ]
+}

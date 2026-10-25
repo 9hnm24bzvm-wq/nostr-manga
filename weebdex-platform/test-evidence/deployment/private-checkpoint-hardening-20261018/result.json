@@ -1,0 +1,91 @@
+{
+  "auditBase": "be283b664f699e8c7175f6eac0200cd22e212c8a",
+  "baselineReproduction": {
+    "configEntriesCopiedByOldScript": 2,
+    "expectedFailuresObserved": 2,
+    "intendedRefusalCases": 2,
+    "postgresToolsWereStandins": true,
+    "seconds": 0.037
+  },
+  "baselineScriptSha256": "5ded912187b61d45e85e36d369503c50cb9d87c3be4e12c94b9ce4d55e52f51f",
+  "boundaryFixtureQuoteSyntaxErrorCorrectedBeforeFinalRun": true,
+  "currentFinite": {
+    "failed": 0,
+    "passed": 24,
+    "scope": "21 filesystem/command-boundary cases plus3 wrapper/source graceful contracts; no actual database or platform started",
+    "seconds": 0.357
+  },
+  "existingTools": {
+    "Pillow": "12.3.0",
+    "aiohttp": "3.14.4",
+    "libpqSha256": "f64dcec14657e4123621448442cd3d0795744d238e588774f5c864f592f4860d",
+    "libpqVersion": 170011,
+    "node": "24.19.0",
+    "officialNginx": "1.30.6",
+    "python": "3.12.14"
+  },
+  "fullApplicationRestoreQualified": false,
+  "gracefulServingAssociation": {
+    "currentSupervisorSha256": "7e633f75995a78b2e01d54d078a1e5369007544d42e0d6a2fc2c84808c6e25aa",
+    "matchesPreviouslyQualifiedEightCaseSource": true,
+    "newLifecycleRun": false,
+    "platformGracefulRuntimeRun": false
+  },
+  "intermediate21CasePassRetainedLocally": true,
+  "limitations": "Fake pg commands and wrapper executable; real libpq parses synthetic DSNs without a connection. Historical tiny PG17 mechanics and nginx8cases do not replace a full application restore.",
+  "missingToolsObserved": [
+    "postgres",
+    "initdb",
+    "psql",
+    "pg_dump",
+    "pg_restore",
+    "cargo",
+    "rustc",
+    "platform binary",
+    "manga-node binary",
+    "strfry binary",
+    "integrated frontend release manifest",
+    "cbor2",
+    "coincurve",
+    "bison",
+    "flex",
+    "m4"
+  ],
+  "pgDiagnosticFinite": {
+    "failed": 0,
+    "ownedPgFixtureEnvironmentExplicitlyUnset": true,
+    "passed": 5,
+    "seconds": 0.103,
+    "skippedActualPg18": 12
+  },
+  "prohibitedActionsPerformed": {
+    "deletion": false,
+    "deployment": false,
+    "expensiveBenchmark": false,
+    "installation": false,
+    "publicListener": false,
+    "realDatabaseStart": false
+  },
+  "resources": {
+    "endWorkspaceFreeBytes": 30823251968,
+    "retainedGeneratedNamedAllocationBytes": 3911680,
+    "tmpFilesystem": "tmpfs",
+    "tmpTotalBytes": 5225717760
+  },
+  "schema": "private-checkpoint-hardening-qualification-v1",
+  "sourceCommit": "d5ed8291775fe602b0fbb17d9e1b555e03e0042d",
+  "sourcePins": {
+    "manga-protocol-lab/bench/library-node/pg_diagnostics.py": "f1277a7121114bab5625d3c9d0871971f210eed72d054c0b3e5caa42abc75288",
+    "manga-protocol-lab/bench/library-node/run.py": "3cc47dc190c812e4ba7d35f247d102905dddf3f88259d223921c64d0c90f522a",
+    "manga-protocol-lab/bench/library-node/test_compact.py": "0a2566c210af96e04d301b5745d6039063cdea27640872b459875743a14d9aa8",
+    "manga-protocol-lab/bench/library-node/test_pg_diagnostics.py": "4ec5de4800a10e203f29448b183d761da2e06f2fa3fd72722139e8b2e2acccd8",
+    "manga-protocol-lab/scripts/bootstrap-postgres.sh": "8abdf8f08c9477e5221e036df258dd01d6b990fe4c80a51092cf8937bfe90155",
+    "weebdex-platform/backend/src/main.rs": "89072b2e12ce290a31590f48d36508d486cb6fd1d7a6b8052ab75b05c741b401",
+    "weebdex-platform/deployment/platform.publisher.example.json": "41821ec822a21adc167bc20e713e824c92188de2117d37da31217cfaf9dce470",
+    "weebdex-platform/deployment/platform.read-only.example.json": "34703b77068e4e4d71e4f7f5cbc466f27f4f0812f7559d9d8f0b80389d3cb7ba",
+    "weebdex-platform/deployment/weebdex.service.example": "711d7e24ceef56fa644ed72ae215516d41a0f0c9164993ab43c907b7c1b0ee16",
+    "weebdex-platform/scripts/private-checkpoint.py": "f8c9184cea4169c9b544e587473b2c0d80ac346259b31b634c811b70270c3357",
+    "weebdex-platform/scripts/run-platform.sh": "ed3e851129f06798c59ec0613fbe288548fdda805f864d70ca9da5bd203abd77",
+    "weebdex-platform/tests/ci/test_private_checkpoint.py": "98b284a1bf31a9b08b086e1d28a6026d9ca7cc25eeb5240e305386bd031cc886"
+  }
+}

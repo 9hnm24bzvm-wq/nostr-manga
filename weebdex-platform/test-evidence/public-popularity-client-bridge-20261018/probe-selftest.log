@@ -1,0 +1,11 @@
+✔ exact-module probe validates empty/positive ranks, two observed events and same-cookie dedup without retaining cookie values (179.815509ms)
+✔ probe rejects a real HTTP receipt whose same-visitor repeat increments the observed count (164.779229ms)
+✔ probe rejects external origins before any request (56.736086ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 475.229929

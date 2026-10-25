@@ -1,0 +1,94 @@
+{
+  "actualNginxBinarySha256": "87f23c1feefe552947dd9c9fae6da6eccac6c473d03b1d86e30ea08781d15052",
+  "cases": [
+    {
+      "name": "restored_serving_tests.ServingCLI.test_dead_master_is_not_a_successful_drain_proof",
+      "seconds": 0.233
+    },
+    {
+      "name": "restored_serving_tests.ServingCLI.test_duplicate_owner_and_alternate_runtime_refused",
+      "seconds": 0.343
+    },
+    {
+      "name": "restored_serving_tests.ServingCLI.test_oversized_control_input_exits_and_stops_readers",
+      "seconds": 0.27
+    },
+    {
+      "name": "restored_serving_tests.ServingCLI.test_owner_eof_then_immediate_successor_owns_fresh_family",
+      "seconds": 0.463
+    },
+    {
+      "name": "restored_serving_tests.ServingCLI.test_prepared_activation_suspension_and_explicit_stop",
+      "seconds": 0.306
+    },
+    {
+      "name": "restored_serving_tests.ServingCLI.test_sigkill_owner_recovery_stops_surviving_readers",
+      "seconds": 0.425
+    },
+    {
+      "name": "restored_serving_tests.ServingCLI.test_slow_unlinked_reader_drain_range_and_new_namespace",
+      "seconds": 1.456
+    },
+    {
+      "name": "restored_serving_tests.ServingCLI.test_wrong_owner_cannot_recover_or_signal_other_readers",
+      "seconds": 0.263
+    }
+  ],
+  "errors": 0,
+  "failures": 0,
+  "instrumentation": "read-only setUp argv/port recording and pre-cleanup failure-log retention",
+  "loopbackPortsRecorded": 8,
+  "override": "module.NGINX explicitly set to isolated official 1.30.6 binary; historical source constant unchanged",
+  "planned": 8,
+  "privatePathRegressionProofs": [
+    {
+      "case": "restored_serving_tests.ServingCLI.test_dead_master_is_not_a_successful_drain_proof",
+      "startupLogOwnedUnderPrivateRuntime": true,
+      "validatedPrivateTempDirectories": 5
+    },
+    {
+      "case": "restored_serving_tests.ServingCLI.test_duplicate_owner_and_alternate_runtime_refused",
+      "startupLogOwnedUnderPrivateRuntime": true,
+      "validatedPrivateTempDirectories": 5
+    },
+    {
+      "case": "restored_serving_tests.ServingCLI.test_oversized_control_input_exits_and_stops_readers",
+      "startupLogOwnedUnderPrivateRuntime": true,
+      "validatedPrivateTempDirectories": 5
+    },
+    {
+      "case": "restored_serving_tests.ServingCLI.test_owner_eof_then_immediate_successor_owns_fresh_family",
+      "startupLogOwnedUnderPrivateRuntime": true,
+      "validatedPrivateTempDirectories": 5
+    },
+    {
+      "case": "restored_serving_tests.ServingCLI.test_prepared_activation_suspension_and_explicit_stop",
+      "startupLogOwnedUnderPrivateRuntime": true,
+      "validatedPrivateTempDirectories": 5
+    },
+    {
+      "case": "restored_serving_tests.ServingCLI.test_sigkill_owner_recovery_stops_surviving_readers",
+      "startupLogOwnedUnderPrivateRuntime": true,
+      "validatedPrivateTempDirectories": 5
+    },
+    {
+      "case": "restored_serving_tests.ServingCLI.test_slow_unlinked_reader_drain_range_and_new_namespace",
+      "startupLogOwnedUnderPrivateRuntime": true,
+      "validatedPrivateTempDirectories": 5
+    },
+    {
+      "case": "restored_serving_tests.ServingCLI.test_wrong_owner_cannot_recover_or_signal_other_readers",
+      "startupLogOwnedUnderPrivateRuntime": true,
+      "validatedPrivateTempDirectories": 5
+    }
+  ],
+  "run": 8,
+  "skipped": 0,
+  "success": true,
+  "testSha256": "93daf84002fbbbb6b0ec11198c4e032fc68cdb066581368bf41ac7e0357e32de",
+  "unlinkedBlockAccounting": {
+    "events": 1,
+    "largestPayloadBytes": 10800000,
+    "maximumAllocatedBeforeUnlinkBytes": 10801152
+  }
+}

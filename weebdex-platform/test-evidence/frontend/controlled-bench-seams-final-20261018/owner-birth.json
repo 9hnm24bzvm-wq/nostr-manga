@@ -1,0 +1,15 @@
+{
+  "group": 7,
+  "command": [
+    "bash",
+    "weebdex-platform/test-evidence/frontend/controlled-bench-seams-final-20261018/run-selected.sh"
+  ],
+  "births": [
+    {
+      "pid": 7,
+      "startTicks": 9720901,
+      "rssBytes": 1179648,
+      "state": "R"
+    }
+  ]
+}

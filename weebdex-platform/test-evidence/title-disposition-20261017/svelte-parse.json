@@ -1,0 +1,21 @@
+{
+  "schema": "finite-svelte-compile-only-v1",
+  "node": "v24.19.0",
+  "svelte": "5.55.1",
+  "browser": false,
+  "typescript_semantic_check": false,
+  "files": [
+    {
+      "file": "weebdex-platform/platform-integrations/public-api/PublicTitleEditor.svelte",
+      "sha256": "3529f8e0794fc11ffbe828919244a69f91c12bfb77e4178ca17a5b2eef18276c",
+      "compiled": true,
+      "warnings": []
+    },
+    {
+      "file": "weebdex-platform/platform-integrations/public-api/PublicTitleDisposition.svelte",
+      "sha256": "017ff025ac02fac77a7a732dd3ff0ee0bf6d5091345e2a828fa3d20f0de065f5",
+      "compiled": true,
+      "warnings": []
+    }
+  ]
+}

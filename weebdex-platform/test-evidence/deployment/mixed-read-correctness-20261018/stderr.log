@@ -1,0 +1,7 @@
+test_large_and_extreme_selective_restore_rejects_corrupt_200 (bounded_mixed_reads.LibraryReadHttp.test_large_and_extreme_selective_restore_rejects_corrupt_200) ... Executing <Task finished name='Task-2' coro=<LibraryReadHttp.test_large_and_extreme_selective_restore_rejects_corrupt_200() done, defined at /workspace/shared/nostr-manga-recovery-20261018/post-nginx-integration-worktree/manga-protocol-lab/bench/library-node/test_mixed_reads.py:9> result=None created at /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/asyncio/runners.py:100> took 0.197 seconds
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.975s
+
+OK

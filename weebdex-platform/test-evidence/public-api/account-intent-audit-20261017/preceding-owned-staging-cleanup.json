@@ -1,0 +1,20 @@
+{
+  "ownedDisposableStrictStages": [
+    "browser-completeness-audit-worktree-20261017/weebdex-platform/.build/audit-group-gate-on-20261017",
+    "browser-completeness-audit-worktree-20261017/weebdex-platform/.build/audit-statistics-gate-on-02-20261017",
+    "browser-completeness-audit-worktree-20261017/weebdex-platform/.build/audit-statistics-gate-on-20261017",
+    "browser-completeness-audit-worktree-20261017/weebdex-platform/.build/audit-title-gate-off-final-20261017",
+    "browser-completeness-audit-worktree-20261017/weebdex-platform/.build/audit-title-gate-on-02-20261017",
+    "browser-completeness-audit-worktree-20261017/weebdex-platform/.build/audit-title-gate-on-20261017"
+  ],
+  "freeBytesBefore": 4160954368,
+  "freeBytesAfter": 4427943936,
+  "preserved": [
+    "all tracked canonical/source files",
+    "current production artifacts",
+    "committed raw strict logs and manifests",
+    "shared original dependencies",
+    "latest title production/pending strict stages",
+    "all other workers outputs"
+  ]
+}

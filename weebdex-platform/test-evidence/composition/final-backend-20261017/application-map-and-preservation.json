@@ -1,0 +1,126 @@
+{
+  "schema": "final-source-composition-v1",
+  "base": "a4817ce2d1017cb3828e8095704b935ae4ed996f",
+  "applicationSourceHead": "ad7a17dfc55a6cdc681b387e86ee8ca90d5af93a",
+  "originalToApplied": [
+    {
+      "original": "292b219a698d8609a325130cc4d02b523e7cc668",
+      "applied": "080a53f836348780f813bd972050becf292ebd39",
+      "subject": "Freeze opt-in public relation pages with honest pending capacity qualification"
+    },
+    {
+      "original": "95a77e26ee1e1743a73d89429f01079f304b0ed6",
+      "applied": "545bf856f014ee17df9378b78e4beeba688fabd4",
+      "subject": "Recheck and select eligible original covers for fresh public title publication"
+    },
+    {
+      "original": "b359adfed00c12f657147683c3d2884125c79765",
+      "applied": "de2bd01c639ce87db82b0146ff317e4fa9171e55",
+      "subject": "Prove fresh original cover guards and immutable publication retry boundaries"
+    },
+    {
+      "original": "f178c1f79d27fe080a1e6268e2acbc7f299f31e0",
+      "applied": "af5e03aab877a776a2ad7297ba97ba961afc55f9",
+      "subject": "Keep upload-driven native series cover compatibility explicit"
+    },
+    {
+      "original": "87d35ca0ded1f654d6948854db270abe62220a47",
+      "applied": "bb6d4a6b319b3285c4b96a930322aecf2799d2fd",
+      "subject": "Qualify complete public relation pages and retain owner identity at4096 edges"
+    },
+    {
+      "original": "3e2240b08236ac5a1104562fe4f0762a41da6310",
+      "applied": "d5d8aa6fae865153447f8ef60782413214787a6b",
+      "subject": "Preserve exact public relation qualification logs in recovery evidence"
+    },
+    {
+      "original": "c3945444eba7a2656f9ed9287eee6293d9d50bc4",
+      "applied": "a81e0bb293ce4bfb8cf4c6b906f02b506985712e",
+      "subject": "Resolve verified Lucide icons from external production components"
+    },
+    {
+      "original": "fb703c62d2082a6313e2bacef594ae6eca654cc6",
+      "applied": "4e216fb08ca4c8e923aa7e987b204952281a62e7",
+      "subject": "Qualify complete bounded relation editing with independent real4096 lifecycle evidence"
+    },
+    {
+      "original": "43dcd705b4ce8e3a63fba50182e995f6e7e7624c",
+      "applied": "f44470c78504eb0367372a61a819d82a65ed05c7",
+      "subject": "Independently qualify bounded signed relation lifecycle and cleanup"
+    },
+    {
+      "original": "c3e6a159f800c615088ccea7359c3cbf6b82e111",
+      "applied": "d633b23c60d58ee8a4739e82aa1f69b4f389fd08",
+      "subject": "Select an eligible cover for the immutable-fence test and document fault seams"
+    },
+    {
+      "original": "c569ae4ac5a9675f1477fa3deeed5824ec21e954",
+      "applied": "aa41ab6c08afcc1389879b70029b9747c7b810bd",
+      "subject": "Pin exact account-intent additions in composed registry regression"
+    },
+    {
+      "original": "6139f5d50a86691a71bb39ac91b19c3a49aabb3f",
+      "applied": "fe985c9b63f40de258a6b17e7716f916bbb7b327",
+      "subject": "Retain exact reviewed group-claim exception in composition test"
+    },
+    {
+      "original": "beb80207b5ec03658055fee578ccc9ca55286688",
+      "applied": "36b4983ad8a50d9fad7c52e1cbe9f30f696c82cf",
+      "subject": "Bind staged Lucide runtime alias to its published strict declarations"
+    },
+    {
+      "original": "ee0bee1112e9d5768da1714c529545bcdf700ead",
+      "applied": "1a0d803b5a12ed72c3ea59f206dc5c9f1728645a",
+      "subject": "Associate corrected owner-detail and actual4096 relation adapter qualification"
+    },
+    {
+      "original": "407c3e0cba55458a9cc72420a5ceaf1369886a52",
+      "applied": "ad7a17dfc55a6cdc681b387e86ee8ca90d5af93a",
+      "subject": "Restore a cover through signed intake before local removal replay assertions"
+    }
+  ],
+  "baseTrackedFiles": 3728,
+  "unchangedBaseFiles": 3718,
+  "changedBaseFiles": [
+    "weebdex-platform/backend/src/domains/catalog/mutations.rs",
+    "weebdex-platform/backend/src/protocol/publication.rs",
+    "weebdex-platform/backend/src/public_api/catalogue_dto.rs",
+    "weebdex-platform/backend/src/public_api/catalogue_edges.rs",
+    "weebdex-platform/backend/tests/public_manga_writes.rs",
+    "weebdex-platform/docs/signed-title-relations.md",
+    "weebdex-platform/docs/verification/public-relation-pages-ui-20261017.md",
+    "weebdex-platform/scripts/check-composed-frontend.mjs",
+    "weebdex-platform/scripts/vite.platform.config.mjs",
+    "weebdex-platform/tests/ci/test_account_title_composition.mjs"
+  ],
+  "removedBaseFiles": [],
+  "preservation": {
+    "canonicalFrontend": {
+      "files": 679,
+      "gitBlobManifestSha256": "e30b0e919b34b65adb738643a96a3b4b45aa61dc9c56a01bad23901cf62efee1",
+      "allInheritedBytesUnchanged": true
+    },
+    "integrationAdapters": {
+      "files": 166,
+      "gitBlobManifestSha256": "6cd4700acf31e28ee0874aa63d3fefcb823daa4e05352cb573079294bf22fce3",
+      "allInheritedBytesUnchanged": true
+    },
+    "migrations": {
+      "files": 44,
+      "gitBlobManifestSha256": "005bba7e8d054c0b17a350e0acae1a9a9be5bfeb2eaf6eec8d9b3ead1a8cd5b1",
+      "allInheritedBytesUnchanged": true
+    }
+  },
+  "frozenSourceAssociations": {
+    "frontendStrictAndFinite": "Entire frontend/integration/reconstruction/scripts/CI source byte-identical to beb80207b5ec03658055fee578ccc9ca55286688;622 finite/DOM/IDB passed, strict pending receipt.",
+    "productionBuild": "Runtime frontend inputs match c3945444eba7a2656f9ed9287eee6293d9d50bc4; only check-composed-frontend.mjs differs to preserve published Lucide declarations. Both actual Vite profiles passed upstream, evidence successor pending.",
+    "publicPages": "Handler/helper/HTTP fixture byte-identical to3e2240b; measured capacity qualified upstream.",
+    "freshCover": "Publication core/HTTP fixture and complete title/cover/disposition prefix byte-identical to407c3e0; owned real HTTP passed, independent rerun pending.",
+    "privateRelations": "Previously integrated private source independently reviewed exact native/private boundary; owned+independent4096 proof retained."
+  },
+  "conflictDecisions": [
+    "DTO adjacent tests merged additively, preserving f73 genuine source provenance and Manga-only alias-budget regression.",
+    "Exact isolated relation preparation receipt retained under title-relations/historical-frontend-integration-source-manifest.json; inherited shared receipt retained, neither presented as current combined qualification."
+  ],
+  "qualificationBoundary": "Source composition and preservation only. Final combined Rust/HTTP operation probe and current frontend strict evidence remain separate pending checks; no deployment/browser/load completion claim."
+}

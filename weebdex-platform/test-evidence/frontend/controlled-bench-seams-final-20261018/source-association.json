@@ -1,0 +1,17 @@
+{
+  "baseline": "f1bbb9fe7a7bff11fdee4ac1dc9eec72cd4b0aba",
+  "productSource": "15030c51a622d5303ff645c57e9665a8884aaf7d",
+  "originalInputsChanged": false,
+  "sourceChecks": {
+    "product": {
+      "files": 922,
+      "allCurrentHashesMatch": true,
+      "manifestSha256": "473fe029e4b42f01e4b14846f6cdb5ca4dcd6afe91c376e36ce68f8b9de20421"
+    },
+    "execution": {
+      "files": 1242,
+      "allCurrentHashesMatch": true,
+      "manifestSha256": "37936ce4708a510e58decaaa2d2e2180b435b398f4c55b93d1071ecf7ee0e056"
+    }
+  }
+}

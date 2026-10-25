@@ -1,0 +1,39 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/yarn-bootstrap/node_modules/yarn/bin/yarn.js",
+    "install",
+    "--frozen-lockfile",
+    "--ignore-scripts",
+    "--non-interactive",
+    "--no-default-rc",
+    "--cache-folder",
+    "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/yarn-cache"
+  ],
+  "cwd": "/workspace/shared/nostr-manga-recovery-20261018/frontend-restore-readiness-worktree/weebdex-platform/.build/approved-dependency-restore-20261018/frontend",
+  "deadline_seconds": 600,
+  "elapsed_seconds": 319.186,
+  "exit_code": 0,
+  "stop_reason": null,
+  "minimum_free_bytes": 27504451584,
+  "minimum_available_memory_bytes": 8718102528,
+  "maximum_owned_rss_bytes": 459870208,
+  "peak_new_dependency_allocated_bytes": 1990950912,
+  "floor_bytes": 4294967296,
+  "cleanup_reserve_bytes": 134217728,
+  "dependency_growth_cap_bytes": 4294967296,
+  "owned_process_births": [
+    {
+      "pid": 5,
+      "start_time": 3633651
+    }
+  ],
+  "cleanup_signals": [],
+  "surviving_owned_processes": [],
+  "cleanup_verified": true,
+  "census_errors": 0,
+  "guard_internal_failure": false,
+  "cleanup_reserve_seconds": 12,
+  "leader_registered_before_exec": true,
+  "identity": "exact birth recheck plus pidfd-owned session and sampled descendants"
+}

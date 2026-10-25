@@ -1,0 +1,25 @@
+test_platform_config_inside_storage_refused_before_tools (__main__.PrivateCheckpointTests.test_platform_config_inside_storage_refused_before_tools) ... FAIL
+test_original_config_inside_storage_refused_before_tools (__main__.PrivateCheckpointTests.test_original_config_inside_storage_refused_before_tools) ... FAIL
+
+======================================================================
+FAIL: test_platform_config_inside_storage_refused_before_tools (__main__.PrivateCheckpointTests.test_platform_config_inside_storage_refused_before_tools)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/shared/nostr-manga-recovery-20261018/private-checkpoint-hardening-worktree/weebdex-platform/tests/ci/test_private_checkpoint.py", line 176, in test_platform_config_inside_storage_refused_before_tools
+    with self.assertRaisesRegex(m.Refused,'Configuration files'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Refused not raised
+
+======================================================================
+FAIL: test_original_config_inside_storage_refused_before_tools (__main__.PrivateCheckpointTests.test_original_config_inside_storage_refused_before_tools)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/shared/nostr-manga-recovery-20261018/private-checkpoint-hardening-worktree/weebdex-platform/tests/ci/test_private_checkpoint.py", line 187, in test_original_config_inside_storage_refused_before_tools
+    with self.assertRaisesRegex(m.Refused,'Configuration files'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Refused not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.037s
+
+FAILED (failures=2)

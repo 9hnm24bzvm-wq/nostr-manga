@@ -1,0 +1,23 @@
+{
+  "schema": "approved-single-final-matrix-db-cleanup-v1",
+  "startedAtUtc": "2026-10-18T02:06:12.885611+00:00",
+  "inventoryPath": "/workspace/shared/nostr-manga-recovery-20261017/relation-evidence/final-restart-single-db-inventory-20261018T0159.json",
+  "inventorySha256": "1f474cd996d8d22d4279f3dc50ac483dc3583556b720dbdab4081ee3651b45e4",
+  "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-1jsnbk2m/data",
+  "approvedAllocatedBytes": 55255040,
+  "portClosedBefore": true,
+  "pgCtlStatusBefore": 3,
+  "activeReferencesBefore": [],
+  "retainedHashCount": 66,
+  "sourcePinCount": 979,
+  "executablePinCount": 11,
+  "freeBeforeBytes": 4554608640,
+  "pass": true,
+  "retainedChanged": [],
+  "sourceChanged": [],
+  "executablesChanged": [],
+  "removed": true,
+  "freeAfterBytes": 4609863680,
+  "observedFreeDeltaBytes": 55255040,
+  "endedAtUtc": "2026-10-18T02:06:13.769548+00:00"
+}

@@ -1,0 +1,93 @@
+{
+  "status": "selected-qualification-passed-with-explicit-additional-dependency-failure",
+  "executionSource": "15030c51a622d5303ff645c57e9665a8884aaf7d",
+  "actualValidationHead": "30a9e2a18525e575e67d54bb622d2ee9e4b1d177",
+  "integratedSourceEquivalent": "34042537b23df594a0c7923773ea4f00c6e47b9c",
+  "platform": {
+    "discoveredNodeFiles": 126,
+    "finiteNodeFiles": 123,
+    "finiteNodeRunnerCases": 2016,
+    "finiteNodeFailures": 0,
+    "finitePythonFiles": 9,
+    "finitePythonCases": 146,
+    "finitePythonFailures": 0,
+    "semanticConsumers": {
+      "gates": 2,
+      "positivePasses": 2,
+      "negativeControlsPerGate": 16,
+      "expectedFakeCacheDeniedWritesPerGate": 1
+    },
+    "actualCssConsumer": "Assigned to the actual two Vite artifacts, not run by this lane"
+  },
+  "additional": {
+    "originalNodeFiles": 20,
+    "originalNodeRunnerCases": 140,
+    "originalNodeFailures": 0,
+    "packagingPython": {
+      "passed": 12,
+      "failed": 0
+    },
+    "apiIndexPython": {
+      "passed": 5,
+      "failed": 0
+    },
+    "localMigrationPython": {
+      "passed": 6,
+      "dependencyFailed": 1,
+      "method": "test_list_name_contract_matches_browser_without_rewriting_valid_unicode",
+      "error": "ModuleNotFoundError: cbor2; invoked postgres_migration also requires coincurve"
+    },
+    "selectedBenchModules": 4,
+    "selectedBenchPassed": 19,
+    "selectedBenchSkipped": 12,
+    "skipReason": "isolated owned PostgreSQL fixture required",
+    "wholeAdditionalFilesHeld": 16,
+    "allRepositoryTestsPassed": false
+  },
+  "strict": {
+    "gates": [
+      {
+        "gate": 0,
+        "errors": 0,
+        "warnings": 15,
+        "validSourceMaps": 654,
+        "graphEdges": 2504
+      },
+      {
+        "gate": 1,
+        "errors": 0,
+        "warnings": 12,
+        "validSourceMaps": 684,
+        "graphEdges": 2614
+      }
+    ],
+    "canonicalFiles": 679,
+    "canonicalUnchanged": true,
+    "actualStrictAuditRecords": 8,
+    "allAuditPidsObserved": true
+  },
+  "inputPreservation": {
+    "productFiles": 922,
+    "executionFiles": 1242,
+    "physicalRoots": 7,
+    "physicalRegularFiles": 40955,
+    "physicalEntries": 45438,
+    "equality": "Exact enumerated byte/mode/mtimeNs/symlink equality before, after strict and after consumers",
+    "inProcessNodeProtectedWriteAttempts": 0,
+    "realCacheAuditRecords": 262
+  },
+  "resources": {
+    "launchDiskFloorBytes": 4563402752,
+    "liveDiskFloorBytes": 4429185024,
+    "ownedSurvivors": [],
+    "resourceStop": false,
+    "heavySlotReleasedAt": "2026-10-18T05:33:49Z"
+  },
+  "initialFindings": "Raw original red outcomes, missing output directory and Python no-main orchestration issue are retained without weakening assertions. Initial incomplete physical-cache strict evidence remains separately labelled.",
+  "boundaries": [
+    "Finite/model/compiled DOM/IDB evidence, not a genuine browser or persistence/crash certification",
+    "No OS syscall-level dependency write-enforcement claim",
+    "Missing cbor2/coincurve installation approval pending; no installation performed",
+    "No whole repository/parity/production claim"
+  ]
+}

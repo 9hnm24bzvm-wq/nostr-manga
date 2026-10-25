@@ -1,0 +1,70 @@
+{
+  "activeReferencesBefore": [],
+  "allPgCtlStatus3Before": true,
+  "allPortsClosedBefore": true,
+  "approvedAllocatedBytes": 480755712,
+  "approvedCandidateCount": 9,
+  "currentWarmExecutableCount": 62,
+  "endedAtUtc": "2026-10-18T05:27:24.882947+00:00",
+  "excluded": [
+    "all source and .git",
+    "all credentials/private keys",
+    "all frontend artifacts/dependencies",
+    "all current and historical executable/build artifacts",
+    "all fixture parent logs, metadata and cleanup receipts",
+    "all committed/raw test evidence",
+    "all previously approved or uninventoried paths"
+  ],
+  "freeAfterBytes": 5012721664,
+  "freeBeforeBytes": 4531965952,
+  "liveOriginalBirthsBefore": [],
+  "manifestPath": "/workspace/shared/nostr-manga-recovery-20261017/relation-evidence/stopped-new-profile-popularity-db-inventory-20261018T0324.json",
+  "manifestSha256": "b3bff9e5699571be2f5d8187705e5d09e2940bc22eb88c7053dfc4d48c0a8c5e",
+  "observedFreeDeltaBytes": 480755712,
+  "passed": true,
+  "protectedChanged": [],
+  "protectedHashCount": 1086,
+  "removed": [
+    {
+      "allocatedBytes": 52232192,
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-29k1qvw5/data"
+    },
+    {
+      "allocatedBytes": 52555776,
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-ldfpl2nq/data"
+    },
+    {
+      "allocatedBytes": 52453376,
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-2pqifuvl/data"
+    },
+    {
+      "allocatedBytes": 52371456,
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-ctlso3vd/data"
+    },
+    {
+      "allocatedBytes": 52232192,
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-u6zhwwpv/data"
+    },
+    {
+      "allocatedBytes": 55123968,
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-6vqqgbpu/data"
+    },
+    {
+      "allocatedBytes": 52502528,
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-r_g4pu1s/data"
+    },
+    {
+      "allocatedBytes": 55615488,
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-eny2a_ei/data"
+    },
+    {
+      "allocatedBytes": 55668736,
+      "path": "/workspace/shared/nostr-manga-recovery-20261017/mdex-validation-worktree/weebdex-platform/test-runtime/auth-d8yewmyk/data"
+    }
+  ],
+  "removedAllocatedBytes": 480755712,
+  "schema": "approved-exact9-fixture-db-cleanup-v1",
+  "sourcePinsVerified": 920,
+  "startedAtUtc": "2026-10-18T05:27:22.179022+00:00",
+  "unverifiedProcessChecks": []
+}

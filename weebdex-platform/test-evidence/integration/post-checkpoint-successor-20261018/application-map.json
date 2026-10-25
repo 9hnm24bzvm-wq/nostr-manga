@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "ad82a2160188ca6e75c64d852dd13aeaf5d8f917",
+  "sourceTree": "e13593da580e3be8630e44b25bdde587be187a36",
+  "originalToApplied": {
+    "aea6670ca803c81aff05011559b4da44e5dee230": "44b362ee9703abb0e884fb26a7f70c8dfa48d3a1",
+    "15f7b2013d0900eca0c7fa3cd091f2b2bcd7a0ad": "b7cfdb6e99a696b9a2cd6198ed16b391328eaf26",
+    "9ec4c3fff905f2b8b65bb4c3e7371b7273755a21": "4a3eb77be2e669a55767747dab4437510e02f57a",
+    "fa86b2b2da93265b20425401b8af18a4243f6382": "3c6213503c472f51e6ca53ba8e080791a600fef3",
+    "6f2409f1d7b9bb947c88ae60047f65bb1ff4c61a": "1c62a1df22c68c7efeb0bf259f544b766774c985",
+    "c8eccb3d945bac489d3e4da4bf8f81a37f29e082": "ad82a2160188ca6e75c64d852dd13aeaf5d8f917"
+  },
+  "conflicts": [],
+  "everyPickedPathMatchesOriginal": true,
+  "previousVerifiedBackup": {
+    "sourceCommit": "9e3d164d17c57f4d888ee3bafdbf05dbf7a2826d",
+    "sourceTree": "0a62a2575c83caa2ad287f7a5497897839168b97",
+    "remoteCommit": "69e8ab1096e0689308b703ffeea75ce2aacbea5e",
+    "branch": "recovery/combined-source-20261017",
+    "url": "https://github.com/9hnm24bzvm-wq/nostr-manga/tree/recovery/combined-source-20261017"
+  },
+  "qualification": {
+    "rename": "96 affected cases and helper strict closure passed on exact source; full composed application strict/build/browser qualification pending for this successor.",
+    "baselineAPI": "All seven actual HTTP seams, 138 library cases with two pre-existing ignored cases, and 113 routing observations qualified on ec1 production/9ec4c3f evidence; the chapter source changes in this successor require distinct runtime qualification.",
+    "chapterAssociation": {
+      "validationCommit": "836ba3a19f3a7634896d899689ee10e4ff381947",
+      "backendProtocolAndTestBytesExact": true,
+      "fullCombinedMatrix": "Pending, to be retained with its own exact source/binary/cleanup evidence."
+    },
+    "historicalFrontend": "The previous 627-case, full strict and production build receipts remain associated with their recorded pre-rename source. They are not extended to this successor."
+  }
+}

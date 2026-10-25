@@ -19,14 +19,6 @@ const patches = [
     "after": "import Protected from \"$localLibrary/LibraryProtected.svelte\";"
   },
   {
-    "path": "src/routes/(app)/settings/library/+layout.svelte",
-    "label": "device availability scoped layout import",
-    "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
-    "count": 1,
-    "before": "import Protected from \"$lib/components/ui/Protected.svelte\";",
-    "after": "import Protected from \"$localLibrary/LibraryProtected.svelte\";"
-  },
-  {
     "path": "src/lib/components/MangaSearchEntryCard.svelte",
     "label": "independent library imports",
     "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
@@ -311,7 +303,7 @@ const patches = [
     "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
     "count": 1,
     "before": "<script lang=\"ts\">\r\n\timport API from \"$lib/API\";\r\n\timport { Session } from \"$lib/stores\";\r\n\timport { onMount } from \"svelte\";\r\n\timport { useReader } from \"./context.svelte\";\r\n\r\n\tconst { chapter } = useReader();\r\n\tonMount(async () => {\r\n\t\tif (chapter && (await Session.isValid())) {\r\n\t\t\tAPI.ChapterHistory.UpdateBatch(chapter.relationships.manga.id, {\r\n\t\t\t\tread_ids: [chapter.id]\r\n\t\t\t});\r\n\t\t}\r\n\t});\r\n</script>\r\n",
-    "after": "<script lang=\"ts\">\r\n  import API from \"$lib/API\";\r\n  import { onMount, onDestroy } from \"svelte\";\r\n  import { toast } from \"svelte-sonner\";\r\n  import { useReader } from \"./context.svelte\";\r\n  import { localLibraryState, saveProgress, message } from \"$localLibrary/library\";\r\n  import { createLibraryActionOwner } from \"$localLibrary/action-owner\";\r\n  import { nativeAuthority } from \"$platform/mutation-authority\";\r\n  import { requireMutationAcknowledgement, reportCurrentMutationFailure } from \"$platform/mutation-feedback\";\r\n  const reader = useReader();\r\n  const historyOwner = createLibraryActionOwner(() => JSON.stringify([reader.chapter?.id, reader.chapter?.relationships.manga.id]));\r\n  let disposed = false, progressToken = \"\", timer = 0;\r\n  type ProgressIntent = ReturnType<typeof historyOwner.capture>;\r\n  let queued: { manga: string; chapter: string; page: number; completed: boolean; intent: ProgressIntent } | undefined;\r\n  const flush = (finalPreviouslyAdmittedPage = false) => {\r\n    const pending = queued; queued = undefined;\r\n    if (!pending) return;\r\n    // Exit may finish the immutable page action already admitted while live;\r\n    // it never discovers a different account/mode after destruction.\r\n    const assert = finalPreviouslyAdmittedPage ? pending.intent.assertDestination : pending.intent.assert;\r\n    try { assert(); } catch { return; }\r\n    void saveProgress(pending.manga, pending.chapter, pending.page, pending.completed, assert).catch(error => { if (!disposed) toast.error(\"Progress save failed\", { description: message(error) }); });\r\n  };\r\n  onDestroy(() => { window.clearTimeout(timer); flush(true); disposed = true; });\r\n  onMount(() => {\r\n    const intent = historyOwner.capture();\r\n    void intent.open().catch(error => { if (intent.alive()) toast.error(\"Local library unavailable\", { description: message(error) }); });\r\n  });\r\n  let accountReadToken = \"\";\r\n  $effect(() => {\r\n    const actor = $nativeAuthority.actor, epoch = $nativeAuthority.epoch, chapter = reader.chapter;\r\n    if (disposed || !$localLibraryState.ready || $localLibraryState.mode !== \"account\" || !actor || !chapter) return;\r\n    const mangaId = chapter.relationships.manga.id, chapterId = chapter.id, token = JSON.stringify([actor, epoch, mangaId, chapterId]);\r\n    if (token === accountReadToken) return;\r\n    // A still-mounted reader can admit initial identity readiness, but a\r\n    // destroyed callback cannot select that later identity. Harmless Session\r\n    // data refreshes do not issue another history POST.\r\n    const intent = historyOwner.capture(); accountReadToken = token;\r\n    void intent.open().then(async context => {\r\n      intent.assert();\r\n      const response = await API.ChapterHistory.UpdateBatch(mangaId, { read_ids: [chapterId] }, { context, assert: intent.assert });\r\n      intent.assert();\r\n      requireMutationAcknowledgement(response, 200, true);\r\n    }).catch(error => reportCurrentMutationFailure(\"History save failed\", error, intent.alive));\r\n  });\r\n  $effect(() => {\r\n    if (disposed || !$localLibraryState.ready || $localLibraryState.mode !== \"device\" || $localLibraryState.scopeStatus !== \"verified\" || !reader.chapter || !reader.currentPage) return;\r\n    const chapter = reader.chapter, page = reader.currentPage.index + 1;\r\n    const completed = reader.isViewingLastPage || reader.currentPage.index === reader.pages.length - 1;\r\n    const intent = historyOwner.capture();\r\n    const token = JSON.stringify([intent.destinationKey, chapter.id, page, completed]);\r\n    if (token === progressToken) return;\r\n    progressToken = token; window.clearTimeout(timer);\r\n    queued = { manga: chapter.relationships.manga.id, chapter: chapter.id, page, completed, intent };\r\n    timer = window.setTimeout(() => flush(), 350);\r\n  });\r\n</script>\r\n"
+    "after": "<script lang=\"ts\">\r\n  import API from \"$lib/API\";\r\n  import { onMount, onDestroy } from \"svelte\";\r\n  import { toast } from \"svelte-sonner\";\r\n  import { useReader } from \"./context.svelte\";\r\n  import { localLibraryState, saveProgress, message, canSaveLocalProgress } from \"$localLibrary/library\";\r\n  import { createLibraryActionOwner } from \"$localLibrary/action-owner\";\r\n  import { nativeAuthority } from \"$platform/mutation-authority\";\r\n  import { requireMutationAcknowledgement, reportCurrentMutationFailure } from \"$platform/mutation-feedback\";\r\n  const reader = useReader();\r\n  const historyOwner = createLibraryActionOwner(() => JSON.stringify([reader.chapter?.id, reader.chapter?.relationships.manga.id]));\r\n  let disposed = false, progressToken = \"\", timer = 0;\r\n  type ProgressIntent = ReturnType<typeof historyOwner.capture>;\r\n  let queued: { manga: string; chapter: string; page: number; completed: boolean; intent: ProgressIntent } | undefined;\r\n  const flush = (finalPreviouslyAdmittedPage = false) => {\r\n    const pending = queued; queued = undefined;\r\n    if (!pending) return;\r\n    // Exit may finish the immutable page action already admitted while live;\r\n    // it never discovers a different account/mode after destruction.\r\n    const assert = finalPreviouslyAdmittedPage ? pending.intent.assertDestination : pending.intent.assert;\r\n    try { assert(); } catch { return; }\r\n    void saveProgress(pending.manga, pending.chapter, pending.page, pending.completed, assert).catch(error => { if (!disposed) toast.error(\"Progress save failed\", { description: message(error) }); });\r\n  };\r\n  onDestroy(() => { window.clearTimeout(timer); flush(true); disposed = true; });\r\n  onMount(() => {\r\n    const intent = historyOwner.capture();\r\n    void intent.open().catch(error => { if (intent.alive()) toast.error(\"Local library unavailable\", { description: message(error) }); });\r\n  });\r\n  let accountReadToken = \"\";\r\n  $effect(() => {\r\n    const actor = $nativeAuthority.actor, epoch = $nativeAuthority.epoch, chapter = reader.chapter;\r\n    if (disposed || !$localLibraryState.ready || $localLibraryState.mode !== \"account\" || !actor || !chapter) return;\r\n    const mangaId = chapter.relationships.manga.id, chapterId = chapter.id, token = JSON.stringify([actor, epoch, mangaId, chapterId]);\r\n    if (token === accountReadToken) return;\r\n    // A still-mounted reader can admit initial identity readiness, but a\r\n    // destroyed callback cannot select that later identity. Harmless Session\r\n    // data refreshes do not issue another history POST.\r\n    const intent = historyOwner.capture(); accountReadToken = token;\r\n    void intent.open().then(async context => {\r\n      intent.assert();\r\n      const response = await API.ChapterHistory.UpdateBatch(mangaId, { read_ids: [chapterId] }, { context, assert: intent.assert });\r\n      intent.assert();\r\n      requireMutationAcknowledgement(response, 200, true);\r\n    }).catch(error => reportCurrentMutationFailure(\"History save failed\", error, intent.alive));\r\n  });\r\n  $effect(() => {\r\n    if (disposed || !$localLibraryState.ready || $localLibraryState.mode !== \"device\" || !canSaveLocalProgress($localLibraryState) || !reader.chapter || !reader.currentPage) return;\r\n    const chapter = reader.chapter, page = reader.currentPage.index + 1;\r\n    const completed = reader.isViewingLastPage || reader.currentPage.index === reader.pages.length - 1;\r\n    const intent = historyOwner.capture();\r\n    const token = JSON.stringify([intent.destinationKey, chapter.id, page, completed]);\r\n    if (token === progressToken) return;\r\n    progressToken = token; window.clearTimeout(timer);\r\n    queued = { manga: chapter.relationships.manga.id, chapter: chapter.id, page, completed, intent };\r\n    timer = window.setTimeout(() => flush(), 350);\r\n  });\r\n</script>\r\n"
   },
   {
     "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -438,21 +430,21 @@ const patches = [
   },
   {
     "path": "src/routes/(app)/library/updates/+page.svelte",
-    "label": "selected library mode boundary",
+    "label": "original-anchored device updates boundary",
     "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
     "count": 1,
     "before": "\t<ChapterFeed",
-    "after": "\t{#key $libraryViewKey}\r\n\t<ChapterFeed",
-    "approved_library_exception": "library_reactivity_key"
+    "after": "\t{#key $libraryViewKey}\r\n\t{#if $localLibraryState.mode === \"device\"}\r\n\t\t<DeviceUpdatesFeed />\r\n\t{:else}\r\n\t<ChapterFeed",
+    "approved_updates_continuation_exception": "device_updates_owned_continuation"
   },
   {
     "path": "src/routes/(app)/library/updates/+page.svelte",
-    "label": "selected library mode boundary end",
+    "label": "original-anchored device updates boundary end",
     "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
     "count": 1,
     "before": "\t/>\r\n</section>",
-    "after": "\t/>\r\n\t{/key}\r\n</section>",
-    "approved_library_exception": "library_reactivity_key"
+    "after": "\t/>\r\n\t{/if}\r\n\t{/key}\r\n</section>",
+    "approved_updates_continuation_exception": "device_updates_owned_continuation"
   },
   {
     "path": "src/routes/(app)/history/+page.svelte",
@@ -460,7 +452,7 @@ const patches = [
     "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
     "count": 1,
     "before": "<script lang=\"ts\">",
-    "after": "<script lang=\"ts\">\r\n\timport { localLibraryState, libraryViewKey } from \"$localLibrary/library\";"
+    "after": "<script lang=\"ts\">\r\n\timport { localLibraryState, libraryViewKey } from \"$localLibrary/library\";\r\n\timport DeviceHistoryFeed from \"$localLibrary/DeviceHistoryFeed.svelte\";"
   },
   {
     "path": "src/routes/(app)/history/+page.svelte",
@@ -468,8 +460,8 @@ const patches = [
     "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
     "count": 1,
     "before": "\t<ChapterFeed",
-    "after": "\t{#key $libraryViewKey}\r\n\t<ChapterFeed",
-    "approved_library_exception": "library_reactivity_key"
+    "after": "\t{#key $libraryViewKey}\r\n\t{#if $localLibraryState.mode === \"device\"}\r\n\t\t<DeviceHistoryFeed />\r\n\t{:else}\r\n\t<ChapterFeed",
+    "approved_history_continuation_exception": "device_history_owned_continuation"
   },
   {
     "path": "src/routes/(app)/history/+page.svelte",
@@ -477,8 +469,8 @@ const patches = [
     "sha256": "e5485a54b15a1477c1fde99cb8e248dfc5e0b8a4ab95733eeb7b6971cf08a59f",
     "count": 1,
     "before": "\t/>\r\n</section>",
-    "after": "\t/>\r\n\t{/key}\r\n</section>",
-    "approved_library_exception": "library_reactivity_key"
+    "after": "\t/>\r\n\t{/if}\r\n\t{/key}\r\n</section>",
+    "approved_history_continuation_exception": "device_history_owned_continuation"
   },
   {
     "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -1245,7 +1237,7 @@ const patches = [
     "count": 1,
     "label": "UI16 MostReadCarousel shares latest-query public read lifecycle and actual configured ratings",
     "before": "<script lang=\"ts\">\r\n\timport { API, Constants } from \"$lib\";\r\n\timport { buttonVariants } from \"$lib/components/ui/button\";\r\n\timport Carousel from \"$lib/components/ui/Carousel.svelte\";\r\n\timport { prefs } from \"$lib/stores\";\r\n\timport { ArrowRightIcon } from \"@lucide/svelte\";\r\n\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { onMount } from \"svelte\";\r\n\timport MostReadCarouselEntry from \"./MostReadCarouselEntry.svelte\";\r\n\timport { AspectRatio } from \"./ui/aspect-ratio\";\r\n\timport Skeleton from \"./ui/skeleton/skeleton.svelte\";\r\n\r\n\tlet isMounted = $state(false);\r\n\tonMount(async () => {\r\n\t\tif (!feed) {\r\n\t\t\ttry {\r\n\t\t\t\tconst q = new URLSearchParams();\r\n\t\t\t\tq.set(\"rank\", \"read\");\r\n\t\t\t\tq.set(\"time\", \"30d\");\r\n\r\n\t\t\t\tq.append(\"contentRating\", Constants.Manga.ContentRating.Safe);\r\n\t\t\t\tif ($prefs.show_suggestive) q.append(\"contentRating\", Constants.Manga.ContentRating.Suggestive);\r\n\t\t\t\tif ($prefs.show_erotic) q.append(\"contentRating\", Constants.Manga.ContentRating.Erotica);\r\n\t\t\t\tif ($prefs.show_hentai) q.append(\"contentRating\", Constants.Manga.ContentRating.Pornographic);\r\n\r\n\t\t\t\tconst res = await API.Manga.Trending(q);\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\tfeed = res.body;\r\n\t\t\t\t}\r\n\t\t\t} catch (e) {\r\n\t\t\t\tconsole.error(e);\r\n\t\t\t}\r\n\t\t}\r\n\t\tisMounted = true;\r\n\t});\r\n</script>",
-    "after": "<script lang=\"ts\">\r\n\timport { page } from \"$app/state\";\r\n\timport { API, Constants } from \"$lib\";\r\n\timport { Button, buttonVariants } from \"$lib/components/ui/button\";\r\n\timport Carousel from \"$lib/components/ui/Carousel.svelte\";\r\n\timport ErrorComponent from \"$lib/components/ErrorComponent.svelte\";\r\n\timport { prefs } from \"$lib/stores\";\r\n\timport { ArrowRightIcon } from \"@lucide/svelte\";\r\n\timport { onMount } from \"svelte\";\r\n\timport { createPublicMangaWidgetRead } from \"$platform/public-manga-widget-read\";\r\n\timport MostReadCarouselEntry from \"./MostReadCarouselEntry.svelte\";\r\n\timport { AspectRatio } from \"./ui/aspect-ratio\";\r\n\timport Skeleton from \"./ui/skeleton/skeleton.svelte\";\r\n\tconst widget = createPublicMangaWidgetRead(() => {\r\n\t\tconst q = new URLSearchParams();\r\n\t\tprefs.applyMangaPreferences(q);\r\n\t\tq.set(\"rank\", \"read\"); q.set(\"time\", \"30d\");\r\n\t\treturn q;\r\n\t}, q => API.Manga.Trending(q));\r\n\tconst widgetState = widget.state;\r\n\tlet feed = $derived($widgetState.feed), isMounted = $derived($widgetState.isMounted), isLoading = $derived($widgetState.isLoading), error = $derived($widgetState.error);\r\n\tlet mountedLifecycle = $state(false);\r\n\tonMount(() => { mountedLifecycle = true; });\r\n\t$effect.pre(() => {\r\n\t\tconst preferences = $prefs, route = page.url.href;\r\n\t\tif (mountedLifecycle) widget.synchronize();\r\n\t});\r\n</script>"
+    "after": "<script lang=\"ts\">\r\n\timport { page } from \"$app/state\";\r\n\timport { API, Constants } from \"$lib\";\r\n\timport { Button, buttonVariants } from \"$lib/components/ui/button\";\r\n\timport Carousel from \"$lib/components/ui/Carousel.svelte\";\r\n\timport ErrorComponent from \"$lib/components/ErrorComponent.svelte\";\r\n\timport { prefs } from \"$lib/stores\";\r\n\timport { ArrowRightIcon } from \"@lucide/svelte\";\r\n\timport { onMount } from \"svelte\";\r\n\timport { createPublicMangaWidgetRead } from \"$platform/public-manga-widget-read\";\r\n\timport MostReadCarouselEntry from \"./MostReadCarouselEntry.svelte\";\r\n\timport { AspectRatio } from \"./ui/aspect-ratio\";\r\n\timport Skeleton from \"./ui/skeleton/skeleton.svelte\";\r\n\tconst widget = createPublicMangaWidgetRead(() => {\r\n\t\tconst q = new URLSearchParams();\r\n\t\tprefs.applyMangaPreferences(q);\r\n\t\tq.set(\"rank\", \"read\"); q.set(\"time\", \"30d\");\r\n\t\treturn q;\r\n\t}, async q => API.Manga.Trending(q));\r\n\tconst widgetState = widget.state;\r\n\tlet feed = $derived($widgetState.feed), isMounted = $derived($widgetState.isMounted), isLoading = $derived($widgetState.isLoading), error = $derived($widgetState.error);\r\n\tlet mountedLifecycle = $state(false);\r\n\tonMount(() => { mountedLifecycle = true; });\r\n\t$effect.pre(() => {\r\n\t\tconst preferences = $prefs, route = page.url.href;\r\n\t\tif (mountedLifecycle) widget.synchronize();\r\n\t});\r\n</script>"
   },
   {
     "path": "src/lib/components/MostReadCarousel.svelte",
@@ -1279,7 +1271,7 @@ const patches = [
     "count": 1,
     "label": "UI16 RecentlyAddedCarousel shares latest-query public read lifecycle and actual configured ratings",
     "before": "<script lang=\"ts\">\r\n\timport { API, Constants } from \"$lib\";\r\n\timport { buttonVariants } from \"$lib/components/ui/button\";\r\n\timport Carousel from \"$lib/components/ui/Carousel.svelte\";\r\n\timport { prefs } from \"$lib/stores\";\r\n\timport { ArrowRightIcon } from \"@lucide/svelte\";\r\n\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { onMount } from \"svelte\";\r\n\timport MangaSearchEntryCard from \"./MangaSearchEntryCard.svelte\";\r\n\timport MangaSearchEntrySkeleton from \"./MangaSearchEntrySkeleton.svelte\";\r\n\r\n\tlet isMounted = $state(false);\r\n\r\n\tonMount(async () => {\r\n\t\tif (!feed?.data) {\r\n\t\t\ttry {\r\n\t\t\t\tconst q = new URLSearchParams();\r\n\t\t\t\tprefs.applyMangaPreferences(q);\r\n\r\n\t\t\t\tq.set(\"sort\", Constants.Manga.SortBy.CreatedAt);\r\n\t\t\t\tq.set(\"limit\", \"10\");\r\n\r\n\t\t\t\tconst res = await API.Manga.Search(q);\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\tfeed = res.body;\r\n\t\t\t\t}\r\n\t\t\t} catch (e) {\r\n\t\t\t\tconsole.error(e);\r\n\t\t\t}\r\n\t\t}\r\n\t\tisMounted = true;\r\n\t});\r\n</script>",
-    "after": "<script lang=\"ts\">\r\n\timport { page } from \"$app/state\";\r\n\timport { API, Constants } from \"$lib\";\r\n\timport { Button, buttonVariants } from \"$lib/components/ui/button\";\r\n\timport Carousel from \"$lib/components/ui/Carousel.svelte\";\r\n\timport ErrorComponent from \"$lib/components/ErrorComponent.svelte\";\r\n\timport { prefs } from \"$lib/stores\";\r\n\timport { ArrowRightIcon } from \"@lucide/svelte\";\r\n\timport { onMount } from \"svelte\";\r\n\timport { createPublicMangaWidgetRead } from \"$platform/public-manga-widget-read\";\r\n\timport MangaSearchEntryCard from \"./MangaSearchEntryCard.svelte\";\r\n\timport MangaSearchEntrySkeleton from \"./MangaSearchEntrySkeleton.svelte\";\r\n\tconst widget = createPublicMangaWidgetRead(() => {\r\n\t\tconst q = new URLSearchParams();\r\n\t\tprefs.applyMangaPreferences(q);\r\n\t\tq.set(\"sort\", Constants.Manga.SortBy.CreatedAt); q.set(\"limit\", \"10\");\r\n\t\treturn q;\r\n\t}, q => API.Manga.Search(q));\r\n\tconst widgetState = widget.state;\r\n\tlet feed = $derived($widgetState.feed), isMounted = $derived($widgetState.isMounted), isLoading = $derived($widgetState.isLoading), error = $derived($widgetState.error);\r\n\tlet mountedLifecycle = $state(false);\r\n\tonMount(() => { mountedLifecycle = true; });\r\n\t$effect.pre(() => {\r\n\t\tconst preferences = $prefs, route = page.url.href;\r\n\t\tif (mountedLifecycle) widget.synchronize();\r\n\t});\r\n</script>"
+    "after": "<script lang=\"ts\">\r\n\timport { page } from \"$app/state\";\r\n\timport { API, Constants } from \"$lib\";\r\n\timport { Button, buttonVariants } from \"$lib/components/ui/button\";\r\n\timport Carousel from \"$lib/components/ui/Carousel.svelte\";\r\n\timport ErrorComponent from \"$lib/components/ErrorComponent.svelte\";\r\n\timport { prefs } from \"$lib/stores\";\r\n\timport { ArrowRightIcon } from \"@lucide/svelte\";\r\n\timport { onMount } from \"svelte\";\r\n\timport { createPublicMangaWidgetRead } from \"$platform/public-manga-widget-read\";\r\n\timport MangaSearchEntryCard from \"./MangaSearchEntryCard.svelte\";\r\n\timport MangaSearchEntrySkeleton from \"./MangaSearchEntrySkeleton.svelte\";\r\n\tconst widget = createPublicMangaWidgetRead(() => {\r\n\t\tconst q = new URLSearchParams();\r\n\t\tprefs.applyMangaPreferences(q);\r\n\t\tq.set(\"sort\", Constants.Manga.SortBy.CreatedAt); q.set(\"limit\", \"10\");\r\n\t\treturn q;\r\n\t}, async q => API.Manga.Search(q));\r\n\tconst widgetState = widget.state;\r\n\tlet feed = $derived($widgetState.feed), isMounted = $derived($widgetState.isMounted), isLoading = $derived($widgetState.isLoading), error = $derived($widgetState.error);\r\n\tlet mountedLifecycle = $state(false);\r\n\tonMount(() => { mountedLifecycle = true; });\r\n\t$effect.pre(() => {\r\n\t\tconst preferences = $prefs, route = page.url.href;\r\n\t\tif (mountedLifecycle) widget.synchronize();\r\n\t});\r\n</script>"
   },
   {
     "path": "src/lib/components/RecentlyAddedCarousel.svelte",
@@ -1298,6 +1290,82 @@ const patches = [
     "before": "\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t{#if isMounted && feed?.data?.length}\r\n\t\t\t\t{#each feed.data as manga (manga)}\r\n\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t<MangaSearchEntryCard {manga} isGrid />\r\n\t\t\t\t\t</article>\r\n\t\t\t\t{/each}\r\n\t\t\t{:else}\r\n\t\t\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t\t\t{#each Array.from({ length: 10 })}\r\n\t\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t\t<MangaSearchEntrySkeleton isGrid />\r\n\t\t\t\t\t\t</article>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Carousel>\r\n\t\t\t{/if}\r\n\t\t</Carousel>",
     "after": "\t\t{#if error}\r\n\t\t\t<ErrorComponent {error} />\r\n\t\t\t<Button variant=\"outline\" disabled={isLoading} onclick={widget.retry}>Retry titles</Button>\r\n\t\t{:else}\r\n\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t{#if isMounted && feed?.data?.length}\r\n\t\t\t\t{#each feed.data as manga (manga)}\r\n\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t<MangaSearchEntryCard {manga} isGrid />\r\n\t\t\t\t\t</article>\r\n\t\t\t\t{/each}\r\n\t\t\t{:else}\r\n\t\t\t\t<Carousel slidesPerView={2} breakpoints={Constants.MangaSliderBreakpoints} spaceBetween={12}>\r\n\t\t\t\t\t{#each Array.from({ length: 10 })}\r\n\t\t\t\t\t\t<article class=\"swiper-slide relative\">\r\n\t\t\t\t\t\t\t<MangaSearchEntrySkeleton isGrid />\r\n\t\t\t\t\t\t</article>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Carousel>\r\n\t\t\t{/if}\r\n\t\t</Carousel>\r\n\t\t{/if}",
     "approved_public_carousel_exception": "public_carousel_error_retry"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "label": "owned device title continuation import",
+    "before": "import MangaSearch from \"$lib/components/MangaSearch.svelte\";",
+    "after": "import MangaSearch from \"$lib/components/MangaSearch.svelte\";\r\n\timport DeviceTitleLibrary from \"$localLibrary/DeviceTitleLibrary.svelte\";"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "label": "owned device title continuation route",
+    "before": "\t\t<MangaSearch bind:feed {onSearch} />",
+    "after": "\t\t{#if $localLibraryState.mode === \"device\"}\r\n\t\t\t<DeviceTitleLibrary />\r\n\t\t{:else}\r\n\t\t\t<MangaSearch bind:feed {onSearch} />\r\n\t\t{/if}",
+    "approved_title_continuation_exception": "device_title_owned_continuation"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "label": "account-only retained title pagination",
+    "before": "{#if feed && feed.total > feed.limit}",
+    "after": "{#if $localLibraryState.mode === \"account\" && feed && feed.total > feed.limit}",
+    "approved_title_continuation_exception": "device_title_owned_continuation"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "label": "release prior account title DTOs when selected library changes",
+    "before": "let feed = $state<MangaFollowFeedResponse>();",
+    "after": "let feed = $state<MangaFollowFeedResponse>();\r\n\t$effect.pre(() => { $libraryViewKey; feed = undefined; });"
+  },
+  {
+    "path": "src/routes/(app)/library/updates/+page.svelte",
+    "sha256": "9a9b125397128409cad1ac460caeab3786c685e63c72e046db888075c289f89b",
+    "count": 1,
+    "label": "device updates continuation import",
+    "before": "import ChapterFeed from \"$lib/components/ChapterFeed.svelte\";",
+    "after": "import ChapterFeed from \"$lib/components/ChapterFeed.svelte\";\r\n\timport DeviceUpdatesFeed from \"$localLibrary/DeviceUpdatesFeed.svelte\";"
+  },
+  {
+    "path": "src/lib/components/MyUpdatesCarousel.svelte",
+    "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+    "count": 1,
+    "label": "device latest-only continuation import",
+    "before": "import { API, Constants } from \"$lib\";",
+    "after": "import { API, Constants } from \"$lib\";\r\n\timport DeviceUpdatesFeed from \"$localLibrary/DeviceUpdatesFeed.svelte\";"
+  },
+  {
+    "path": "src/lib/components/MyUpdatesCarousel.svelte",
+    "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+    "count": 1,
+    "label": "prevent compatibility read for device carousel",
+    "before": "while (pending && reads.isLive()) {",
+    "after": "while (pending && reads.isLive()) {\r\n\t\t\t\tif ($libraryIdentity.mode === \"device\") { pending = false; return; }"
+  },
+  {
+    "path": "src/lib/components/MyUpdatesCarousel.svelte",
+    "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+    "count": 1,
+    "label": "owned latest-only device carousel boundary",
+    "before": "</script>\r\n\r\n{#if",
+    "after": "</script>\r\n\r\n{#if $libraryIdentity.mode === \"device\"}\r\n\t<section><header><h2 class=\"text-xl font-medium\">My Updates</h2></header><DeviceUpdatesFeed latestOnly /></section>\r\n{:else}\r\n{#if",
+    "approved_updates_continuation_exception": "device_updates_owned_continuation"
+  },
+  {
+    "path": "src/lib/components/MyUpdatesCarousel.svelte",
+    "sha256": "9335b54eab4aef35bd6a42dab0f2157e898a05eb85d0b207169c1d6db7ea2ccd",
+    "count": 1,
+    "label": "owned latest-only device carousel boundary end",
+    "before": "\t</section>\r\n{/if}",
+    "after": "\t</section>\r\n{/if}\r\n{/if}",
+    "approved_updates_continuation_exception": "device_updates_owned_continuation"
   }
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -1346,3 +1414,9 @@ export const localLibraryApprovedSearchPaginationExceptions = patches.filter(pat
 export const localLibraryApprovedCoverReadExceptions = patches.filter(patch => patch.approved_cover_read_exception).map(({path,sha256,count,before,after,approved_cover_read_exception}) => ({path,sha256,count,before,after,approved_cover_read_exception}));
 
 export const localLibraryApprovedPublicCarouselExceptions = patches.filter(patch => patch.approved_public_carousel_exception).map(({path,sha256,count,before,after,approved_public_carousel_exception}) => ({path,sha256,count,before,after,approved_public_carousel_exception}));
+
+export const localLibraryApprovedHistoryContinuationExceptions = patches.filter(patch => patch.approved_history_continuation_exception).map(({path,sha256,count,before,after,approved_history_continuation_exception}) => ({path,sha256,count,before,after,approved_history_continuation_exception}));
+
+export const localLibraryApprovedTitleContinuationExceptions = patches.filter(patch => patch.approved_title_continuation_exception).map(({path,sha256,count,before,after,approved_title_continuation_exception}) => ({path,sha256,count,before,after,approved_title_continuation_exception}));
+
+export const localLibraryApprovedUpdatesContinuationExceptions = patches.filter(patch => patch.approved_updates_continuation_exception).map(({path,sha256,count,before,after,approved_updates_continuation_exception}) => ({path,sha256,count,before,after,approved_updates_continuation_exception}));

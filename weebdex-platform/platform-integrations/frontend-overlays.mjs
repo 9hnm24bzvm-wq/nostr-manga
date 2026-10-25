@@ -701,74 +701,6 @@ const patches = [
     "after": "\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\tmanga = res.body;\r\n\t\t\t\t\ttoast.success(\"Lock state updated successfully\");"
   },
   {
-    "path": "src/routes/(app)/+layout.svelte",
-    "label": "explicit local and protocol panels import without auth Session substitution",
-    "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
-    "count": 1,
-    "before": "\timport AppHeader from \"$lib/components/AppHeader.svelte\";",
-    "after": "\timport AppHeader from \"$lib/components/AppHeader.svelte\";\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
-  },
-  {
-    "path": "src/routes/(app)/+layout.svelte",
-    "label": "mount opt-in collapsed local library and signed identity panels",
-    "sha256": "8a5902f4c6a511821403362bc04bea60283d64fc06763635d492bb16c03d9e7f",
-    "count": 1,
-    "before": "\t\t\t{@render children()}",
-    "after": "\t\t\t<LocalLibraryPanel />\r\n\t\t\t<ProtocolIdentityPanel />\r\n\t\t\t{@render children()}",
-    "approved_ui_extension": "explicit_local_protocol_panel"
-  },
-  {
-    "path": "src/routes/(app)/title/Manga.svelte",
-    "label": "source-bound title conversation imports explicit panel",
-    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-    "count": 1,
-    "before": "<script lang=\"ts\">",
-    "after": "<script lang=\"ts\">\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
-  },
-  {
-    "path": "src/routes/(app)/title/Manga.svelte",
-    "label": "title source discussion has explicit target-specific opt-in panel",
-    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
-    "count": 1,
-    "before": "</svelte:head>",
-    "after": "</svelte:head>\r\n\r\n<ProtocolIdentityPanel resourceKind=\"manga\" resourceId={manga.id} />",
-    "approved_ui_extension": "explicit_local_protocol_panel"
-  },
-  {
-    "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
-    "label": "source-bound reader conversation imports explicit panel",
-    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-    "count": 1,
-    "before": "<script lang=\"ts\">",
-    "after": "<script lang=\"ts\">\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
-  },
-  {
-    "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
-    "label": "reader retains original provider and adds explicit local/source panels",
-    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-    "count": 1,
-    "before": "\t{#if data.chapter}",
-    "after": "\t{#if data.chapter}\r\n\t\t<LocalLibraryPanel />\r\n\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={data.chapter.id} />",
-    "approved_ui_extension": "explicit_local_protocol_panel"
-  },
-  {
-    "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
-    "label": "source-bound reader conversation imports explicit panel",
-    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-    "count": 1,
-    "before": "<script lang=\"ts\">",
-    "after": "<script lang=\"ts\">\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
-  },
-  {
-    "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
-    "label": "reader retains original provider and adds explicit local/source panels",
-    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
-    "count": 1,
-    "before": "\t{#if data.chapter}",
-    "after": "\t{#if data.chapter}\r\n\t\t<LocalLibraryPanel />\r\n\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={data.chapter.id} />",
-    "approved_ui_extension": "explicit_local_protocol_panel"
-  },
-  {
     "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
     "label": "pending title receipt uses scoped external editor boundary",
     "sha256": "c49a2631b678999fd4354cb8e17f5e3843b33d57532d4dba141401bd4aae5c78",
@@ -1997,7 +1929,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\timport { toast } from \"svelte-sonner\";",
-    "after": "\timport { toast } from \"svelte-sonner\";\r\n\timport { createMutationOwner } from \"$platform/authenticated-mutation\";\r\n\timport { applyAccountPreferences, captureAccountPreferences } from \"$platform/account-preferences\";"
+    "after": "\timport { toast } from \"svelte-sonner\";\r\n\timport { createMutationOwner } from \"$platform/authenticated-mutation\";\r\n\timport { applyAccountPreferences, captureAccountPreferences } from \"$platform/account-preferences\";\r\n\timport { createActorFollowState } from \"$platform/actor-follow-state\";"
   },
   {
     "path": "src/routes/(app)/group/[id]/Group.svelte",
@@ -2005,7 +1937,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\tconst group = writable<ScanlationGroup>(data);",
-    "after": "\tconst group = writable<ScanlationGroup>(data);\r\n\tconst preferenceOwner = createMutationOwner(() => JSON.stringify([$group.id, page.url.href]));\r\n\t$effect(() => { $group.id; page.url.href; preferenceOwner.invalidate(); });"
+    "after": "\tconst group = writable<ScanlationGroup>(data);\r\n\tconst preferenceOwner = createMutationOwner(() => JSON.stringify([$group.id, page.url.href]));"
   },
   {
     "path": "src/routes/(app)/group/[id]/Group.svelte",
@@ -2013,7 +1945,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!(await Session.isValid())) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tconst idx = $prefs.groups.findIndex(({ id }) => id === $group.id);\r\n\t\t\t\tif (idx >= 0) $prefs.groups.splice(idx, 1);\r\n\t\t\t\telse $prefs.groups.push({ id: $group.id, name: $group.name, version: $group.version });\r\n\r\n\t\t\t\tif ($Session) {\r\n\t\t\t\t\tconst payload: UpdateSettingsRequest = {\r\n\t\t\t\t\t\tversion: $prefs.version,\r\n\t\t\t\t\t\tgroups: $prefs.groups.map(({ id }) => id)\r\n\t\t\t\t\t};\r\n\t\t\t\t\tif (Object.keys(payload).length <= 1) {\r\n\t\t\t\t\t\treturn;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\tconst res = await API.Settings.Update(payload);\r\n\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\t$prefs = $Session.preferences = res.body;\r\n\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t}\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisUpdatingBlockStatus = false;\r\n\t\t\t}\r\n\t\t});\r\n",
-    "after": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), selected = captureAccountPreferences(), target = { id: $group.id, name: $group.name, version: $group.version };\r\n\t\tconst next = selected.initial.groups.filter(row => row.id !== target.id);\r\n\t\tif (next.length === selected.initial.groups.length) next.push(target);\r\n\t\tconst payload: UpdateSettingsRequest = { version: selected.initial.version, groups: next.map(row => row.id) };\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await API.Settings.Update(payload, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) applyAccountPreferences(selected.actor, selected.authority, res.body, intent);\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingBlockStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n"
+    "after": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session || (!isBlocked && !followState.knownAbsent())) return;\r\n\t\tconst intent = preferenceOwner.capture(), selected = captureAccountPreferences(), target = { id: $group.id, name: $group.name, version: $group.version };\r\n\t\tconst next = selected.initial.groups.filter(row => row.id !== target.id);\r\n\t\tif (next.length === selected.initial.groups.length) next.push(target);\r\n\t\tconst payload: UpdateSettingsRequest = { version: selected.initial.version, groups: next.map(row => row.id) };\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await API.Settings.Update(payload, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) applyAccountPreferences(selected.actor, selected.authority, res.body, intent);\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingBlockStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n"
   },
   {
     "path": "src/routes/(app)/user/[id]/User.svelte",
@@ -2021,7 +1953,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\timport { toast } from \"svelte-sonner\";",
-    "after": "\timport { toast } from \"svelte-sonner\";\r\n\timport { createMutationOwner } from \"$platform/authenticated-mutation\";\r\n\timport { applyAccountPreferences, captureAccountPreferences } from \"$platform/account-preferences\";"
+    "after": "\timport { toast } from \"svelte-sonner\";\r\n\timport { createMutationOwner } from \"$platform/authenticated-mutation\";\r\n\timport { applyAccountPreferences, captureAccountPreferences } from \"$platform/account-preferences\";\r\n\timport { createActorFollowState } from \"$platform/actor-follow-state\";"
   },
   {
     "path": "src/routes/(app)/user/[id]/User.svelte",
@@ -2029,7 +1961,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\tconst user = writable<User>(data);",
-    "after": "\tconst user = writable<User>(data);\r\n\tconst preferenceOwner = createMutationOwner(() => JSON.stringify([$user.id, page.url.href]));\r\n\t$effect(() => { $user.id; page.url.href; preferenceOwner.invalidate(); });"
+    "after": "\tconst user = writable<User>(data);\r\n\tconst preferenceOwner = createMutationOwner(() => JSON.stringify([$user.id, page.url.href]));"
   },
   {
     "path": "src/routes/(app)/user/[id]/User.svelte",
@@ -2037,7 +1969,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!(await Session.isValid())) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tconst idx = $prefs.uploaders.findIndex(({ id }) => id === $user.id);\r\n\t\t\t\tif (idx >= 0) $prefs.uploaders.splice(idx, 1);\r\n\t\t\t\telse $prefs.uploaders.push({ id: $user.id, name: $user.name, version: $user.version });\r\n\r\n\t\t\t\tif ($Session) {\r\n\t\t\t\t\tconst payload: UpdateSettingsRequest = {\r\n\t\t\t\t\t\tversion: $prefs.version,\r\n\t\t\t\t\t\tuploaders: $prefs.uploaders.map(({ id }) => id)\r\n\t\t\t\t\t};\r\n\t\t\t\t\tif (Object.keys(payload).length <= 1) {\r\n\t\t\t\t\t\treturn;\r\n\t\t\t\t\t}\r\n\r\n\t\t\t\t\tconst res = await API.Settings.Update(payload);\r\n\t\t\t\t\tif (res?.status === StatusCodes.OK && res.body) {\r\n\t\t\t\t\t\t$prefs = $Session.preferences = res.body;\r\n\t\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t\t}\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisUpdatingBlockStatus = false;\r\n\t\t\t}\r\n\t\t});\r\n",
-    "after": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), selected = captureAccountPreferences(), target = { id: $user.id, name: $user.name, version: $user.version };\r\n\t\tconst next = selected.initial.uploaders.filter(row => row.id !== target.id);\r\n\t\tif (next.length === selected.initial.uploaders.length) next.push(target);\r\n\t\tconst payload: UpdateSettingsRequest = { version: selected.initial.version, uploaders: next.map(row => row.id) };\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await API.Settings.Update(payload, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) applyAccountPreferences(selected.actor, selected.authority, res.body, intent);\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingBlockStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n"
+    "after": "\tlet isUpdatingBlockStatus = $state(false);\r\n\tconst updateBlockStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session || (!isBlocked && !followState.knownAbsent())) return;\r\n\t\tconst intent = preferenceOwner.capture(), selected = captureAccountPreferences(), target = { id: $user.id, name: $user.name, version: $user.version };\r\n\t\tconst next = selected.initial.uploaders.filter(row => row.id !== target.id);\r\n\t\tif (next.length === selected.initial.uploaders.length) next.push(target);\r\n\t\tconst payload: UpdateSettingsRequest = { version: selected.initial.version, uploaders: next.map(row => row.id) };\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingBlockStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await API.Settings.Update(payload, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.OK && res.body) applyAccountPreferences(selected.actor, selected.authority, res.body, intent);\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingBlockStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n"
   },
   {
     "path": "src/lib/components/upload/UploadChapterPages.svelte",
@@ -2093,7 +2025,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\tconst updateFollowStatus = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!(await Session.isValid())) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisUpdatingFollowStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tconst res = await (isFollowed ? API.Group.Unfollow : API.Group.Follow)($group.id);\r\n\t\t\t\tif (res?.status === StatusCodes.NO_CONTENT) {\r\n\t\t\t\t\tisFollowed = !isFollowed;\r\n\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisUpdatingFollowStatus = false;\r\n\t\t\t}\r\n\t\t});\r\n\r\n",
-    "after": "\tconst updateFollowStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), targetId = $group.id, nextFollowed = !isFollowed;\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingFollowStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await (nextFollowed ? API.Group.Follow : API.Group.Unfollow)(targetId, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.NO_CONTENT) isFollowed = nextFollowed;\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingFollowStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n\r\n"
+    "after": "\tconst updateFollowStatus = () => followState.activate();\r\n\r\n"
   },
   {
     "path": "src/routes/(app)/group/[id]/Group.svelte",
@@ -2101,7 +2033,7 @@ const patches = [
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "\tconst getFollowStatus = async () => {\r\n\t\tif (!(await Session.isValid())) {\r\n\t\t\treturn;\r\n\t\t}\r\n\r\n\t\tconst res = await API.Group.GetFollowStatus($group.id);\r\n\t\tisFollowed = res?.status === StatusCodes.NO_CONTENT;\r\n\t};\r\n\r\n",
-    "after": "\tconst getFollowStatus = async () => {\r\n\t\tif (!$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), targetId = $group.id;\r\n\t\ttry { const res = await API.Group.GetFollowStatus(targetId); intent.assert(); isFollowed = res?.status === StatusCodes.NO_CONTENT; }\r\n\t\tfinally { intent.release(); }\r\n\t};\r\n\r\n"
+    "after": ""
   },
   {
     "path": "src/lib/API/User.ts",
@@ -2141,7 +2073,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\tconst updateFollowStatus = () =>\r\n\t\tmutex.exec(async () => {\r\n\t\t\tif (!(await Session.isValid())) {\r\n\t\t\t\treturn;\r\n\t\t\t}\r\n\r\n\t\t\tisUpdatingFollowStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tconst res = await (isFollowed ? API.User.Unfollow : API.User.Follow)($user.id);\r\n\t\t\t\tif (res?.status === StatusCodes.NO_CONTENT) {\r\n\t\t\t\t\tisFollowed = !isFollowed;\r\n\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t} else throw Constants.Error.Unknown;\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\tisUpdatingFollowStatus = false;\r\n\t\t\t}\r\n\t\t});\r\n\r\n",
-    "after": "\tconst updateFollowStatus = () => {\r\n\t\tif (mutex.isLocked() || !$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), targetId = $user.id, nextFollowed = !isFollowed;\r\n\t\treturn mutex.exec(async () => {\r\n\t\t\tisUpdatingFollowStatus = true;\r\n\t\t\ttry {\r\n\t\t\t\tintent.assert(); const res = await (nextFollowed ? API.User.Follow : API.User.Unfollow)(targetId, intent); intent.assert();\r\n\t\t\t\tif (res?.status === StatusCodes.NO_CONTENT) isFollowed = nextFollowed;\r\n\t\t\t\telse if (res?.status === StatusCodes.TOO_MANY_REQUESTS) throw Constants.Error.TooManyRequests;\r\n\t\t\t\telse if (res?.status === StatusCodes.CONFLICT) throw Constants.Error.UpdateConflict;\r\n\t\t\t\telse throw Constants.Error.Unknown;\r\n\t\t\t} catch (cause) { if (!intent.alive()) return; const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t\t\tfinally { isUpdatingFollowStatus = false; intent.release(); }\r\n\t\t});\r\n\t};\r\n\r\n"
+    "after": "\tconst updateFollowStatus = () => followState.activate();\r\n\r\n"
   },
   {
     "path": "src/routes/(app)/user/[id]/User.svelte",
@@ -2149,7 +2081,7 @@ const patches = [
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "\tconst getFollowStatus = async () => {\r\n\t\tif (!(await Session.isValid())) {\r\n\t\t\treturn;\r\n\t\t}\r\n\r\n\t\ttry {\r\n\t\t\tconst res = await API.User.GetFollowStatus($user.id);\r\n\t\t\tisFollowed = res?.status === StatusCodes.NO_CONTENT;\r\n\t\t} catch (e) {\r\n\t\t\tconsole.error(e);\r\n\t\t}\r\n\t};\r\n\r\n",
-    "after": "\tconst getFollowStatus = async () => {\r\n\t\tif (!$Session) return;\r\n\t\tconst intent = preferenceOwner.capture(), targetId = $user.id;\r\n\t\ttry { const res = await API.User.GetFollowStatus(targetId); intent.assert(); isFollowed = res?.status === StatusCodes.NO_CONTENT; }\r\n\t\tfinally { intent.release(); }\r\n\t};\r\n\r\n"
+    "after": ""
   },
   {
     "path": "src/routes/(app)/forums/threads/[id]/Thread.svelte",
@@ -2792,7 +2724,1281 @@ const patches = [
     "label": "UI18 relation control eligibility matches native live unlocked permission or actual draft-owner authority",
     "before": "export const canEditRelations = (manga?: Manga): boolean => {\r\n\tif (!Session.hasRole(Role.Sysop, Role.Staff, Role.Moderator) && (manga?.locked || !manga?.deleted_at)) {\r\n\t\treturn false;\r\n\t}\r\n\treturn Session.hasPerm(\"manga.relation.edit\");\r\n};",
     "after": "export const canEditRelations = (manga?: Manga): boolean => {\r\n\tconst actor = get(Session);\r\n\tif (!actor?.identity?.id) return false;\r\n\t// The create form has no saved title yet; its future draft owner needs manga.create.\r\n\tif (!manga) return Session.hasPerm(\"manga.create\");\r\n\tconst current = manga as Manga & { can_mutate?: boolean; is_unavailable?: boolean };\r\n\tif (manga.deleted_at || current.can_mutate === false || current.is_unavailable) return false;\r\n\tif (Session.hasRole(Role.Sysop, Role.Staff, Role.Moderator) && Session.hasPerm(\"manga.relation.edit\")) return true;\r\n\tif (manga.locked) return false;\r\n\tif (manga.state === State.Published) return Session.hasPerm(\"manga.relation.edit\");\r\n\treturn manga.relationships?.submitter?.id === actor.identity.id && Session.hasPerm(\"manga.create\");\r\n};"
-  }
+  },
+  {
+    "path": "src/lib/stores/Session.ts",
+    "label": "bootstrap Session depends on the authentication leaf instead of the API barrel",
+    "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+    "count": 1,
+    "before": "import API from \"$lib/API\";",
+    "after": "import * as Auth from \"$lib/API/Auth\";"
+  },
+  {
+    "path": "src/lib/stores/Session.ts",
+    "label": "session initialization uses its authentication leaf",
+    "sha256": "8baf2edac726343a1f1445c53afa7f9a5338c66fad41ffbbe6ac7285d5a25498",
+    "count": 1,
+    "before": "API.Auth.Check()",
+    "after": "Auth.Check()"
+  },
+  {
+    "path": "src/lib/API/Auth.ts",
+    "label": "authentication leaf depends on HTTP without reentering the application barrel",
+    "sha256": "098a14b177ea3b9dfa825fd7a86b0951e7454016185abe604ae79914127e5b49",
+    "count": 1,
+    "before": "import { HTTP } from \"$lib\";",
+    "after": "import HTTP from \"$lib/HTTP\";"
+  },
+  {
+    "path": "src/lib/stores/prefs.ts",
+    "label": "bootstrap preferences read initialized constants outside the API Session cycle",
+    "sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
+    "count": 1,
+    "before": "import { Constants } from \"$lib\";",
+    "after": "import * as Constants from \"$lib/constants\";"
+  },
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search UI imports field-specific query normalization",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\timport type { SearchMangaRequest } from \"$lib/API/Manga\";",
+  "after": "\timport type { SearchMangaRequest } from \"$lib/API/Manga\";\r\n\timport { parseMangaSearchQuery, serializeMangaSearchQuery, searchValidationError, unresolvedSearchIssues, validateMangaSearchQuery, type MangaFilterRequest, type SearchIssue } from \"$platform/manga-search-query\";\r\n\timport { toast } from \"svelte-sonner\";"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search initialization keeps a reviewable query issue state",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\tlet search = $state<SearchMangaRequest>(",
+  "after": "\tlet searchIssues = $state<SearchIssue[]>([]), searchPassthrough = new URLSearchParams(), explicitHasChapters = false, explicitEmptyRating = false;\r\n\tlet initialParsedSearch: MangaFilterRequest;\r\n\tlet search = $state<MangaFilterRequest>("
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search URL values are normalized before typed field assignment",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\t\tconst map: Record<string, any> = {};\r\n\t\t\tfor (const [key, value] of searchParams.entries()) {\r\n\t\t\t\tif (arrayFields.includes(key)) (map[key] ??= []).push(value);\r\n\t\t\t\telse map[key] = value;\r\n\t\t\t}\r\n\t\t\tfor (const [key, value] of Object.entries(map)) {\r\n\t\t\t\tinit[key as keyof SearchMangaRequest] = key === \"contentRating\" && Array.isArray(value) ? value.filter(v => v !== \"__none__\") : value;\r\n\t\t\t}\r\n\t\t\treturn init;",
+  "after": "\t\t\tconst parsed = parseMangaSearchQuery(init, searchParams, isLibrary);\r\n\t\t\tsearchIssues = parsed.issues; searchPassthrough = parsed.passthrough; explicitHasChapters = parsed.explicitHasChapters; explicitEmptyRating = isLibrary && parsed.explicitEmptyRating;\r\n\t\t\tinitialParsedSearch = structuredClone(parsed.search);\r\n\t\t\treturn parsed.search;"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search Apply validates edits and preserves separate query passthrough",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\tconst q = new URLSearchParams();\r\n\t\tfor (const [key, value] of Object.entries(search)) {\r\n\t\t\tif (value === undefined || value === null || (typeof value === \"string\" && !value.length)) {\r\n\t\t\t\tcontinue;\r\n\t\t\t}\r\n\r\n\t\t\tif (Array.isArray(value)) {\r\n\t\t\t\tvalue.forEach(v => q.append(key, v));\r\n\t\t\t} else {\r\n\t\t\t\tq.set(key, value);\r\n\t\t\t}\r\n\t\t}\r\n",
+  "after": "\t\tconst unresolved = unresolvedSearchIssues(searchIssues, initialParsedSearch, $state.snapshot(search));\r\n\t\tconst q = serializeMangaSearchQuery($state.snapshot(search), searchPassthrough, explicitHasChapters, explicitEmptyRating);\r\n\t\tconst validation = searchValidationError(unresolved) ?? validateMangaSearchQuery(q, isLibrary);\r\n\t\tif (validation) { toast.error(validation.title, { description: validation.body }); return; }\r\n\t\tsearchIssues = [];"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "explicit false chapter filter remains meaningful",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "if (!search.hasChapters) q.delete(\"hasChapters\");",
+  "after": "if (!search.hasChapters && !explicitHasChapters) q.delete(\"hasChapters\");"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "Reset explicitly clears rejected query state",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\tsearch = structuredClone(defaultSearch);",
+  "after": "\t\tsearchIssues = []; searchPassthrough = new URLSearchParams(); explicitHasChapters = false; explicitEmptyRating = false;\r\n\t\tsearch = structuredClone(defaultSearch);"
+},
+{
+  "path": "src/lib/components/MangaSearch.svelte",
+  "label": "search validation uses existing feed error surface before cache restoration",
+  "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+  "count": 1,
+  "before": "\timport { Constants } from \"$lib\";",
+  "after": "\timport { Constants } from \"$lib\";\r\n\timport { validateMangaSearchQuery, effectiveMangaSearchReadQuery } from \"$platform/manga-search-query\";"
+},
+{
+  "path": "src/lib/components/MangaSearch.svelte",
+  "label": "malformed discovery links do not load replacement results",
+  "sha256": "29ab147906ba70a2301b96e54c03eb4f454e0c67b43a9bfb8d72a7e2ea930da5",
+  "count": 1,
+  "before": "\tonMount(async () => {",
+  "after": "\tonMount(async () => {\r\n\t\tif (window.location.pathname === \"/search\" || window.location.pathname === \"/library\") {\r\n\t\t\tconst input = new URLSearchParams(window.location.search), library = window.location.pathname === \"/library\";\r\n\t\t\tconst validation = validateMangaSearchQuery(input, library) ?? effectiveMangaSearchReadQuery(input, library, prefs, $prefs.items_per_page).error;\r\n\t\t\tif (validation) { error = validation; feed = undefined; isMounted = true; return; }\r\n\t\t}"
+},
+{
+  "path": "src/lib/components/AppHeader.svelte",
+  "label": "install prompt extensions are narrow runtime-guarded browser members",
+  "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+  "count": 1,
+  "before": "\tlet deferredPrompt = $state<Event>();",
+  "after": "\timport { isInstallPromptEvent, isStandaloneNavigator, type InstallPromptEvent } from \"$platform/install-prompt\";\r\n\tlet deferredPrompt = $state<InstallPromptEvent>();"
+},
+{
+  "path": "src/lib/components/AppHeader.svelte",
+  "label": "Safari standalone is read only when present",
+  "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+  "count": 1,
+  "before": "window.navigator.standalone === true",
+  "after": "isStandaloneNavigator(window.navigator)"
+},
+{
+  "path": "src/lib/components/AppHeader.svelte",
+  "label": "install state only retains callable browser prompt events",
+  "sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+  "count": 1,
+  "before": "\t\tdeferredPrompt = e;",
+  "after": "\t\tif (isInstallPromptEvent(e)) deferredPrompt = e;"
+},
+{
+  "path": "src/lib/components/Lightbox.svelte",
+  "label": "Lightbox types only its own exact exposed browser actions",
+  "sha256": "0d3f2f488e7d73b8a5d0b84ab3f2c7ea3c0e60d11fa86abe559efe7333a17d76",
+  "count": 1,
+  "before": "\twindow._lightbox_ = {",
+  "after": "\tdeclare global {\r\n\t\tinterface Window {\r\n\t\t\t_lightbox_: { open: typeof open; close: typeof close; prev: typeof prev; next: typeof next };\r\n\t\t}\r\n\t}\r\n\twindow._lightbox_ = {"
+},
+{
+  "path": "src/lib/components/ReportDialog.svelte",
+  "label": "optional HTTP reads enter their current acknowledgement failure path",
+  "sha256": "12fc7e4392f038dc0cabd22a192208eae8c6e78db2adb06c5c1b730e8c2beca7",
+  "count": 1,
+  "before": "void API.Report.Reasons(type).then(res => {",
+  "after": "void (async () => API.Report.Reasons(type))().then(res => {"
+},
+{
+  "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
+  "label": "optional HTTP reads enter their current acknowledgement failure path",
+  "sha256": "05d8e7dfb6e1e3d145f4a1b9f52d173423feeb11b41733d3a5e9595a25137012",
+  "count": 1,
+  "before": "void API.User.Get(actor).then(res => {",
+  "after": "void (async () => API.User.Get(actor))().then(res => {"
+},
+{
+  "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
+  "label": "optional HTTP reads enter their current acknowledgement failure path",
+  "sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
+  "count": 1,
+  "before": "void API.User.Get(actor).then(res => {",
+  "after": "void (async () => API.User.Get(actor))().then(res => {"
+},
+{
+  "path": "src/routes/(app)/search/+page.svelte",
+  "label": "actual search read imports its canonical query admission seam",
+  "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+  "count": 1,
+  "before": "\timport { StatusCodes } from \"http-status-codes\";",
+  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { effectiveMangaSearchReadQuery } from \"$platform/manga-search-query\";"
+},
+{
+  "path": "src/routes/(app)/search/+page.svelte",
+  "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+  "sha256": "f60c7ad8b98c60c557a3d0902f8e2bd4331c40794b1a8a1cad3aab578440392f",
+  "count": 1,
+  "before": "\t\tconst q = new URLSearchParams(window.location.search);\r\n\t\tprefs.applyMangaPreferences(q);\r\n\r\n\t\tif (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);",
+  "after": "\t\tconst admitted = effectiveMangaSearchReadQuery(new URLSearchParams(window.location.search), false, prefs, $prefs.items_per_page);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
+},
+{
+  "path": "src/routes/(app)/library/+page.svelte",
+  "label": "actual search read imports its canonical query admission seam",
+  "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+  "count": 1,
+  "before": "\timport { StatusCodes } from \"http-status-codes\";",
+  "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { effectiveMangaSearchReadQuery } from \"$platform/manga-search-query\";"
+},
+{
+  "path": "src/routes/(app)/library/+page.svelte",
+  "label": "actual search read normalizes explicit fields before preferences and limit defaults",
+  "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+  "count": 1,
+  "before": "\t\tconst q = new URLSearchParams(window.location.search);\r\n\r\n\t\tif (!q.has(\"limit\")) q.set(\"limit\", $prefs.items_per_page);",
+  "after": "\t\tconst admitted = effectiveMangaSearchReadQuery(new URLSearchParams(window.location.search), true, prefs, $prefs.items_per_page);\r\n\t\tif (admitted.error) throw admitted.error;\r\n\t\tconst q = admitted.query;"
+},
+{
+  "path": "src/lib/components/MangaSearchFilter.svelte",
+  "label": "search Apply validates the final wire after sentinel and default-key mutations",
+  "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+  "count": 1,
+  "before": "\t\tconst target = window.location.pathname + q.toString();",
+  "after": "\t\tconst finalValidation = validateMangaSearchQuery(q, isLibrary);\r\n\t\tif (finalValidation) { toast.error(finalValidation.title, { description: finalValidation.body }); return; }\r\n\t\tconst target = window.location.pathname + q.toString();"
+},
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group follow status follows current actor and target readiness",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "\tlet isFollowed = $state(false);",
+    "after": "\tconst followState = createActorFollowState({\r\n\t\towner: preferenceOwner, mutex,\r\n\t\ttarget: () => $group.id, lifetime: () => page.url.href,\r\n\t\tcanMutate: () => !isBlocked,\r\n\t\tread: target => API.Group.GetFollowStatus(target),\r\n\t\twrite: (target, followed, intent) => (followed ? API.Group.Follow : API.Group.Unfollow)(target, intent),\r\n\t\tonError: cause => { const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t});\r\n\tlet isFollowed = $derived($followState.followed);\r\n\t$effect.pre(() => { $group.id; page.url.href; followState.selectTarget(); });"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group mounted public chapter count is independent of actor readiness",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "await Promise.all([getFollowStatus(), getChaptersCount()]);",
+    "after": "await getChaptersCount();"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group follow progress reflects current read and mutation only",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "\tlet isUpdatingFollowStatus = $state(false);",
+    "after": "\tlet isUpdatingFollowStatus = $derived($followState.loading || $followState.updating);"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group follow control waits for known current status or offers read retry",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex}",
+    "after": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex || $followState.loading || $followState.updating || (!$followState.ready && !$followState.error)}",
+    "approved_follow_readiness_exception": "follow_current_status_disabled"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group unknown follow status offers explicit read-only retry",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "{#if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+    "after": "{#if $followState.error}\r\n\t\t\t\t\t\t\t\t\tRetry follow status\r\n\t\t\t\t\t\t\t\t{:else if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+    "approved_follow_readiness_exception": "follow_current_status_retry"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user follow status follows current actor and target readiness",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "\tlet isFollowed = $state(false);",
+    "after": "\tconst followState = createActorFollowState({\r\n\t\towner: preferenceOwner, mutex,\r\n\t\ttarget: () => $user.id, lifetime: () => page.url.href,\r\n\t\tcanMutate: () => !isBlocked && $user.id !== $Session?.identity.id,\r\n\t\tread: target => API.User.GetFollowStatus(target),\r\n\t\twrite: (target, followed, intent) => (followed ? API.User.Follow : API.User.Unfollow)(target, intent),\r\n\t\tonError: cause => { const error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; toast.error(error.title, { description: error.body }); }\r\n\t});\r\n\tlet isFollowed = $derived($followState.followed);\r\n\t$effect.pre(() => { $user.id; page.url.href; followState.selectTarget(); });"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user mounted public chapter count is independent of actor readiness",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "await Promise.all([getFollowStatus(), getChaptersCount()]);",
+    "after": "await getChaptersCount();"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user follow progress reflects current read and mutation only",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "\tlet isUpdatingFollowStatus = $state(false);",
+    "after": "\tlet isUpdatingFollowStatus = $derived($followState.loading || $followState.updating);"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user follow control waits for known current status or offers read retry",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex}",
+    "after": "onclick={updateFollowStatus}\r\n\t\t\t\t\t\t\t\tdisabled={$mutex || $followState.loading || $followState.updating || (!$followState.ready && !$followState.error)}",
+    "approved_follow_readiness_exception": "follow_current_status_disabled"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user unknown follow status offers explicit read-only retry",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "{#if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+    "after": "{#if $followState.error}\r\n\t\t\t\t\t\t\t\t\tRetry follow status\r\n\t\t\t\t\t\t\t\t{:else if isFollowed}\r\n\t\t\t\t\t\t\t\t\tUnfollow",
+    "approved_follow_readiness_exception": "follow_current_status_retry"
+  },
+  {
+    "path": "src/routes/(app)/group/[id]/Group.svelte",
+    "label": "group unknown follow state cannot expose a new Block action",
+    "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+    "count": 1,
+    "before": "{#if !isFollowed}",
+    "after": "{#if isBlocked || ($followState.ready && !isFollowed)}",
+    "approved_follow_readiness_exception": "follow_current_status_block_guard"
+  },
+  {
+    "path": "src/routes/(app)/user/[id]/User.svelte",
+    "label": "user unknown follow state cannot expose a new Block action",
+    "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
+    "count": 1,
+    "before": "{#if !isFollowed}",
+    "after": "{#if isBlocked || ($followState.ready && !isFollowed)}",
+    "approved_follow_readiness_exception": "follow_current_status_block_guard"
+  },
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file gestures capture mutable owner staging before taking their shared mutex",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "\tlet targetFile = $state<UploadSessionFile>();",
+  "after": "\t// Parent disabled includes this same mutex. Admit the gesture before locking,\r\n\t// then retain exact owner/session authority across every asynchronous decode.\r\n\tconst assertFileSession = (session: UploadSession) => {\r\n\t\towner.assert();\r\n\t\tif (uploadSession !== session || session.can_mutate === false) throw new Constants.Error.Error(\"Upload changed\", \"Old file selection was discarded. No mutation was replayed.\");\r\n\t};\r\n\tconst fileSession = () => !disabled && !mutex.isLocked() && uploadSession && uploadSession.can_mutate !== false ? uploadSession : undefined;\r\n\tlet targetFile = $state<UploadSessionFile>();"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement checks captured staging instead of rejecting its own mutex",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const replaceFile = async (file: File) => {\r\n\t\tif (!targetFile || !uploadSession || uploadSession.can_mutate === false || disabled) return;",
+  "after": "const replaceFile = async (file: File, session: UploadSession) => {\r\n\t\tassertFileSession(session);\r\n\t\tif (!targetFile) return;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement cannot apply a late page reconciliation to another session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "target = await resolveUploadPage(uploadSession, target, owner); owner.assert(); pages[idx] = target;",
+  "after": "target = await resolveUploadPage(session, target, owner); assertFileSession(session); pages[idx] = target;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement rechecks staging after image header read",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const actual = header.length >= 8",
+  "after": "assertFileSession(session);\r\n\t\tconst actual = header.length >= 8"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement rechecks staging after image decoding",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const decoded = await decodeUploadImage(file);\r\n\t\tif (decoded.width",
+  "after": "const decoded = await decodeUploadImage(file); assertFileSession(session);\r\n\t\tif (decoded.width"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement validates captured staging after authority read",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const current = await owner.request<UploadSession>(\"/upload\", \"GET\");\r\n\t\tif (current?.status",
+  "after": "const current = await owner.request<UploadSession>(\"/upload\", \"GET\"); assertFileSession(session);\r\n\t\tif (current?.status"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement rechecks staging after digest before atomic mutation",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const form = new FormData(); form.append(\"file\", file);",
+  "after": "assertFileSession(session);\r\n\t\tconst form = new FormData(); form.append(\"file\", file);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement cannot apply an acknowledged receipt after staging changed",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const result = await http.POST(); owner.assert();",
+  "after": "const result = await http.POST(); assertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "replacement reconciliation remains bound to captured staging",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const latest = await owner.request<UploadSession>(\"/upload\", \"GET\").catch(() => undefined); owner.assert(); const confirmed",
+  "after": "const latest = await owner.request<UploadSession>(\"/upload\", \"GET\").catch(() => undefined); assertFileSession(session); const confirmed"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file processing retains captured staging while its own mutex is locked",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const processFiles = async (files: File[]) => {\r\n\t\tif (!uploadSession || uploadSession.can_mutate === false || disabled) return;",
+  "after": "const processFiles = async (files: File[], session: UploadSession) => {\r\n\t\tassertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file processing rechecks staging after decoding and splitting",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const decoded = await decodeUploadImage(file);\r\n\t\t\tconst pieces = decoded.width > maxImageWidth || decoded.height > maxImageHeight ? await splitImage(decoded, file.name) : [file];",
+  "after": "const decoded = await decodeUploadImage(file); assertFileSession(session);\r\n\t\t\tconst pieces = decoded.width > maxImageWidth || decoded.height > maxImageHeight ? await splitImage(decoded, file.name) : [file];\r\n\t\t\tassertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file processing rechecks staging after archive extraction",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const extracted = await extractArchive(file, remaining, maxSessionFiles - pages.length - processedFiles.length);",
+  "after": "const extracted = await extractArchive(file, remaining, maxSessionFiles - pages.length - processedFiles.length); assertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "file processing rechecks staging before exposing candidates",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "const newFiles = processedFiles.map(createPage);",
+  "after": "assertFileSession(session);\r\n\t\tconst newFiles = processedFiles.map(createPage);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "each admitted chunk remains bound to the captured session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "try { await uploadChunk(chunk, delta => { progress.loaded += delta; }); }",
+  "after": "try { assertFileSession(session); await uploadChunk(chunk, delta => { progress.loaded += delta; }); assertFileSession(session); }"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "stale file failures cannot annotate replacement staging",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "if (owner.alive()) { markUnsentUploadPages(newFiles, uploadSession.id);",
+  "after": "if (owner.alive() && uploadSession === session) { markUnsentUploadPages(newFiles, session.id);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "input admission happens before the shared mutex is taken",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "\tconst onInputChange = (ev: Event) =>\r\n\t\tmutex.exec(async () => {",
+  "after": "\tconst onInputChange = (ev: Event) => {\r\n\t\tconst session = fileSession();\r\n\t\tif (!session) { targetFile = undefined; (ev.target as HTMLInputElement).value = \"\"; return; }\r\n\t\treturn mutex.exec(async () => {"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "input add and replace retain the admitted session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "if (targetFile) await replaceFile(target.files[0]);\r\n\t\t\t\t\telse await processFiles(Array.from(target.files));",
+  "after": "if (targetFile) await replaceFile(target.files[0], session);\r\n\t\t\t\t\telse await processFiles(Array.from(target.files), session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "input admission closes before drop admission",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "\t\t});\r\n\r\n\tconst onDrop = (ev: DragEvent) => {",
+  "after": "\t\t});\r\n\t};\r\n\r\n\tconst onDrop = (ev: DragEvent) => {"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "drop admission happens before the shared mutex is taken",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "\t\tev.preventDefault();\r\n\t\treturn mutex.exec(async () => {",
+  "after": "\t\tev.preventDefault();\r\n\t\tconst session = fileSession();\r\n\t\tif (!session) return;\r\n\t\treturn mutex.exec(async () => {"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "folder and plain drops retain the admitted session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "await processFiles(files.flat().filter(e => e instanceof File));",
+  "after": "assertFileSession(session);\r\n\t\t\t\t\tawait processFiles(files.flat().filter(e => e instanceof File), session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "label": "plain drops retain the admitted session",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "before": "await processFiles(Array.from(ev.dataTransfer.files));",
+  "after": "await processFiles(Array.from(ev.dataTransfer.files), session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "batch results must retain the exact admitted staging object",
+  "before": "if (uploadSession?.id !== session.id) throw",
+  "after": "if (uploadSession !== session || session.can_mutate === false) throw"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "local replacement failure cannot restore a row into changed staging",
+  "before": "try { await uploadChunk([candidate]); revokeThumbnail(target); }\r\n\t\t\tcatch (error) { if (owner.alive())",
+  "after": "try { await uploadChunk([candidate]); assertFileSession(session); revokeThumbnail(target); }\r\n\t\t\tcatch (error) { if (owner.alive() && uploadSession === session)"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "batch owner retains exact admitted staging through authority reads and hashing",
+  "before": "const result = await runUploadBatch(session, chunk, owner, onProgress); owner.assert();",
+  "after": "const result = await runUploadBatch(session, chunk, { ...owner, assert: () => assertFileSession(session), alive: () => owner.alive() && uploadSession === session && session.can_mutate !== false }, onProgress); assertFileSession(session);"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "obsolete file input cannot attach feedback to newer editor authority",
+  "before": "\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\ttargetFile = undefined;",
+  "after": "\t\t\t} catch (e) {\r\n\t\t\t\tif (!owner.alive() || uploadSession !== session) return;\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t} finally {\r\n\t\t\t\ttargetFile = undefined;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "obsolete file drop cannot attach feedback to newer editor authority",
+  "before": "\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t});\r\n\t};\r\n\r\n\tlet isDeletingPages",
+  "after": "\t\t\t} catch (e) {\r\n\t\t\t\tif (!owner.alive() || uploadSession !== session) return;\r\n\t\t\t\tif (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\ttoast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t});\r\n\t};\r\n\r\n\tlet isDeletingPages"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "replacement authority compares the guarded captured staging ID",
+  "before": "current.body?.id !== uploadSession.id || current.body.can_mutate === false",
+  "after": "current.body?.id !== session.id || current.body.can_mutate === false"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "atomic replacement targets the guarded captured staging ID",
+  "before": "`${PUBLIC_API_URL}/upload/${uploadSession.id}/files/${target.id}/replace`",
+  "after": "`${PUBLIC_API_URL}/upload/${session.id}/files/${target.id}/replace`"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "replacement reconciliation compares the guarded captured staging ID",
+  "before": "latest.body?.id === uploadSession.id && confirmed?.file_hash === sha",
+  "after": "latest.body?.id === session.id && confirmed?.file_hash === sha"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "replacement acknowledgement updates the guarded captured staging version",
+  "before": "pages[idx] = replacement; pages = pages; uploadSession.version = version;",
+  "after": "pages[idx] = replacement; pages = pages; session.version = version;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterPages.svelte",
+  "sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+  "count": 1,
+  "label": "upload candidates share reactive identity between queued mutations and rendered controls",
+  "before": "\tconst createPage = (file: File) => {\r\n\t\treturn <UploadSessionFile>{\r\n\t\t\tid: crypto.randomUUID(),\r\n\t\t\toriginal_file_name: file.name,\r\n\r\n\t\t\tfile: file,\r\n\t\t\tthumbnail: URL.createObjectURL(file)\r\n\t\t};\r\n\t};",
+  "after": "\tconst createPage = (file: File) => {\r\n\t\t// The upload queue and rendered array must share this exact reactive row.\r\n\t\t// Mutating a pre-proxy raw row after an awaited request is invisible.\r\n\t\tconst candidate = $state(<UploadSessionFile>{\r\n\t\t\tid: crypto.randomUUID(),\r\n\t\t\toriginal_file_name: file.name,\r\n\r\n\t\t\tfile: file,\r\n\t\t\tthumbnail: URL.createObjectURL(file)\r\n\t\t});\r\n\t\treturn candidate;\r\n\t};"
+},
+  {
+    "path": "src/routes/+layout.svelte",
+    "label": "one renderless library lifecycle across app and standalone reader",
+    "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
+    "count": 1,
+    "before": "\timport { onMount } from \"svelte\";",
+    "after": "\timport { onMount } from \"svelte\";\n\timport LibraryRuntime from \"$localLibrary/LibraryRuntime.svelte\";"
+  },
+  {
+    "path": "src/routes/+layout.svelte",
+    "label": "restore device state and save error reporting without management UI",
+    "sha256": "734f8e432add763b3557327eeb60927ca0edaa2d3c1e583d8079b552d00287b7",
+    "count": 1,
+    "before": "<Lightbox.Provider>",
+    "after": "<LibraryRuntime />\n\n<Lightbox.Provider>",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/routes/(app)/library/+layout.svelte",
+    "label": "library management action uses native Button",
+    "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+    "count": 1,
+    "before": "\timport Protected from \"$lib/components/ui/Protected.svelte\";",
+    "after": "\timport Protected from \"$lib/components/ui/Protected.svelte\";\r\n\timport { Button } from \"$lib/components/ui/button\";"
+  },
+  {
+  "path": "src/routes/(app)/library/+layout.svelte",
+  "label": "management stays reachable in account and failed-scope fallback",
+  "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+  "count": 1,
+  "before": "<Protected>",
+  "after": "<div class=\"mb-4 flex justify-end\">\r\n\t<Button variant=\"outline\" size=\"sm\" href=\"/settings/library\">Manage library</Button>\r\n</div>\r\n\r\n<Protected>",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "label": "title discussion owns its source-bound signed actions",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "\timport * as Comments from \"$lib/components/comments\";",
+    "after": "\timport MangaDiscussion from \"$localLibrary/MangaDiscussion.svelte\";"
+  },
+  {
+    "path": "src/routes/(app)/title/Manga.svelte",
+    "label": "signed conversation remains available without native account thread",
+    "sha256": "960e709e68d2d0919580f8d38f058d45a5b4fcde66aed7cfe61ee699814920ff",
+    "count": 1,
+    "before": "\t\t\tcomponent: Comments.Comments,\r\n\t\t\thidden: !isPublished || !manga.relationships.thread",
+    "after": "\t\t\tcomponent: MangaDiscussion,\r\n\t\t\thidden: !isPublished"
+  },
+  {
+    "path": "src/lib/components/reader/reader.svelte",
+    "label": "reader discussion imports contextual signed actions",
+    "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+    "count": 1,
+    "before": "\timport * as Comments from \"../comments\";",
+    "after": "\timport * as Comments from \"../comments\";\r\n\timport ProtocolIdentityPanel from \"$localLibrary/ProtocolIdentityPanel.svelte\";"
+  },
+  {
+    "path": "src/lib/components/reader/reader.svelte",
+    "label": "signed comments belong below reading surface in discussion area",
+    "sha256": "0b5ea1b1d3cb2ffbf818117e8f72d46218cd60b9b72e1539b864fb082e7ccf1d",
+    "count": 1,
+    "before": "\t\t<Comments.Comments class=\"m-auto max-w-300\" />",
+    "after": "\t\t<div class=\"m-auto max-w-300 space-y-5\">\r\n\t\t\t{#if reader.chapter.relationships.thread}<Comments.Comments />{/if}\r\n\t\t\t<ProtocolIdentityPanel resourceKind=\"chapter\" resourceId={reader.chapter.id} />\r\n\t\t</div>",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/routes/(app)/chapter/[id]/+page@.svelte",
+    "label": "reader supports source discussion independently of native thread",
+    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+    "count": 1,
+    "before": "\t\t<Comments.Provider thread={data.chapter.relationships.thread}>\r\n\t\t\t<Reader.Provider chapter={data.chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t</Comments.Provider>",
+    "after": "\t\t{#snippet reading(chapter: Chapter)}\r\n\t\t\t<Reader.Provider {chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t{/snippet}\r\n\t\t{#if data.chapter.relationships.thread}\r\n\t\t\t<Comments.Provider thread={data.chapter.relationships.thread}>{@render reading(data.chapter)}</Comments.Provider>\r\n\t\t{:else}\r\n\t\t\t{@render reading(data.chapter)}\r\n\t\t{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/routes/(app)/chapter/[id]/[page]/+page@.svelte",
+    "label": "reader supports source discussion independently of native thread",
+    "sha256": "89b6f7220a6e1638285b2b0f2ebbf8bad343fa74f3a786811a637359195f510a",
+    "count": 1,
+    "before": "\t\t<Comments.Provider thread={data.chapter.relationships.thread}>\r\n\t\t\t<Reader.Provider chapter={data.chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t</Comments.Provider>",
+    "after": "\t\t{#snippet reading(chapter: Chapter)}\r\n\t\t\t<Reader.Provider {chapter}>\r\n\t\t\t\t<Reader.Reader />\r\n\t\t\t</Reader.Provider>\r\n\t\t{/snippet}\r\n\t\t{#if data.chapter.relationships.thread}\r\n\t\t\t<Comments.Provider thread={data.chapter.relationships.thread}>{@render reading(data.chapter)}</Comments.Provider>\r\n\t\t{:else}\r\n\t\t\t{@render reading(data.chapter)}\r\n\t\t{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/lib/components/reader/reader-panel.svelte",
+    "label": "reader native votes and thread link require native discussion",
+    "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+    "count": 1,
+    "before": "\t\t\t\t\t\t<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t<Comments.Votes />\r\n\t\t\t\t\t\t\t<a\r\n\t\t\t\t\t\t\t\tclass={buttonVariants({ class: \"flex-auto border-none\", variant: \"outline\" })}\r\n\t\t\t\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\t\t\t>\r\n\t\t\t\t\t\t\t\t<MessagesSquareIcon />\r\n\t\t\t\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t\tNo comments yet\r\n\t\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\t</a>\r\n\t\t\t\t\t\t</div>",
+    "after": "\t\t\t\t\t\t{#if reader.chapter.relationships.thread}\r\n\t\t\t\t\t\t<div class=\"flex items-center gap-1\">\r\n\t\t\t\t\t\t\t<Comments.Votes />\r\n\t\t\t\t\t\t\t<a\r\n\t\t\t\t\t\t\t\tclass={buttonVariants({ class: \"flex-auto border-none\", variant: \"outline\" })}\r\n\t\t\t\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\t\t\t>\r\n\t\t\t\t\t\t\t\t<MessagesSquareIcon />\r\n\t\t\t\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t\tNo comments yet\r\n\t\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t\t</a>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "both end-page native vote controls require native discussion",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 2,
+    "before": "<Comments.Votes />",
+    "after": "{#if reader.chapter.relationships.thread}<Comments.Votes />{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "end-page native thread link guard 1",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/forums/threads/{reader.chapter.relationships.thread.id}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t{:else}\r\n\t\t\t\t\tGo to comments\r\n\t\t\t\t{/if}\r\n\t\t\t</a>",
+    "after": "{#if reader.chapter.relationships.thread}<a\r\n\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\thref=\"/forums/threads/{reader.chapter.relationships.thread.id}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>\r\n\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t{comments.stats.replies.toLocaleString()}\r\n\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t{:else}\r\n\t\t\t\t\tGo to comments\r\n\t\t\t\t{/if}\r\n\t\t\t</a>{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+    "path": "src/lib/components/reader/reader-last-page.svelte",
+    "label": "end-page native thread link guard 2",
+    "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+    "count": 1,
+    "before": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t{comments.stats.replies}\r\n\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tGo to comments\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</a>",
+    "after": "{#if reader.chapter.relationships.thread}<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"sm\" })}\r\n\t\t\t\t\thref=\"/forums/threads/{comments.thread.id}\"\r\n\t\t\t\t\tonclick={e => {\r\n\t\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t\t}}\r\n\t\t\t\t>\r\n\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" />\r\n\t\t\t\t\t{#if comments.stats?.replies}\r\n\t\t\t\t\t\t{comments.stats.replies}\r\n\t\t\t\t\t\t{pluralize(\"Comment\", comments.stats.replies)}\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tGo to comments\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</a>{/if}",
+    "approved_ui_extension": "route_owned_library_identity"
+  },
+  {
+  "path": "src/lib/components/reader/reader-settings.svelte",
+  "label": "reader settings links to anonymous library management",
+  "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+  "count": 1,
+  "before": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n",
+  "after": ">\r\n\t\t<Label for=\"skip_end_of_chapter_page\">Skip End of Chapter Page</Label>\r\n\t\t<Switch id=\"skip_end_of_chapter_page\" bind:checked={$skipEndOfChapterPage} />\r\n\t</div>\r\n</div>\r\n\r\n<Separator />\r\n<div class=\"space-y-2 p-2\">\r\n\t<Button class=\"w-full border-none\" variant=\"outline\" href=\"/settings/library\">Manage library</Button>\r\n</div>\r\n",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/+layout.svelte",
+  "label": "anonymous Library and Public identity use native Settings tabs",
+  "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+  "count": 1,
+  "before": "\t\tlibrary: {\r\n\t\t\tname: \"Library\",\r\n\t\t\ticon: LibraryIcon,\r\n\t\t\thidden: !$Session\r\n\t\t},",
+  "after": "\t\tlibrary: {\r\n\t\t\tname: \"Library\",\r\n\t\t\ticon: LibraryIcon\r\n\t\t},\r\n\t\tidentity: {\r\n\t\t\tname: \"Public identity\",\r\n\t\t\ticon: SettingsIcon\r\n\t\t},"
+},
+  {
+  "path": "src/routes/(app)/settings/+layout.svelte",
+  "label": "native Settings tabs expose current page accessibly",
+  "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+  "count": 1,
+  "before": "\t\t\t\t\t\thref={pathname}",
+  "after": "\t\t\t\t\t\thref={pathname}\r\n\t\t\t\t\t\taria-current={page.url.pathname === pathname ? \"page\" : undefined}",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/library/+layout.svelte",
+  "label": "library management does not inherit native account guard",
+  "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+  "count": 1,
+  "before": "\timport Protected from \"$lib/components/ui/Protected.svelte\";",
+  "after": ""
+},
+  {
+  "path": "src/routes/(app)/settings/library/+layout.svelte",
+  "label": "anonymous management renders independently of mode storage and scope",
+  "sha256": "feb81ccc3e21e0663bd0fd3fe536fc775980fbdc66d2e53b390114f5523ad59d",
+  "count": 1,
+  "before": "<Protected>\r\n\t{@render children?.()}\r\n</Protected>",
+  "after": "{@render children?.()}",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/library/+page.svelte",
+  "label": "Library settings owns anonymous device management",
+  "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+  "count": 1,
+  "before": "\timport { PUBLIC_API_URL, PUBLIC_SITE_NAME } from \"$env/static/public\";",
+  "after": "\timport { PUBLIC_API_URL, PUBLIC_SITE_NAME } from \"$env/static/public\";\r\n\timport { Session } from \"$lib/stores\";\r\n\timport { localLibraryState } from \"$localLibrary/library\";\r\n\timport LocalLibraryPanel from \"$localLibrary/LocalLibraryPanel.svelte\";"
+},
+  {
+  "path": "src/routes/(app)/settings/library/+page.svelte",
+  "label": "native import export keeps explicit selected device or account destination",
+  "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+  "count": 1,
+  "before": "<input class=\"hidden\" type=\"file\" bind:this={importRef} onchange={onImportChange} />",
+  "after": "<LocalLibraryPanel />\r\n<Separator class=\"my-5\" />\r\n<section class=\"mb-5 space-y-1\">\r\n\t<h2 class=\"font-semibold\">CSV and MyAnimeList files</h2>\r\n\t<p class=\"text-muted-foreground text-sm\">{$localLibraryState.mode === \"device\" ? \"These imports and CSV exports use this device library.\" : \"These imports and CSV exports use your signed-in account library.\"}</p>\r\n\t{#if $localLibraryState.mode === \"account\" && !$Session}<p class=\"text-muted-foreground text-sm\">Sign in for account import and export, or choose Use device library above.</p>{/if}\r\n</section>\r\n<input class=\"hidden\" type=\"file\" bind:this={importRef} onchange={onImportChange} />",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/library/+page.svelte",
+  "label": "account file actions require login without hiding device management",
+  "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+  "count": 3,
+  "before": "disabled={$mutex}",
+  "after": "disabled={$mutex || ($localLibraryState.mode === \"account\" && !$Session)}",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+  {
+  "path": "src/routes/(app)/settings/+layout.svelte",
+  "label": "native Settings tab navigation has a precise accessible name",
+  "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
+  "count": 1,
+  "before": "<nav class=\"text-muted-foreground/80 -mb-0.5 flex flex-nowrap overflow-auto whitespace-nowrap\">",
+  "after": "<nav aria-label=\"Settings\" class=\"text-muted-foreground/80 -mb-0.5 flex flex-nowrap overflow-auto whitespace-nowrap\">",
+  "approved_ui_extension": "route_owned_library_identity"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "fresh registration imports presentation and safe local return only",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";",
+  "after": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";\r\n\timport AccountOnboarding from \"$platform/AccountOnboarding.svelte\";\r\n\timport { safeRegistrationReturnTo } from \"$platform/account-onboarding\";\r\n\timport { get } from \"svelte/store\";"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "fresh registration keeps only in-memory welcome and current account ownership",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\tlet isMounted = $state(false);",
+  "after": "\tlet isMounted = $state(false);\r\n\tlet registrationWelcome = $state<{ accountId: string; returnTo: string; needsVerification: boolean; sessionRefreshed: boolean; continue: () => void; current: () => boolean }>();"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "registration redirect is single-decoded same-origin safe navigation",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\tconst redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");",
+  "after": "\t\tconst redirect = safeRegistrationReturnTo(page.url.searchParams.get(\"redirect\"));"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "registration refresh retains safe intended return without persisting a welcome trigger",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\t\t\tq.delete(\"redirect\");",
+  "after": "\t\t\t\tq.set(\"redirect\", safeRegistrationReturnTo(res.data.return_to || redirect));"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "accepted registration is not submitted again from repeated controls",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\tif (!flow || !ref) {",
+  "after": "\t\tif (!flow || !ref || registrationWelcome) {"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "fresh accepted registration explicitly finishes through native welcome",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\t\tif (data?.session?.active) {\r\n\t\t\t\tawait Session.initialize(true);\r\n\t\t\t\tif (!authIntent.alive()) return;\r\n\t\t\t\tif (returnTo && !returnTo?.startsWith(window.location.origin)) {\r\n\t\t\t\t\twindow.location.href = returnTo;\r\n\t\t\t\t} else goto(returnTo || \"/\");",
+  "after": "\t\t\tif (!(res instanceof AxiosError) && res.status === StatusCodes.OK && data?.session?.active) {\r\n\t\t\t\tconst accountId = data.session.identity?.id;\r\n\t\t\t\tif (!accountId) throw Constants.Error.Unknown;\r\n\t\t\t\tlet sessionRefreshed = false;\r\n\t\t\t\ttry { await Session.initialize(true); sessionRefreshed = true; }\r\n\t\t\t\tcatch { /* The accepted registration must not be replayed after a session-read failure. */ }\r\n\t\t\t\tif (!authIntent.alive()) return;\r\n\t\t\t\tconst destination = safeRegistrationReturnTo(returnTo);\r\n\t\t\t\tlet continuing = false;\r\n\t\t\t\tregistrationWelcome = {\r\n\t\t\t\t\taccountId, returnTo: destination, sessionRefreshed,\r\n\t\t\t\t\tneedsVerification: !!data.session.identity?.verifiable_addresses?.some(address => address.via === \"email\" && address.verified === false),\r\n\t\t\t\t\tcontinue: async () => {\r\n\t\t\t\t\t\tif (continuing || !sessionRefreshed || !authIntent.alive() || get(Session)?.identity?.id !== accountId) return;\r\n\t\t\t\t\t\tcontinuing = true;\r\n\t\t\t\t\t\ttry { await goto(destination); }\r\n\t\t\t\t\t\tcatch { if (authIntent.alive()) { continuing = false; toast.error(\"Could not continue\", { description: \"Please try again.\" }); } }\r\n\t\t\t\t\t},\r\n\t\t\t\t\tcurrent: () => sessionRefreshed && authIntent.alive() && get(Session)?.identity?.id === accountId\r\n\t\t\t\t};"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "registration ignores queued repeated submit after the first accepted response",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "\t\tev.preventDefault();\r\n\t\treturn mutex.exec(async () => {",
+  "after": "\t\tev.preventDefault();\r\n\t\tif (mutex.isLocked() || registrationWelcome) return;\r\n\t\treturn mutex.exec(async () => {"
+},
+{
+  "path": "src/routes/(app)/auth/register/+page.svelte",
+  "label": "fresh registration welcome replaces only the completed signup form",
+  "sha256": "e2b34dfce161f0384fbb311f3a322a35324db13a9167ef681431be499e943a3c",
+  "count": 1,
+  "before": "{#if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+  "after": "{#if registrationWelcome}\r\n\t<AccountOnboarding returnTo={registrationWelcome.returnTo} needsVerification={registrationWelcome.needsVerification} accountCurrent={registrationWelcome.sessionRefreshed && $Session?.identity?.id === registrationWelcome.accountId} oncontinue={registrationWelcome.continue} current={registrationWelcome.current} />\r\n{:else if isMounted}\r\n\t<Card.Root class=\"relative rounded\">",
+  "approved_registration_onboarding_exception": "fresh_registration_welcome"
+},
+{
+  "path": "src/routes/(app)/auth/login/+page.svelte",
+  "label": "login imports single-decoded safe continuation",
+  "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+  "count": 1,
+  "before": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";",
+  "after": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";\r\n\timport { safeRegistrationReturnTo } from \"$platform/account-onboarding\";"
+},
+{
+  "path": "src/routes/(app)/auth/login/+page.svelte",
+  "label": "login preserves onboarding continuation without double decoding",
+  "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+  "count": 1,
+  "before": "\t\tconst redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");",
+  "after": "\t\tconst redirect = safeRegistrationReturnTo(page.url.searchParams.get(\"redirect\"));"
+},
+{
+  "path": "src/routes/(app)/auth/verification/+page.svelte",
+  "label": "verification imports single-decoded safe continuation",
+  "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+  "count": 1,
+  "before": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";",
+  "after": "\timport { createAuthFormOwner } from \"$platform/auth-form-owner\";\r\n\timport { safeRegistrationReturnTo } from \"$platform/account-onboarding\";"
+},
+{
+  "path": "src/routes/(app)/auth/verification/+page.svelte",
+  "label": "verification preserves onboarding continuation without double decoding",
+  "sha256": "0a2ea92f2157a12e8dc56b813b5fc6ec7e909459fedab9447343b99aefcfe702",
+  "count": 1,
+  "before": "\t\tconst redirect = decodeURIComponent(page.url.searchParams.get(\"redirect\") ?? \"/\");",
+  "after": "\t\tconst redirect = safeRegistrationReturnTo(page.url.searchParams.get(\"redirect\"));"
+},
+  {
+  "path": "src/routes/(app)/title/MangaActions.svelte",
+  "label": "all-read Continue Reading stays at newest completed aggregate chapter",
+  "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+  "count": 1,
+  "before": "\t\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[aggregated.chapters.length - 1];",
+  "after": "\t\t\t\t\t\t} else targetAggregatedChapter = aggregated.chapters[0];"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader ChevronsLeft accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
+  "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last page\" : \"First page\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader ChevronLeft accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoNextPage() : reader.gotoPreviousPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
+  "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoNextPage() : reader.gotoPreviousPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Next page\" : \"Previous page\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader ChevronRight accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoPreviousPage() : reader.gotoNextPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
+  "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\t$readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.gotoPreviousPage() : reader.gotoNextPage()}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Previous page\" : \"Next page\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader ChevronsRight accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t>",
+  "after": "<Button\r\n\t\tclass=\"border-none\"\r\n\t\tvariant=\"outline\"\r\n\t\tsize=\"icon\"\r\n\t\tonclick={() =>\r\n\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\tdisabled={!reader.pages.length}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First page\" : \"Last page\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-selector.svelte",
+  "label": "reader page selector accessible name",
+  "sha256": "3de870d4eef414bc0b3d6e44fa0fb2b0e84f6bd3e635b48f21c597ad0e1694c3",
+  "count": 1,
+  "before": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })}>",
+  "after": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })} aria-label=\"Select page\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader ChevronsLeft accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
+  "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !lastChapter : !firstChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last chapter\" : \"First chapter\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader ChevronLeft accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
+  "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !nextChapter : !prevChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Next chapter\" : \"Previous chapter\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader ChevronRight accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
+  "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !prevChapter : !nextChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? prevChapter\r\n\t\t\t\t? `/chapter/${prevChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: nextChapter\r\n\t\t\t\t? `/chapter/${nextChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Previous chapter\" : \"Next chapter\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader ChevronsRight accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t>",
+  "after": "<a\r\n\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\tclass:pointer-events-none={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\tclass:opacity-50={$readerPrefs.direction === Constants.Reader.Direction.RTL ? !firstChapter : !lastChapter}\r\n\t\thref={$readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t? firstChapter\r\n\t\t\t\t? `/chapter/${firstChapter.id}/1`\r\n\t\t\t\t: undefined\r\n\t\t\t: lastChapter\r\n\t\t\t\t? `/chapter/${lastChapter.id}/1`\r\n\t\t\t\t: undefined}\r\n\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First chapter\" : \"Last chapter\"}\r\n\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-chapter-selector.svelte",
+  "label": "reader chapter selector accessible name",
+  "sha256": "93e883cf939c5a381bb14e2c285f3a11d68ae22740b7e02eea1baafc97a93702",
+  "count": 1,
+  "before": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })}>",
+  "after": "<Combobox.Trigger class={buttonVariants({ class: \"w-0 flex-auto border-none\", variant: \"outline\" })} aria-label=\"Select chapter\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader HomeIcon accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })} href=\"/\">",
+  "after": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })} href=\"/\" aria-label=\"Home\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader Undo2 accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })}\r\n\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t)}\"\r\n\t\t\t\t>",
+  "after": "<a\r\n\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon-lg\" })}\r\n\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t)}\"\r\n\t\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader SettingsIcon accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<Button class=\"border-none\" variant=\"outline\" size=\"icon-lg\" onclick={sidebar.toggle}>",
+  "after": "<Button class=\"border-none\" variant=\"outline\" size=\"icon-lg\" onclick={sidebar.toggle} aria-label=\"Reader settings\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader ChevronsLeft accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t>",
+  "after": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? reader.pages.length - 1 : 0)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"Last page\" : \"First page\"}\r\n\t\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader ChevronsRight accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t>",
+  "after": "<Button\r\n\t\t\t\t\tclass=\"border-none\"\r\n\t\t\t\t\tvariant=\"outline\"\r\n\t\t\t\t\tsize=\"icon-lg\"\r\n\t\t\t\t\tonclick={() =>\r\n\t\t\t\t\t\treader.changePage($readerPrefs.direction === Constants.Reader.Direction.RTL ? 0 : reader.pages.length - 1)}\r\n\t\t\t\t\tdisabled={!reader.pages.length}\r\n\t\t\t\t\taria-label={$readerPrefs.direction === Constants.Reader.Direction.RTL ? \"First page\" : \"Last page\"}\r\n\t\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-pagination.svelte",
+  "label": "reader pagination chapter selector accessible name",
+  "sha256": "c600e78d8754207a5a4b791458c36ef7e3bdcd7902e53d55eb81f702f764d36b",
+  "count": 1,
+  "before": "\t\t\t\t<Combobox.Trigger\r\n",
+  "after": "\t\t\t\t<Combobox.Trigger\r\n\t\t\t\t\taria-label=\"Select chapter\"\r\n",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-panel.svelte",
+  "label": "reader HomeIcon accessible name",
+  "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+  "count": 1,
+  "before": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })} href=\"/\">",
+  "after": "<a class={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })} href=\"/\" aria-label=\"Home\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-panel.svelte",
+  "label": "reader BookIcon accessible name",
+  "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+  "count": 1,
+  "before": "<a\r\n\t\t\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\t\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t\t\t)}\"\r\n\t\t\t\t\t\t>",
+  "after": "<a\r\n\t\t\t\t\t\t\tclass={buttonVariants({ class: \"border-none\", variant: \"outline\", size: \"icon\" })}\r\n\t\t\t\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(\r\n\t\t\t\t\t\t\t\treader.chapter.relationships.manga.title\r\n\t\t\t\t\t\t\t)}\"\r\n\t\t\t\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-panel.svelte",
+  "label": "reader XIcon accessible name",
+  "sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+  "count": 1,
+  "before": "<Button class=\"border-none\" type=\"button\" variant=\"outline\" size=\"icon\" onclick={sidebar.toggle}>",
+  "after": "<Button class=\"border-none\" type=\"button\" variant=\"outline\" size=\"icon\" onclick={sidebar.toggle} aria-label=\"Close reader settings\">",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/comments/comments-votes.svelte",
+  "label": "reader discussion vote 1 accessible name",
+  "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
+  "count": 1,
+  "before": "\t<Button\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === 1",
+  "after": "\t<Button\r\n\t\taria-label=\"Upvote chapter or discussion\"\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === 1",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/comments/comments-votes.svelte",
+  "label": "reader discussion vote -1 accessible name",
+  "sha256": "5d7b67c964c3d38c42b7fc6c064be82dfef0c351258a5ff6f576fd702a88a14c",
+  "count": 1,
+  "before": "\t<Button\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === -1",
+  "after": "\t<Button\r\n\t\taria-label=\"Downvote chapter or discussion\"\r\n\t\tclass={cn(\"text-muted-foreground border-0\", {\r\n\t\t\t\"!border-accent text-accent-foreground border-b-2\": comments.voteState === -1",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-image.svelte",
+  "label": "reader page image exposes its page number",
+  "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
+  "count": 1,
+  "before": "\t<img\r\n\t\tclass=\"object-contain\"",
+  "after": "\t<img\r\n\t\talt={`Page ${page.index + 1}`}\r\n\t\tclass=\"object-contain\"",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-settings.svelte",
+  "label": "reader narrow-phone direction LTR retains nonoverlapping controls",
+  "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+  "count": 1,
+  "before": "class={cn(\"w-0 flex-auto border-none\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.LTR\r\n\t\t\t})}",
+  "after": "class={cn(\"w-0 flex-auto border-none max-[360px]:gap-1 max-[360px]:px-1 max-[360px]:text-xs max-[360px]:[&>svg]:size-4\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.LTR\r\n\t\t\t})}",
+  "approved_reader_control_exception": "reader_narrow_direction_fit"
+},
+  {
+  "path": "src/lib/components/reader/reader-settings.svelte",
+  "label": "reader narrow-phone direction RTL retains nonoverlapping controls",
+  "sha256": "414271f285f269a15f9f171d41e11c96456cf498aa63805916728b7de6e54b90",
+  "count": 1,
+  "before": "class={cn(\"w-0 flex-auto border-none\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t})}",
+  "after": "class={cn(\"w-0 flex-auto border-none max-[360px]:gap-1 max-[360px]:px-1 max-[360px]:text-xs max-[360px]:[&>svg]:size-4\", {\r\n\t\t\t\t\"text-accent-foreground\": $readerPrefs.direction === Constants.Reader.Direction.RTL\r\n\t\t\t})}",
+  "approved_reader_control_exception": "reader_narrow_direction_fit"
+},
+  {
+  "path": "src/lib/components/reader/reader-page-image.svelte",
+  "label": "reader Stretch Width expands its actual image wrapper",
+  "sha256": "528b0e5787cc24aa6cd1863cf34ea49b84e360a2a3322d1025de5b2c266b03cf",
+  "count": 1,
+  "before": "<div class=\"group relative\" bind:this={$ref}>",
+  "after": "<div class=\"group relative\" class:w-full={$readerPrefs.scale === Constants.Reader.Scale.StretchWidth} bind:this={$ref}>",
+  "approved_reader_control_exception": "reader_stretch_width_fit"
+},
+  {
+  "path": "src/lib/components/reader/reader-provider.svelte",
+  "label": "reader malformed raw page always resolves a finite bounded image index",
+  "sha256": "c12a1d141b258f7461a150511387488193b55f6825f9f4c3cd86fbc962feb3fb",
+  "count": 1,
+  "before": "\t\t\treader.currentPage =\r\n\t\t\t\treader.pages[\r\n\t\t\t\t\tMath.min(Math.max(Number((page.state as any).page ?? page.params.page ?? 1), 1), reader.pages.length) - 1\r\n\t\t\t\t];",
+  "after": "\t\t\tconst requestedPage = Number((page.state as any).page ?? page.params.page ?? 1);\r\n\t\t\tconst safePage = Number.isFinite(requestedPage) ? Math.trunc(requestedPage) : 1;\r\n\t\t\treader.currentPage = reader.pages[Math.min(Math.max(safePage, 1), reader.pages.length) - 1];"
+},
+  {
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader selecting current last page leaves end-of-chapter card",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\t\tidx === this.currentPage.index ||",
+  "after": "\t\t\t\t(idx === this.currentPage.index && !this.isViewingLastPage) ||"
+},
+  {
+  "path": "src/lib/components/reader/reader-last-page.svelte",
+  "label": "mobile long-strip Home accessible name",
+  "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+  "count": 1,
+  "before": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>",
+  "after": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t\taria-label=\"Home\"\r\n\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+  {
+  "path": "src/lib/components/reader/reader-last-page.svelte",
+  "label": "mobile long-strip Back to title accessible name",
+  "sha256": "a95caf71008d455ea1d888cabe209e27273e3ddb3982ff6f7b8f2f0aac949b7e",
+  "count": 1,
+  "before": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(reader.chapter.relationships.manga.title)}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t>",
+  "after": "<a\r\n\t\t\t\tclass={buttonVariants({\r\n\t\t\t\t\tclass: \"border-none\",\r\n\t\t\t\t\tvariant: \"outline\",\r\n\t\t\t\t\tsize: isMobile.current ? \"icon\" : \"sm\"\r\n\t\t\t\t})}\r\n\t\t\t\thref=\"/title/{reader.chapter.relationships.manga.id}{Utils.makeSlug(reader.chapter.relationships.manga.title)}\"\r\n\t\t\t\tonclick={e => {\r\n\t\t\t\t\te.stopPropagation();\r\n\t\t\t\t\te.stopImmediatePropagation();\r\n\t\t\t\t}}\r\n\t\t\t\taria-label=\"Back to title\"\r\n\t\t\t>",
+  "approved_reader_control_exception": "reader_accessible_control_name"
+},
+{
+  "path": "src/lib/components/upload/UploadChapter.svelte",
+  "label": "recovered upload begin acknowledges only returned server staging baseline",
+  "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+  "count": 1,
+  "before": "\t\t\t\t\tuploadSession = res.body;",
+  "after": "\t\t\t\t\tuploadSession = res.body;\r\n\t\t\t\t\tlastSavedUpload = signature(snapshot(res.body.draft ?? {}, res.body.relationships.files ?? []));"
+},
+{
+  "path": "src/lib/components/upload/UploadChapter.svelte",
+  "label": "recovered upload autosave waits for a valid nonempty language",
+  "sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+  "count": 1,
+  "before": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false) return;",
+  "after": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false || typeof draft.language !== \"string\" || !draft.language.trim()) return;"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+  "label": "recovered upload begin acknowledges only returned server staging baseline",
+  "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+  "count": 1,
+  "before": "\t\t\t\t\tuploadSession = res.body;",
+  "after": "\t\t\t\t\tuploadSession = res.body;\r\n\t\t\t\t\tlastSavedUpload = signature(snapshot(res.body.draft ?? {}, res.body.relationships.files ?? []));"
+},
+{
+  "path": "src/lib/components/upload/UploadChapterEdit.svelte",
+  "label": "recovered upload autosave waits for a valid nonempty language",
+  "sha256": "4d0c4b3619d8c21486eaf5bcfaa94d73ae7ec5b8e90a08dd5abcaf7ea658258c",
+  "count": 1,
+  "before": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false) return;",
+  "after": "if (resumeDisposed || !uploadSession || uploadSession.can_mutate === false || typeof chapter.language !== \"string\" || !chapter.language.trim()) return;"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader missing current chapter has no accidental minus-one navigation index",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\treadonly chapterIndex = $derived.by(() => this.aggregated?.chapters.findIndex(e => this.chapter.id in e.entries));",
+  "after": "\treadonly chapterIndex = $derived.by(() => {\r\n\t\tconst index = this.aggregated?.chapters.findIndex(e => this.chapter.id in e.entries);\r\n\t\treturn index !== undefined && index >= 0 ? index : undefined;\r\n\t});"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader chapter selection rejects noninteger indices before aggregate access",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\tif (!this.aggregated?.chapters || idx < 0 || idx >= this.aggregated.chapters.length) {",
+  "after": "\t\tif (!Number.isSafeInteger(idx) || !this.aggregated?.chapters || idx < 0 || idx >= this.aggregated.chapters.length) {"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader empty aggregate entries do not crash chapter navigation",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\tconst entries = Object.entries(aggregate.entries);\r\n\t\tif (entries.length > 1) {",
+  "after": "\t\tconst entries = Object.entries(aggregate.entries);\r\n\t\tif (!entries.length) return;\r\n\t\tif (entries.length > 1) {"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader page selection rejects noninteger indices before changing current page",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\t\t!this.currentPage ||\r\n\t\t\t\t(idx === this.currentPage.index && !this.isViewingLastPage) ||",
+  "after": "\t\t\t\t!this.currentPage ||\r\n\t\t\t\t!Number.isSafeInteger(idx) ||\r\n\t\t\t\t(idx === this.currentPage.index && !this.isViewingLastPage) ||"
+},
+{
+  "path": "src/routes/(app)/user/[id]/uploads/+page.svelte",
+  "label": "user upload sort buttons preserve pathname and delimit encoded query",
+  "sha256": "28ffd1d4de746e4db28b466a0b1e2d5e85d77b8210aa0bb8f31845b7116b5cc4",
+  "count": 2,
+  "before": "const target = window.location.pathname + q.toString();",
+  "after": "const target = window.location.pathname + (q.size ? \"?\" + q.toString().replace(/^\\?/, \"\") : \"\");",
+  "approved_event_handler_exception": true
+},
+{
+  "path": "src/lib/components/reader/reader-pages.svelte",
+  "label": "reader page history preserves query/hash and yields to newer page or navigation",
+  "sha256": "b9afbee090ec3e6d6b17b77718add83310833ba7ea8ac610228e420d021a5012",
+  "count": 1,
+  "before": "<script lang=\"ts\">\r\n\timport { replaceState } from \"$app/navigation\";\r\n\timport { page } from \"$app/state\";\r\n\timport { onMount, tick } from \"svelte\";\r\n\timport { useReader } from \"./context.svelte\";\r\n\timport ReaderPagesDouble from \"./reader-pages-double.svelte\";\r\n\timport ReaderPagesSingle from \"./reader-pages-single.svelte\";\r\n\r\n\tconst reader = useReader();\r\n\tconst readerPrefs = reader.prefs;\r\n\tlet isMounted = $state(false);\r\n\r\n\tonMount(async () => {\r\n\t\tawait tick();\r\n\t\tisMounted = true;\r\n\t});\r\n\r\n\t$effect(() => {\r\n\t\tif (isMounted && reader.currentPage) {\r\n\t\t\tconst q = new URLSearchParams(window.location.search);\r\n\t\t\tconst path = `/chapter/${reader.chapter.id}/${reader.currentPage.index + 1}${q.toString()}${window.location.hash}`;\r\n\t\t\ttick().then(() => {\r\n\t\t\t\treplaceState(path, {\r\n\t\t\t\t\t...page.state,\r\n\t\t\t\t\tpage: reader.currentPage!.index + 1\r\n\t\t\t\t});\r\n\t\t\t});\r\n\t\t}\r\n\t});\r\n</script>",
+  "after": "<script lang=\"ts\">\r\n\timport { replaceState } from \"$app/navigation\";\r\n\timport { page } from \"$app/state\";\r\n\timport { onMount, tick } from \"svelte\";\r\n\timport { createSafeReadOwner } from \"$platform/safe-read-owner\";\r\n\timport { useReader } from \"./context.svelte\";\r\n\timport ReaderPagesDouble from \"./reader-pages-double.svelte\";\r\n\timport ReaderPagesSingle from \"./reader-pages-single.svelte\";\r\n\r\n\tconst reader = useReader();\r\n\tconst readerPrefs = reader.prefs;\r\n\tconst historyOwner = createSafeReadOwner();\r\n\tlet isMounted = $state(false);\r\n\r\n\tonMount(() => {\r\n\t\tconst intent = historyOwner.capture();\r\n\t\tvoid tick().then(() => { if (intent.alive()) isMounted = true; });\r\n\t});\r\n\r\n\t$effect(() => {\r\n\t\tconst selected = reader.currentPage;\r\n\t\tif (!isMounted || !selected) return;\r\n\t\tconst chapterId = reader.chapter.id, pageNumber = selected.index + 1;\r\n\t\tconst intent = historyOwner.capture(() => reader.chapter.id === chapterId && reader.currentPage === selected);\r\n\t\tconst target = new URL(window.location.href);\r\n\t\ttarget.pathname = `/chapter/${chapterId}/${pageNumber}`;\r\n\t\tvoid tick().then(() => {\r\n\t\t\tif (!intent.alive()) return;\r\n\t\t\treplaceState(target.pathname + target.search + target.hash, { ...page.state, page: pageNumber });\r\n\t\t});\r\n\t});\r\n</script>"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader edition preference compares actual current group records",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\tconst currentGroups = this.chapter.relationships.groups?.map(e => e.name) ?? [\"No Group\"];",
+  "after": "\t\t\tconst currentGroups = this.chapter.relationships.groups ?? [];"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader edition preference resolves group identity before presentation name",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\t\tconst groups = entry.groups.map(idx => this.aggregated?.groups[idx].name);",
+  "after": "\t\t\t\tconst groups = entry.groups.map(idx => this.aggregated?.groups[idx]);"
+},
+{
+  "path": "src/lib/components/reader/context.svelte.ts",
+  "label": "reader edition preference keeps name fallback only for missing legacy group IDs",
+  "sha256": "7ee3da2eada7042e8cd7d2d2b464dfe03cd71a7bcd51f861e0b25b7eb5c02c4d",
+  "count": 1,
+  "before": "\t\t\t\tconst score = groups.filter(e => currentGroups.includes(e ?? \"\")).length;",
+  "after": "\t\t\t\tconst score = groups.filter(group => group && currentGroups.some(current => group.id && current.id ? group.id === current.id : group.name === current.name)).length;"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader disposed queue cannot enqueue pages after a deferred initial tick",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\tif (!reader.pages.length || !reader.currentPage || reader.pages.every(e => e.isLoaded)) {",
+  "after": "\t\t\tif (disposed || !reader.pages.length || !reader.currentPage || reader.pages.every(e => e.isLoaded)) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader disposed queue cannot publish deferred queue changes",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\tif (queue.length !== clone.length || queue.some((e, i) => e !== clone[i])) {",
+  "after": "\t\t\tif (disposed) return;\r\n\t\t\tif (queue.length !== clone.length || queue.some((e, i) => e !== clone[i])) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader disposed queue cannot acquire pages after mutex admission",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\tif (!reader.pages.length || !queue.length) {",
+  "after": "\t\t\tif (disposed || !reader.pages.length || !queue.length) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader disposed queue cannot start another parallel page",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\tfor (let i = 0; i < queue.length && parallel < $readerPrefs.parallel; i++) {",
+  "after": "\t\t\tfor (let i = 0; !disposed && i < queue.length && parallel < $readerPrefs.parallel; i++) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader final tick rechecks exact live page before loading claim",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\t\t\tif (page.isLoading || page.isLoaded || page.isFailed) {",
+  "after": "\t\t\t\t\tif (disposed || !page || reader.pages[page.index] !== page || page.isLoading || page.isLoaded || page.isFailed) {"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader queue tracks its own page claims across replacement",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\t\t\tpage.isLoading = true;",
+  "after": "\t\t\t\t\tpage.isLoading = true;\r\n\t\t\t\t\townedPages.add(page);"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader queue releases only its still owned page claim",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\t\t\t\t\t\t\tpage.isLoading = false;",
+  "after": "\t\t\t\t\t\t\tif (!ownedPages.delete(page)) return;\r\n\t\t\t\t\t\t\tpage.isLoading = false;\r\n\t\t\t\t\t\t\tif (disposed) return;"
+},
+{
+  "path": "src/lib/components/reader/reader-queue.svelte",
+  "label": "reader replacement releases old claims synchronously before next queue",
+  "sha256": "a40d89e88715e94cf4270dd7cfa9f4ef43ea1da33711cf12fda3ed06876dce03",
+  "count": 1,
+  "before": "\tconst temporaryUrls = new Set<string>();\r\n\tlet disposed = false;\r\n\tonDestroy(() => {\r\n\t\tdisposed = true;",
+  "after": "\tconst temporaryUrls = new Set<string>();\r\n\tconst ownedPages = new Set<ReaderPage>();\r\n\tlet disposed = false;\r\n\tonDestroy(() => {\r\n\t\tdisposed = true;\r\n\t\tfor (const page of ownedPages) page.isLoading = false;\r\n\t\townedPages.clear();"
+}
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
 export function createFrontendOverlays(frontendRoot) {
@@ -2820,7 +4026,7 @@ export function createFrontendOverlays(frontendRoot) {
 }
 export const frontendOverlayManifest = patches.map(({ before, after, ...metadata }) => metadata);
 
-// Exactly one parent-approved event-handler JavaScript body, never general markup.
+// Exact approved event-handler JavaScript expressions, never general markup.
 export const frontendApprovedEventHandlerExceptions = patches.filter(patch => patch.approved_event_handler_exception).map(({ path, sha256, count, before, after }) => ({ path, sha256, count, before, after }));
 
 export const frontendApprovedPanelExceptions = patches.filter(patch => patch.approved_ui_extension).map(({ path, sha256, count, before, after, approved_ui_extension }) => ({ path, sha256, count, before, after, approved_ui_extension }));
@@ -2842,3 +4048,8 @@ export const frontendApprovedSearchCallbackExceptions = patches.filter(patch => 
 export const frontendApprovedAuthFlowKeyExceptions = patches.filter(patch => patch.approved_auth_flow_key_exception).map(({ path, sha256, count, before, after, approved_auth_flow_key_exception }) => ({ path, sha256, count, before, after, approved_auth_flow_key_exception }));
 
 export const frontendApprovedCreateRecoveryExceptions = patches.filter(patch => patch.approved_create_recovery_exception).map(({ path, sha256, count, before, after, approved_create_recovery_exception }) => ({ path, sha256, count, before, after, approved_create_recovery_exception }));
+
+export const frontendApprovedFollowReadinessExceptions = patches.filter(patch => patch.approved_follow_readiness_exception).map(({ path, sha256, count, before, after, approved_follow_readiness_exception }) => ({ path, sha256, count, before, after, approved_follow_readiness_exception }));
+
+export const frontendApprovedRegistrationOnboardingExceptions = patches.filter(patch => patch.approved_registration_onboarding_exception).map(({ path, sha256, count, before, after, approved_registration_onboarding_exception }) => ({ path, sha256, count, before, after, approved_registration_onboarding_exception }));
+export const frontendApprovedReaderControlExceptions = patches.filter(patch => patch.approved_reader_control_exception).map(({ path, sha256, count, before, after, approved_reader_control_exception }) => ({ path, sha256, count, before, after, approved_reader_control_exception }));

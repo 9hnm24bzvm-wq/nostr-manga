@@ -1,0 +1,62 @@
+{
+  "status": "in-progress-not-final-acceptance",
+  "sourceBaseline": "f593787141469cc8d6da057545eb11a53fb7271b",
+  "initialDiscovery": {
+    "platformNodeFiles": 125,
+    "platformPythonFiles": 8,
+    "priorSelectedNodeFiles": 56,
+    "executedFiniteNodeFiles": 123,
+    "deferredSemanticArtifactFiles": 2
+  },
+  "initialFinite": {
+    "runnerCases": 2012,
+    "passed": 1962,
+    "failed": 50,
+    "skipped": 0,
+    "failedFiles": 7,
+    "resourceStop": null,
+    "ownedSurvivors": []
+  },
+  "python": {
+    "files": 8,
+    "tests": 128,
+    "passed": 128,
+    "failed": 0
+  },
+  "initialStrict": {
+    "errors": [
+      0,
+      0
+    ],
+    "warnings": [
+      15,
+      12
+    ],
+    "mappedFiles": [
+      654,
+      684
+    ],
+    "actualTypeResultsValid": true,
+    "completePhysicalDependencyImmutability": "not-established-primary-cache-uncovered"
+  },
+  "physicalCacheCorrection": {
+    "roots": 6,
+    "actualRegularFiles": 40955,
+    "entries": 45433,
+    "uncoveredSymlinkTargets": 0,
+    "modeAndMtimeNanosecondsCaptured": true,
+    "rerun": "not-started-below-start-reserve"
+  },
+  "setupAttempts": [
+    "Duplicate physical roots refused before tests; canonical roots deduplicated",
+    "Missing audit directory refused before tests; directory then explicitly created"
+  ],
+  "followups": [
+    "Reviewed test-only fixture/parity repairs followed by full discovered rerun",
+    "Modern artifact consumers with original negative controls",
+    "Fresh guarded strict with actual primary dependency cache",
+    "Fresh actual Vite artifacts and hash-bound CSS consumer",
+    "Original browser-client20finite suites + bounded dependency-ready Python groups",
+    "Explicit dependency/service/resource exclusions for other repository test files"
+  ]
+}

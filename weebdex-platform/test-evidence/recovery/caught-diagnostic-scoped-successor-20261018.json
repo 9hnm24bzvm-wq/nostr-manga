@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "status": "reviewed-diagnostic-source-and-retained-terminal-evidence",
+  "sourceAssociation": "caught-diagnostic-source-association-20261018.json",
+  "precedingContinuation": "hosted-cleanup-scoped-successor-20261018.json",
+  "applicationSourceChangesAfterPublishedCc5": false,
+  "terminalHostedAttempts": [
+    {
+      "run": 39142927874,
+      "conclusion": "failure",
+      "nativeMeasurementsPassed": true,
+      "cleanupAdapterOutdated": true,
+      "browserStepSkipped": true
+    },
+    {
+      "run": 39144824203,
+      "conclusion": "failure",
+      "nativeGateAndCleanupPassed": true,
+      "fixtureReady": true,
+      "observedBrowserSteps": 0,
+      "chromiumLaunchEstablished": false,
+      "exactBrowserCauseEstablished": false,
+      "uploadRecordValid": false,
+      "zeroCountersAreFallbacks": true,
+      "actualTrafficMutationPageErrorCountsEstablished": false,
+      "finalFixtureTeardownClean": true,
+      "fixtureLifecycleClean": false
+    }
+  ],
+  "diagnosticSource": "26a79f6775f4b52ae745c9fab5f1b321faa50378",
+  "diagnostics": {
+    "firstCaughtStageAndClosedCategoryRetained": true,
+    "browserContextPageCreationFactsNullable": true,
+    "publicUploadPreflightStages": 3,
+    "passiveFatalCodeReadExactlyOnceUnderGuard": true,
+    "rawErrorsEnvironmentOrCommandArgumentsExported": false
+  },
+  "finiteEvidence": {
+    "initialOwner": "../frontend/hosted-caught-browser-diagnostics-20261018/result.json",
+    "correctedOwner": "../frontend/hosted-caught-browser-diagnostics-20261018/passive-monitor-followon/result.json",
+    "correctedOwnerScope": {
+      "pythonCases": 76,
+      "directNodeGroups": 11,
+      "actorAssociationCases": 2,
+      "countsOverlapInitialOwner": true
+    },
+    "independentControls": "../ci/runner-caught-negative-controls-20261018/receipt.json",
+    "independentScope": {
+      "pythonMethods": 19,
+      "newPythonMethodsBeyondOwner": 7,
+      "pairsWithinMethods": 117,
+      "nodeIndependentControls": 67,
+      "repeatedOwnerNodeGroups": 11,
+      "countsOverlapOwner": true
+    },
+    "dualWorkflowAssociation": "../frontend/hosted-caught-browser-diagnostics-20261018/recovery-workflow-association/result.json",
+    "dualWorkflowSourceCases": 2,
+    "recoverySandboxAssertion": "../frontend/recovery-explicit-sandbox-20261018/result.json",
+    "recoverySandboxSourceCases": 1,
+    "distinctAggregateClaim": false
+  },
+  "recoveryLauncherNowExplicitlyRequestsSandbox": true,
+  "originalRepositoryDiscovery": {
+    "files": 43,
+    "filesWithExecutionResults": 43,
+    "fullyPassedFiles": 42,
+    "fileWithTwelveActualPostgresSkips": 1,
+    "wholeFilesHeld": 0,
+    "wholeRepositoryGreen": false
+  },
+  "limits": {
+    "newHostedRunOutcomeRepresented": false,
+    "genuineBrowserAcceptance": false,
+    "sandboxRuntimeSupportEstablished": false,
+    "freshFullFrontendStrictBuild": false,
+    "freshWholeRepositoryPass": false,
+    "applicationConsistentRecovery": false,
+    "productionLoadCapacity": false,
+    "deploymentPerformed": false,
+    "mainMerged": false,
+    "fullRequirementsParity": false
+  },
+  "runtimeMismatch": {
+    "aiohttpActual": "3.14.4",
+    "projectRequired": "3.13.5",
+    "modified": false
+  },
+  "laterSourceContinuation": "sandbox-terminal-scoped-successor-20261018.json",
+  "historicalBoundary": "The old no-fresh-build/no-new-hosted-outcome and 12 PG-skip limits describe the preceding snapshot. The linked later continuation records fresh shared-product strict/Vite evidence, the terminal third hosted attempt and 17/17 controlled PG18 diagnostics."
+}

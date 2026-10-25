@@ -1,0 +1,18 @@
+{
+  "source": "aab3c0308159b0835ce2b2218ae28557bf9fdf43",
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "tests/ci/test_signed_moderator_reports.mjs",
+    "tests/ci/test_signed_moderator_parity.mjs",
+    "tests/ci/test_moderator_account_observation.mjs"
+  ],
+  "exitCode": 0,
+  "stop": null,
+  "elapsedSeconds": 0.8909235139726661,
+  "outputBytes": 23184,
+  "scope": "Synthetic controller only; no HTTP, real signatures, Rust or actual deletion."
+}

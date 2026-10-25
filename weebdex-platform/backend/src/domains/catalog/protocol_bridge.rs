@@ -51,7 +51,7 @@ pub(crate) fn project_series(metadata: &Value) -> ApiResult<SeriesProjection> {
         .get("en")
         .or_else(|| titles.values().next())
         .and_then(Value::as_str)
-        .filter(|s| !s.trim().is_empty() && s.len() <= 500)
+        .filter(|s| !s.trim().is_empty() && s.chars().count() <= 500)
         .ok_or_else(|| ApiError::bad_request("Protocol title exceeds the platform title contract"))?
         .to_owned();
     let mut defaults = Vec::<&str>::new();
@@ -120,7 +120,7 @@ pub(crate) fn project_series(metadata: &Value) -> ApiResult<SeriesProjection> {
         rating,
         demographic,
         year: year as i32,
-        metadata: json!({"alt_titles":alt,"description":description,"protocol_source_metadata":metadata,"protocol_projection_defaults":defaults}),
+        metadata: json!({"alt_titles":alt,"description":description,"localized_titles":metadata["titles"],"localized_description":metadata["description"].as_object().cloned().unwrap_or_default(),"localized_alt_titles":metadata["altTitles"].as_array().cloned().unwrap_or_default(),"protocol_source_metadata":metadata,"protocol_projection_defaults":defaults}),
     })
 }
 fn alias(source: &SourcePublication, kind: &str, target: &str) -> String {
@@ -131,28 +131,39 @@ fn alias(source: &SourcePublication, kind: &str, target: &str) -> String {
         .unwrap_or_else(|| manga_node::mangadex_compat::uuid(kind, target))
 }
 async fn resource_id(
-    tx: &Transaction<'_>,
+    tx: &tokio_postgres::Transaction<'_>,
     kind: &str,
     target: &str,
     compatibility: &str,
-) -> ApiResult<String> {
+) -> crate::error::ApiResult<String> {
     if !manga_node::mangadex_compat::valid_uuid(compatibility) {
-        return Err(ApiError::bad_request(
-            "Invalid protocol compatibility alias",
-        ));
+        return Err(crate::error::ApiError::bad_request("Invalid protocol compatibility alias"));
     }
     let id = v::new_id(kind);
     tx.execute("INSERT INTO platform.protocol_resource_ids(kind,source_target,compatibility_id,catalog_id) VALUES($1,$2,$3,$4) ON CONFLICT(kind,source_target) DO NOTHING",&[&kind,&target,&compatibility,&id]).await?;
     let row=tx.query_one("SELECT catalog_id,compatibility_id FROM platform.protocol_resource_ids WHERE kind=$1 AND source_target=$2",&[&kind,&target]).await?;
-    if row.get::<_, String>(1) != compatibility {
-        return Err(ApiError::conflict(
-            "Protocol compatibility identity changed",
-        ));
+    let native:String=row.get(0);
+    if row.get::<_,String>(1)!=compatibility {
+        let verified=tx.query_opt(
+            "SELECT a.native_id FROM public.compatibility_ids i LEFT JOIN platform.public_resource_ids a ON a.kind=i.kind AND a.public_id=i.id::uuid WHERE i.kind=$1 AND i.id=$2 AND i.target=$3 FOR SHARE OF i",
+            &[&kind,&compatibility,&target],
+        ).await?;
+        let verified=verified.ok_or_else(|| crate::error::ApiError::conflict("Protocol compatibility alias does not identify this source"))?;
+        if let Some(assigned)=verified.get::<_,Option<String>>(0) {
+            if assigned!=native { return Err(crate::error::ApiError::conflict("Protocol compatibility alias is already assigned")); }
+            return Ok(native);
+        }
+        tx.query_one("SELECT platform.public_register_resource_alias($1,$2,$3::text::uuid)",&[&kind,&native,&compatibility]).await.map_err(|error| {
+            if error.code()==Some(&tokio_postgres::error::SqlState::UNIQUE_VIOLATION) {
+                crate::error::ApiError::conflict("Protocol compatibility alias is already assigned")
+            } else { error.into() }
+        })?;
     }
-    Ok(row.get(0))
+    Ok(native)
 }
+
 async fn owner(tx: &Transaction<'_>, publisher: &str) -> ApiResult<(String, String)> {
-    if let Some(row)=tx.query_opt("SELECT u.id,u.username FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1 AND NOT u.disabled",&[&publisher]).await? {return Ok((row.get(0),row.get(1)));}
+    if let Some(row)=tx.query_opt("SELECT u.id,u.username FROM platform.protocol_identity_bindings b JOIN platform.users u ON u.id=b.user_id WHERE b.publisher=$1",&[&publisher]).await? {return Ok((row.get(0),row.get(1)));}
     Ok((
         format!("protocol:{publisher}"),
         format!("protocol:{}", &publisher[..12]),
@@ -232,7 +243,8 @@ impl CatalogRepository {
         let created = i64::try_from(event.created_at)
             .map_err(|_| ApiError::bad_request("Protocol timestamp cannot be represented"))?;
         if kind == "manga" {
-            let data = project_series(metadata)?;
+            let mut data = project_series(metadata)?;
+            data.metadata.as_object_mut().unwrap().extend(json!({"protocol_event_id":event.id,"protocol_publisher":event.pubkey,"publication_scope":"original-protocol","publication_status":"locally_hosted"}).as_object().unwrap().clone());
             let existing = tx.query_opt("SELECT protocol_series_id,state,version,deleted_at IS NULL FROM platform.catalog_manga WHERE id=$1 FOR UPDATE NOWAIT", &[&id]).await.map_err(recovery_error)?;
             let recovered = if let Some(existing) = existing {
                 let associated: Option<String> = existing.get(0);
@@ -291,6 +303,12 @@ impl CatalogRepository {
             } else {
                 tx.execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,year,language,demographic,publication_status,content_rating,state,metadata,protocol_series_id,created_at,updated_at,published_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'published',$10,$11,to_timestamp($12::bigint::double precision),to_timestamp($12::bigint::double precision),to_timestamp($12::bigint::double precision)) ON CONFLICT(protocol_series_id) DO NOTHING",&[&id,&owner_id,&owner_name,&data.title,&data.year,&data.language,&data.demographic,&data.status,&data.rating,&data.metadata,&event.id,&created]).await?
             };
+            // A native title may already be associated while source projection
+            // was pending. Persist its now-visible original provenance/receipt
+            // without replacing any local metadata overlay or bumping versions.
+            if recovered {
+                tx.execute("UPDATE platform.catalog_manga SET metadata=metadata||$2 WHERE id=$1 AND (metadata->>'publication_status' IS DISTINCT FROM 'locally_hosted' OR metadata->'protocol_source_metadata' IS DISTINCT FROM $3::jsonb)", &[&id,&json!({"protocol_source_metadata":metadata,"protocol_publisher":event.pubkey,"publication_scope":"original-protocol","publication_status":"locally_hosted","protocol_event_id":event.id}),&metadata]).await?;
+            }
             // Source records are immutable. Subsequent sweeps preserve local overlays.
             if changed > 0 {
                 create_thread(tx, "manga", &id, &owner_id, &owner_name, &data.title).await?;
@@ -419,6 +437,25 @@ impl CatalogRepository {
             Ok(changed > 0)
         }
     }
+    /// Reconcile after every source in the page, because a child may sort before
+    /// its parent or finish on an earlier page. Both projections must be visible
+    /// before replacing an owner-only pending receipt. Work and locks are bounded;
+    /// busy native sessions are retried by the next ordinary importer page.
+    pub(crate) async fn reconcile_protocol_upload_receipts(tx: &Transaction<'_>) -> ApiResult<usize> {
+        let rows = tx.query("SELECT s.id,s.owner_id,s.committed_chapter_id,s.commit_hash FROM platform.upload_sessions s JOIN platform.protocol_publication_commands p ON p.upload_session_id=s.id AND p.user_id=s.owner_id AND p.catalog_id=s.committed_chapter_id AND p.native_commit_hash=s.commit_hash JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id AND c.protocol_event_id=p.event_id JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE s.state='committed' AND s.committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection') AND p.state='materialized' AND c.deleted_at IS NULL AND NOT c.is_unavailable AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id) ORDER BY s.updated_at,s.id LIMIT 16 FOR UPDATE OF s SKIP LOCKED", &[]).await?;
+        let mut updated = 0;
+        for row in rows {
+            let session: String = row.get(0);
+            let owner: String = row.get(1);
+            let chapter: String = row.get(2);
+            let hash: String = row.get(3);
+            let value: Option<Value> = tx.query_one("SELECT platform.catalog_chapter_json($1)", &[&chapter]).await?.get(0);
+            let Some(value) = value.filter(|value| value["publication_status"] == "locally_hosted" && value["is_unavailable"] == false) else { continue; };
+            updated += tx.execute("UPDATE platform.upload_sessions SET committed_result=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1 AND owner_id=$5 AND state='committed' AND committed_chapter_id=$2 AND commit_hash=$3 AND committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection')", &[&session,&chapter,&hash,&value,&owner]).await? as usize;
+        }
+        Ok(updated)
+    }
+
     async fn recover_native_media(
         tx: &Transaction<'_>,
         chapter: &str,
@@ -572,6 +609,13 @@ mod tests {
         );
     }
     #[test]
+    fn source_title_uses_the_native_character_budget() {
+        let title="題".repeat(300);
+        let projected=project_series(&json!({"titles":{"ja":title},"originalLanguage":"ja"})).unwrap();
+        assert_eq!(projected.title,title);
+        assert!(project_series(&json!({"titles":{"ja":"題".repeat(501)}})).is_err());
+    }
+    #[test]
     fn unknown_language_is_never_changed_to_english() {
         let p = project_series(&json!({"titles":{"ja":"Fixture"}})).unwrap();
         assert_eq!(p.language, "und");
@@ -579,6 +623,16 @@ mod tests {
             &json!({"titles":{"en":"Fixture"},"originalLanguage":"this-tag-exceeds-the-platform"})
         )
         .is_err());
+    }
+    #[test]
+    fn source_language_labels_retain_native_projection_without_public_write_coercion() {
+        for label in ["und", "tam", "ta", "zh-hant", "zh-Hant", "EN"] {
+            assert_eq!(language(label).unwrap(), label.to_ascii_lowercase());
+            let source = json!({"titles":{label:"Exact label"},"originalLanguage":label});
+            let projection = project_series(&source).unwrap();
+            assert_eq!(projection.language, label.to_ascii_lowercase());
+            assert_eq!(projection.metadata["protocol_source_metadata"], source);
+        }
     }
     #[test]
     fn original_descriptors_cannot_become_paths_or_fake_hashes() {
@@ -644,6 +698,7 @@ impl CatalogRepository {
         tx: &Transaction<'_>,
         record: &super::repository::ChapterPublication,
         receipt: &crate::protocol::publication::PublicationReceipt,
+        contract: super::validation::LanguageContract,
     ) -> ApiResult<Value> {
         receipt
             .event
@@ -659,7 +714,7 @@ impl CatalogRepository {
         let alias = manga_node::mangadex_compat::uuid("chapter", &receipt.event.id);
         let mut local = record.clone();
         local.source_id = Some(alias.clone());
-        Self::publish_chapter_after_verified_acceptance(tx, &local, receipt).await?;
+        Self::publish_chapter_after_verified_acceptance(tx, &local, receipt, contract).await?;
         tx.execute("INSERT INTO platform.protocol_resource_ids(kind,source_target,compatibility_id,catalog_id) VALUES('chapter',$1,$2,$3) ON CONFLICT(kind,source_target) DO NOTHING",&[&receipt.event.id,&alias,&record.id]).await?;
         let actual:String=tx.query_one("SELECT catalog_id FROM platform.protocol_resource_ids WHERE kind='chapter' AND source_target=$1",&[&receipt.event.id]).await?.get(0);
         if actual != record.id {

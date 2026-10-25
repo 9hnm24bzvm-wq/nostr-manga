@@ -1,0 +1,38 @@
+{
+  "strict_evidence_commit": "36ebad097445759efdaaf9830ff5e9719901373f",
+  "strict_tested_source": "351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9",
+  "build_tested_source": "351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9",
+  "associated_integration_commit": "d633690e6c220d3ad1baf00748d314c968cad1e8",
+  "frontend_and_contract_diff": [],
+  "strict_product_pin_count": 919,
+  "vite_input_count": 917,
+  "all_vite_input_hashes_match_strict_pins": true,
+  "strict_extra_contract_pins_verified_at_git_source": {
+    "weebdex-platform/contracts/mangadex-5.13.1-inventory.json": "e5f8eac2185d0669dcf52da1f39907f8fa457b6dca8dcef655bebcab46f417cf",
+    "weebdex-platform/contracts/native-settings-template-v1.json": "d17707cc8a529e7fea1feebc647d2cf0c4072f1faa77cc0664dd59052e202c35"
+  },
+  "strict_product_pretty_file_sha256": "a461559d791638aa678e84e57d473699207c907d581aebe9ec43a84b0e4d5426",
+  "strict_product_canonical_json_sha256": "7771f18335b5325dcfc4c764ab7cbcb8b9c096e84c849d85a235cc3cba774ab9",
+  "finite": {
+    "files": 56,
+    "tests": 755,
+    "passed": 755,
+    "failed": 0,
+    "skipped": 0,
+    "raw_log_sha256": "f24447102655915e224f55b3ac1aeda5642a45672d9a2ea98d9fca8091d27492"
+  },
+  "strict_gates": {
+    "0": {
+      "errors": 0,
+      "warnings": 15,
+      "summary_sha256": "53b14930c3d86a5cce95902d7ccc6e1a88fcb8f2a8b6f6817b3964727340fe00"
+    },
+    "1": {
+      "errors": 0,
+      "warnings": 12,
+      "summary_sha256": "b87fc04548fc50c8089dd35da7c19fc495b66f42ed30519c757133e14bfbe45d"
+    }
+  },
+  "guard_receipt_sha256": "81892ea9d0b993d62f1851d60e22bd87c6d060d47b98f2543e3a1f59060a28df",
+  "scope": "Only matching frontend/build inputs and two app contracts are associated. Backend or test-only successors do not inherit a fresh full backend runtime result."
+}

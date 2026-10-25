@@ -1,19 +1,26 @@
+import {cataloguePreviewLibraryUnavailable, CATALOGUE_PREVIEW_LIBRARY_FENCE, assertCataloguePreviewLibraryReady, publicUuidLibraryEnabled, publicAccountLibraryUnavailable, assertAccountLibraryReady} from '../public-api/library-staging';
 import { get, writable, derived } from 'svelte/store';
 import Session from '$lib/stores/Session';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { HTTPError } from '$lib/HTTP';
-import { DeviceStore, type DeviceRecord, type DeviceSnapshot, type Family, catalogueId, normalizeDevice, validateSnapshot, sameScope, type InstanceScope } from './device-store';
+import { DeviceStore, PUBLIC_DEVICE_FORMAT_FENCE, type DeviceRecord, type DeviceSnapshot, type Family, catalogueId, normalizeDevice, validateSnapshot, sameScope, type InstanceScope } from './device-store';
 import { request } from './protocol/indexeddb.js';
+import {uuidPattern} from '../public-api/validation';
 import { LocalLibrary } from './protocol/store.js';
+import type { MigrationReview } from '../public-api/device-id-migration';
+import type { DeviceListNameReview } from './device-list-name';
+export type { DeviceListNameReview } from './device-list-name';
 import { captureNativeAuthority, sameNativeReadAuthority } from '$platform/mutation-authority';
 export type Mode = 'device' | 'account';
 export type ScopeStatus = 'pending' | 'verified' | 'offline' | 'origin_only' | 'migration_required';
-export type LibraryState = { scopeStatus: ScopeStatus; scopeReason?: string; ready: boolean; mode: Mode; revision: number; accountRevision: number; records: DeviceRecord[]; error?: string };
+export type LibraryState = { scopeStatus: ScopeStatus; scopeReason?: string; cachedScopeReady?: boolean; ready: boolean; mode: Mode; revision: number; accountRevision: number; records: DeviceRecord[]; error?: string };
 export const localLibraryState = writable<LibraryState>({ scopeStatus: 'pending', ready: false, mode: 'device', revision: 0, accountRevision: 0, records: [] });
+// Unresolved legacy rows remain in backups/recovery, never in UUID catalogue reads.
+export const isCurrentCatalogueId=(id:unknown)=>typeof id==='string'&&(!publicUuidLibraryEnabled||uuidPattern.test(id));
 export const libraryIdentity = derived([localLibraryState, Session], ([local, account]) => ({
-  ready: local.ready, mode: local.mode, accountId: account?.identity.id ?? null, canUse: local.ready && (local.mode === 'account' ? !!account : local.scopeStatus === 'verified'),
+  ready: local.ready, mode: local.mode, accountId: account?.identity.id ?? null, canUse: !cataloguePreviewLibraryUnavailable && local.ready && (local.mode === 'account' ? !publicAccountLibraryUnavailable && !!account : local.scopeStatus === 'verified'),
   // This is library availability, never an account Session or permission identity.
-  follows: local.mode === 'device' ? (local.scopeStatus !== 'verified' ? {} : Object.fromEntries(local.records.filter(row => row.family === 'series').map(row => [row.id!, [row.status!, row.notification ? 1 : 0]]))) : (account?.follows ?? {})
+  follows: cataloguePreviewLibraryUnavailable ? {} : local.mode === 'device' ? (local.scopeStatus !== 'verified' ? {} : Object.fromEntries(local.records.filter(row => row.family === 'series' && isCurrentCatalogueId(row.id)).map(row => [row.id!, [row.status!, row.notification ? 1 : 0]]))) : (publicAccountLibraryUnavailable ? {} : account?.follows ?? {})
 }));
 export const libraryViewKey = derived([localLibraryState, libraryIdentity], ([local, identity]) => identity.mode === 'device' ? `device:${local.revision}:${local.scopeStatus}` : `account:${identity.accountId ?? 'none'}:${local.accountRevision}`);
 export const captureLibraryView = () => get(libraryViewKey);
@@ -34,6 +41,10 @@ export function assertLibraryContext(context: ReturnType<typeof captureLibraryCo
 // Explicit selections are captured before any storage/network wait. The first
 // persisted mode discovery is permitted once, never a subsequent user selection.
 let selectionEpoch = 0;
+const readerSelectionState = writable({ epoch: 0, pending: false });
+// Read-only notification starts before useMode waits for storage or Session.
+// A reader cannot admit an old-mode action while a new choice is pending.
+export const readerLibrarySelection = { subscribe: readerSelectionState.subscribe };
 export function captureLibraryAdmission() {
   return { authority: captureNativeAuthority(), selectionEpoch, context: get(localLibraryState).ready ? captureLibraryContext() : undefined };
 }
@@ -61,7 +72,7 @@ export function openLibrary(): Promise<void> {
       const apiOrigin = new URL(PUBLIC_API_URL || '/api', window.location.href).origin;
       // Opening local records never waits for the network. Saved scope is read
       // atomically; online identity discovery is an independent bounded check.
-      device = await DeviceStore.open({ origin: apiOrigin, serviceKey: null, catalogNamespace: null }, () => { void refreshLibrary().catch(() => {}); }, () => localLibraryState.update(state => ({ ...state, ready: false, error: 'Local database changed in another tab. Reload before saving.' })));
+      device = await DeviceStore.open({ origin: apiOrigin, serviceKey: null, catalogNamespace: null }, () => { void refreshLibrary().catch(() => {}); }, () => localLibraryState.update(state => ({ ...state, ready: false, error: 'Local database changed in another tab. Reload before saving.' })), {idFormat:publicUuidLibraryEnabled?'public_uuid-v2':'native-v1'});
       protocol = await LocalLibrary.open('weebdex-protocol-library-v1');
       const preference = await protocol.getMeta('weebdexLibraryMode');
       localLibraryState.update(state => ({ ...state, mode: preference === 'account' ? 'account' : 'device' }));
@@ -76,9 +87,9 @@ export function openLibrary(): Promise<void> {
 }
 let scopeVerification: Promise<void> | undefined;
 let verifiedCatalogueScope: InstanceScope | undefined;
+let readerObservedCatalogue: { url: string; scope: InstanceScope; generation: number } | undefined;
 export function verifyCatalogueScope(): Promise<void> {
   if (scopeVerification) return scopeVerification;
-  verifiedCatalogueScope = undefined;
   localLibraryState.update(state => state.scopeStatus === 'migration_required' ? state : ({ ...state, scopeStatus: 'pending', scopeReason: undefined }));
   scopeVerification = (async () => {
     try {
@@ -88,9 +99,10 @@ export function verifyCatalogueScope(): Promise<void> {
       const policy = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await bytesResponse(response, 65536)));
       if (typeof policy.catalog_namespace !== 'string' || !/^[0-9a-f-]{32,36}$/.test(policy.catalog_namespace) || (policy.service_key !== null && policy.service_key !== undefined && !/^[0-9a-f]{64}$/.test(policy.service_key))) throw Error('Instance returned an invalid catalogue scope');
       const liveScope: InstanceScope = { origin: new URL(PUBLIC_API_URL || '/api', window.location.href).origin, catalogNamespace: policy.catalog_namespace, serviceKey: policy.service_key ?? null };
+      readerObservedCatalogue = { url: new URL(PUBLIC_API_URL.replace(/\/$/, '') + '/protocol/capabilities', window.location.href).href, scope: { ...liveScope }, generation: (readerObservedCatalogue?.generation ?? 0) + 1 };
       const result = await device.verifyLiveScope(liveScope);
-      if (result.status === 'verified') { const saved = await device.snapshot(); if (!sameScope(saved.scope, liveScope)) throw Error('Current service identity does not confirm the saved catalogue scope'); verifiedCatalogueScope = liveScope; }
-      localLibraryState.update(state => ({ ...state, scopeStatus: result.status, scopeReason: result.reason }));
+      if (result.status === 'verified') { const saved = await device.snapshot(); if (publicUuidLibraryEnabled ? saved.scope.origin !== liveScope.origin || saved.scope.catalogNamespace !== liveScope.catalogNamespace || !!saved.scope.serviceKey && !!liveScope.serviceKey && saved.scope.serviceKey !== liveScope.serviceKey : !sameScope(saved.scope, liveScope)) throw Error('Current service identity does not confirm the saved catalogue scope'); verifiedCatalogueScope = saved.scope; } else verifiedCatalogueScope = undefined;
+      localLibraryState.update(state => ({ ...state, scopeStatus: cataloguePreviewLibraryUnavailable ? 'migration_required' : result.status, scopeReason: cataloguePreviewLibraryUnavailable ? CATALOGUE_PREVIEW_LIBRARY_FENCE : result.reason, cachedScopeReady:result.status==='verified' }));
     } catch (error) {
       localLibraryState.update(state => state.scopeStatus === 'migration_required' ? ({ ...state, scopeReason: `${state.scopeReason ?? 'A catalogue scope mismatch was detected; native mutations are fenced.'} Scope recheck failed: ${message(error)}. Inspection and backups remain available.` }) : ({ ...state, scopeStatus: 'offline', scopeReason: `Catalogue scope could not be verified: ${message(error)}. Saved local records, edits and backups remain available; current catalogue hydration/publication needs verification.` }));
     } finally { scopeVerification = undefined; }
@@ -98,36 +110,48 @@ export function verifyCatalogueScope(): Promise<void> {
   return scopeVerification;
 }
 export async function assertCatalogueScope() {
+  assertCataloguePreviewLibraryReady();
   await openLibrary();
   if (get(localLibraryState).scopeStatus === 'pending') await scopeVerification;
   const current = get(localLibraryState);
   if (current.scopeStatus !== 'verified') throw new HTTPError(409, current.scopeReason ?? 'Verify this catalogue scope before hydrating native IDs', 'Catalogue scope unverified');
 }
-// Current-catalogue actions may never reinterpret an existing native ID while
-// discovery is pending/offline. Explicit saved-device editing has its own seam.
-function assertCurrentCatalogueScopeValue(scope: InstanceScope) {
-  if (get(localLibraryState).scopeStatus !== 'verified' || !verifiedCatalogueScope || !sameScope(scope, verifiedCatalogueScope)) throw new HTTPError(409, 'Current catalogue identity is not verified. Saved-device inspection, backups and explicit saved-record edits remain available; no current title ID was admitted.', 'Catalogue scope unverified');
+// Hydration and new catalogue actions require live verification. Previously
+// verified same-tab UUID reader progress may save offline to its exact scope.
+export function canSaveLocalProgress(state: LibraryState) { return state.ready && state.mode === 'device' && (state.scopeStatus === 'verified' || publicUuidLibraryEnabled && state.cachedScopeReady === true && (state.scopeStatus === 'offline' || state.scopeStatus === 'pending')); }
+export function assertCurrentCatalogueScopeValue(scope: InstanceScope, allowCachedProgress = false) {
+  assertCataloguePreviewLibraryReady();
+  if (!(get(localLibraryState).scopeStatus === 'verified' || allowCachedProgress && canSaveLocalProgress(get(localLibraryState))) || !verifiedCatalogueScope || !sameScope(scope, verifiedCatalogueScope)) throw new HTTPError(409, 'Current catalogue identity is not verified. Saved-device inspection, backups and explicit saved-record edits remain available; no current title ID was admitted.', 'Catalogue scope unverified');
 }
-async function assertCurrentCatalogueTransaction(meta: IDBObjectStore) { assertCurrentCatalogueScopeValue(await request(meta.get('instanceScope'))); }
+async function assertCurrentCatalogueTransaction(meta: IDBObjectStore, allowCachedProgress = false) { assertCurrentCatalogueScopeValue(await request(meta.get('instanceScope')),allowCachedProgress); }
 export const message = (error: unknown) => error instanceof HTTPError ? error.error : error instanceof Error ? error.message : String(error);
 export async function refreshLibrary() {
   const generation = ++refreshGeneration;
   const snapshot = await device.snapshot();
-  if (generation === refreshGeneration) localLibraryState.update(state => ({ ...state, ready: true, revision: snapshot.revision, records: snapshot.records, error: undefined, ...(snapshot.migration_reason ? { scopeStatus: 'migration_required' as const, scopeReason: snapshot.migration_reason } : {}) }));
+  if (generation === refreshGeneration) localLibraryState.update(state => ({ ...state, ready: true, revision: snapshot.revision, records: snapshot.records, error: undefined, ...(cataloguePreviewLibraryUnavailable ? { scopeStatus: 'migration_required' as const, scopeReason: CATALOGUE_PREVIEW_LIBRARY_FENCE } : {}), ...(snapshot.version === 2 && !publicUuidLibraryEnabled || snapshot.migration_reason ? { scopeStatus: 'migration_required' as const, scopeReason: snapshot.migration_reason ?? PUBLIC_DEVICE_FORMAT_FENCE, cachedScopeReady:false } : {}) }));
 }
 export async function stores() { await openLibrary(); return { device, protocol }; }
 export async function useMode(mode: Mode) {
   if (!['device', 'account'].includes(mode)) throw Error('Unknown library mode');
+  if (mode === 'account') assertAccountLibraryReady();
   const selection = ++selectionEpoch;
-  await openLibrary();
-  if (mode === 'account' && !(await Session.isValid())) throw Error('Sign into a WeebDex account before choosing account-library mode');
-  if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action');
-  const { transaction } = await import('./protocol/indexeddb.js');
-  await transaction(protocol.db, 'meta', 'readwrite', (tx: IDBTransaction) => { tx.objectStore('meta').put(mode, 'weebdexLibraryMode'); });
-  if (selection !== selectionEpoch) return;
-  localLibraryState.update(state => ({ ...state, mode }));
+  readerSelectionState.set({ epoch: selection, pending: true });
+  try {
+    await openLibrary();
+    if (mode === 'account' && !(await Session.isValid())) throw Error('Sign into a WeebDex account before choosing account-library mode');
+    if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action');
+    const { transaction } = await import('./protocol/indexeddb.js');
+    if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action before storage dispatch');
+    await transaction(protocol.db, 'meta', 'readwrite', (tx: IDBTransaction) => { tx.objectStore('meta').put(mode, 'weebdexLibraryMode'); });
+    if (selection !== selectionEpoch) return;
+    localLibraryState.update(state => ({ ...state, mode }));
+  } finally {
+    // A superseded selection must not clear the newer selection's pending fence.
+    if (selection === selectionEpoch) readerSelectionState.set({ epoch: selection, pending: false });
+  }
 }
 export async function localAction<T>(operation: () => Promise<T>): Promise<T> {
+  assertCataloguePreviewLibraryReady();
   await openLibrary();
   try { const result = await operation(); await refreshLibrary(); return result; }
   catch (error) {
@@ -137,7 +161,7 @@ export async function localAction<T>(operation: () => Promise<T>): Promise<T> {
   }
 }
 export async function currentDeviceSnapshot() { await openLibrary(); return device.snapshot(); }
-export async function saveSeries(id: string, status: string, notification = true, assertContext: () => void = () => {}) {
+export async function saveSeries(id: string, status: string, notification = true, assertContext: () => void = () => {}) { assertCataloguePreviewLibraryReady();
   catalogueId(id);
   return localAction(async () => {
     await device.mutate(async (rows, meta) => {
@@ -147,11 +171,11 @@ export async function saveSeries(id: string, status: string, notification = true
     });
   });
 }
-export async function removeSeries(id: string, assertContext: () => void = () => {}) { catalogueId(id); return localAction(() => device.mutate(async (rows, meta) => { assertContext(); await assertCurrentCatalogueTransaction(meta); assertContext(); rows.delete(['series', id]); for (const row of await request(rows.getAll())) if (row.family === 'members' && row.series === id) rows.delete([row.family, row.key]); })); }
+export async function removeSeries(id: string, assertContext: () => void = () => {}) { assertCataloguePreviewLibraryReady(); catalogueId(id); return localAction(() => device.mutate(async (rows, meta) => { assertContext(); await assertCurrentCatalogueTransaction(meta); assertContext(); rows.delete(['series', id]); for (const row of await request(rows.getAll())) if (row.family === 'members' && row.series === id) rows.delete([row.family, row.key]); })); }
 export async function saveSavedSeries(id: string, status: string, notification: boolean) {
   catalogueId(id); return localAction(() => device.mutate(async rows => { const old = await request(rows.get(['series', id])); if (!old) throw Error('Choose an existing saved-device series; current catalogue IDs need verification'); rows.put(normalizeDevice({ ...old, status, notification, updated_at: Math.floor(Date.now() / 1000) })); }));
 }
-export async function updateChapters(mangaId: string, read: string[] = [], unread: string[] = [], assertContext: () => void = () => {}) {
+export async function updateChapters(mangaId: string, read: string[] = [], unread: string[] = [], assertContext: () => void = () => {}) { assertCataloguePreviewLibraryReady();
   catalogueId(mangaId);
   if (read.length + unread.length > 1000) throw Error('Update at most 1000 chapters at once');
   if (read.some(id => unread.includes(id))) throw Error('A chapter cannot be marked read and unread in the same change');
@@ -166,11 +190,11 @@ export async function updateChapters(mangaId: string, read: string[] = [], unrea
   }));
   return { read_updated: readIds.size, unread_updated: unreadIds.size };
 }
-export async function saveProgress(mangaId: string, chapterId: string, page: number, completed: boolean, assertContext: () => void = () => {}) {
+export async function saveProgress(mangaId: string, chapterId: string, page: number, completed: boolean, assertContext: () => void = () => {}) { assertCataloguePreviewLibraryReady();
   catalogueId(mangaId); catalogueId(chapterId);
   assertContext();
   await localAction(() => device.mutate(async (rows, meta) => {
-    assertContext(); await assertCurrentCatalogueTransaction(meta); assertContext();
+    assertContext(); await assertCurrentCatalogueTransaction(meta,true); assertContext();
     const old = await request(rows.get(['chapters', chapterId]));
     assertContext();
     if (old && old.mangaId !== mangaId) throw Error('Chapter belongs to a different saved manga');
@@ -184,6 +208,8 @@ export async function createList(name: string) {
     await device.writeBatch([{ family: 'lists', key: id, id, name, updated_at: Math.floor(Date.now() / 1000) }]); return id;
   });
 }
+export async function previewListName(id: string, assertCurrent = () => {}) { assertCurrent(); await openLibrary(); assertCurrent(); const { previewDeviceListName } = await import('./device-list-name'); assertCurrent(); return previewDeviceListName(device, id, assertCurrent); }
+export async function renameList(review: DeviceListNameReview, name: string, assertCurrent = () => {}) { return localAction(async () => { const { renameDeviceList } = await import('./device-list-name'); assertCurrent(); return renameDeviceList(device, review, name, assertCurrent); }); }
 export async function saveListMember(list: string, series: string, position: number) {
   const row = normalizeDevice({ family: 'members', key: list + ':' + series, list, series, position, updated_at: Math.floor(Date.now() / 1000) });
   return localAction(() => device.mutate(async rows => {
@@ -196,6 +222,9 @@ export async function removeLocalRecord(family: Family, key: string) { return lo
 export const encodeParams = (input: URLSearchParams) => [...input.entries()].map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value)).join('&');
 export const params = (input: URLSearchParams) => new URLSearchParams(input.toString().replace(/^\?/, ''));
 export async function apiRead<T>(path: string, query?: URLSearchParams, account = false, expectedAccount?: string): Promise<T> {
+  if (/^\/(?:manga|chapter|cover|author|group|tag)(?:\/|$)|^\/user\/(?:history|follows)(?:\/|$)/.test(path)) assertCataloguePreviewLibraryReady();
+  if (account) assertAccountLibraryReady();
+  if (publicUuidLibraryEnabled && /^\/(?:manga|chapter|cover|author|group|tag)(?:\/|$)|^\/user\/(?:history|follows)(?:\/|$)/.test(path)) throw new HTTPError(501,'This catalogue read requires its UUID adapter. No native request was sent.');
   const encoded = query ? encodeParams(params(query)) : '';
   const suffix = encoded ? '?' + encoded : '';
   const expectedId = expectedAccount ?? (account ? get(Session)?.identity.id : undefined);
@@ -205,6 +234,8 @@ export async function apiRead<T>(path: string, query?: URLSearchParams, account 
   return response.json();
 }
 export async function accountRequest<T>(path: string, method: string, payload?: unknown, expectedAccountId?: string, assertContext: () => void = () => {}): Promise<{ status: number; body?: T }> {
+  assertCataloguePreviewLibraryReady();
+  assertAccountLibraryReady();
   const expectedId = expectedAccountId ?? get(Session)?.identity.id;
   const context = captureLibraryContext(), sessionGeneration = sessionWriteGeneration;
   const assertCurrentAccount = () => {
@@ -239,13 +270,42 @@ export async function authoritativeAccount(expectedId: string): Promise<CheckSes
   return current;
 }
 export async function isAccountMode() { await openLibrary(); return get(localLibraryState).mode === 'account'; }
-export type ImportReview = { snapshot: DeviceSnapshot; expectedRevision: number; source: string; collisions?: number; accountId?: string };
+export type ImportReview = { snapshot: DeviceSnapshot; expectedRevision: number; source: string; collisions?: number; accountId?: string; foreignOwner?: boolean };
+export type DeviceBackupRestoreReview = Readonly<{ mode: 'merge' | 'replace'; summary: MigrationReview['summary']; backup: MigrationReview['backup'] }>;
+const deviceBackupPreviews = new WeakMap<ImportReview, { device: DeviceStore; ownerId: string | null }>();
+const deviceBackupRestores = new WeakMap<DeviceBackupRestoreReview, { device: DeviceStore; review: MigrationReview; assertCurrent: () => void }>();
 export async function previewImport(file: File): Promise<ImportReview> {
   if (file.size > 256 * 1024 * 1024) throw Error('Backup exceeds the 256 MiB import safety limit');
   const current = await currentDeviceSnapshot();
   const snapshot = validateSnapshot(JSON.parse(await file.text()));
   const keys = new Set(current.records.map(row => row.family + ':' + row.key));
-  return { snapshot, expectedRevision: current.revision, source: file.name, collisions: snapshot.records.filter(row => keys.has(row.family + ':' + row.key)).length };
+  const result: ImportReview = { snapshot, expectedRevision: current.revision, source: file.name, collisions: snapshot.records.filter(row => keys.has(row.family + ':' + row.key)).length };
+  if (snapshot.version === 2) {
+    const { freezeLibrary } = await import('../public-api/device-id-state');
+    result.foreignOwner = current.version !== 2 || snapshot.ownerId !== current.ownerId;
+    freezeLibrary(result);
+    deviceBackupPreviews.set(result, { device, ownerId: current.version === 2 ? current.ownerId : null });
+  }
+  return result;
+}
+// Choosing a restore mode prepares a frozen exact-state review. A separate
+// confirmation commits only that review; no signer, relay or account is involved.
+export async function prepareDeviceBackupImport(review: ImportReview, mode: 'merge' | 'replace', admitForeignOwner: boolean, assertCurrent: () => void): Promise<DeviceBackupRestoreReview> {
+  const preview = deviceBackupPreviews.get(review);
+  if (!preview || preview.device !== device || review.snapshot.version !== 2) throw Error('Preview this device backup before reviewing a restore.');
+  if (!preview.ownerId) throw Error('Verify this browser’s catalogue scope, then preview the backup again.');
+  const current = () => { assertCurrent(); if (preview.device !== device) throw Error('The device library changed. Preview the backup again.'); };
+  current();
+  const prepared = await device.prepareRestore(review.snapshot, { expectedRevision: review.expectedRevision, ownerId: preview.ownerId, mode, admitForeignOwner, assertCurrent: current });
+  current();
+  const result = Object.freeze({ mode, summary: prepared.summary, backup: prepared.backup });
+  deviceBackupRestores.set(result, { device, review: prepared, assertCurrent: current }); return result;
+}
+export async function applyDeviceBackupImport(review: DeviceBackupRestoreReview, assertCurrent: () => void, watchCurrent?: (changed: () => void) => () => void) {
+  const prepared = deviceBackupRestores.get(review);
+  if (!prepared || prepared.device !== device) throw Error('Prepare and confirm a fresh device-backup restore review.');
+  deviceBackupRestores.delete(review);
+  return localAction(() => prepared.device.restore(prepared.review, () => { prepared.assertCurrent(); assertCurrent(); }, watchCurrent));
 }
 export async function applyImport(review: ImportReview, mode: 'merge' | 'replace', assertContext?: (scope: InstanceScope) => void) {
   if (review.accountId) {
@@ -253,6 +313,18 @@ export async function applyImport(review: ImportReview, mode: 'merge' | 'replace
     await authoritativeAccount(review.accountId);
   }
   return localAction(() => device.import(review.snapshot, review.expectedRevision, mode, review.accountId || review.source === 'Reviewed catalogue import' || assertContext ? scope => { if (review.accountId || review.source === 'Reviewed catalogue import') assertCurrentCatalogueScopeValue(scope); assertContext?.(scope); } : undefined));
+}
+// Reviewed CSV/imported rows merge into the existing owner-bound library;
+// they are not fabricated v1/v2 backups and cannot replace migration sidecars.
+export async function applyCatalogueRecords(records:DeviceRecord[],expectedRevision:number,scope:InstanceScope,assertCurrent:()=>void){
+  const checked=records.map(normalizeDevice);
+  return localAction(()=>device.mutate(async(rows,meta)=>{
+    assertCurrent();const current=await request(meta.get('instanceScope'));assertCurrent();
+    if(!sameScope(scope,current))throw new HTTPError(409,'Catalogue scope changed. Review the import again.');
+    assertCurrentCatalogueScopeValue(current);
+    for(const row of checked){const old=await request(rows.get([row.family,row.key]));assertCurrent();if(!old||row.updated_at>old.updated_at)rows.put(row);}
+    assertCurrent();
+  },expectedRevision));
 }
 export async function exportBackup() {
   const snapshot = await currentDeviceSnapshot();
@@ -332,4 +404,14 @@ export function applyAccountFollow(context: ReturnType<typeof captureLibraryCont
   const follows = { ...(account.follows ?? {}) };
   if (value) follows[id] = value as typeof follows[string]; else delete follows[id];
   Session.set({ ...account, follows });
+}
+
+// Bounded reader seam: no snapshot(), getAll(), copied history, or write authority.
+// The caller must recheck this identity before and after its owned readonly transaction.
+export function readerLibrarySource() {
+  const state = get(localLibraryState);
+  return { context: captureLibraryContext(), admission: captureLibraryAdmission(), selectionPending: get(readerSelectionState).pending, ready: state.ready, mode: state.mode, revision: state.revision, accountRevision: state.accountRevision,
+    scopeStatus: state.scopeStatus, reason: state.error ?? state.scopeReason,
+    observedCatalogue: readerObservedCatalogue && { ...readerObservedCatalogue, scope: { ...readerObservedCatalogue.scope } },
+    scope: verifiedCatalogueScope && { ...verifiedCatalogueScope }, db: state.ready && device ? device.db : undefined };
 }

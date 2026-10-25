@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "reviewed_commit": "cb89d348aa7e6a50f79286b555b38ebd2b9a18b8",
+  "reviewed_tree": "e1f0ce48ce9c91c8ad990e2a1033cf1231af6002",
+  "status": "cleared",
+  "blockers": [],
+  "independently_rerun": [
+    { "name": "focused_node_source_and_control_seams", "passed": 140, "failed": 0 },
+    { "name": "closed_journey_projection_and_gate_tests", "passed": 13, "failed": 0 }
+  ],
+  "original_native_assertions_preserved": true,
+  "capacity_bounds_and_cleanup_preserved": true,
+  "capacity_cause_proven": false,
+  "browser_acceptance": "unrun",
+  "native_capacity_acceptance": "unrun",
+  "receipt_only_change": true
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "recovered-upload-fixture-early-response-source-v1",
+  "parent_commit": "f2ec4b66a0e1b7214883f7830f43bb97ff9a7cd4",
+  "source_files": [
+    {
+      "path": "tests/runtime/browser_fixture.py",
+      "bytes": 112887,
+      "sha256": "b51600aa499ef8d5330482e05b444aa5ca868aaa6c3ad6c7cfd155d6b1052551"
+    },
+    {
+      "path": "tests/ci/test_browser_fixture_early_response_recovery.py",
+      "bytes": 22204,
+      "sha256": "9735d4cd43df0ccf33a71a764c6dd34ecff2293e52e89b5cb2d8e8c2a5d88069"
+    },
+    {
+      "path": "docs/verification/public-upload-fixture-early-response-recovery.md",
+      "bytes": 3330,
+      "sha256": "8245b8e9e2b43c0314d773e15a5c24369941e0e82546541eb2a09535d1130549"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/browser01-browser_fixture.py.retained",
+      "bytes": 106571,
+      "sha256": "4d04a5769b3651f31d58e4b0f0126262e0555664ef2931b3929c3a190ec15b1f"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/browser01-failed-receipt.json",
+      "bytes": 11992,
+      "sha256": "b003447052bcd4824b1e7c26248b6fe987f15d4a07f04a87d1dabc309590f48a"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/browser01-filtered-public-log.json",
+      "bytes": 1358,
+      "sha256": "f2f7a5ae93b669677b5a5fb59ef8acda112058e7d50eefb47b92c5259caab60e"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/browser01-independent-result.json",
+      "bytes": 3039,
+      "sha256": "d6e574926c5ac7e36b9469565f4f2a64fb0f7946b9637d1c6d71c377967fe1b2"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/completion-first-28.log",
+      "bytes": 4554,
+      "sha256": "0be2fa5f4cffdda8e4a822bc06b7fd4bb2db0de9b824619615ab5a542e566006"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/completion-independent-pure-result.json",
+      "bytes": 1673,
+      "sha256": "32f20a1be3d66d36af21ded540999fd6f44da330c177b11a4e9697e8884d8d64"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/completion-independent-source-review.json",
+      "bytes": 2481,
+      "sha256": "c228e74f331d451521bdf548f6ff443223d88f33a2c45543fe5d738db8ca7851"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/independent-pure-result.json",
+      "bytes": 1579,
+      "sha256": "810b0a3dba809913c52acfa20ef3c78c3f89c1257ca93e6480708dece6ab274d"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/independent-source-review.json",
+      "bytes": 2898,
+      "sha256": "02c2965c801775811d2662e25480a40600757c26343b0cb826aaf0e4f9c741e6"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/pure-first-25.log",
+      "bytes": 4042,
+      "sha256": "5015f28ed2b7d7d0ad93397c1dac3f00979320c47148878bb68574becfffa4f3"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/reviewed25-browser_fixture.py.retained",
+      "bytes": 112626,
+      "sha256": "00268d6e868cb85d770930f2e718d3453b0fd05605bffaf4c37b147919768b66"
+    },
+    {
+      "path": "test-evidence/public-api/upload-product-recovery/fixture-early-response-source/reviewed25-test.py.retained",
+      "bytes": 18568,
+      "sha256": "dc3bb08abcdd1a045114c14aef82f5de51e5e32b3649686920dec5ef4740d4e4"
+    }
+  ],
+  "closed_path_count": 16,
+  "scope": [
+    "Named closed operational request diagnostics before dispatch; no arbitrary errors, headers or bodies persisted.",
+    "Exact oversized POST only: real same-connection parsed response and complete bounded framing; send-side error does not imply413; no replay.",
+    "Five-second absolute socket watchdog and separately bounded one-second timer cleanup; incomplete, late, missing or unsettled results fail.",
+    "Publish exact current-run saved operational receipt path/hash after atomic save, before finalready; clear old marker on listener start."
+  ],
+  "retained_browser01": {
+    "outcome": "failed before browser command",
+    "actual_failing_request_or_status": "not retained",
+    "oversized_post_cause": "source-supported candidate only",
+    "physical": "nested teardown clean and41 saved births absent; original outer exact-port proof missing, lifecyclefalse retained"
+  },
+  "qualification": {
+    "predecessor_pure": {
+      "pass": 25,
+      "fail": 0,
+      "scope": "AST/fake HTTP connection, socket and timer; no actual network/thread/fixture."
+    },
+    "successor_pure": {
+      "pass": 28,
+      "fail": 0,
+      "scope": "Same helper plus3 source-extracted completion publication/failure cases; not53 independent cases."
+    }
+  },
+  "runtime_dependencies": {
+    "added_import": "Python standard-library http.client.HTTPConnection",
+    "new_runtime_files": []
+  },
+  "next_real_gate": {
+    "operational_marker": "fixed expected path + saved sha256 + exact current run_directory",
+    "oversized_row": "actual413, expected413, passedtrue, declared1048577 bytes, completebody, deadline_thread_settledtrue, deadline_expiredfalse",
+    "before_browser_command": true
+  },
+  "limits": [
+    "Original Broken pipe is not an observed413 and is not relabeled.",
+    "Actual early-response behavior and browser/UI/upload qualification remain pending the sole-owner fresh fixture.",
+    "Product, frontend artifact, application/provisioner binaries and browser journey source are unchanged.",
+    "No raw database, runtime config, credentials, private keys or raw child/PostgreSQL logs copied; public log is explicitly filtered."
+  ]
+}

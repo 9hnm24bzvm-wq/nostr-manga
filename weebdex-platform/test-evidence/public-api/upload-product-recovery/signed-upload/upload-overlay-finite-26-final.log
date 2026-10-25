@@ -1,0 +1,34 @@
+✔ public upload uses the existing explicit selected-instance default-off flag (1.267857ms)
+✔ exact original/composed/output bytes: src/lib/components/upload/UploadChapter.svelte (1.617913ms)
+✔ exact original/composed/output bytes: src/lib/components/upload/UploadChapterPages.svelte (4.19616ms)
+✔ exact original/composed/output bytes: src/lib/components/upload/UploadChapterPagesEntry.svelte (3.747205ms)
+✔ exact original/composed/output bytes: src/routes/(app)/title/[id]/upload/+page.svelte (0.386461ms)
+✔ exact original/composed/output bytes: src/routes/(app)/chapter/[id]/edit/+page.svelte (0.314123ms)
+✔ exact original/composed/output bytes: src/routes/(app)/title/[id]/upload/+layout.svelte (0.29256ms)
+✔ exact original/composed/output bytes: src/routes/(app)/chapter/[id]/edit/+layout.svelte (0.215814ms)
+✔ exact original/composed/output bytes: src/lib/components/upload/UploadChapterGroups.svelte (0.377889ms)
+✔ query virtual modules and unrelated paths are never transformed (0.391989ms)
+✔ Vite composes signed upload only after original source and catalogue overlays (0.322275ms)
+✔ public route uses current selected signer and actual bound account instead of native account lookup (0.250106ms)
+✔ normal begin and file deletion retain actual public200 statuses (0.33275ms)
+✔ single real owner is preserved while selection guards cross asynchronous file work (0.269515ms)
+✔ unsupported edits and replacement refuse before native transport (0.22611ms)
+✔ approval decision precedes commit and uses the actual response boolean (0.225549ms)
+✔ signed preview is exact file/context scoped, independently byte checked by adapter, and cleaned on unmount (0.182344ms)
+✔ exact current owner uncertain clears stale presentation and fences all local mutation affordances (0.294383ms)
+✔ exact current owner accepted-unavailable clears stale presentation and fences all local mutation affordances (0.173872ms)
+✔ no unresolved owner state does not fake an accepted state (0.116926ms)
+✔ receipt recovery is explicit exact-session read with no implicit replay (0.141853ms)
+✔ manifest closes the exact integration files and original source remains untouched (0.347844ms)
+✔ read-only session flags disable metadata and terms while dispatch is in flight (0.138018ms)
+✔ locked-group affordances use actual bound roles and never cookie identity (0.127712ms)
+✔ explicit accepted empty-body200 or202 is handled without inventing a chapter or refusal toast (0.323526ms)
+✔ mount receipt-read failure exposes the persisted exact-session recovery control (0.081542ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 124.123574

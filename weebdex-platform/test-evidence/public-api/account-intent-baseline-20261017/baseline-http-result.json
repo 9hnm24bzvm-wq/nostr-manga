@@ -1,0 +1,220 @@
+{
+  "sourceParent": "c40e813a5b2e7342e1a6ac9a6eb6a32457f812c3",
+  "sourceInputs": 420,
+  "sourceUnchanged": true,
+  "executable": {
+    "path": "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/public_chapter_writes-0e138f93b59d6b67",
+    "sha256": "819d0fc5d44593902eddb1bec5d63f84f0e99b44bd1c63c610279191e2275d0b",
+    "bytes": 80008144
+  },
+  "command": [
+    "bash",
+    "weebdex-platform/scripts/run-auth-tests.sh",
+    "/workspace/shared/nostr-manga-recovery-20261017/pipeline-cargo-target/debug/deps/public_chapter_writes-0e138f93b59d6b67",
+    "--ignored",
+    "--exact",
+    "account_intent_legacy_rebind_diagnostic",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "guardExitCode": 0,
+  "elapsedSeconds": 1.817,
+  "minimumObservedFreeBytes": 5452017664,
+  "floorBytes": 4294967296,
+  "stopReason": null,
+  "observations": [
+    {
+      "actualActor": "PublicUploadUser2",
+      "capturedAccount": "PublicUploadUser1",
+      "method": "PUT",
+      "path": "/api/v1/chapter/b6e9ed0d-a2c3-820a-84f3-cd039d1e762d",
+      "status": 200
+    },
+    {
+      "actualActor": "PublicUploadUser2",
+      "capturedAccount": "PublicUploadUser1",
+      "method": "POST",
+      "path": "/api/v1/chapter/d6f36987-1579-80f1-af04-f93139d395e6/claim",
+      "status": 200
+    },
+    {
+      "actualActor": "PublicUploadUser2",
+      "capturedAccount": "PublicUploadUser1",
+      "method": "DELETE",
+      "path": "/api/v1/chapter/b42ffaa6-4c0d-861c-a43b-7eb09453d3f8",
+      "status": 202
+    },
+    {
+      "actualActor": "PublicUploadUser2",
+      "capturedAccount": "PublicUploadUser1",
+      "method": "POST",
+      "path": "/api/v1/upload/begin",
+      "status": 200
+    },
+    {
+      "actualActor": "PublicUploadUser2",
+      "capturedAccount": "PublicUploadUser1",
+      "method": "POST",
+      "path": "/api/v1/upload/begin/90767010-0588-80a1-b499-87890f975378",
+      "status": 200
+    },
+    {
+      "actualActor": "PublicUploadUser2",
+      "capturedAccount": "PublicUploadUser1",
+      "method": "POST",
+      "path": "/api/v1/report",
+      "status": 201
+    },
+    {
+      "actualActor": "PublicUploadUser2",
+      "capturedAccount": "PublicUploadUser1",
+      "method": "GET then DELETE",
+      "path": "/api/v1/upload discovery/cancel",
+      "status": 200
+    }
+  ],
+  "capturedAccountInvariantPassed": false,
+  "confirmedDriftCases": 7,
+  "diagnosticRustCase": "reproduces actual legacy outcomes; not a passing feature-acceptance case",
+  "cleanupPath": "weebdex-platform/test-runtime/auth-50th3ez1/cleanup.json",
+  "cleanupSha256": "66175bb2a780be2edeb866b85c413b89fe5291e7a21b6060d98d8075a363e120",
+  "cleanup": {
+    "postgres_cleanup": "verified_stopped",
+    "exit": 0,
+    "forced": false,
+    "closed_port": true,
+    "remaining_owned_processes": [],
+    "cleanup_errors": [],
+    "error": null,
+    "test_timeout_seconds": 180,
+    "captured_births": [
+      {
+        "pid": 10,
+        "start_ticks": 6094970,
+        "group": 10,
+        "session": 10
+      },
+      {
+        "pid": 19,
+        "start_ticks": 6094984,
+        "group": 10,
+        "session": 10
+      },
+      {
+        "pid": 20,
+        "start_ticks": 6094984,
+        "group": 10,
+        "session": 10
+      },
+      {
+        "pid": 23,
+        "start_ticks": 6095037,
+        "group": 23,
+        "session": 23
+      },
+      {
+        "pid": 24,
+        "start_ticks": 6095038,
+        "group": 24,
+        "session": 24
+      },
+      {
+        "pid": 25,
+        "start_ticks": 6095038,
+        "group": 25,
+        "session": 25
+      },
+      {
+        "pid": 27,
+        "start_ticks": 6095038,
+        "group": 27,
+        "session": 27
+      },
+      {
+        "pid": 28,
+        "start_ticks": 6095038,
+        "group": 28,
+        "session": 28
+      },
+      {
+        "pid": 29,
+        "start_ticks": 6095038,
+        "group": 29,
+        "session": 29
+      },
+      {
+        "pid": 30,
+        "start_ticks": 6095042,
+        "group": 30,
+        "session": 30
+      },
+      {
+        "pid": 32,
+        "start_ticks": 6095044,
+        "group": 32,
+        "session": 32
+      },
+      {
+        "pid": 34,
+        "start_ticks": 6095048,
+        "group": 34,
+        "session": 34
+      },
+      {
+        "pid": 40,
+        "start_ticks": 6095049,
+        "group": 40,
+        "session": 40
+      },
+      {
+        "pid": 43,
+        "start_ticks": 6095091,
+        "group": 43,
+        "session": 43
+      },
+      {
+        "pid": 44,
+        "start_ticks": 6095092,
+        "group": 44,
+        "session": 44
+      },
+      {
+        "pid": 45,
+        "start_ticks": 6095092,
+        "group": 45,
+        "session": 45
+      },
+      {
+        "pid": 46,
+        "start_ticks": 6095092,
+        "group": 46,
+        "session": 46
+      },
+      {
+        "pid": 47,
+        "start_ticks": 6095092,
+        "group": 47,
+        "session": 47
+      },
+      {
+        "pid": 48,
+        "start_ticks": 6095092,
+        "group": 48,
+        "session": 48
+      }
+    ],
+    "unconfirmed_births": [],
+    "unconfirmed_child_pids": [],
+    "test_returncode": 0,
+    "postgres_returncode": 0,
+    "startup_timeout_seconds": 10,
+    "cleanup_phase_seconds": [
+      15,
+      5,
+      5
+    ]
+  },
+  "logSha256": "c529f2c9f2c587efa46a423e14cdea428481eed70060c60c6d4869ac5ab0d57b",
+  "browserExecuted": false,
+  "externalPublication": false
+}

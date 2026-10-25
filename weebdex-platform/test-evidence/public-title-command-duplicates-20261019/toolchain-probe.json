@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-19T01:28:36.787382+00:00",
+  "executables": {
+    "rustc": null,
+    "cargo": null,
+    "psql": null,
+    "postgres": null,
+    "strfry": null,
+    "node": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node"
+  }
+}

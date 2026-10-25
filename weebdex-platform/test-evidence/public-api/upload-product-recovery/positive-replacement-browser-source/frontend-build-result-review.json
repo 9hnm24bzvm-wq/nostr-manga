@@ -1,0 +1,75 @@
+{
+  "schema": "independent-replacement-frontend-build-result-v1",
+  "reviewed_at_utc": "2026-10-17T06:44:41.911893+00:00",
+  "decision": "four_exact_syntax_Vite_phases_passed_and_artifacts_associated",
+  "source_commit": "e45052ca987a18d3be1fa9792c210e6840a78713",
+  "source_tree": "79979166528041d1560f1915cc6a8a6aa3041de1",
+  "owner_sha256": "29f883db14c8a9aece1343ae020e9eac55db6d3c1a07d2f2282f64d940aa7f3c",
+  "phases": {
+    "syntax-default-02": {
+      "receipt_sha256": "d55d9927e957e5976103fdd8329732b986d9d7fc74038b466bb39f3db1a949fd",
+      "log_sha256": "0db94aec448a3fcd55f06d8fde8320dde35a57a6da27ba164d5bfcc3a31b38c4",
+      "pipeline_sha256": "074c4ac9270080b22cb3f3804dce19c5ff548f3fa01bebcca1faba68b757056d",
+      "exit_code": 0,
+      "child_reaped": true,
+      "terminal_errors": []
+    },
+    "syntax-enabled-02": {
+      "receipt_sha256": "0f33e491df61caf685f74188280582776160466227f74e519d858b4511e8570e",
+      "log_sha256": "c6387f5c5a63d9f1fd62acdc73896e410e346cc88f91e5f74ec8376ff512971f",
+      "pipeline_sha256": "d96413d5708abba5a0178b97731803ae53d6cadf74f7b00337a304635a1ba1f3",
+      "exit_code": 0,
+      "child_reaped": true,
+      "terminal_errors": []
+    },
+    "vite-default-02": {
+      "receipt_sha256": "d398310a9f21db1598751aac408ec47415d084e405dc713f0ccbd00aec65d14c",
+      "log_sha256": "50356ce34ce86facfbc10672e15faa3061c5d27dd15f8a52a958e9855c670c55",
+      "pipeline_sha256": "fd4d31f5b0f7fa96ae88643ea2854b86e3d59880badc7457126ad62835609715",
+      "exit_code": 0,
+      "child_reaped": true,
+      "terminal_errors": []
+    },
+    "vite-enabled-02": {
+      "receipt_sha256": "f21a262859d90bf139e794076beec53d39f70377df306fca0b1c110d9e0f6d07",
+      "log_sha256": "42b2d22b8ec0f445f5137af2cc9de3551dd76d8e265c0eecfc9d44bc86355629",
+      "pipeline_sha256": "06eb5cf592cf2511edba85c6f0c08ddffbb704f6f1fff156c0a08f4d2b995e87",
+      "exit_code": 0,
+      "child_reaped": true,
+      "terminal_errors": []
+    }
+  },
+  "artifacts": {
+    "default": {
+      "directory": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-artifacts/default-02",
+      "files": 427,
+      "bytes": 7106077,
+      "inventory_sha256": "bcdd58ec0e4f890beeb5ae60ddf7fd20629456ca61f7b7840eecc56a2ce8499c",
+      "index_sha256": "bdb1295b2d867dc0430d89481f1b9dd597c56b026ec41c52c43fe3994a221242",
+      "built_and_retained_members_bytes_modes_exact": true
+    },
+    "enabled": {
+      "directory": "/workspace/shared/nostr-manga-recovery-20261017/replacement-frontend-artifacts/enabled-02",
+      "files": 432,
+      "bytes": 7170738,
+      "inventory_sha256": "a091256ae0586a4b15ad1f65efea678a30a9f1bb1102e42048b94ebae78d04e4",
+      "index_sha256": "284f891128565d7a1afa588a4e08c632d3af4941351ae763cb11fe0c466e944d",
+      "built_and_retained_members_bytes_modes_exact": true
+    }
+  },
+  "enabled_manifest_sha256": "36d0067138f1af475deafa24953879260eee21b6e18f37882effbbb8d3a119aa",
+  "current_input_recheck": {
+    "source_files": 858,
+    "dependency_entries": 39226,
+    "held_browser_pins": 1167,
+    "held_original_frontend_members": 432,
+    "all_exact": true
+  },
+  "limits": [
+    "Build/source association only; no actual replacement browser or rendered UI claim.",
+    "Strict02 separately passed 0 errors/15 warnings in each profile.",
+    "The backend application1/1 pass with outer-owner failure remains unchanged.",
+    "Original browser03 escalation remains held.",
+    "Reviewer ran no compiler, browser, service or socket."
+  ]
+}

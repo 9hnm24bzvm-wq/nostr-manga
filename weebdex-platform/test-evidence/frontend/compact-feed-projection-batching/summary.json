@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "status": "source-seams-passed-native-unverified",
+  "performance_improvement_proven": false,
+  "hosted_root_cause_uniquely_established": false,
+  "base_commit": "94c00b8b0688b121499743ed213e465eec69bc37",
+  "base_tree": "6950c9b7a819874d630831e61ea1907a0c8c40fc",
+  "verified_hosted_observation": {
+    "run_id": 38584846100,
+    "public_commit": "e1ea103f2d8c0d8091eb63acf11f240c1e350591",
+    "tree": "6950c9b7a819874d630831e61ea1907a0c8c40fc",
+    "batches": [
+      "ui-feed",
+      "ui-reader"
+    ],
+    "http_outcome": "unavailable503",
+    "database_failure": "query-canceled",
+    "source_snapshot_files": 1038,
+    "cancellation_category_does_not_uniquely_prove_statement_timeout": true
+  },
+  "change": {
+    "scope": "public catalogue chapter feeds; request-local materialized selected parent/group DTOs",
+    "new_function_signature": "platform.catalog_chapter_json(text,jsonb,jsonb)",
+    "new_function_migration": 87,
+    "pr28_prerequisite_migration": 86,
+    "pr28_prerequisite_source_commit": "04e4edc",
+    "full_pr28_runtime_integrated": false,
+    "ordered_manifest_tail": [
+      85,
+      86,
+      87
+    ],
+    "cross_request_cache": false,
+    "private_library_or_authorization_change": false,
+    "runtime_ddl": false,
+    "new_application_dependencies": false,
+    "timeouts_or_pool_limits_changed": false,
+    "original_one_argument_dto_changed": false,
+    "native_postgresql_deadpool_preserved": true
+  },
+  "structural_shared_parent_group_page_example": {
+    "returned_chapters": 100,
+    "former_parent_dto_expressions": 101,
+    "new_parent_dto_materializations": 1,
+    "former_group_dto_expressions": 201,
+    "new_group_dto_materializations_including_parent": 2,
+    "measurement": false,
+    "qualifier": "Expression bounds for this specific shared-parent/group shape, not SQL CPU/duration/function-call measurements."
+  },
+  "source_equivalence": {
+    "old_filter_sort_pagination_setup_identical": true,
+    "frozen_old_query_matches_former_actual_generation_for_compact_preflight": true,
+    "historical_migration_files_unchanged": 83,
+    "pr28_86_byte_identical": true,
+    "pr28_86_sha256": "04d617d8836d47d7ab572c03ac7dc2e3a5b362415bffe34f99d94d3ed07b87b6",
+    "baseline_query_sha256": "39394eb66e5a479bf2f5c60ec80335f57b4ea8aa86a56329a6d96b55e091eaf0"
+  },
+  "verification": {
+    "rust_library": {
+      "passed": 72,
+      "failed": 0,
+      "ignored": 0,
+      "command": "cargo test --offline --locked --manifest-path weebdex-platform/backend/Cargo.toml --lib -j2"
+    },
+    "rust_all_targets": {
+      "status": "passed",
+      "existing_warning": "unused gif helper in protocol_bridge_http"
+    },
+    "native_regression": {
+      "status": "compiled-only-not-executed",
+      "command": "cargo test --offline --locked --manifest-path weebdex-platform/backend/Cargo.toml --test catalog_feed_projection --no-run -j2",
+      "run_hook": "bash weebdex-platform/scripts/run-feed-projection-tests.sh",
+      "finite_outer_deadline_seconds": 180,
+      "asserted_statement_budget_seconds": 5,
+      "asserted_lock_budget_seconds": 1,
+      "coverage": [
+        "genuine native HTTP200 required",
+        "frozen former query success or actual cancellation observation",
+        "complete first-page parity if former query succeeds",
+        "unconditional canonical DTO samples from every nonempty page",
+        "all505IDs exactly once over6 pages and a terminal seventh page",
+        "second parent and no groups preserve506case",
+        "nested parent equals response map",
+        "full parent groups outside selected language/page",
+        "multiple sorted groups",
+        "mapped/unmapped and distinct-title updates",
+        "ascending/zero-limit/initial-empty",
+        "missing parent/group FK and missing-parent404",
+        "soft-deleted groups and chapters",
+        "parent state/flag/source/tombstone withdrawal",
+        "stale parent argument cannot bypass canonical visibility",
+        "chapter source withdrawal",
+        "explicit is_unavailable=true chapter retained with canonical DTO parity and available-language rules",
+        "zero-limit and initial-empty total/data/map assertions together"
+      ]
+    },
+    "python_ci": {
+      "passed": 44,
+      "failed": 0
+    },
+    "compact_node": {
+      "passed_cases": 46,
+      "http_classification_cases": 511
+    },
+    "library_wiring_node": {
+      "passed_cases": 61
+    },
+    "original_frontend_parity": {
+      "files": 676,
+      "identical": true
+    },
+    "changed_rust_format": "passed",
+    "script_shell_syntax": "passed",
+    "git_diff_check": "passed"
+  },
+  "postgres_restore": {
+    "status": "blocked",
+    "source": "existing unchanged pinned official bootstrap",
+    "first_prerequisite": "official Debian bison archive",
+    "http_status": 403,
+    "subsequent_poll": "automatic approval review was cancelled",
+    "terminal_owned_receipt_written": false,
+    "continuing_owned_download_or_build_observed": false,
+    "alternate_route_or_retry_attempted": false,
+    "postgres_installed_or_started": false
+  },
+  "not_executed": [
+    "real PostgreSQL migration/query/HTTP regression",
+    "native before-after performance or EXPLAIN evidence",
+    "hosted CI/browser rerun",
+    "restricted-runtime role/attestation integration",
+    "publication or upload"
+  ],
+  "limitations": [
+    "Query cancellation is observed, but the sole cause of the hosted failure is not yet proven.",
+    "The new batching structure and preserved projection body pass source-level/unit/type seams; SQL execution and measured performance remain unverified.",
+    "Only the exact PR28 additive table migration is carried; its runtime attestation lifecycle remains a separate integration and verification requirement."
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "productionSourceCommit": "0e978d36c57d935f830650248a442fa20a923387",
+  "correctedNativeTestCommit": "729ce95873a1d5594f5629a908f9c247fc4727b6",
+  "actualDomTestCommit": "b76308ad1e42650c2acbb31ba443445e0004e328",
+  "preFixAcceptanceInvariant": {
+    "commit": "ad6c76bf0b39cd96b432e69eb79f41280f0d48eb",
+    "failedAccountSequences": 7,
+    "preserved": true
+  },
+  "correctedActualHttp": {
+    "casesPassed": 1,
+    "seconds": 1.63,
+    "accountIntentSequences": 7,
+    "observations": {
+      "discoveryRebindStatus": 409,
+      "foreignSessionsUnchanged": true,
+      "retainedSessionOwnerStatus": 404,
+      "writes": [
+        {
+          "actualActor": "PublicUploadUser1",
+          "method": "PUT",
+          "path": "/api/v1/chapter/dfd6b181-c95a-842e-b3c5-24e79184ac6c",
+          "rebindStatus": 409,
+          "rollback": true,
+          "sameAccountStatus": 200
+        },
+        {
+          "actualActor": "PublicUploadUser1",
+          "method": "POST",
+          "path": "/api/v1/chapter/79246fab-b8e8-8179-af44-353d138f386c/claim?expectedAccountId=eb17aa49-55a9-8b48-9d82-365eabe51b76",
+          "rebindStatus": 409,
+          "rollback": true,
+          "sameAccountStatus": 200
+        },
+        {
+          "actualActor": "PublicUploadUser1",
+          "method": "DELETE",
+          "path": "/api/v1/chapter/bbb43770-987b-80fd-804d-ccf2d27a5b6f?expectedAccountId=eb17aa49-55a9-8b48-9d82-365eabe51b76",
+          "rebindStatus": 409,
+          "rollback": true,
+          "sameAccountStatus": 202
+        },
+        {
+          "actualActor": "PublicUploadUser1",
+          "method": "POST",
+          "path": "/api/v1/upload/begin",
+          "rebindStatus": 409,
+          "rollback": true,
+          "sameAccountStatus": 200
+        },
+        {
+          "actualActor": "PublicUploadUser1",
+          "method": "POST",
+          "path": "/api/v1/upload/begin/27c34710-6cc9-81dd-a5a0-7af764fb280f",
+          "rebindStatus": 409,
+          "rollback": true,
+          "sameAccountStatus": 200
+        },
+        {
+          "actualActor": "PublicUploadUser1",
+          "method": "POST",
+          "path": "/api/v1/report",
+          "rebindStatus": 409,
+          "rollback": true,
+          "sameAccountStatus": 201
+        }
+      ]
+    },
+    "chapterEffectObservations": {
+      "freshExplicitApproval": 204,
+      "grantGainLegacyCompatibility": 204,
+      "grantGainSignedReview": 202,
+      "ordinaryApproval": 403,
+      "refusalNativeStateUnchanged": true,
+      "revokedApproval": 403
+    },
+    "sourceFilesUnchanged": 1244,
+    "executableSha256": "88429a8303627dd0524feda9fd5b5be80302c4c8e0a9bf1433a18c6118b4b265",
+    "physicalCleanup": "auth-momzkdfi stopped/closed; zero survivors/unknown births/errors",
+    "minimumFreeBytes": 6190284800
+  },
+  "rustUnits": {
+    "passed": 120,
+    "existingIgnored": 2,
+    "seconds": 1.91,
+    "productionUnchangedByTestOnly729ce958": true
+  },
+  "strict": {
+    "enabled": {
+      "errors": 0,
+      "warnings": 12
+    },
+    "default": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "canonicalFrontendFilesUnchanged": 679,
+    "actualGateSourceCommit": "ecd842cc53ed2b42a17f0fd279a8ba328d139d44",
+    "frontendUnchangedAfterThatCheck": true
+  },
+  "finiteAdapterAndOverlayCases": 224,
+  "actualCompiledSvelteDom": {
+    "passed": 6,
+    "svelte": "5.55.1",
+    "typescript": "5.9.3",
+    "jsdom": "27.0.1",
+    "transportAndAccountStandins": true,
+    "genuineBrowser": false,
+    "retainedGeneration": true
+  },
+  "failureHistory": [
+    {
+      "run": "final-http-01",
+      "exitCode": 101,
+      "cause": "Staged expectation assumed403 for foreign upload session; actual existing privacy fence returns404. Corrected only test expectation/printed receipt. All six write/rebind/rollback observations completed before this assertion; effect cases not reached.",
+      "productionChanged": false,
+      "cleanPhysicalShutdown": true
+    },
+    {
+      "run": "final-component-dom-01",
+      "cause": "Harness omitted the HTMLMediaElement global required by pinned Svelte event delegation; six components failed before actual interactions. Copied that JSDOM global, no production edit; second run6/6 passes."
+    }
+  ],
+  "scope": "Isolated source-qualified native HTTP plus finite and actual compiled-component DOM. No integrated-source, Vite production bundle, real browser or load acceptance."
+}

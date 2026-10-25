@@ -1,0 +1,8 @@
+{
+  "status": "unqualified-guard-error",
+  "source": "f1bbb9fe7a7bff11fdee4ac1dc9eec72cd4b0aba",
+  "error": "Allocation sampler FileNotFoundError during normal temporary-file removal",
+  "testAcceptance": false,
+  "cleanupReceipt": "Initial guard terminated before writing process identity/cleanup receipt; no survivor-free claim is inferred from this interrupted attempt",
+  "subsequentAction": "Correct sampler to tolerate only disappearing entries and always retain exact process-group cleanup; inspect source fixtures before retry"
+}

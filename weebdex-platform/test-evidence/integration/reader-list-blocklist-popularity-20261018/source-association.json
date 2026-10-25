@@ -1,0 +1,96 @@
+{
+  "base": "10cff8bb9ebbe09640ba23914227cf57b11b104d",
+  "head": "351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9",
+  "mapping": [
+    {
+      "original": "38f3d93cf01a74bb0782ad11d959ec8ab266038b",
+      "applied": "57e71cd62fe3f758b0fdc63da3af994c7d76da59"
+    },
+    {
+      "original": "64fa44e4d5d9f1f66142479f9c02f6642ef0f613",
+      "applied": "f6d97cad874e0b400206897207edaaabc198e721"
+    },
+    {
+      "original": "19cd4ebbdaa059062448766ffb5d24cc5ffc8d29",
+      "applied": "fa22b76e54e2ff35af510e048d2674c4224615c5"
+    },
+    {
+      "original": "179dbae6749a19c4bc99a98cf7c0ed1b6c9fec29",
+      "applied": "569b8adf6ba0cbe1b6752073b87d5dbf9446344c"
+    },
+    {
+      "original": "cd9d9443a61110bc8fd81a1d3113fb5642687aee",
+      "applied": "2af2378a73f09854a8e1f53c8c5d653be30dfa2d"
+    },
+    {
+      "original": "b81af4dd7fb091fc55e72c95342c04bde80919f1",
+      "applied": "073aa43449da36373cf4b9be47e20a8573799a6c"
+    },
+    {
+      "original": "0756e7dd468104a67ccf7a0f6e06489a6b13d652",
+      "applied": "fa12c0f77e9ec1aa18099fa585b4ed40c25f11eb"
+    },
+    {
+      "original": "c24a78ef24034a613e4f10bba3e26805c7c28057",
+      "applied": "587c455c5dddeed693f63b7ce88e4626defe4a18"
+    },
+    {
+      "original": "74e12c28c74d4401ed07496c8e3d08fa51603f06",
+      "applied": "e76a08e265074e05afe9bd0ee9f428f27a6f4694"
+    },
+    {
+      "original": "06963196aa4295e548e195a3cef78e3ed616e795",
+      "applied": "01e8fe243e1e78708940bf76cd40289085c0c67b"
+    },
+    {
+      "original": "fa1599e99b8e7eba5bdf16912da4e8cac6012eae",
+      "applied": "351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9"
+    }
+  ],
+  "expectedFinalBlobs": {
+    "weebdex-platform/backend/src/domains/analytics/mod.rs": "d584fee3b2dd74313a729cbaeb7c1e01c76daa80",
+    "weebdex-platform/backend/src/domains/catalog/mod.rs": "71df0467247d1496832ae7a0f0939384b7f47773",
+    "weebdex-platform/backend/src/domains/catalog/read.rs": "c95c5ed231cf443a9ba368aca7b331a764bc9c4c",
+    "weebdex-platform/backend/src/public_api/mod.rs": "7dc12e4705238dc0f7e66c8f223ccbcad7994eb2",
+    "weebdex-platform/backend/src/public_api/popularity.rs": "ff3b0e2ee766041c8b74dce4104f95fe9a949f7b",
+    "weebdex-platform/backend/tests/public_popularity.rs": "5eaf7f1cec3433f670c93805272ac7e08bf39007",
+    "weebdex-platform/docs/public-uuid-popularity.md": "4a67adb8a955d6e91eb4a43dc57f80c188eca27a",
+    "weebdex-platform/platform-integrations/public-api/AccountBlocklistEditor.svelte": "8046f7f241531cedf3931f20475ddff386b34e2a",
+    "weebdex-platform/platform-integrations/public-api/AccountPreferenceSave.svelte": "5eb832b9b6c861b2e7ac525348c1f4c88807869c",
+    "weebdex-platform/platform-integrations/public-api/blocklist-client.ts": "f5b286109a0d116cf0c870a259f89e810809dd57",
+    "weebdex-platform/scripts/prepare-frontend-integration.mjs": "fe4c4c2abc537ba936fbaf34912d785a07043cc3",
+    "weebdex-platform/tests/ci/test_account_blocklists_client.mjs": "03ed09efcf6824275b46be9a8ce8bb51304d34d5",
+    "weebdex-platform/tests/ci/test_account_blocklists_dom.mjs": "958b38c6e5b1f36bd3c8b3650282a8b8fbe6f825",
+    "weebdex-platform/test-evidence/account-blocklists-20261018/README.md": "290993c8fc973921dd11a905a1e051f13fa3d050",
+    "weebdex-platform/test-evidence/account-blocklists-20261018/result.json": "b164a808fcfa4d2621600fef946c852b54fff04c",
+    "weebdex-platform/test-evidence/account-blocklists-20261018/finite.log": "68ed1150c6adec39d39869de250c7d23c999da0f",
+    "weebdex-platform/test-evidence/account-blocklists-20261018/retained-query-prefix-red.log": "12fcbef49c3c714a5267536b63776f596b212459",
+    "weebdex-platform/test-evidence/account-blocklists-20261018/strict-history/cache-alias-setup.log": "adac68a5453aa0174e927bf9d6dfc0ed510a0b39",
+    "weebdex-platform/test-evidence/account-blocklists-20261018/strict-history/svelte-check.stdout.log": "e85ae8f70fb923347d30724bedbc37c9eaa43946",
+    "weebdex-platform/test-evidence/account-blocklists-20261018/strict-history/type-check.log": "64be42bcd2f4e6e697e3396571a0e1519842dd5f",
+    "weebdex-platform/platform-integrations/public-api/anchors.json": "699664afd8998b49ece1e08a6dcaf2dbccfe9428",
+    "weebdex-platform/platform-integrations/public-api/client.ts": "fdd4401ec237ee5065c19306117a2e02716be702",
+    "weebdex-platform/platform-integrations/public-api/overlays.mjs": "059e0896bb2fba2ee764e4e30062a6b969f0fa1f",
+    "weebdex-platform/platform-integrations/public-api/popularity.ts": "f984881822675e7410208108bbce4ec9941a0ccc",
+    "weebdex-platform/platform-integrations/public-api/site-client.ts": "ec3a38ef9ffc9a4ea57370f4b2a85c201e26199d",
+    "weebdex-platform/platform-integrations/public-api/source-hashes.json": "f87db371d9b40cc7d54a20846c74108b8a7190ac",
+    "weebdex-platform/tests/ci/popularity-fixture.mjs": "79d6a282543760ef1cc6f112d077e2ace926b90e",
+    "weebdex-platform/tests/ci/public-api-recovery.test.mjs": "aad92fd09e5ba751cdf163165a750771076aa048",
+    "weebdex-platform/tests/ci/test_account_title_composition.mjs": "605f10424ec3dbb8e5de226f17eeed5cfda86cda",
+    "weebdex-platform/tests/ci/test_popularity_analytics_callers.mjs": "3923ef2107cb18fb988a84acd23bc34713ca6c08",
+    "weebdex-platform/tests/ci/test_popularity_dom.mjs": "d35730e40694252c47d2c3548f58d792818b29dd",
+    "weebdex-platform/tests/ci/test_public_popularity.mjs": "2e6b7b7115ad31bbd2a26976fecf527bec0e3676",
+    "weebdex-platform/tests/ci/test_public_rating_build_seam.mjs": "4733db2a3b5b464aaa3793dfd1d603a43536496c",
+    "weebdex-platform/docs/verification/genuine-popularity-frontend-20261018.md": "e49dc488a0ae1ce20e10202d5aa0c1605251b1ce",
+    "weebdex-platform/test-evidence/frontend/genuine-popularity-20261018/focused.log": "b4cc90a56a75a3fe8c565205fd9d20d6340f0dbb",
+    "weebdex-platform/test-evidence/frontend/genuine-popularity-20261018/result.json": "aa8b3bb0a372860be5df6c93ec0d6302d4720051",
+    "weebdex-platform/test-evidence/frontend/genuine-popularity-20261018/run-focused.sh": "ec567d169892a30f88628a813cb03f7daaafdc6a",
+    "weebdex-platform/test-evidence/frontend/genuine-popularity-20261018/source-sha256.json": "6b50f968b63e0c63f71fe22b6205d7a89cd97a33"
+  },
+  "backendQualifiedSource": "a23ac87a945ecff3d5e7daa07d428bb41efc4820",
+  "qualification": "The prior complete frontend/backend qualification is historical at0395fbc. This successor composes reader/list modifier and pagination repairs, signed account blocklist editing and genuine popularity/views. Its popularity backend has140units and four affected real HTTP suites; full combined frontend qualification is pending.",
+  "backendEvidenceOriginal": "fa6878e560574389f2b35c1c2aa9f2582331184e",
+  "backendEvidenceApplied": "d9268ad60b709ae623c2a7e8a7e4e0f458e6e593",
+  "qualifiedPriorCheckpoint": "0395fbc3f0191008d07c1cd8c9c6a5de8801d59b",
+  "frontendFreeze": "351cf41bfa2955e37cc3ac90cf4b4f37b965bcc9"
+}

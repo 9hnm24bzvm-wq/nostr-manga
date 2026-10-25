@@ -1,0 +1,36 @@
+(node:12) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+✔ empty saved sets never become a public discovery request (3.296632ms)
+✔ manga IDs use exact 100-ID batches with caller page removed and private membership untouched (2.570942ms)
+✔ not-visible saved records remain absent instead of fabricated placeholders (0.707082ms)
+✔ parent-scoped updates use one actual UUID parent per request and paginate every chapter (2.559835ms)
+✔ history hydrates only saved chapter UUIDs and readAt sort is applied by local history owner (0.384387ms)
+✔ numeric chapter/volume sort derives real values and leaves specials null with actual text (1.153132ms)
+✔ actual dates are timestamp keys and unavailable metadata stays null (0.455194ms)
+✔ unsupported catalogue sorts reject before any request (0.763207ms)
+✔ legacy IDs, unknown scope and ambiguous order reject before public transport (1.510328ms)
+✔ wrong IDs, duplicate identities and wrong-parent chapters fail closed (0.523517ms)
+✔ shifted, truncated, oversized and malformed pages never substitute partial saved libraries (0.496376ms)
+✔ changing totals and duplicate second pages require a retry (1.299752ms)
+✔ public failures retain status and never invoke native HTTP (0.302564ms)
+✔ exact source bridge is enabled only in public gate without altering native path (0.815816ms)
+✔ actual catalogue orchestrator selects public transport only with gate on and verifies scope first (6.61076ms)
+✔ exact persisted decimal ordering retains BIGINT and NUMERIC precision (0.464959ms)
+✔ actual timestamp ordering retains microseconds and normalizes equivalent UTC offsets (0.330036ms)
+✔ saved-library popularity and upload controls consume exact trusted persisted Manga keys (0.467832ms)
+✔ missing, spoofed, rounded and malformed persisted Manga keys never become fabricated sort values (0.857829ms)
+✔ exact chapter decimals preserve primary ordering across a floating-point collision, direction 1 (2.411412ms)
+✔ exact chapter decimals preserve primary ordering across a floating-point collision, direction -1 (1.820634ms)
+✔ exact volume decimals preserve primary ordering across a floating-point collision, direction 1 (1.771421ms)
+✔ exact volume decimals preserve primary ordering across a floating-point collision, direction -1 (1.801265ms)
+✔ equal chapter decimals retain actual text then UUID ties, with special/null values always last (2.302298ms)
+✔ equal volume decimals retain actual text then UUID ties, with special/null values always last (1.87717ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 244.761027

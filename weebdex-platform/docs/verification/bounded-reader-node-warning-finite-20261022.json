@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "scope": "Fourteen source-bound QA warning-dispatch controls on actual pinned Node only. Not Svelte mounting, product/backend/browser or native automatic Continue qualification.",
+  "testedSourceRevision": "a0d04b370c382e3d0b15cf1b6238cba2a12d8af1",
+  "sourceSha256": "b6c3a7f3b33b7f8730450d52d0a34c0db390562e02780a26fbdc0a87df28a69c",
+  "testSha256": "48d3ee035b095d0825000b6e7a56c7f2361abe5c6d9b8c10d70b87daa9764100",
+  "handlerSha256": "f431c4a4558daedcb68eaac65e6d5409919a4ed4df2bb313ed52740189204b39",
+  "nodeSha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+  "driverSha256": "cd4b1641a7a999839d2b337120c084f1ea1e5beede35e917d6aee290254ed894",
+  "admissionSha256": "3eb3a46b38096679a0d644b74e5bb63055cbc540478183114b9300e5cede9254",
+  "externalOwnerSha256": "8f3e00cb93e93403e6d0bd926f539b849fddbee0b26791eb9d2749cb092d8470",
+  "binaryWitnessSha256": "5e852863ce7fc7adc4789602eb8174db131cd4fabffe42ac02e3161e8f775984",
+  "rawNodeExit": 0,
+  "rawOwnerExit": 0,
+  "sourceAndToolContinuity": true,
+  "cleanUnforcedOwner": true,
+  "positiveProof": {
+    "accepted": {
+      "node-type-stripping": 1,
+      "node-vm-modules": 1
+    },
+    "failures": 0,
+    "listener_cleanup": true,
+    "provider_completed": 2,
+    "provider_scheduled": 2,
+    "setup_closed": true
+  },
+  "cases": [
+    "actual providers preserve results and exactly two owned pairs pass",
+    "temporary hooks dispatch tokens and warning listeners fully settle",
+    "unowned native emission and extra listener fail",
+    "native Error replays and both exact fake events fail",
+    "setter-forged and data-stack provider evidence fail",
+    "ordinary errors unknown warnings spoof strings and overflow count",
+    "argument and option getters and proxy traps are never inspected",
+    "missing provider proof refuses setup completion",
+    "extra duplicate and application-phase warnings never gain acceptance",
+    "changed prepareStackTrace is never called by inspection",
+    "changed process hooks fail closed and are not overwritten",
+    "provider argument throws preserve type code and hook restoration",
+    "missing native forwarding fails while owned listener cleanup remains exact",
+    "cleanup owns only its listeners and console interception"
+  ],
+  "overflowCounted": true,
+  "sourceUnchanged": true,
+  "artifacts": {
+    "association.json": "89b35a5c3acd3aff058c5beb8f1d2cfe277d10b3d221e393a14be3163ee5d508",
+    "node-warning-control.log": "75d49ccb9b72bb9f2f9183f8086b5cdff1f59aeda5965f5aaac366da040233e8",
+    "node-warning-control-resource-receipt.json": "447da31850706809638cacf20315745ea72b23c59b47b90ce8051bbc540f6d8d",
+    "child-exit.json": "a909e7b83216ba9b9855a41f98cf8fddd8f2804630802091ec3a7b56f346d6a5"
+  },
+  "limits": {
+    "ownerSeconds": 60,
+    "rssMiB": 768,
+    "outputBytes": 65536
+  },
+  "actualOutput": {
+    "logicalBytes": 6712,
+    "allocatedBytes": 20480
+  },
+  "preservedFailure": {
+    "round": "node-warning-v1",
+    "qualified": false,
+    "sourceRevision": "927e31deffb8f6b57281290bddf29613999da9e0",
+    "associationSha256": "97e58004fd3ea91bc4258f661e12745deb460a82c9c40e70db3c366a20bb8b4a",
+    "rawLogSha256": "0a4a9215de1f6bc773121915236c56f8b4e0ab693bbecc10560a167e55870c45",
+    "cause": "Pinned Node forwards exactly four warning arguments, while the failed candidate required two. Both undefined trailing arguments are now checked explicitly."
+  },
+  "qualificationBoundary": "The exact a0d04b3 QA source is tested. Later fixture or product changes do not inherit this full-source qualification; unchanged handler bytes can be compared separately. The device observed-candidate Continue interface is not accepted as a replacement for retained automatic native or device Continue."
+}
