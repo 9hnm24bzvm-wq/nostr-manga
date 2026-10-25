@@ -95,10 +95,11 @@ test('exact frozen917 counterfactual reads current before the delayed native beg
   const old = "'Second begin started'); sessionId = await current();";
   const fixed = "'Second begin started'); mark('browser-terminal'); await until(() => observer.settled(), Boolean, 'Second begin browser terminal'); sessionId = await current();";
   assert.equal(original.split(old).length, 2);
-  // The composed runner also contains the separately qualified QA reader.
+  // The composed runner also contains the separately qualified QA reader and
+  // public language input locator correction. The second-begin action is unchanged.
   // Admit only its exact full bytes, then keep this check's action identical
   // to the historical action plus the bounded native-terminal wait.
-  assert.equal(createHash('sha256').update(source).digest('hex'), '2c1edd5124418e1fb7c1d8a50e93f16aa2bc10bcbb42e7512f7dc2a47392975d');
+  assert.equal(createHash('sha256').update(source).digest('hex'), '88f4ecc94ecd31cd4cb6c033e4be22d398c39f538e6b021b798b9baa00d2d95a');
   const action = text => extract(text, "await run('new begin preserves retained language as a genuine save', ", ");\n    await run('autosave title and chapter'");
   assert.equal(action(source), action(original.replace(old, fixed)), 'Only the bounded second-begin terminal wait may differ inside this action');
   const h = harness(original, { delayTicks: 3 });

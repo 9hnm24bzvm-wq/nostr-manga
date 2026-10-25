@@ -15,6 +15,10 @@ const fixture = { mail_origin: sink, protocol_seed: { fixture_only: true, fully_
 const mapping = { result: 'ok', data: [{ kind: 'manga', legacy_id: 'SeedManga1', id: manga }, { kind: 'chapter', legacy_id: 'SeedChapt1', id: chapter }], unresolved: [] };
 const record = { result: 'ok', data: { type: 'chapter', id: chapter, attributes: { version: 7, title: 'Synthetic original chapter', volume: '1', chapter: '2', translatedLanguage: 'en' }, relationships: [{ type: 'manga', id: manga }] } };
 const pre = chapterFeaturePrerequisites(origin, fixture);
+// Use the actual static editor paragraphs for text matching. A generic count=1
+// stand-in hid a stale exact notice assertion that cannot pass in the real UI.
+const editorSource = fs.readFileSync(new URL('../../platform-integrations/public-api/PublicChapterEditor.svelte', import.meta.url), 'utf8');
+const editorParagraphs = [...editorSource.matchAll(/<p(?:\s[^>]*)?>([^<>]*)<\/p>/g)].map(match => match[1]);
 
 test('fixed chapter case is immutable and uses actual legacy fields, never invented public fixture UUIDs', () => {
   assert.deepEqual(publicChapterFeatureCases.map(row => row.id), ['chapter-edit-entry-signed']);
@@ -57,9 +61,9 @@ async function controlled(options = {}) {
       filter() { return this; },
       locator(selector) { return locator(kind === 'row' ? 'edit' : selector.startsWith('a[href="/chapter/') ? 'chapter-anchor' : 'leaf', selector); },
       getByRole(role, value = {}) { return locator(role === 'status' ? 'status' : role, value.name); },
-      getByText(value) { return locator('text', String(value)); },
+      getByText(value, settings = {}) { if (kind === 'editor') { assert.equal(settings.exact, true); return locator('editor-text', String(value)); } return locator('text', String(value)); },
       getByLabel(value) { return locator('input', value); },
-      async count() { if (kind === 'edit') return state.selected ? 1 : 0; if (kind === 'text' && label.includes('No signing identity')) return state.selected ? 0 : 1; if (kind === 'text' && label.includes('Session private key')) return state.selected ? 1 : 0; return 1; },
+      async count() { if (kind === 'edit') return state.selected ? 1 : 0; if (kind === 'text' && label.includes('No signing identity')) return state.selected ? 0 : 1; if (kind === 'text' && label.includes('Session private key')) return state.selected ? 1 : 0; if (kind === 'editor-text') return (options.editorParagraphs ?? editorParagraphs).filter(text => text === label).length; return 1; },
       async isEnabled() { return true; },
       async isDisabled() { return options.disabled !== false; },
       async getAttribute(name) { assert.equal(name, 'type'); return 'password'; },
@@ -116,6 +120,11 @@ test('actual case traverses UI/typed HTTP stand-ins, observes real-refusal shape
   assert.equal(f.state.requests.filter(row => row.url.endsWith('/api/auth/check')).length, 2);
   assert.equal(f.state.requests.some(row => row.url.includes('upload-account')), false);
   assert.ok(f.state.requests.filter(row => row.method === 'POST').every(row => row.url.endsWith('/legacy/resolve') || row.url.endsWith('/fixture/protocol/account')));
+});
+for (const paragraphs of [[], editorParagraphs.map(text => text.replace('are immutable', 'are editable')), [...editorParagraphs, ...editorParagraphs]]) test('missing, altered or duplicate actual immutable-source notice refuses without weakening account authority: ' + (paragraphs.length ? paragraphs.length === editorParagraphs.length ? 'altered' : 'duplicate' : 'missing'), async () => {
+  const f = await controlled({ editorParagraphs: paragraphs });
+  await assert.rejects(f.run, { code: 'ERR_ASSERTION' });
+  assert.equal(f.state.handlers.size, 0); assert.ok(f.state.secret.every(value => value === 0));
 });
 for (const options of [{ accountStatus: 200 }, { disabled: false }, { privateKeyReceived: true }]) test('unexpected authority/fixture outcome refuses and clears owned observer/secret: ' + JSON.stringify(options), async () => {
   const f = await controlled(options); await assert.rejects(f.run); assert.equal(f.state.handlers.size, 0); assert.ok(f.state.secret.every(value => value === 0));

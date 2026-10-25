@@ -162,14 +162,22 @@ export async function runPublicUploadRecovery(h) {
     result.transport_refusal_reader_checks++;
   }
 
-  async function english() { mark('language'); const p = await panel(), trigger = p.locator('button[data-slot="select-trigger"]').filter({ hasText: 'Select Language' }); await (await unique(trigger)).click(); const list = await unique(page.locator('[data-slot="select-content"][role="listbox"]:visible')); const option = await unique(list.locator('[data-slot="select-item"][data-value="en"][role="option"]')); assert.equal((await option.innerText()).trim().replace(/\s+/g, ' '), 'English'); assert.equal(await option.isEnabled(), true); await option.click(); }
+  async function english() {
+    mark('language');
+    // The enabled public overlay replaces the native language selector with
+    // this exact code input. Use its real UI binding, not a native Locale label.
+    const p = await panel(), input = await unique(p.getByPlaceholder('ta or pt-br', { exact: true }));
+    assert.equal(await input.getAttribute('type'), 'text');
+    await until(() => input.isEnabled(), Boolean, 'Public language input enabled');
+    await input.fill('en'); assert.equal(await input.inputValue(), 'en'); assertUploadRoute();
+  }
   async function decoded(expected, sourceBasis = 'acknowledged-local-or-signed-preview') { mark('preview-order'); const c = controls(); await c.readSettledOrder(expected.map(image => image.name)); const rows = [];
     for (const image of expected) { mark('preview-decode'); const card = await c.card(image.name), img = await unique(card.locator('img')); const value = await img.evaluate(async (node) => { const source = node.currentSrc; if (!source.startsWith('blob:')) throw Error('Expected private preview Blob URL'); await node.decode(); if (node.currentSrc !== source || !node.complete || !node.naturalWidth || !node.naturalHeight) throw Error('Preview changed during decode'); return { decoded: true, width: node.naturalWidth, height: node.naturalHeight, blob_source: true }; }); assert.equal(value.width, image.width); assert.equal(value.height, image.height); rows.push({ filename: image.name, ...value }); }
     assertUploadRoute(); result.preview_decodes.push({ session_id: sessionId, version: lastVersion, source_basis: sourceBasis, files: rows }); return rows;
   }
   async function restoredMetadata() {
     mark('metadata-read');
-    await until(async () => { const p = await panel(); const value = { title: await p.getByPlaceholder('Chapter Name', { exact: true }).inputValue(), chapter: await p.getByPlaceholder('Chapter No.', { exact: true }).inputValue(), language: (await p.locator('button[data-slot="select-trigger"]').innerText()).trim().replace(/\s+/g, ' ') }; assertUploadRoute(); return value; }, value => value.title === 'Synthetic public upload recovery' && value.chapter === '9001' && value.language === 'English', 'Restored exact metadata controls');
+    await until(async () => { const p = await panel(); const value = { title: await p.getByPlaceholder('Chapter Name', { exact: true }).inputValue(), chapter: await p.getByPlaceholder('Chapter No.', { exact: true }).inputValue(), language: await p.getByPlaceholder('ta or pt-br', { exact: true }).inputValue() }; assertUploadRoute(); return value; }, value => value.title === 'Synthetic public upload recovery' && value.chapter === '9001' && value.language === 'en', 'Restored exact metadata controls');
   }
   async function visibleCompletion(session) {
     mark('completion');

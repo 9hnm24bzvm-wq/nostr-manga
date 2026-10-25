@@ -166,7 +166,7 @@ async function runChapterEntry(h) {
     assert.equal(await editor.getByRole('button', { name: 'Save instance metadata', exact: true }).isDisabled(), true);
     assert.equal(await editor.getByRole('button', { name: 'Claim local chapter ownership', exact: true }).isDisabled(), true);
     assert.equal(await editor.getByRole('button', { name: 'Request chapter removal', exact: true }).isDisabled(), true);
-    assert.equal(await editor.getByText('Changes are instance-local catalogue annotations. Signed source metadata and published image pages are immutable.', { exact: true }).count(), 1);
+    assert.equal(await editor.getByText('Changes are instance-local catalogue annotations. Original signed source metadata and protocol image pages are immutable. Eligible local chapter pages use separate private staging below.', { exact: true }).count(), 1);
     await noCookie();
     return { actual_identity_ui: true, no_cookie_session: true, typed_target_association: true, edit_link_visible: true, canonical_edit_child_mounted: true, actual_account_status: 403, account_request_finished: true, mutation_controls_disabled: true, native_binding_ready_tested: false, metadata_save_tested: false };
   } finally { if (observeAccountRequest) page.off('request', observeAccountRequest); secret.fill(0); secretHex = ''; }

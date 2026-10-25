@@ -136,7 +136,7 @@ test('all reused source seams retain exact reviewed bytes and normal browser san
     'scripts/ci/run-hosted-feed-regression.py': '36277f258fa2801abed15069be0002889be68873174333d4e588239b6119d131',
     'scripts/ci/validate-ci-evidence.py': 'e2d01a31f15cc578e5bb6e3b8a4dbb2273f6448f12764bb6fd675c2cf3ea2628',
     'scripts/ci/browser-runtime.mjs': '061be4487096eda05f3411d2a584cd5971cd62629173ae748a38c0e0e9cd279d',
-    'scripts/browser-acceptance.mjs': '91db64c842e8c3093568935f6ee6a01dc20fdd23a448618d7916b5e5c5e7cb3e',
+    'scripts/browser-acceptance.mjs': '7238ae50b559c54adacb61c95d17fb852ffe8b1ea9fb7a35a6fead0bd00eed8a',
   };
   for (const [name, expected] of Object.entries(pins)) assert.equal(sha(read('weebdex-platform/' + name)), expected, name);
   const acceptance = read('weebdex-platform/scripts/browser-acceptance.mjs');

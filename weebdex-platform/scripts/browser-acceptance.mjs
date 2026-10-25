@@ -5,7 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadBrowserRuntime } from "./ci/browser-runtime.mjs";
-import { observeSeedTitleReadiness, waitForSeedTitleReady } from "./startup-readiness-probe.mjs";
+import { observeSeedTitleReadiness, waitForSeedTitleReady, waitForSeedGroupReady } from "./startup-readiness-probe.mjs";
 import { createJourneyCheck } from "./journey-checks.mjs";
 import { installRunnerLifecycle } from "./runner-lifecycle.mjs";
 import { createBrowserDenyProxy } from "./browser-deny-proxy.mjs";
@@ -117,7 +117,7 @@ try {
 	const page = await context.newPage();
 	report.cleanup.page_created = true;
 	runnerStage("running-checks");
-	async function open(route) { const response = await page.goto(origin + route, { waitUntil: "domcontentloaded" }); insist(response?.status() === 200, `Navigation returned ${response?.status()}`); if (phase === "startup" && route === "/title/SeedManga1") await waitForSeedTitleReady(page); else await page.waitForTimeout(1200); return response; }
+	async function open(route) { const response = await page.goto(origin + route, { waitUntil: "domcontentloaded" }); insist(response?.status() === 200, `Navigation returned ${response?.status()}`); if (phase === "startup" && route === "/title/SeedManga1") await waitForSeedTitleReady(page); else if (phase === "startup" && route === "/group/SeedGroup1") await waitForSeedGroupReady(page); else await page.waitForTimeout(1200); return response; }
 	async function screenshot(name) { const target = path.join(output, name + ".png"); await page.screenshot({ path: target, fullPage: true }); report.screenshots.push(path.relative(root, target)); }
 	async function snapshot() {
 		const state = await page.evaluate(() => ({ title: document.title, text: document.body.innerText.slice(0, 1400), background: getComputedStyle(document.body).backgroundColor, font_family: getComputedStyle(document.body).fontFamily, stylesheets: [...document.styleSheets].map(sheet => sheet.href).filter(Boolean), horizontal_overflow: document.documentElement.scrollWidth > innerWidth + 1, csp: window.__acceptanceCsp ?? [] }));
