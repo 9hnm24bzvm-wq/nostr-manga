@@ -18,6 +18,10 @@ now prepares the full-schema/runtime drill. Its finite regression/compile eviden
 is not a live restored-application result and does not close production DR or
 pending native upload/title recovery.
 
+The 2026-10-25 restored-authentication fence has passed finite stand-in tests
+only. It has **not** run against PostgreSQL or a restored application. The older
+tiny-table mechanics drill does not validate this new full-schema requirement.
+
 ## Prerequisites and authority
 
 - Use Linux, Python 3.10+, and already-installed official `pg_dump`, `pg_restore`,
@@ -154,6 +158,15 @@ original and projection paths whose private parent directories already exist.
 Use the exact retained release and admitted key identities. Inject the target's
 existing approved database connection value into the normal runtime environment;
 never override a live service's environment as a side effect of this runbook.
+Both the embedded original-node configuration and any separate `--node-config`
+must explicitly set `sync_worker_enabled`, `peer_discovery_enabled`,
+`library_reclamation`, `publication_reclamation`, `staging_reclamation` and
+`auto_approve_publication_deletions` to `false`, and
+`storage_audit_interval_seconds` to `0`. Empty `discovery_private_overrides`;
+set any configured `enrollment.enabled` and `public_serving.enabled` to `false`.
+Retain the rest of those role configurations for safe recovery and later review.
+Missing worker flags are not a pause: some runtime defaults enable workers.
+The wrapper refuses an unpaused configuration and never overwrites it for you.
 
 ```sh
 python3 scripts/private-checkpoint.py restore \
@@ -181,6 +194,23 @@ same database using `--single-transaction --exit-on-error`. It never uses
 `--clean`, creates/drops a database or starts an application. Secrets travel only
 through the child environment, never process arguments or generated secret files.
 
+After the dump restore, a second mandatory transaction fences the restored
+capabilities before success is possible: revoke every native session/API client;
+consume every authentication flow, verification/recovery email token and account
+disable confirmation; advance the original node's restore/authentication epoch;
+clear old inventory sessions; disable sync schedules and managed export roles;
+and block nonterminal scheduled uploads without changing their immutable inputs
+or started boundary. Canonical users, passwords, roles, account/group policy,
+signer identities, publication commands and original outbox rows are preserved.
+No user mutation is replayed and no service is started by restore.
+
+All expected current-schema relations are mandatory. Missing schema, SQL or
+permission failure, interruption, missing fencing acknowledgement or a live
+owner prevents a `complete` result. Do not bypass the fence or run a migration
+to make an incompatible backup appear recoverable. A dump commit followed by a
+fence failure can leave restored credentials live in the isolated target:
+**keep all owners offline and the target inaccessible until reviewed recovery**.
+
 An error, timeout or interrupted restore is **not success**. New private storage
 may remain. A lost connection near commit can have an uncertain database outcome;
 inspect it before taking any further action. Do not blindly retry or delete a
@@ -203,11 +233,20 @@ ownership. The original `manga-node` CLI has `migrate` and `serve`, not a separa
 database dump with an incompatible migration manifest. Qualify an intentional
 upgrade on the staging copy only after the matching release verifies.
 
+Review passwords, roles, account disablement, peer/account/group permissions and
+other decisions changed after the backup recovery point. Credential invalidation
+cannot recover those later decisions or prevent an older restored password from
+working at a fresh login. Reconcile them before exposing the restored service.
+Keep autonomous roles paused until explicitly reviewed; resume a pending user
+mutation only through its authorized identical retry, not a blanket replay.
+
 With operator approval, start the isolated configured runtime through the existing
 service process manager. Verify `/readyz`, original signer/storage authority,
 account reads, original signed-event visibility and exact original media hashes,
 plus native reader media Range/conditional reads. Check native and signed upload intent
 reconciliation, reader pages, private library state and outbox/restart recovery.
+Prove backup-live cookie/API credentials and email/flow tokens revoked or consumed
+after the recovery point fail, while a newly issued password login succeeds.
 Gracefully stop and restart the staging runtime once, repeat those checks and
 retain sanitized source/hash/test/physical-shutdown evidence. Do not publish raw
 database dumps, keys, account content or private connection values in that report.

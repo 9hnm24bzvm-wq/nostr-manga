@@ -21,6 +21,7 @@ import tempfile
 import threading
 import time
 from http.client import HTTPConnection
+from http.cookies import SimpleCookie
 
 ROOT = Path(__file__).resolve().parents[2]
 REPO = ROOT.parent
@@ -30,11 +31,13 @@ SENTINEL_DB = 'weebdex_restore_occupied_test'
 LIMIT_BYTES = 1024**3
 RESERVE = 4 * 1024**3
 STAGES = ('preflight', 'baseline', 'account', 'quiesce', 'pending-outbox',
-          'handoff', 'backup-plan', 'backup', 'verify-bundle', 'restore-plan',
+          'handoff', 'backup-plan', 'backup', 'source-revocation', 'verify-bundle', 'restore-plan',
           'nonempty-refusal', 'restore', 'compare', 'restored-start',
           'restored-checks', 'restart-stop', 'restart-start', 'restart-checks',
           'source-unchanged', 'cleanup', 'complete')
-REQUIRED = ('all_schemas_equal', 'all_table_rows_equal', 'three_roots_equal',
+REQUIRED = ('all_schemas_equal', 'all_business_rows_equal', 'all_sequences_equal', 'three_roots_equal',
+            'restored_authentication_fenced', 'autonomous_roles_paused',
+            'old_cookie_api_email_and_flows_rejected', 'fresh_login_verified', 'source_credentials_revoked_after_backup',
             'nonempty_sentinel_unchanged', 'source_unchanged', 'restored_checks',
             'restart_checks', 'original_outbox_reconciled', 'cleanup_clean',
             'retained_credentials_match', 'synthetic_server_keys_absent',
@@ -244,6 +247,26 @@ def stable_rows(rows):
     return [{k: v for k, v in row.items() if k != 'identity'} for row in rows]
 
 
+def row_projection(name, business=False):
+    """Compare every row and every business column, not an omitted auth table."""
+    columns = checkpoint.RESTORE_FENCE_COLUMNS.get(name, ()) if business else ()
+    return 'to_jsonb(t)' + (" - ARRAY[" + ','.join("'" + c + "'" for c in columns) + "]::text[]" if columns else '')
+
+
+def paused_config(config):
+    value = json.loads(json.dumps(config))
+    node = value['protocol_publication']['native_node']
+    for flag in checkpoint.PAUSED_NODE_FLAGS:
+        node[flag] = False
+    node['storage_audit_interval_seconds'] = 0
+    node['discovery_private_overrides'] = []
+    for role in ('enrollment', 'public_serving'):
+        if node.get(role) is not None:
+            node[role]['enabled'] = False
+    checkpoint.require_paused_roles(value)
+    return value
+
+
 class ResourceGuard:
     """Finite watchdog; a failed budget can never become a successful receipt."""
     def __init__(self, owner, private, seconds):
@@ -326,7 +349,8 @@ class Drill:
         marker['full_restore_qualification'] = True
         fixture_module.write_json(self.fixture.run / 'fixture-owned.json', marker)
         self.guard = ResourceGuard(self.fixture, self.private, args.seconds)
-        self.token = secrets.token_hex(32)  # Synthetic session only, retained in memory.
+        self.password = secrets.token_urlsafe(32)  # Synthetic account only, memory only.
+        self.token = None
         self.bundle = self.private / 'bundle'
         self.database = SOURCE_DB
 
@@ -361,14 +385,49 @@ class Drill:
         finally:
             connection.close()
 
+    def browser_flow(self, kind):
+        require(kind in ('registration', 'login', 'recovery', 'verification'))
+        status, body, headers = self.http('/auth/self-service/' + kind + '/browser')
+        require(status == 200)
+        flow = json.loads(body)
+        require(re.fullmatch('[a-f0-9-]{36}', flow['id']))
+        cookie = SimpleCookie()
+        cookie.load(headers.get('set-cookie', ''))
+        browser = cookie.get('weebdex_browser')
+        require(browser is not None and re.fullmatch('[A-Za-z0-9_-]{43}', browser.value))
+        return flow, 'weebdex_browser=' + browser.value
+
+    def password_auth(self, kind):
+        require(kind in ('registration', 'login'))
+        flow, browser = self.browser_flow(kind)
+        csrf = [n['attributes']['value'] for n in flow['ui']['nodes']
+                if n['attributes'].get('name') == 'csrf_token']
+        require(len(csrf) == 1)
+        payload = {'method': 'password', 'csrf_token': csrf[0], 'password': self.password}
+        if kind == 'registration':
+            payload['traits'] = {'email': 'restore@example.invalid', 'username': 'restore-fixture-user'}
+        else:
+            payload['identifier'] = 'restore-fixture-user'
+        status, body, headers = self.http('/auth/self-service/' + kind + '?flow=' + flow['id'],
+                                         headers={'Cookie': browser}, payload=payload)
+        require(status == 200)
+        result = json.loads(body)
+        require(result['session']['active'] is True)
+        user = result['session']['identity']['id']
+        require(re.fullmatch('[a-f0-9-]{36}', user))
+        cookie = SimpleCookie()
+        cookie.load(headers.get('set-cookie', ''))
+        session = cookie.get('weebdex_session')
+        require(session is not None and re.fullmatch('[A-Za-z0-9_-]{43}', session.value))
+        self.token = session.value
+        return user
+
     def seed_account(self):
-        # Same explicit persisted-user/session test seam as backend/tests/library_http.rs.
-        # No real credentials or registration/recovery claim.
-        digest = hashlib.sha256(self.token.encode()).hexdigest()
-        self.sql("INSERT INTO platform.users(id,username,email,password_hash,verified,permissions) VALUES "
-            "('RestoreUsr','restore-fixture-user','restore@example.invalid','not-a-login-password-hash',TRUE,'[\"self.preferences.update\"]'::jsonb);"
-            "INSERT INTO platform.sessions(id,user_id,token_hash,expires_at) VALUES "
-            f"('RestoreSes','RestoreUsr',decode('{digest}','hex'),clock_timestamp()+interval '1 hour');")
+        self.user_id = self.password_auth('registration')
+        # Narrow fixture-only verification/grants; password/session issuance uses
+        # real public browser flows, never a made-up session or password hash.
+        self.sql("UPDATE platform.users SET verified=TRUE,permissions="
+            "'[\"self.preferences.update\",\"self.library.read\"]'::jsonb WHERE id='" + self.user_id + "';")
         status, body, _ = self.http('/api/user/lists', auth=True,
             payload={'name': 'Synthetic private restore list', 'manga_ids': ['SeedManga1']})
         require(status == 201)
@@ -376,12 +435,39 @@ class Drill:
         self.list_id = value['id']
         require(re.fullmatch('[A-Za-z0-9_-]{1,80}', self.list_id) and value['visibility'] == 'private')
         self.list_snapshot = value
+        self.backup_token = self.token
+        self.api_token = secrets.token_urlsafe(32)
+        api_hash = hashlib.sha256(self.api_token.encode()).hexdigest()
+        self.sql("INSERT INTO platform.api_clients(id,user_id,name,secret_hash,scopes) VALUES "
+            f"('RestoreApi','{self.user_id}','Synthetic restore client',decode('{api_hash}','hex'),'[\"self.library.read\"]'::jsonb);")
+        require(self.http('/api/list/' + self.list_id, headers={'Authorization': 'Bearer ' + self.api_token})[0] == 200)
+        self.old_flows = []
+        for kind in ('recovery', 'verification'):
+            flow, browser = self.browser_flow(kind)
+            token = secrets.token_urlsafe(32)
+            digest = hashlib.sha256(token.encode()).hexdigest()
+            recipient = hashlib.sha256(b'restore@example.invalid').hexdigest()
+            self.sql("INSERT INTO platform.auth_email_tokens(id,kind,user_id,token_hash,recipient_hash,flow_id,return_to,delivery_state,expires_at) VALUES "
+                f"('Restore-{kind}','{kind}','{self.user_id}',decode('{digest}','hex'),decode('{recipient}','hex'),'{flow['id']}','/','sent',clock_timestamp()+interval '15 minutes');")
+            require(self.http('/auth/self-service/' + kind + '/flows?id=' + flow['id'], headers={'Cookie': browser})[0] == 200)
+            self.old_flows.append((kind, flow['id'], browser, token))
 
-    def database_snapshot(self, database):
+    def revoke_source_credentials(self):
+        # Model credentials live at the recovery point but revoked/consumed
+        # later. This deliberate source mutation precedes source-stability pins.
+        self.sql("BEGIN; UPDATE platform.sessions SET revoked_at=clock_timestamp() WHERE user_id='" + self.user_id + "';"
+            "UPDATE platform.api_clients SET revoked_at=clock_timestamp() WHERE id='RestoreApi';"
+            "UPDATE platform.auth_flows SET used_at=clock_timestamp() WHERE id IN (SELECT flow_id FROM platform.auth_email_tokens WHERE user_id='" + self.user_id + "');"
+            "UPDATE platform.auth_email_tokens SET used_at=clock_timestamp() WHERE user_id='" + self.user_id + "'; COMMIT;", SOURCE_DB)
+        self.source_snapshot = self.database_snapshot(SOURCE_DB)
+        self.report['source_credentials_revoked_after_backup'] = True
+
+    def database_snapshot(self, database, *, business=False):
         names = self.sql("SELECT n.nspname||'.'||c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace "
             "WHERE c.relkind='r' AND n.nspname IN ('public','platform') ORDER BY 1;", database).splitlines()
         require(100 <= len(names) <= 500 and all(re.fullmatch('(public|platform)\\.[a-z0-9_]+', n) for n in names))
-        statements = [f"SELECT '{name}',count(*),md5(COALESCE(string_agg(row_to_json(t)::text,E'\\n' ORDER BY row_to_json(t)::text),'')) FROM {name} t;" for name in names]
+        require(not business or set(checkpoint.RESTORE_FENCE_COLUMNS) <= set(names))
+        statements = [f"SELECT '{name}',count(*),md5(COALESCE(string_agg(({row_projection(name, business)})::text,E'\\n' ORDER BY ({row_projection(name, business)})::text),'')) FROM {name} t;" for name in names]
         rows = self.sql('\n'.join(statements), database)
         require(len(rows) <= 128 * 1024 and len(rows.splitlines()) == len(names))
         sequences = self.sql("SELECT n.nspname||'.'||c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace "
@@ -445,6 +531,9 @@ class Drill:
         self.source_config = self.private / 'source.json'
         checkpoint.write_json(self.source_config, relocated(self.config, self.source_roots))
         self.source_snapshot = self.database_snapshot(SOURCE_DB)
+        self.source_business_snapshot = self.database_snapshot(SOURCE_DB, business=True)
+        self.original_restore_epoch = self.sql('SELECT restore_generation,auth_not_before FROM public.node_identity WHERE singleton;', SOURCE_DB).split('|')
+        require(len(self.original_restore_epoch) == 2 and all(v.isdigit() for v in self.original_restore_epoch))
         self.report['table_count'] = self.source_snapshot['tables']
         self.report['stopped_handoff_verified'] = True
 
@@ -453,7 +542,7 @@ class Drill:
         parent.mkdir(mode=0o700)
         roots = {name: parent / name for name in self.source_roots}
         config = self.private / (label + '.json')
-        checkpoint.write_json(config, relocated(self.config, roots))
+        checkpoint.write_json(config, paused_config(relocated(self.config, roots)))
         return config, roots
 
     def pending_state(self, database):
@@ -488,6 +577,37 @@ class Drill:
         require(retained_credentials(read_json(self.restore_config), self.fixture.run)
                 == self.credential_state)
         self.report['retained_credentials_match'] = True
+
+    def verify_fence(self):
+        generation, epoch = map(int, self.original_restore_epoch)
+        require(self.sql("SELECT "
+            "NOT EXISTS(SELECT 1 FROM platform.sessions WHERE revoked_at IS NULL) AND "
+            "NOT EXISTS(SELECT 1 FROM platform.api_clients WHERE revoked_at IS NULL) AND "
+            "NOT EXISTS(SELECT 1 FROM platform.auth_flows WHERE used_at IS NULL) AND "
+            "NOT EXISTS(SELECT 1 FROM platform.auth_email_tokens WHERE used_at IS NULL) AND "
+            "NOT EXISTS(SELECT 1 FROM platform.account_disable_confirmations WHERE used_at IS NULL) AND "
+            "NOT EXISTS(SELECT 1 FROM platform.scheduled_uploads WHERE state NOT IN ('complete','cancelled') "
+            "AND (state<>'blocked' OR lease_token IS NOT NULL OR lease_until IS NOT NULL OR failure_code IS DISTINCT FROM 'paused_after_restore')) AND "
+            "NOT EXISTS(SELECT 1 FROM public.sync_schedules WHERE enabled OR last_error IS DISTINCT FROM 'paused_after_restore') AND "
+            "NOT EXISTS(SELECT 1 FROM public.public_export_roles WHERE enabled) AND "
+            "NOT EXISTS(SELECT 1 FROM public.inventory_snapshot_slots WHERE session_id IS NOT NULL OR peer IS NOT NULL "
+            "OR peer_epoch IS NOT NULL OR prefix<>'' OR filter<>'' OR snapshot<>''::bytea OR expires_at<>'-infinity'::timestamptz OR rounds<>0 OR protocol_bytes<>0) AND "
+            f"(SELECT count(*) FROM public.node_identity WHERE singleton AND restore_generation={generation + 1} "
+            f"AND auth_not_before>{epoch} AND restored_at IS NOT NULL)=1;", TARGET_DB) == 't')
+        checkpoint.require_paused_roles(read_json(self.restore_config))
+        self.report['restored_authentication_fenced'] = True
+        self.report['autonomous_roles_paused'] = True
+
+    def restored_authentication(self):
+        require(self.http('/api/auth/check', headers={'Cookie': 'weebdex_session=' + self.backup_token})[0] == 401)
+        require(self.http('/api/list/' + self.list_id, headers={'Authorization': 'Bearer ' + self.api_token})[0] == 404)
+        for kind, flow, browser, token in self.old_flows:
+            require(self.http('/auth/self-service/' + kind + '/flows?id=' + flow, headers={'Cookie': browser})[0] == 410)
+            require(self.http('/auth/self-service/' + kind + '?token=' + token)[0] == 400)
+        self.report['old_cookie_api_email_and_flows_rejected'] = True
+        require(self.password_auth('login') == self.user_id and self.token != self.backup_token)
+        require(self.http('/api/auth/check', auth=True)[0] == 200)
+        self.report['fresh_login_verified'] = True
 
     def start_restored(self):
         require(inventory(self.args) == read_json(self.args.pins))
@@ -553,6 +673,7 @@ class Drill:
 
     def restored_checks(self):
         require(self.http('/readyz')[0] == 200)
+        self.restored_authentication()
         status, body, _ = self.http('/api/protocol/capabilities')
         capabilities = json.loads(body)
         require(status == 200 and capabilities['available'] is True
@@ -610,6 +731,8 @@ class Drill:
         require(not self.bundle.exists())
         self.stage('backup')
         require(checkpoint.backup(self.checkpoint_args(self.source_config, execute=True), self.pg_tool)['complete'] is True)
+        self.stage('source-revocation')
+        self.revoke_source_credentials()
         self.stage('verify-bundle')
         manifest = checkpoint.verify(self.bundle, checkpoint.Budget(60, 100000, 256 * 1024**2))
         require(manifest['releaseManifestSha256'] == sha(self.args.release_manifest))
@@ -633,9 +756,10 @@ class Drill:
         self.stage('restore')
         require(checkpoint.restore(self.checkpoint_args(self.restore_config, execute=True, database=TARGET_DB), self.pg_tool)['complete'] is True)
         self.stage('compare')
-        restored = self.database_snapshot(TARGET_DB)
-        require(restored == self.source_snapshot)
-        self.report['all_schemas_equal'] = self.report['all_table_rows_equal'] = True
+        restored = self.database_snapshot(TARGET_DB, business=True)
+        require(restored == self.source_business_snapshot)
+        self.verify_fence()
+        self.report['all_schemas_equal'] = self.report['all_business_rows_equal'] = self.report['all_sequences_equal'] = True
         require(stable_rows(checkpoint.scan(self.restore_roots, checkpoint.Budget(30))) == manifest['entries'])
         self.report['three_roots_equal'] = True
         for label in ('restored', 'restart'):

@@ -257,7 +257,7 @@ def main():
         spec = importlib.util.spec_from_file_location('prepared_native_feed_contract', ROOT / 'scripts/ci/native-feed-diagnostics.py')
         native_feed = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(native_feed)
-        public.update(status='prepared', stage='complete', source_snapshot_sha256=hashlib.sha256(json.dumps(before, sort_keys=True).encode()).hexdigest(), frontend_manifest_sha256=plan['frontend_manifest_sha256'], frontend_index_sha256=plan['frontend_index_sha256'], normal_binary_sha256=plan['normal_sha256'], provisioner_sha256=plan['provisioner_sha256'], playwright='1.62.1', chromium_revision='1234', chromium_binary_sha256=runtime['executable_sha256'], fresh_build=True, historical_binaries_reused=False, browser_phases_started=False, ipc_success_established=False, native_feed_regression=native_feed.not_run())
+        public.update(status='prepared', stage='complete', source_snapshot_sha256=hashlib.sha256(json.dumps(before, sort_keys=True).encode()).hexdigest(), frontend_manifest_sha256=plan['frontend_manifest_sha256'], frontend_index_sha256=plan['frontend_index_sha256'], normal_binary_sha256=plan['normal_sha256'], provisioner_sha256=plan['provisioner_sha256'], playwright=runtime['playwright'], chromium_revision=runtime['chromium_revision'], chromium_binary_sha256=runtime['executable_sha256'], fresh_build=True, historical_binaries_reused=False, browser_phases_started=False, ipc_success_established=False, native_feed_regression=native_feed.not_run())
         write(PUBLIC / 'preparation.json', public)
         return 0
     except Exception as error:

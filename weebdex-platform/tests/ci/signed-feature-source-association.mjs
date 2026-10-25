@@ -2,6 +2,7 @@
 // Preserve all historical backup/feature pins; never infer browser acceptance.
 // Literal hunks and full digests are self-contained for shallow CI checkouts.
 import assert from 'node:assert/strict';
+import { restoreChrome157Evidence } from './chrome157-source-association.mjs';
 import { createHash } from 'node:crypto';
 const hash = value => createHash('sha256').update(value).digest('hex');
 const reversals = {
@@ -59,6 +60,7 @@ export function restoreSignedFeatureSource(input, kind) {
   const row = reversals[kind];
   const message = kind === 'runner' ? 'Unknown owned-temp application runner' : 'Unknown preparation-stage evidence validator';
   assert.equal(typeof input, 'string', message);
+  if (kind === 'validator') input = restoreChrome157Evidence(input);
   const digest = hash(input);
   if (digest === row.predecessor_sha256) return input;
   assert.equal(digest, row.successor_sha256, message);

@@ -97,25 +97,101 @@ class DriverSeams(unittest.TestCase):
     def test_private_list_fixture_has_only_its_required_permission(self):
         drill = m.Drill.__new__(m.Drill)
         drill.token = 'synthetic-test-token-not-a-user-credential'
+        drill.password_auth = Mock(return_value='11111111-1111-1111-1111-111111111111')
+        drill.browser_flow = Mock(side_effect=[({'id':'22222222-2222-2222-2222-222222222222'}, 'weebdex_browser=synthetic'),
+                                               ({'id':'33333333-3333-3333-3333-333333333333'}, 'weebdex_browser=synthetic')])
         drill.sql = Mock()
-        drill.http = Mock(return_value=(201, b'{"id":"SyntheticList","visibility":"private"}', {}))
+        drill.http = Mock(side_effect=[(201, b'{"id":"SyntheticList","visibility":"private"}', {}),
+                                      (200, b'{}', {}), (200, b'{}', {}), (200, b'{}', {})])
         drill.seed_account()
-        statement = drill.sql.call_args.args[0]
-        self.assertIn('password_hash,verified,permissions) VALUES', statement)
-        self.assertIn("TRUE,'[\"self.preferences.update\"]'::jsonb)", statement)
+        statement = drill.sql.call_args_list[0].args[0]
+        self.assertIn('UPDATE platform.users SET verified=TRUE,permissions=', statement)
+        self.assertIn("'[\"self.preferences.update\",\"self.library.read\"]'::jsonb", statement)
         self.assertNotIn(drill.token, statement)
-        self.assertIn(hashlib.sha256(drill.token.encode()).hexdigest(), statement)
-        drill.http.assert_called_once_with('/api/user/lists', auth=True,
+        self.assertNotIn('INSERT INTO platform.sessions', '\n'.join(call.args[0] for call in drill.sql.call_args_list))
+        drill.password_auth.assert_called_once_with('registration')
+        drill.http.assert_any_call('/api/user/lists', auth=True,
             payload={'name': 'Synthetic private restore list', 'manga_ids': ['SeedManga1']})
         self.assertEqual(drill.list_snapshot['visibility'], 'private')
 
     def test_private_list_fixture_preserves_authorization_refusal(self):
         drill = m.Drill.__new__(m.Drill)
         drill.token = 'synthetic-test-token-not-a-user-credential'
+        drill.password_auth = Mock(return_value='11111111-1111-1111-1111-111111111111')
         drill.sql = Mock()
         drill.http = Mock(return_value=(403, b'{}', {}))
         with self.assertRaises(m.Refused):
             drill.seed_account()
+
+    def test_password_login_uses_new_flow_bound_csrf_and_real_session_cookie(self):
+        drill = object.__new__(m.Drill)
+        drill.password = 'synthetic-password-only'
+        flow_id = '11111111-1111-1111-1111-111111111111'
+        user_id = '22222222-2222-2222-2222-222222222222'
+        drill.browser_flow = Mock(return_value=({'id':flow_id, 'ui':{'nodes':[
+            {'attributes':{'name':'csrf_token','value':'synthetic-csrf'}}]}}, 'weebdex_browser=synthetic'))
+        drill.http = Mock(return_value=(200, json.dumps({'session':{'active':True,'identity':{'id':user_id}}}).encode(),
+            {'set-cookie':'weebdex_session=' + 's'*43 + '; Path=/; HttpOnly'}))
+        self.assertEqual(drill.password_auth('login'), user_id)
+        self.assertEqual(drill.token, 's'*43)
+        drill.http.assert_called_once_with('/auth/self-service/login?flow=' + flow_id,
+            headers={'Cookie':'weebdex_browser=synthetic'}, payload={'method':'password',
+            'csrf_token':'synthetic-csrf','password':drill.password,'identifier':'restore-fixture-user'})
+        drill.http.return_value = (401, b'{}', {})
+        with self.assertRaises(m.Refused):
+            drill.password_auth('login')
+
+    def test_old_credentials_must_fail_before_fresh_login_can_be_credited(self):
+        drill = object.__new__(m.Drill)
+        drill.report = {}
+        drill.backup_token = 'old-synthetic-cookie'
+        drill.api_token = 'old-synthetic-api'
+        drill.list_id = 'SyntheticList'
+        drill.old_flows = [('recovery','synthetic-flow','weebdex_browser=synthetic','old-synthetic-email')]
+        drill.user_id = 'synthetic-user'
+        def login(kind):
+            drill.token = 'fresh-synthetic-session'
+            return drill.user_id
+        drill.password_auth = Mock(side_effect=login)
+        good = [(401,b'',{}),(404,b'',{}),(410,b'',{}),(400,b'',{}),(200,b'',{})]
+        for index in range(4):
+            responses = list(good); responses[index] = (200,b'',{})
+            drill.http = Mock(side_effect=responses)
+            with self.subTest(index=index), self.assertRaises(m.Refused):
+                drill.restored_authentication()
+            drill.password_auth.assert_not_called()
+            self.assertNotIn('fresh_login_verified', drill.report)
+        drill.http = Mock(side_effect=good)
+        drill.restored_authentication()
+        self.assertTrue(drill.report['fresh_login_verified'])
+        drill.password_auth.assert_called_once_with('login')
+
+    def test_business_projection_keeps_every_row_and_canonical_policy_column(self):
+        self.assertEqual(m.row_projection('platform.users', True), 'to_jsonb(t)')
+        self.assertEqual(m.row_projection('platform.protocol_publication_commands', True), 'to_jsonb(t)')
+        self.assertEqual(m.row_projection('public.account_permissions', True), 'to_jsonb(t)')
+        self.assertEqual(m.row_projection('public.backend_outbox', True), 'to_jsonb(t)')
+        self.assertEqual(m.row_projection('platform.sessions', False), 'to_jsonb(t)')
+        self.assertEqual(m.row_projection('platform.sessions', True), "to_jsonb(t) - ARRAY['revoked_at']::text[]")
+        self.assertNotIn('service_key', m.row_projection('public.node_identity', True))
+        self.assertNotIn('payload', m.row_projection('platform.scheduled_uploads', True))
+        self.assertNotIn('started_at', m.row_projection('platform.scheduled_uploads', True))
+        self.assertNotIn('all_table_rows_equal', m.REQUIRED)
+        self.assertIn('all_sequences_equal', m.REQUIRED)
+
+    def test_paused_restore_config_preserves_identity_and_input_config(self):
+        config = {'protocol_publication': {'operator_key_file':'/unchanged/operator', 'native_node':{
+            'service_key_file':'/unchanged/service', 'admin_pubkey':'synthetic-unchanged',
+            'sync_worker_enabled':True, 'public_serving':{'enabled':True, 'root':'/retained'},
+            'enrollment':{'enabled':True}, 'discovery_private_overrides':['http://private.invalid']}}}
+        original = copy.deepcopy(config)
+        result = m.paused_config(config)
+        self.assertEqual(config, original)
+        m.checkpoint.require_paused_roles(result)
+        node = result['protocol_publication']['native_node']
+        self.assertEqual(node['service_key_file'], '/unchanged/service')
+        self.assertEqual(node['admin_pubkey'], 'synthetic-unchanged')
+        self.assertEqual(node['public_serving']['root'], '/retained')
 
     def valid(self):
         return dict(format='synthetic-full-restore-result-v1', runtime_executed=True,
@@ -382,10 +458,13 @@ class WorkflowSeams(unittest.TestCase):
         drill.original_roots = {'native': root / 'original-native'}
         drill.source_rows = []
         drill.source_snapshot = {'tables': 200, 'rows_sha256': 'a' * 64, 'schema_sha256': 'b' * 64}
+        drill.source_business_snapshot = dict(drill.source_snapshot)
         drill.capture_baseline = Mock()
         drill.seed_account = Mock()
         drill.stop_checked = Mock()
         drill.handoff = Mock()
+        drill.revoke_source_credentials = Mock()
+        drill.verify_fence = Mock()
         drill.check_retained_credentials = Mock()
         drill.checkpoint_args = lambda config, **kw: argparse.Namespace(config=config, **kw)
         drill.pg_tool = Mock()
@@ -412,6 +491,9 @@ class WorkflowSeams(unittest.TestCase):
             self.assertEqual(drill.start_restored.call_count, 2)
             self.assertEqual(drill.restored_checks.call_count, 2)
             self.assertEqual(drill.stop_checked.call_count, 2)
+            drill.revoke_source_credentials.assert_called_once_with()
+            drill.verify_fence.assert_called_once_with()
+            drill.database_snapshot.assert_any_call(m.TARGET_DB, business=True)
             self.assertTrue(drill.report['source_unchanged'])
             self.assertTrue(drill.report['nonempty_sentinel_unchanged'])
             # A mocked sequence lacks real verification, cleanup and complete phase.

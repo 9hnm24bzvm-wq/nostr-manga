@@ -376,7 +376,16 @@ mod tests {
 /// planned, so a standalone native platform can safely lack protocol tables.
 pub fn visibility_function_sql() -> String {
     format!(
-        "CREATE OR REPLACE FUNCTION platform.protocol_source_is_visible(source_event TEXT) RETURNS BOOLEAN LANGUAGE plpgsql STABLE AS $bridge$ BEGIN IF source_event IS NULL THEN RETURN TRUE; END IF; RETURN EXISTS(SELECT 1 FROM events e WHERE encode(e.id,'hex')=source_event AND e.kind IN(1001,1002) AND {VISIBLE}); EXCEPTION WHEN undefined_table OR undefined_column THEN RETURN FALSE; END; $bridge$;"
+        "CREATE OR REPLACE FUNCTION platform.protocol_source_is_visible(source_event TEXT) RETURNS BOOLEAN LANGUAGE plpgsql STABLE AS $bridge${}$bridge$;",
+        visibility_function_body()
+    )
+}
+
+/// Exact pg_proc.prosrc expected by verify-only platform startup. Keeping this
+/// beside the installer prevents downstream copies of the canonical predicate.
+pub fn visibility_function_body() -> String {
+    format!(
+        " BEGIN IF source_event IS NULL THEN RETURN TRUE; END IF; RETURN EXISTS(SELECT 1 FROM events e WHERE encode(e.id,'hex')=source_event AND e.kind IN(1001,1002) AND {VISIBLE}); EXCEPTION WHEN undefined_table OR undefined_column THEN RETURN FALSE; END; "
     )
 }
 

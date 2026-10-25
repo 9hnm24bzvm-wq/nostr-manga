@@ -35,27 +35,29 @@ async fn main() -> Result<()> {
         return Ok(());
     }
     let state = AppState::connect(config, Config::database_dsn()?).await?;
-    if action == "migrate" {
-        state.db.migrate(domains::MIGRATIONS).await?;
-        tracing::info!("platform migrations applied; original protocol migrations remain separate");
-        return Ok(());
-    }
-    state.db.verify_schema(domains::MIGRATIONS).await?;
     let original_ready = state.protocol.verify_schema().await.is_ok();
     ensure!(
         !state.config.production || original_ready,
         "production requires verified original protocol schema"
     );
+    if action == "migrate" {
+        state.db.migrate(domains::MIGRATIONS).await?;
+        // Only the explicit privileged preparation command may install policy.
+        state.protocol.install_visibility_function().await?;
+        tracing::info!("platform migrations and visibility policy prepared; original protocol migrations remain separate");
+        return Ok(());
+    }
+    state.db.verify_schema(domains::MIGRATIONS).await?;
+    // Both runtime commands are verify-only. A missing or stale canonical or
+    // standalone policy fails before a worker, publication owner, or listener.
+    state.protocol.verify_visibility_function().await?;
     if action == "verify" {
         tracing::info!(
             protocol_schema_ready = original_ready,
-            "schema and configuration verified; publication ownership was not opened"
+            "schema, visibility policy and configuration verified; publication ownership was not opened"
         );
         return Ok(());
     }
-    // Install original-module visibility or its fail-closed reset before any read
-    // worker or HTTP listener. This cannot bless a remote-only protocol record.
-    state.protocol.install_visibility_function().await?;
     let bind = state.config.bind;
     let listener = tokio::net::TcpListener::bind(bind).await?;
     let mut native_listener = None;

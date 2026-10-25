@@ -28,23 +28,10 @@ impl ProtocolFacade {
     }
 
     pub async fn verify_schema(&self) -> anyhow::Result<()> {
+        // A failed recheck must not retain readiness from an earlier success.
+        self.schema_ready.store(false, Ordering::Release);
         self.repository.verify_schema().await?;
         self.schema_ready.store(true, Ordering::Release);
-        Ok(())
-    }
-
-    pub async fn install_visibility_function(&self) -> anyhow::Result<()> {
-        let sql = if self.is_ready() {
-            manga_node::platform_bridge::visibility_function_sql()
-        } else {
-            "CREATE OR REPLACE FUNCTION platform.protocol_source_is_visible(source_event TEXT) RETURNS BOOLEAN LANGUAGE SQL STABLE AS $$ SELECT source_event IS NULL $$;".to_owned()
-        };
-        self.repository
-            .pool
-            .get()
-            .await?
-            .batch_execute(&sql)
-            .await?;
         Ok(())
     }
 
@@ -132,3 +119,5 @@ pub mod list_aliases;
 pub mod profiles;
 
 pub mod statuses;
+
+mod visibility;

@@ -8,6 +8,11 @@ finite evidence receipt for what actually ran. A successful runtime result means
 application **data** restored with separately retained matching synthetic
 credentials. It does not mean independent full-host or key recovery.
 
+The 2026-10-25 authentication-fencing update has only finite, mocked boundary
+tests. No real database restore, old-token rejection or fresh-login runtime
+qualification has been run for this update; the sequence below remains a driver
+contract, not an execution receipt.
+
 ## Scope and prerequisites
 
 Reuse one independently reviewed matching build of the real platform, guarded
@@ -88,10 +93,14 @@ cleanup can never emit a passing receipt.
    its embedded original listener, and the local synthetic mail surface. This
    specialization enables PostgreSQL fsync and full-page writes; it does not
    inherit the browser fixture's non-durable optimization.
-2. Establish a private native user/session with the existing test-only persisted
-   account seam, then create a private list through the genuine authenticated
-   API. The random synthetic session token remains in driver memory. This is not
-   a registration, password-recovery, browser-identity or signed-library test.
+2. Register a synthetic native user through the actual CSRF-bound browser-flow
+   API, then create a private list through the authenticated API. The generated
+   password and issued session stay in memory. A narrow fixture SQL seam marks
+   that synthetic user verified and grants only preference-update/library-read
+   permissions. Seed a read-only API client and sent/unused verification and
+   recovery token hashes bound to actual browser flows; confirm private-list API
+   access and live flow reads. This does not qualify real email delivery,
+   password-recovery completion, browser UI or signed-library behavior.
 3. Close/join the mail/provisioning surface, observe readiness withdrawal, and
    gracefully stop/join the platform and embedded original writer. Stage exactly
    one real signed personal-note outbox item through the provisioner, join it,
@@ -107,18 +116,31 @@ cleanup can never emit a passing receipt.
    not presented as a direct production-layout qualification. Both relocated
    configurations deliberately retain the source fixture operator/service key
    file paths and its group-key directory. The checkpoint does not restore them.
+   Target configurations explicitly pause original autonomous roles and private
+   discovery exceptions, retaining other role configuration and signer identity.
 5. Run actual default backup plan, backup execute and bundle verification using
    the unchanged `private-checkpoint.py` API. Its real PostgreSQL commands run
    through the fixture's existing registered-birth process owner. The bundle
    contains the whole database plus native, original and projection storage.
+   Then deliberately revoke the source fixture's old cookie/API credentials and
+   consume its email tokens/flows after the backup. Pin the source database's new
+   exact snapshot so later stability checks distinguish this intentional change.
 6. Create two new databases from template0 on that disposable cluster. The
    occupied target contains a known sentinel; require the specific nonempty
    database refusal before any roots are created, and reread the unchanged
    sentinel. A different refusal is not credited. The genuine target is a
    separate empty database with absent roots; default restore plan must not
-   create them, then actual restore must complete transactionally.
-7. Before starting the restored app, compare all public/platform table contents
-   and sequence state and the complete no-owner/no-ACL schema dump. The only
+   create them. Actual dump restore must commit, followed by mandatory successful
+   restored-authentication/autonomous-work fencing before a completion receipt.
+7. Before starting the restored app, compare every public/platform table row and
+   business column, all sequence state and the complete no-owner/no-ACL schema
+   dump. A fixed allowlist projects out only the intentional restore-control
+   columns in authentication, inventory, role, schedule and node-epoch ledgers;
+   no table or business row is omitted. Independently require all restored
+   capabilities invalid, schedules/roles paused, inventory sessions cleared and
+   original restore/authentication epoch advanced. Immutable scheduled inputs,
+   canonical users/policy, signer identity and pending publication/outbox rows
+   retain exact parity. The only
    schema normalization removes PostgreSQL's random `\restrict`/`\unrestrict`
    safety nonce, not schema SQL. Verify every restored storage member/hash.
 8. Before any restored child starts, require the exact separately retained
@@ -138,8 +160,13 @@ cleanup can never emit a passing receipt.
    pending original note. The note retains one event and one completed outbox
    row with the same immutable event fingerprint. This does not prove exactly
    one physical backend invocation under arbitrary crashes.
+   Before private reads, require the old cookie to fail with 401, the old API
+   client to lose private-list access, both old browser flows to return 410 and
+   both email tokens to return 400. A new CSRF-bound password login must issue a
+   different working session; never reuse the backup session for success checks.
 9. Gracefully stop and restart once more with the same restored database/roots
-   and identities; repeat those checks. Verify source database, sequences,
+   and identities; repeat old-capability rejection and a new password login as
+   well as the data/media checks. Verify the post-revocation source database, sequences,
    original roots, external stopped roots and all pinned source/tool inputs are
    unchanged. Finally require the existing physical closed-port/no-survivor,
    no-forced-lifecycle cleanup receipt and removal of synthetic server keys.
@@ -169,6 +196,11 @@ A successful status is explicitly
 false` and `managed_group_key_recovery_qualified: false`. Runtime success requires
 `retained_credentials_match: true` and `synthetic_server_keys_absent: true` after
 cleanup. These limitations cannot be removed while retaining a passing outcome.
+Success additionally requires exact business-row/schema/sequence parity,
+`restored_authentication_fenced`, `autonomous_roles_paused`,
+`old_cookie_api_email_and_flows_rejected`, `fresh_login_verified` and
+`source_credentials_revoked_after_backup`. Retained credentials here mean
+separately retained operator/service signing keys, not reusable restored sessions.
 
 The driver prints and writes only a bounded fixed-field JSON outcome with
 booleans, stage/error-family labels, counts and hashes. Child output, raw SQL,

@@ -1,3 +1,4 @@
+import { restoreChrome157Evidence } from './chrome157-source-association.mjs';
 import test from 'node:test';
 import { restoreNativeDiagnosticWorkflow, restoreSignedFeatureWorkflow } from './native-diagnostic-workflow-association.mjs';
 import { restoreSignedFeatureSource } from './signed-feature-source-association.mjs';
@@ -47,7 +48,8 @@ for (const [kind, file, successorSha, predecessorSha, partialBefore, partialAfte
   ['runner', 'run-hosted-browser.py', '06f996dcdbcd3b0687aaa83d88a39a82b19ac3a475ab4c3cb213937631932f70', '8345f6782c4430fc78c25592b719858c01537a7cedc82e9d17497d9b156a71c7', "PUBLIC_SIGNED_FEATURE_PHASE = 'public-signed-feature-recovery'\n", ''],
   ['validator', 'validate-ci-evidence.py', 'e2d01a31f15cc578e5bb6e3b8a4dbb2273f6448f12764bb6fd675c2cf3ea2628', '08290930bf5b23ae3132bd6c37dc4e1e11fb61e9f14eeee6984fc608abedb731', ", 'signed_feature_diagnostics'}", '}'],
 ]) test('signed-feature ' + kind + ' reverses exact bytes and rejects arbitrary or partial changes', () => {
-  const successor = fs.readFileSync(new URL('weebdex-platform/scripts/ci/' + file, root), 'utf8');
+  const source = fs.readFileSync(new URL('weebdex-platform/scripts/ci/' + file, root), 'utf8');
+  const successor = kind === 'validator' ? restoreChrome157Evidence(source) : source;
   assert.equal(hash(successor), successorSha);
   const predecessor = restoreSignedFeatureSource(successor, kind);
   assert.equal(hash(predecessor), predecessorSha);

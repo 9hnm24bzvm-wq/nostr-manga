@@ -144,20 +144,95 @@ identity placeholders. Replace them in private operator configuration. Publisher
 existing admitted signer and storage authority through the original module.
 No API call grants those authorities implicitly.
 
+Fresh deployment and supported upgrades use this order, with listeners stopped:
+
+1. Apply original migrations with the separately reviewed
+   `manga-node migrate NODE_CONFIG` workflow and its migration role.
+2. Run platform `migrate` with the platform migration/preparation role. It applies
+   the unchanged checksummed migrations and explicitly prepares visibility policy.
+3. Switch the injected database connection to the restricted runtime role; run
+   `check-config`, then `verify`, then `serve` with the same release/configuration.
+
 ```sh
+# PLATFORM_DATABASE_URL is injected privately for the appropriate role per step.
+PLATFORM_CONFIG=/etc/weebdex/platform.json scripts/run-platform.sh migrate
 PLATFORM_CONFIG=/etc/weebdex/platform.json scripts/run-platform.sh check-config
 PLATFORM_CONFIG=/etc/weebdex/platform.json scripts/run-platform.sh verify
-PLATFORM_CONFIG=/etc/weebdex/platform.json scripts/run-platform.sh migrate
 PLATFORM_CONFIG=/etc/weebdex/platform.json scripts/run-platform.sh serve
 ```
 
-`check-config` only inspects configuration/artifact files. `verify` connects and
-checks schema without opening a publication ownership runtime. `migrate` is an
-explicit platform-only operation, never an automatic startup side effect.
-Original protocol migrations must first be applied through its separate reviewed
-`manga-node migrate NODE_CONFIG` workflow, against the same intended database.
-Use a backed-up staging copy first; there is no automatic destructive downgrade.
-Backward binary rollout is rejected if its migration manifest differs.
+`check-config` only inspects configuration/artifact files. `migrate` is the only
+CLI action that writes schema or installs policy. Preparation transactionally
+installs the original module's canonical definition (or the NULL-only native
+fallback), verifies its execution attributes, and records the version, mode and
+SHA-256 of its exact generated SQL in `platform.protocol_visibility_policy`.
+Preparation uses the same advisory lock as platform migrations. Historical SQL
+and original migration checksums are unchanged.
+
+Both `verify` and `serve` compare that attestation AND the installed function body,
+language, signature and execution attributes using a read-only transaction.
+Neither command repairs or installs policy. Missing/stale preparation, a changed
+function, or a canonical/native-only mode mismatch prevents startup before any
+worker, publication owner or listener is opened. A standalone non-production
+platform must be explicitly prepared in native-only mode; if the original schema
+later becomes available (or unavailable), stop listeners and rerun preparation
+with the correct role before serving again. Production requires the verified
+original schema and canonical policy. A restored checkpoint is verified as-is;
+do not silently migrate or repair it to make recovery checks pass.
+
+The preparation role owns platform schemas, functions, migration history and the
+policy-attestation table. It must be able to replace a previously prepared
+function; use that same designated owner for upgrades. The runtime role must have:
+
+- Database CONNECT and schema USAGE on the required platform/original schemas.
+- SELECT only on both migration histories and `platform.protocol_visibility_policy`.
+- Only the required application-table DML, sequence usage and function EXECUTE
+  grants for the enabled native/original workflows. Keep authority provisioning
+  grants separate from ordinary application operations.
+- No schema CREATE, database CREATE, object ownership, superuser privilege, or
+  membership/SET ROLE path to a migration or other privileged owner. Do not give
+  blanket table writes that include migration history or policy attestation.
+
+These are operator-reviewed grant requirements, not an automatically applied
+role-management script. Use a backed-up staging copy first; there is no automatic
+destructive downgrade. Backward binary rollout is rejected when the migration
+manifest or expected visibility policy differs. Real two-role PostgreSQL
+fresh/upgrade/concurrency/rollback and ordinary-runtime-write qualification is
+still required; source-contract checks alone do not establish those results.
+
+## Service shutdown ownership
+
+The service template explicitly sets `KillMode=mixed`. On stop, systemd sends the
+initial `SIGTERM` to the main process, rather than all owned projection children.
+`scripts/run-platform.sh` must retain its final `exec` so the application is that
+main process and can drain admitted work. Keep the default final `SIGKILL`
+control-group cleanup enabled: remaining children are killed after the main
+process exits or `TimeoutStopSec` expires. Do not use `KillMode=process` or `none`
+to escape manager ownership. See the official
+[systemd killing policy](https://www.freedesktop.org/software/systemd/man/latest/systemd.kill.html).
+
+The supplied `TimeoutStopSec=225` exceeds both shipped application
+`shutdown_grace_seconds=210` values. If changing the provisioned runtime grace,
+change and revalidate the installed unit so its stop timeout remains strictly
+greater, allowing the application to report its own drain outcome first. An
+application drain deadline or a manager stop timeout is an unsuccessful shutdown,
+not proof that admitted work committed. Inspect the durable command journal,
+pending upload markers and cleanup ledger and explicitly reconcile unresolved
+work before declaring recovery successful. Never blindly replay an uncertain
+mutation.
+
+`python3 -B tests/ci/test_service_shutdown_contract.py` checks only the shipped
+template's signal policy, launcher `exec` source and example deadline relationship.
+These checks, `systemd-analyze verify`, and direct application signal tests do not
+qualify installed-manager behavior. Issue
+[#24](https://github.com/9hnm24bzvm-wq/nostr-manga/issues/24) still requires an
+isolated systemd-capable host to record readiness withdrawal, main-PID/cgroup and
+actual signal observations while an admitted mutation and projection child are
+active; their terminal outcomes within grace; listener/child/storage-lock release;
+deliberate stop-timeout failure and durable reconciliation; and restart/failure
+cleanup without orphaned descendants. Record passed, failed, blocked and not-run
+stages on the exact tested revision. No service is installed or started by these
+static checks, and no actual manager acceptance is claimed here.
 
 ## Original media and protocol reverse proxy
 
@@ -191,7 +266,8 @@ instance; the original node's development defaults are not a production policy.
   recovery and link origin. Enable registration only deliberately.
 - Supply DNS/certificates, reverse proxy, closed loopback ports, management network
   policy, process manager, private data permissions and log retention/rotation.
-  Change example `TimeoutStopSec` if changing application drain. Proxy body limits
+  Keep installed `TimeoutStopSec` greater than the configured application drain.
+  Proxy body limits
   must not fall below route-specific supported upload limits.
 - Review permissions, user bootstrap/staff policy, content licensing and original
   node instance/relay/read policies. Public-source provenance is not a publication

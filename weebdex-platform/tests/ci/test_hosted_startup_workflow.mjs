@@ -128,14 +128,14 @@ test('only three validated sanitized reports can be uploaded for one day', () =>
   assert.doesNotMatch(workflow, /ci-encrypted-evidence|qa-preparation-seal|screenshots|\.png|test-runtime\//);
 });
 
-test('all reused source seams retain exact reviewed bytes and normal browser sandbox', () => {
+test('shared source seams retain exact qualified-runtime successor bytes and normal browser sandbox', () => {
   const pins = {
-    'scripts/ci/prepare-hosted-browser.sh': 'a4f1669e1f64fc08be9a8cfd9d3b51069f7ffb41a95d15f499fad2e9a4c41233',
-    'scripts/ci/prepare-hosted-browser.py': '3784c7babdc3ac5cb74affd231691c90af661d81b5f702dbbe9500a4ab59db4f',
+    'scripts/ci/prepare-hosted-browser.sh': '7d06b7bd1d1af774d5610bb1955fd3dfed1bb50565000a2003b6a5b937bba852',
+    'scripts/ci/prepare-hosted-browser.py': '1425478b8aa18bda51b566932247c32dbd8c7994864936fef0b4e787c44488a0',
     'scripts/ci/run-hosted-browser.py': '06f996dcdbcd3b0687aaa83d88a39a82b19ac3a475ab4c3cb213937631932f70',
     'scripts/ci/run-hosted-feed-regression.py': '36277f258fa2801abed15069be0002889be68873174333d4e588239b6119d131',
-    'scripts/ci/validate-ci-evidence.py': 'e2d01a31f15cc578e5bb6e3b8a4dbb2273f6448f12764bb6fd675c2cf3ea2628',
-    'scripts/ci/browser-runtime.mjs': '061be4487096eda05f3411d2a584cd5971cd62629173ae748a38c0e0e9cd279d',
+    'scripts/ci/validate-ci-evidence.py': '9ad4c9e50f680ce8cf3953b7e768a40895513cf068c82e7a468d0fe56258be34',
+    'scripts/ci/browser-runtime.mjs': '5b40dbc097ef15933b1ee076d2f821bd3b6b21394a5a2c01d218f6ae4d1c41a6',
     'scripts/browser-acceptance.mjs': '7238ae50b559c54adacb61c95d17fb852ffe8b1ea9fb7a35a6fead0bd00eed8a',
   };
   for (const [name, expected] of Object.entries(pins)) assert.equal(sha(read('weebdex-platform/' + name)), expected, name);

@@ -1,0 +1,97 @@
+name: Qualified Chrome 157 application acceptance
+
+# Explicit opt-in only. Existing application/startup branches cannot match.
+on:
+  push:
+    branches: [ci/hosted-browser-chrome157]
+permissions:
+  contents: read
+concurrency:
+  group: hosted-browser-e2e-${{ github.repository }}
+  cancel-in-progress: false
+jobs:
+  browser:
+    # Standard public runner only. Never fall back to private/paid/self-hosted.
+    if: >-
+      github.event_name == 'push' && github.event.repository.private == false && github.repository == '9hnm24bzvm-wq/nostr-manga' && github.ref == 'refs/heads/ci/hosted-browser-chrome157'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 140
+    env:
+      CARGO_BUILD_JOBS: 2
+      NODE_OPTIONS: --max-old-space-size=2048
+      CI: 'true'
+      BROWSER_RUNTIME_PROFILE: cft-157
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.19.0
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: '3.12.15'
+          architecture: x64
+          check-latest: false
+      - name: Check finite deployment proxy route and header contracts
+        timeout-minutes: 2
+        run: node --test weebdex-platform/tests/ci/test_deployment_proxy_routes.mjs
+      - name: Prepare pinned dependencies and frozen-source builds
+        id: preparation
+        timeout-minutes: 90
+        env:
+          SELECTED_BATCH: public-upload
+        run: |
+          mkdir -p weebdex-platform/.build/hosted-browser
+          if ! bash weebdex-platform/scripts/ci/prepare-hosted-browser.sh >weebdex-platform/.build/hosted-browser/preparation.log 2>&1; then
+            echo 'Pinned hosted-browser preparation failed; no browser phases were started.'
+            exit 1
+          fi
+      - name: Prove native compact-feed PostgreSQL parity before browser execution
+        timeout-minutes: 12
+        run: python3 weebdex-platform/scripts/ci/run-hosted-feed-regression.py
+      - name: Run genuine browser batches under the owned fixture supervisor
+        timeout-minutes: 30
+        env:
+          SELECTED_BATCH: public-upload
+        run: |
+          weebdex-platform/.build/hosted-python/bin/python \
+            weebdex-platform/scripts/ci/run-hosted-browser.py \
+            --batch "$SELECTED_BATCH" --budget-seconds 3600
+      - name: Validate the closed public evidence schemas
+        id: evidence-validation
+        if: always()
+        run: python3 weebdex-platform/scripts/ci/validate-ci-evidence.py
+      - name: Seal current QA preparation failure diagnostics
+        id: qa-preparation-seal
+        if: always() && steps.preparation.outcome == 'failure' && steps.evidence-validation.outcome == 'success' && hashFiles('weebdex-platform/.build/hosted-browser/qa-preparation-failure/capture.json') != ''
+        timeout-minutes: 2
+        run: |
+          set -euo pipefail
+          PREP_SHA="$(python3 -c 'import hashlib; from pathlib import Path; print(hashlib.sha256((Path("weebdex-platform/ci-sanitized-evidence") / "preparation.json").read_bytes()).hexdigest())')"
+          node weebdex-platform/scripts/ci/seal-qa-preparation.mjs --expected-preparation-sha256 "$PREP_SHA"
+          SEALED_SHA="$(python3 -c 'import hashlib; from pathlib import Path; print(hashlib.sha256(Path("weebdex-platform/ci-encrypted-evidence/qa-preparation-failure.json").read_bytes()).hexdigest())')"
+          node weebdex-platform/scripts/ci/seal-qa-preparation.mjs --validate --expected-preparation-sha256 "$PREP_SHA" --expected-sealed-sha256 "$SEALED_SHA"
+          printf 'sealed_sha256=%s\n' "$SEALED_SHA" >> "$GITHUB_OUTPUT"
+      - name: Upload only the validated encrypted QA preparation failure
+        if: always() && steps.qa-preparation-seal.outcome == 'success' && steps.qa-preparation-seal.outputs.sealed_sha256 != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hosted-qa-preparation-sealed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: weebdex-platform/ci-encrypted-evidence/qa-preparation-failure.json
+          if-no-files-found: error
+          retention-days: 1
+          include-hidden-files: false
+      - name: Upload allowlisted sanitized evidence only
+        if: always() && steps.evidence-validation.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: hosted-chrome157-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            weebdex-platform/ci-sanitized-evidence/preparation.json
+            weebdex-platform/ci-sanitized-evidence/summary.json
+            weebdex-platform/ci-sanitized-evidence/phases.json
+          if-no-files-found: warn
+          retention-days: 1
+          include-hidden-files: false

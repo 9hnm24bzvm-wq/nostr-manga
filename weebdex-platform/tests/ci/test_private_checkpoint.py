@@ -48,6 +48,7 @@ class PrivateCheckpointTests(unittest.TestCase):
             'protocol_publication':{'storage':{'path':str(roots['originals'])},
                 'operator_key_file':str(self.base/'separate-operator.key'),
                 'native_node':{'bind':'127.0.0.1:8081','service_key_file':str(self.base/'separate-service.key'),
+                    **{flag:False for flag in m.PAUSED_NODE_FLAGS}, 'storage_audit_interval_seconds':0,
                     'backend':{'data_dir':str(roots['projection'])}}}}))
 
     def fake_tool(self, name, argv, env, budget, capture=False):
@@ -60,7 +61,12 @@ class PrivateCheckpointTests(unittest.TestCase):
         if name == 'pg_dump':
             Path(argv[argv.index('--file')+1]).write_bytes(b'SYNTHETIC-NOT-A-REAL-PG-DUMP')
         elif name == 'psql':
-            self.assertTrue(capture); return 'synthetic_target\t0'
+            self.assertTrue(capture)
+            self.assertIn('ON_ERROR_STOP=1', argv)
+            if argv[-1] == m.EMPTY_SQL:
+                return 'synthetic_target\t0'
+            self.assertEqual(argv[-1], m.RESTORE_FENCE_SQL)
+            return m.RESTORE_FENCE_MARKER
         elif name == 'pg_restore':
             self.assertEqual(argv[argv.index('--dbname')+1], 'synthetic_target')
             self.assertIn('--single-transaction', argv)
@@ -108,7 +114,92 @@ class PrivateCheckpointTests(unittest.TestCase):
         for key, root in roots.items():
             self.assertEqual((root/'nested/original.bin').read_bytes(),(self.roots[key]/'nested/original.bin').read_bytes())
             self.assertEqual((root/'nested/original.bin').stat().st_mode & 0o777,0o600)
-        self.assertEqual([name for name,_ in self.calls],['pg_dump','psql','pg_restore'])
+        self.assertTrue(result['authenticationInvalidated'])
+        self.assertTrue(result['autonomousRolesPaused'])
+        self.assertEqual([name for name,_ in self.calls],['pg_dump','psql','pg_restore','psql'])
+
+    def test_restore_requires_explicitly_paused_config_before_any_database_command(self):
+        self.backup(); args, roots = self.restored_args(); self.calls.clear()
+        safe = json.loads(Path(args.config).read_text())
+        for flag in m.PAUSED_NODE_FLAGS:
+            for value in (True, None, 0):
+                config = json.loads(json.dumps(safe))
+                config['protocol_publication']['native_node'][flag] = value
+                Path(args.config).write_text(json.dumps(config))
+                with self.subTest(flag=flag, value=value), self.assertRaisesRegex(m.Refused, 'explicitly pause'):
+                    m.restore(args, self.fake_tool)
+        self.assertEqual(self.calls, [])
+        self.assertTrue(all(not p.exists() for p in roots.values()))
+
+    def test_restore_refuses_enabled_external_or_embedded_node_roles(self):
+        self.backup(); args, roots = self.restored_args(); self.calls.clear()
+        config = json.loads(Path(args.config).read_text())
+        node = config['protocol_publication']['native_node']
+        node['storage'] = config['protocol_publication']['storage']
+        external = self.base/'external-node.json'
+        external.write_text(json.dumps(node)); args.node_config = str(external)
+        for role in ('enrollment', 'public_serving'):
+            unsafe = {**node, role: {'enabled': True}}
+            external.write_text(json.dumps(unsafe))
+            with self.subTest(role=role), self.assertRaisesRegex(m.Refused, 'explicitly pause'):
+                m.restore(args, self.fake_tool)
+        external.write_text(json.dumps(node))
+        node['peer_discovery_enabled'] = True
+        Path(args.config).write_text(json.dumps(config))
+        with self.assertRaisesRegex(m.Refused, 'explicitly pause'):
+            m.restore(args, self.fake_tool)
+        self.assertEqual(self.calls, [])
+        self.assertTrue(all(not p.exists() for p in roots.values()))
+
+    def test_fence_failure_never_reports_complete_or_replays_any_mutation(self):
+        self.backup(); args, roots = self.restored_args(); self.calls.clear()
+        def fail_fence(name, argv, env, budget, capture=False):
+            if name == 'psql' and argv[-1] == m.RESTORE_FENCE_SQL:
+                self.calls.append((name, list(argv)))
+                raise m.Refused('Synthetic missing schema or denied SQL')
+            return self.fake_tool(name, argv, env, budget, capture)
+        with patch.object(m, 'stopped'), self.assertRaisesRegex(m.Refused, 'Synthetic'):
+            m.restore(args, fail_fence)
+        self.assertEqual([name for name, _ in self.calls], ['psql', 'pg_restore', 'psql'])
+        self.assertTrue(all(p.exists() for p in roots.values()))
+        self.assertFalse(any((p/'COMPLETE.json').exists() for p in roots.values()))
+
+    def test_fence_missing_acknowledgement_never_reports_complete(self):
+        self.backup(); args, _ = self.restored_args()
+        def no_ack(name, argv, env, budget, capture=False):
+            result = self.fake_tool(name, argv, env, budget, capture)
+            return '' if argv[-1] == m.RESTORE_FENCE_SQL else result
+        with patch.object(m, 'stopped'), self.assertRaisesRegex(m.Refused, 'fencing was not confirmed'):
+            m.restore(args, no_ack)
+
+    def test_restore_rechecks_offline_owners_before_and_after_fencing(self):
+        self.backup(); args, _ = self.restored_args()
+        with patch.object(m, 'stopped') as stopped:
+            m.restore(args, self.fake_tool)
+        self.assertEqual(stopped.call_count, 3)
+
+    def test_fence_sql_is_one_strict_transaction_and_preserves_business_rows(self):
+        sql = m.RESTORE_FENCE_SQL
+        self.assertTrue(sql.startswith('BEGIN;'))
+        self.assertEqual(sql.count('COMMIT;'), 1)
+        self.assertLess(sql.index('COMMIT;'), sql.index("SELECT '" + m.RESTORE_FENCE_MARKER))
+        self.assertIn('SET LOCAL search_path = pg_catalog;', sql)
+        for table, column in [('platform.sessions','revoked_at'), ('platform.api_clients','revoked_at'),
+                              ('platform.auth_flows','used_at'), ('platform.auth_email_tokens','used_at'),
+                              ('platform.account_disable_confirmations','used_at')]:
+            self.assertIn(f'UPDATE {table} SET {column}=transaction_timestamp() WHERE {column} IS NULL;', sql)
+        for table in m.RESTORE_FENCE_COLUMNS:
+            self.assertIn('UPDATE ' + table + ' SET ', sql)
+        for forbidden in ('DELETE ', 'TRUNCATE ', 'DROP ', 'CREATE ', 'IF NOT EXISTS', 'to_regclass',
+                          'UPDATE platform.users', 'UPDATE platform.protocol_publication_commands',
+                          'UPDATE platform.protocol_identity_bindings', 'UPDATE public.events',
+                          'UPDATE public.account_permissions', 'UPDATE public.backend_outbox'):
+            self.assertNotIn(forbidden, sql)
+        self.assertIn("WHERE state NOT IN ('complete','cancelled');", sql)
+        self.assertIn("auth_not_before=GREATEST(auth_not_before+1,", sql)
+        self.assertIn('INTO STRICT previous_generation,previous_auth_epoch', sql)
+        self.assertIn('restore_generation=previous_generation+1 AND auth_not_before>previous_auth_epoch', sql)
+        self.assertIn("RAISE EXCEPTION 'Restored authentication or autonomous work was not fenced'", sql)
 
     def test_restore_plan_verifies_but_never_runs_tool_or_makes_target(self):
         self.backup(); self.calls.clear()

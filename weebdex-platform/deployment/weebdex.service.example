@@ -16,7 +16,10 @@ EnvironmentFile=/etc/weebdex/secrets/runtime.env
 ExecStart=/opt/weebdex/weebdex-platform/scripts/run-platform.sh serve
 Restart=on-failure
 RestartSec=5
+# Let the main process drain owned children before final control-group cleanup.
+KillMode=mixed
 KillSignal=SIGTERM
+# Must exceed the provisioned shutdown_grace_seconds (210 in both examples).
 TimeoutStopSec=225
 UMask=0077
 NoNewPrivileges=true

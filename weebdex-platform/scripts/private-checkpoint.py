@@ -395,6 +395,100 @@ EMPTY_SQL = """SELECT current_database(),
  (SELECT count(*) FROM pg_type t JOIN pg_namespace n ON n.oid=t.typnamespace WHERE n.nspname !~ '^pg_' AND n.nspname<>'information_schema')+
  (SELECT count(*) FROM pg_namespace WHERE nspname NOT IN('public','information_schema') AND nspname !~ '^pg_');"""
 
+# Only these recovery-control columns intentionally differ from the backup.
+# Canonical identities, policy, immutable publication inputs and audit history
+# remain intact. The qualification driver separately verifies every fence.
+RESTORE_FENCE_COLUMNS = {
+    'platform.sessions': ('revoked_at',),
+    'platform.api_clients': ('revoked_at',),
+    'platform.auth_flows': ('used_at',),
+    'platform.auth_email_tokens': ('used_at',),
+    'platform.account_disable_confirmations': ('used_at',),
+    'platform.scheduled_uploads': ('state', 'lease_token', 'lease_until', 'generation', 'failure_code', 'updated_at'),
+    'public.node_identity': ('restore_generation', 'auth_not_before', 'restored_at'),
+    'public.inventory_snapshot_slots': ('session_id', 'peer', 'peer_epoch', 'prefix', 'filter', 'snapshot', 'expires_at', 'rounds', 'protocol_bytes'),
+    'public.sync_schedules': ('enabled', 'revision', 'last_error', 'updated_at'),
+    'public.public_export_roles': ('enabled',),
+}
+
+RESTORE_FENCE_MARKER = 'restore-auth-and-roles-fenced-v1'
+RESTORE_FENCE_SQL = """BEGIN;
+SET LOCAL search_path = pg_catalog;
+DO $fence$
+DECLARE previous_generation bigint; previous_auth_epoch bigint;
+BEGIN
+ PERFORM pg_advisory_xact_lock(697241113);
+ IF (SELECT count(*) FROM public.node_identity WHERE singleton) <> 1 THEN
+  RAISE EXCEPTION 'Restore requires the existing original node identity';
+ END IF;
+ SELECT restore_generation,auth_not_before INTO STRICT previous_generation,previous_auth_epoch
+  FROM public.node_identity WHERE singleton FOR UPDATE;
+ UPDATE platform.sessions SET revoked_at=transaction_timestamp() WHERE revoked_at IS NULL;
+ UPDATE platform.api_clients SET revoked_at=transaction_timestamp() WHERE revoked_at IS NULL;
+ UPDATE platform.auth_flows SET used_at=transaction_timestamp() WHERE used_at IS NULL;
+ UPDATE platform.auth_email_tokens SET used_at=transaction_timestamp() WHERE used_at IS NULL;
+ UPDATE platform.account_disable_confirmations SET used_at=transaction_timestamp() WHERE used_at IS NULL;
+ UPDATE platform.scheduled_uploads SET state='blocked', lease_token=NULL, lease_until=NULL,
+  generation=generation+1, failure_code='paused_after_restore', updated_at=transaction_timestamp()
+  WHERE state NOT IN ('complete','cancelled');
+ UPDATE public.sync_schedules SET enabled=FALSE, revision=revision+1,
+  last_error='paused_after_restore', updated_at=transaction_timestamp();
+ UPDATE public.public_export_roles SET enabled=FALSE;
+ UPDATE public.inventory_snapshot_slots SET session_id=NULL, peer=NULL, peer_epoch=NULL,
+  prefix='', filter='', snapshot=''::bytea, expires_at='-infinity', rounds=0, protocol_bytes=0;
+ UPDATE public.node_identity SET restore_generation=restore_generation+1,
+  auth_not_before=GREATEST(auth_not_before+1, floor(extract(epoch FROM clock_timestamp()))::bigint+1),
+  restored_at=transaction_timestamp() WHERE singleton;
+ IF EXISTS(SELECT 1 FROM platform.sessions WHERE revoked_at IS NULL)
+  OR EXISTS(SELECT 1 FROM platform.api_clients WHERE revoked_at IS NULL)
+  OR EXISTS(SELECT 1 FROM platform.auth_flows WHERE used_at IS NULL)
+  OR EXISTS(SELECT 1 FROM platform.auth_email_tokens WHERE used_at IS NULL)
+  OR EXISTS(SELECT 1 FROM platform.account_disable_confirmations WHERE used_at IS NULL)
+  OR EXISTS(SELECT 1 FROM platform.scheduled_uploads WHERE state NOT IN ('complete','cancelled')
+    AND (state<>'blocked' OR lease_token IS NOT NULL OR lease_until IS NOT NULL
+         OR failure_code IS DISTINCT FROM 'paused_after_restore'))
+  OR EXISTS(SELECT 1 FROM public.sync_schedules WHERE enabled)
+  OR EXISTS(SELECT 1 FROM public.public_export_roles WHERE enabled)
+  OR EXISTS(SELECT 1 FROM public.inventory_snapshot_slots WHERE session_id IS NOT NULL
+    OR peer IS NOT NULL OR peer_epoch IS NOT NULL OR prefix<>'' OR filter<>''
+    OR snapshot<>''::bytea OR expires_at<>'-infinity'::timestamptz OR rounds<>0 OR protocol_bytes<>0)
+  OR NOT EXISTS(SELECT 1 FROM public.node_identity WHERE singleton
+    AND restore_generation=previous_generation+1 AND auth_not_before>previous_auth_epoch
+    AND restored_at=transaction_timestamp())
+ THEN RAISE EXCEPTION 'Restored authentication or autonomous work was not fenced';
+ END IF;
+END;
+$fence$;
+COMMIT;
+SELECT 'restore-auth-and-roles-fenced-v1';
+"""
+
+PAUSED_NODE_FLAGS = ('sync_worker_enabled', 'peer_discovery_enabled', 'library_reclamation',
+                     'publication_reclamation', 'staging_reclamation', 'auto_approve_publication_deletions')
+
+def require_paused_roles(config, node_path=None):
+    """Require operator-supplied paused configs; never overwrite private config.
+
+    Several NodeConfig defaults enable workers, so absence is not a pause.
+    Check both listener and embedded configs when a separate node is supplied.
+    """
+    nodes = []
+    publication = config.get('protocol_publication') or {}
+    if publication.get('native_node') is not None:
+        nodes.append(publication['native_node'])
+    if node_path:
+        nodes.append(private_json(absolute(node_path)))
+    require(bool(nodes), 'A paused original node configuration is required')
+    for node in nodes:
+        require(isinstance(node, dict)
+                and all(node.get(flag) is False for flag in PAUSED_NODE_FLAGS)
+                and type(node.get('storage_audit_interval_seconds')) is int
+                and node['storage_audit_interval_seconds'] == 0
+                and node.get('discovery_private_overrides', []) == []
+                and all(node.get(role) is None or isinstance(node[role], dict)
+                        and node[role].get('enabled') is False for role in ('enrollment', 'public_serving')),
+                'Restore configuration must explicitly pause original autonomous roles and private discovery overrides')
+
 def restore(args, runner=run_tool):
     config, roots, listeners = discover(args.config, args.node_config)
     require(not overlap(absolute(args.bundle), absolute(config['ui_dir'])), 'Private checkpoint overlaps public UI')
@@ -403,10 +497,12 @@ def restore(args, runner=run_tool):
     require(manifest.get('releaseManifestSha256') == release_hash(args, budget), 'Restore requires the exact checkpoint release manifest')
     for root in roots.values():
         private_destination(root, {'bundle': absolute(args.bundle)})
+    require_paused_roles(config, args.node_config)
     if not args.execute:
         return {'mode': 'restore', 'dryRun': True, 'verifiedPrivateCheckpoint': True,
                 'entries': len(manifest['entries']), 'targetRoots': {k: str(v) for k, v in roots.items()},
-                'databaseEnvironment': args.database_env, 'requires': ['new empty database', '--confirm-empty-database NAME', '--quiesced']}
+                'databaseEnvironment': args.database_env, 'requires': ['new empty database', '--confirm-empty-database NAME', '--quiesced',
+                    'mandatory restored authentication and autonomous-work fencing', 'recovery-point password and policy review']}
     require(args.quiesced and args.confirm_empty_database, 'Explicit quiescence and target database name are required')
     stopped(roots, listeners)
     env = pg_environment(config, args.database_env)
@@ -430,8 +526,20 @@ def restore(args, runner=run_tool):
     budget.filesystem = next(iter(roots.values())).parent
     runner('pg_restore', ['--no-password', '--dbname', env['PGDATABASE'], '--single-transaction', '--exit-on-error',
                           '--no-owner', '--no-acl', str(absolute(args.bundle)/'database.dump')], env, budget)
+    # A restored database is NOT a completed recovery until this entire fixed
+    # transaction commits. Missing schema, permissions, interruption, SQL error
+    # or missing acknowledgement all refuse success; keep every owner offline.
+    stopped(roots, listeners)
+    fenced = runner('psql', ['--no-password', '-X', '-q', '-A', '-t', '-v', 'ON_ERROR_STOP=1',
+                             '-c', RESTORE_FENCE_SQL], env, budget, True)
+    require(fenced == RESTORE_FENCE_MARKER, 'Restore fencing was not confirmed; keep all application owners offline')
+    stopped(roots, listeners)
     return {'mode': 'restore', 'complete': True, 'databaseRestoredTransactionally': True,
-            'requiresBeforeServing': ['original schema verify', 'platform verify', 'authority/readiness and exact media/restart checks'],
+            'authenticationInvalidated': True, 'autonomousRolesPaused': True,
+            'requiresBeforeServing': ['original schema verify', 'platform verify',
+                'review passwords, roles, account/group policy and decisions changed after the recovery point',
+                'fresh authentication and explicit review before resuming autonomous roles or pending user mutations',
+                'authority/readiness and exact media/restart checks'],
             'signingKeysRestored': False}
 
 def main():

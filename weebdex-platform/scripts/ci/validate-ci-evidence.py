@@ -97,7 +97,7 @@ def preparation(value):
     for key in hashes & set(value):
         digest(value[key])
     if value['status'] == 'prepared':
-        insist(hashes <= set(value) and value['source_files_checked'] == 676 and value['frontend_preserved'] is True and value.get('fresh_build') is True and value.get('historical_binaries_reused') is False and value.get('playwright') == '1.62.1' and value.get('chromium_revision') == '1234' and value['stage'] == 'complete')
+        insist(hashes <= set(value) and value['source_files_checked'] == 676 and value['frontend_preserved'] is True and value.get('fresh_build') is True and value.get('historical_binaries_reused') is False and ((value.get('playwright'), value.get('chromium_revision')) == ('1.62.1', '1234') or (value.get('playwright'), value.get('chromium_revision'), value['chromium_binary_sha256']) == ('1.64.1', 'cft-157.0.8103.6', 'ec4e78d65a5382c2b50aaf28c6a655a624973b3d3c711a2a4ae34369fd9a3444')) and value['stage'] == 'complete')
         native_feed.validate(value.get('native_feed_regression'))
     else:
         # Failed preparation has no unbound hash-shaped or success-only text.

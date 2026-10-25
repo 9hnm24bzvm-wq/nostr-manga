@@ -732,6 +732,12 @@ async fn catalogue_rebuild(repo: &Repository, root: &Path) -> Result<Value> {
     weebdex_platform::db::PgStore::new(repo.pool.clone())
         .migrate(weebdex_platform::domains::MIGRATIONS)
         .await?;
+    // Rebuilding the platform schema is explicit privileged fixture preparation.
+    // The following serve restart only verifies and must never recreate policy.
+    let protocol = weebdex_platform::protocol::ProtocolFacade::new(repo.clone());
+    protocol.verify_schema().await?;
+    protocol.install_visibility_function().await?;
+    protocol.verify_visibility_function().await?;
     let after: String = repo
         .pool
         .get()
