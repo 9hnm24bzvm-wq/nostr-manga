@@ -1,0 +1,50 @@
+{
+  "scope": "Disposable final-build browser mock upload",
+  "origin": "http://127.0.0.1:42439",
+  "title_url": "http://127.0.0.1:42439/title/92760e35-5c2f-8dae-b1bb-289a977fe415/synthetic-original-backed-fixture",
+  "upload_url": "http://127.0.0.1:42439/title/92760e35-5c2f-8dae-b1bb-289a977fe415/upload",
+  "frontend_index_sha256": "adb4e929690c31670e4a8535f0e46049e7575aa742e4273bfc5fb35961cdc223",
+  "checks_passed": [
+    "32 startup HTTP checks",
+    "centralized identity create/download/session-connect",
+    "fixture signed publisher/group provision",
+    "signed upload session creation",
+    "named English language selection",
+    "collapsed Scheduled uploads disclosure",
+    "Generated UX test chapter3 metadata",
+    "one generated PNG visibly staged",
+    "explicitly authorized local Terms/Guidelines checked",
+    "single Upload commit",
+    "saved publication receipt recovery",
+    "chapter3 appears in title list",
+    "actual generated page rendered in reader"
+  ],
+  "publication": "verified published and readable",
+  "blocker": null,
+  "cleanup": {
+    "status": "verified_stopped",
+    "final_teardown_clean": true,
+    "lifecycle_clean": true,
+    "remaining_owned_processes": [],
+    "synthetic_server_keys_absent": true,
+    "loopback_ports_closed": {
+      "platform": true,
+      "mail": true,
+      "postgres": true,
+      "original": true
+    },
+    "global_forced_cleanup": false,
+    "error": null
+  },
+  "reader_url": "http://127.0.0.1:42439/chapter/ec26b17f-c225-8d30-ab74-272d0a97211d/1",
+  "chapter_id": "ec26b17f-c225-8d30-ab74-272d0a97211d",
+  "reader_image": {
+    "complete": true,
+    "width": 640,
+    "height": 960,
+    "visually_verified": true
+  },
+  "commit_submissions": 1,
+  "receipt_recovery": "Accepted response initially lacked readable receipt; explicit read-only saved-receipt recovery returned Saved chapter restored",
+  "temporary_urls_offline_after_cleanup": true
+}

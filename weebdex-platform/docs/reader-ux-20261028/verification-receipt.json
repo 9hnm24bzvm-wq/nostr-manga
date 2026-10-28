@@ -20,7 +20,8 @@
     "scope": "Earlier immutable disposable browser fixture, before final language/schedules build",
     "rating": "Mock rating 10/10 saved and read back",
     "recovery": "Download recovery key and reimport passed",
-    "chapter_upload": "NOT VERIFIED: CUA submission approval remains pending; fixture expired",
-    "final_build_browser_retest": "Not completed"
+    "chapter_upload": "Passed on final delivered build: one generated page committed, saved receipt recovered without resubmission, title entry and reader image verified",
+    "final_build_browser_retest": "Targeted upload/identity/language/schedules journey passed; broader earlier walkthrough not rerun",
+    "follow_up": "final-upload-browser-verification.json"
   }
 }

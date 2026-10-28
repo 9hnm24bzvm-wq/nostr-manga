@@ -12,11 +12,20 @@ Review candidate based on `1fbe4f4f9ca17463274023772a6c757427f0db5c`; not merged
 
 This is an applicable-suite result, not an all-authored-tests pass. [Exact exclusions](suite-exclusions.json) name historical source-bound qualifications and unavailable predecessor fixtures. Historical receipts remain historical; no inherited browser, release or production qualification is claimed. Positional historical qualification CLIs were not rerun. The final CSS test ran separately. Strict current-source restoration is tested against the immutable base without weakening prior pins.
 
-## Browser evidence and remaining limit
+## Browser evidence and follow-up
 
 The disposable browser walkthrough checked fresh-reader navigation, one-follow Updates, reader idle controls, profile Groups, identity setup and task return, list presentation and language filters. These checks passed on earlier immutable fixture builds, **before the final language-selector/schedules build**. A mock rating of **10/10** was saved and read back. Recovery-key download and reimport passed. These are bounded synthetic checks, not real-user publication or production evidence.
 
-**Mock chapter upload was not verified:** approval for the final CUA submission remains pending and the live fixture has expired. The final build's named language selector and compact schedules UI passed component/contract tests but were not rechecked in the live browser. Do not describe the upload journey or final-build browser suite as complete.
+### Final-build upload follow-up (15:02 UTC)
+
+The previously pending mock upload was completed on the exact delivered frontend build. The named English language selector and collapsed Scheduled uploads disclosure were checked live. A session-only synthetic identity was created, its recovery key downloaded privately, and the fixture provisioned only its bounded publishing permissions. After explicit consent to the local Terms/Guidelines, one generated PNG was submitted as **Chapter 3 — Generated UX test** to **Synthetic signed upload group**.
+
+There was exactly **one publication submission**. The initial response said the request was accepted but a readable chapter receipt was unavailable. The explicit **Check saved publication receipt** action safely recovered **Saved chapter restored** without a second commit. The title list then showed the chapter, and the reader rendered the actual generated page (640 × 960 pixels). This verifies the upload/recovery/read journey, not instant publication or an uninterrupted success dialog.
+
+[Sanitized follow-up evidence](final-upload-browser-verification.json) records the exact temporary URLs and build identity. These loopback URLs are evidence only: the fixture has been cleanly stopped, all owned processes terminated, all loopback ports closed, and generated server keys removed. Both final teardown and full lifecycle were clean. An earlier disposable attempt hit a reserved synthetic-email collision during fixture provisioning; it stopped cleanly and was replaced without changing production code or relaxing permissions.
+
+Earlier broad browser checks remain scoped to their earlier builds; this follow-up is not a complete final-build browser regression or production-readiness claim.
+
 
 ## Privacy and authority
 
