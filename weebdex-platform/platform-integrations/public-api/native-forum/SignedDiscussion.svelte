@@ -75,14 +75,14 @@
   if(!signed||pending||uncertain||reportUncertain||!canReport)return;
   const client=signed,current=generation,context=key();clearDraft();clearReport();failure='';reportResult='';pending=true;
   try{const value=await client.reports.read(chosen);if(disposed||current!==generation||context!==key())return;reportView=value;reportUncertain=client.reports.pending();}
-  catch(error){if(!disposed&&current===generation&&context===key())failure=error instanceof Error?error.message:'Native report reasons could not be loaded.';}
+  catch(error){if(!disposed&&current===generation&&context===key())failure=error instanceof Error?error.message:'Report reasons could not be loaded.';}
   finally{if(!disposed&&current===generation)pending=false;}
  }
  function prepareReport(event:SubmitEvent){event.preventDefault();if(!signed||pending||uncertain||reportUncertain)return;try{reportReview=signed.reports.plan(reportReason,reportDetails);failure='';}catch(error){failure=error instanceof Error?error.message:'Native report could not be reviewed.';}}
  async function confirmReport(){
   if(!signed||pending||uncertain||reportUncertain||!reportReview)return;
   const client=signed,current=generation,context=key(),prepared=reportReview;reportReview=undefined;pending=true;failure='';
-  try{await client.reports.submit(prepared);if(disposed||current!==generation||context!==key())return;clearReport();reportResult='Report submitted privately to this instance’s moderators. No protocol event was published.';}
+  try{await client.reports.submit(prepared);if(disposed||current!==generation||context!==key())return;clearReport();reportResult='Report sent privately to this site’s moderators. It was not published publicly.';}
   catch(error){if(!disposed&&current===generation&&context===key()){clearReport();reportUncertain=client.reports.pending();failure=error instanceof Error?error.message:'Native report outcome could not be confirmed.';}}
   finally{if(!disposed&&current===generation)pending=false;}
  }
@@ -101,9 +101,9 @@
  {#if failure}<p role="alert">{failure}</p>{/if}
  {#if uncertain}<p role="alert">An earlier signed action has an unknown outcome. Do not repeat it. Reading cannot prove that it failed or clear its pending safeguard; ask this instance’s operator to reconcile it.</p>{/if}
  <button type="button" disabled={pending} onclick={()=>reload++}>Reload signed comments</button>
- {#if reportUncertain}<p role="alert">An earlier private native report has an unknown outcome. Do not repeat it. Reading cannot clear its safeguard; ask this instance’s operator to reconcile it. <a class="underline" href="/reports/signed/native">Inspect your signed native reports</a>.</p>{/if}
+ {#if reportUncertain}<p role="alert">An earlier private report has an unknown result. Do not repeat it. Viewing reports cannot confirm the result; ask this site’s support team to check it. <a class="underline" href="/reports/signed/native">View your discussion reports</a>.</p>{/if}
  {#if reportResult}<p role="status">{reportResult}</p>{/if}
- {#if view&&canReport}<button type="button" disabled={pending||uncertain||reportUncertain} onclick={()=>openReport({type:'thread'})}>Report native discussion</button>{/if}
+ {#if view&&canReport}<button type="button" disabled={pending||uncertain||reportUncertain} onclick={()=>openReport({type:'thread'})}>Report discussion</button>{/if}
  {#if view&&!uncertain&&!reportUncertain}
   <p>{view.thread.locked?'This discussion is locked.':'This discussion is open.'}</p>
   {#if view.actions.threadVote}
@@ -115,7 +115,7 @@
   {#if view.actions.create||editing!==undefined}
    <form onsubmit={compose} class="space-y-2">
     <label>{editing===undefined?(parentId===undefined?'New comment':'Reply to comment '+parentId):'Edit comment '+editing}<textarea aria-label="Comment text" bind:value={draft} disabled={pending||!!review||!!reportView} class="w-full" /></label>
-    <p>At most 50,000 UTF-8 bytes after trimming surrounding whitespace.</p>
+    <p>Comments can contain up to 50 KB of text; very long comments may need shortening.</p>
     <button type="submit" disabled={pending||!!review||!!reportView}>Review comment</button>
     {#if editing!==undefined||parentId!==undefined}<button type="button" disabled={pending} onclick={clearDraft}>Cancel reply or edit</button>{/if}
    </form>
@@ -123,31 +123,31 @@
  {/if}
  {#if review}
   <section aria-label="Review signed discussion action" class="space-y-2 border p-3">
-   <p>Review {review.intent.operation} as {accountName} ({accountId}) on {target.kind} {target.targetId}, stored thread {target.threadId}{review.intent.replyId===undefined?'':', reply '+review.intent.replyId}{review.prepared.version===undefined?'':', version '+String(review.prepared.version)}.</p>
+   <p>Review your {review.intent.operation} as {accountName}.</p>
    {#if review.intent.parentId!==undefined}<p>Replying to comment {review.intent.parentId}.</p>{/if}
    {#if review.intent.body!==undefined}<div class="typography comment" {@attach Typography.exec}>{@html Utils.parseComment(review.intent.body)}</div>{/if}
    {#if review.intent.vote!==undefined}<p>Current vote: {String(review.prepared.expectedVote)}. New vote: {review.intent.vote}.</p>{/if}
    {#if review.intent.operation==='delete'}<p>This moderator action permanently deletes the reply.</p>{/if}
    {#if review.intent.operation==='remove'}<p>This action removes the reply’s visible body.</p>{/if}
-   <p>This changes only this instance’s native discussion.</p>
+   <p>This changes only the discussion on this site.</p>
    <button type="button" disabled={pending} onclick={confirm}>Confirm signed action</button>
    <button type="button" disabled={pending} onclick={()=>review=undefined}>Cancel review</button>
   </section>
  {/if}
  {#if reportView&&!reportUncertain}
   <section aria-label="Native discussion report" class="space-y-2 border p-3">
-   <p>Private report as {accountName} ({accountId}) for {target.kind} {target.targetId}, stored thread {target.threadId}{reportView.target.type==='reply'?', reply '+reportView.target.replyId+', version '+reportView.target.version:''}. This is an instance-local moderation request, not a protocol source report.</p>
+   <p>You are reporting this {reportView.target.type} as {accountName}. Only this site’s moderators receive the report; it is not sent to the original publisher.</p>
    {#if !reportReview}
     <form onsubmit={prepareReport}>
-     <label>Native report reason<select aria-label="Native report reason" bind:value={reportReason} disabled={pending}><option value="">Choose a reason</option>{#each reportView.reasons as reason}<option value={reason.id}>{reason.reason}{reason.detailsRequired?' (details required)':''}</option>{/each}</select></label>
-     <label>Native report details<textarea aria-label="Native report details" bind:value={reportDetails} disabled={pending}/></label>
-     <p>At most 20,000 UTF-8 bytes after trimming surrounding whitespace.</p>
-     <button type="submit" disabled={pending}>Review native report</button>
+     <label>Report reason<select aria-label="Report reason" bind:value={reportReason} disabled={pending}><option value="">Choose a reason</option>{#each reportView.reasons as reason}<option value={reason.id}>{reason.reason}{reason.detailsRequired?' (details required)':''}</option>{/each}</select></label>
+     <label>Report details<textarea aria-label="Report details" bind:value={reportDetails} disabled={pending}/></label>
+     <p>Report details can contain up to 20 KB of text.</p>
+     <button type="submit" disabled={pending}>Review report</button>
     </form>
    {:else}
-    <section aria-label="Review native discussion report"><p>Reason: {reportView.reasons.find(reason=>reason.id===reportReview?.reasonId)?.reason} (version {String(reportReview.expectedReasonVersion)})</p><p>{String(reportReview.details)}</p><button type="button" disabled={pending} onclick={confirmReport}>Confirm private native report</button></section>
+    <section aria-label="Review native discussion report"><p>Reason: {reportView.reasons.find(reason=>reason.id===reportReview?.reasonId)?.reason}</p><p>{String(reportReview.details)}</p><button type="button" disabled={pending} onclick={confirmReport}>Confirm private report</button></section>
    {/if}
-   <button type="button" disabled={pending} onclick={clearReport}>Cancel native report</button>
+   <button type="button" disabled={pending} onclick={clearReport}>Cancel report</button>
   </section>
  {/if}
  {#if feed}

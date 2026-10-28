@@ -19,7 +19,7 @@ const expected = [
   ['identity()', 'Verified recipient', 'protocol'],
   ['surface', 'Verified recipient', 'protocol'],
   ['library()', 'List', 'deviceList.id'],
-  ['library()', 'Series', 'manga'],
+  ['library()', 'Title', 'manga'],
   ['identity()', 'Verified recipient', 'second.origin'],
   ['identity()', 'Verified recipient', 'protocol'],
   ['identity()', 'Verified recipient', 'second.origin'],
@@ -48,7 +48,7 @@ test('all actual signed native-select calls retain their exact scope, label and 
 });
 
 test('actual panel markup uses implicit labels that also contain native option text', () => {
-  for (const label of ['List', 'Series']) assert.match(libraryMarkup, new RegExp('<label>' + label + ' <select[^>]+>[\\s\\S]*?<option'));
+  for (const label of ['List', 'Title']) assert.match(libraryMarkup, new RegExp('<label>' + label + ' <select[^>]+>[\\s\\S]*?<option'));
   assert.match(libraryMarkup, /<label>Status for saved \{row.id\}<select[^>]+>[\s\S]*?<option/);
   for (const label of ['Verified recipient']) assert.match(identityMarkup, new RegExp('<label>' + label + ' <select[^>]+>[\\s\\S]*?<option'));
 });

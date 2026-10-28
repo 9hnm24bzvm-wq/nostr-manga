@@ -54,7 +54,9 @@ export function createMembershipReader(fetcher:typeof fetch=(...args)=>fetch(...
   const check=()=>{if(request.signal.aborted)throw request.signal.reason;};
   const release=()=>{reader?.releaseLock();if(active===owner)active=undefined;};
   try {
-   check();const query=new URLSearchParams({limit:String(PAGE_SIZE)});if(cursor!==null)query.set('after',cursor);
+   // The retained frontend patches URLSearchParams.toString() to prepend '?'.
+   // Encode our two bounded fields explicitly, independent of global patches.
+   check();const query='limit='+PAGE_SIZE+(cursor===null?'':'&after='+encodeURIComponent(cursor));
    fetchWork=Promise.resolve().then(()=>{check();return fetcher('/api/v1/nostr/user/'+user+'/memberships?'+query,{method:'GET',credentials:'omit',cache:'no-store',redirect:'error',signal:request.signal,headers:{Accept:'application/json'}});}).then(value=>{response=value;return value;});
    response=await Promise.race([fetchWork,aborted]);check();
    reader=response.body?.getReader();if(!reader)fail('The public membership response had no body.');

@@ -10,6 +10,7 @@ function load(file){if(cache.has(file))return cache.get(file);const source=fs.re
 function resolve(specifier,importer){if(specifier==='@noble/hashes/sha2.js'){if(!cache.has(specifier))cache.set(specifier,new vm.SyntheticModule(['sha256'],function(){this.setExport('sha256',sha256);},{context}));return cache.get(specifier);}assert(specifier.startsWith('.'),'Unexpected adapter dependency');return load(path.resolve(path.dirname(importer.identifier),specifier+(path.extname(specifier)?'':'.ts')));}
 async function namespace(relative){const module=load(path.join(root,'platform-integrations',relative));if(module.status==='unlinked')await module.link(resolve);if(module.status!=='evaluated')await module.evaluate();return module.namespace;}
 
+export const {editDeviceListMember,orderedListMembers}=await namespace('local-library/device-list-members.ts');
 const {previewDeviceListName,renameDeviceList}=await namespace('local-library/device-list-name.ts');
 const {DeviceStore}=await namespace('local-library/device-store.ts'),migration=await namespace('public-api/device-id-migration.ts'),core=await namespace('public-api/device-write-v2.ts'),{request,transaction}=await namespace('local-library/protocol/indexeddb.js');
 const manga='11111111-1111-8111-8111-111111111111',chapter='22222222-2222-8222-8222-222222222222',other='33333333-3333-8333-8333-333333333333',list='a'.repeat(32),namespaceId='55555555-5555-8555-8555-555555555555',service='b'.repeat(64),clone=value=>JSON.parse(JSON.stringify(value));

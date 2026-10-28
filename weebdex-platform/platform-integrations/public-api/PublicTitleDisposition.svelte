@@ -12,7 +12,7 @@
  onDestroy(()=>{disposed=true;});
  async function run(action:TitleDispositionAction){
   if(busy||disabled||controller.pending()||disposed)return;
-  const confirmation=action==='remove'?(canHide?'Approve this instance title removal now? The title and its chapters will become hidden here immediately. Original signed events and image bytes are unchanged.':'Request instance moderator review of this title’s removal? The title stays visible here until approval. No original deletion request is sent.'):`${action==='lock'?'Lock':'Unlock'} title editing on this instance now? The original signed title remains unchanged.`;
+  const confirmation=action==='remove'?(canHide?'Hide this title and all its chapters from this site now? Original publications and images remain unchanged.':'Ask a moderator to remove this title from this site? It stays visible until approval. This does not request deletion of the original publication.'):`${action==='lock'?'Lock':'Unlock'} title editing on this instance now? The original signed title remains unchanged.`;
   if(!confirm(confirmation))return;
   busy=true;message='';onState({busy,pending:controller.pending()});
   try{
@@ -25,12 +25,12 @@
  }
 </script>
 <section class="space-y-3 rounded border p-3" aria-label="Instance title disposition">
- <h4 class="font-medium">Instance title controls</h4>
- <p class="text-sm">These controls affect this instance only. Original signed events and hosted original image bytes are not revised or deleted.</p>
+ <h4 class="font-medium">Title visibility and editing</h4>
+ <p class="text-sm">These controls affect this site only. Original publications and images are not changed or deleted.</p>
  {#if message}<p role="status">{message}</p>{/if}
- {#if requestId}<p class="break-all text-sm">Removal review: {requestId}. Reviewed title version: {requestVersion}.{#if requestVersion!==title.version} The title changed afterward; a moderator must review its current state before removal.{/if}</p>{/if}
+ {#if requestId}<p class="break-all text-sm">Removal review submitted.{#if requestVersion!==title.version} The title changed afterward; a moderator must review its current state before removal.{/if}</p>{/if}
  <div class="flex flex-wrap gap-3">
   {#if canLock}<button type="button" class="rounded border px-3 py-2" disabled={disabled||busy||controller.pending()} onclick={()=>run(title.locked?'unlock':'lock')}>{title.locked?'Unlock instance editing':'Lock instance editing'}</button>{/if}
-  {#if canHide||canRequest}<button type="button" class="rounded border px-3 py-2" disabled={disabled||busy||controller.pending()||(!canHide&&!!requestId)} onclick={()=>run('remove')}>{canHide?'Approve instance title removal':requestId?'Removal review queued':'Request title removal review'}</button>{:else}<p>Removal review is available to this title’s current owner. Immediate instance removal requires moderator status and manga.delete.</p>{/if}
+  {#if canHide||canRequest}<button type="button" class="rounded border px-3 py-2" disabled={disabled||busy||controller.pending()||(!canHide&&!!requestId)} onclick={()=>run('remove')}>{canHide?'Approve instance title removal':requestId?'Removal review queued':'Request title removal review'}</button>{:else}<p>The title’s owner can request removal. Only an authorized moderator can hide it immediately.</p>{/if}
  </div>
 </section>

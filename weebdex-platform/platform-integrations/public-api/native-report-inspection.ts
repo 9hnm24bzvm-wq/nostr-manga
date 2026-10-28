@@ -44,9 +44,9 @@ export function nativeReportInspectionQuery(input: URLSearchParams, accountId?: 
 export function nativeReportInspectionHref(category?: 'thread' | 'reply', objectId?: string): string {
  if (category === undefined && objectId === undefined) return '/reports/signed/native';
  if (!nativeReportCategories.includes(category!) || objectId === undefined) fail('Choose a native thread or reply', 422);
- return '/reports/signed/native?' + new URLSearchParams({category: category!, objectId: nativeId(objectId)});
+ return '/reports/signed/native?' + new URLSearchParams({category: category!, objectId: nativeId(objectId)}).toString().replace(/^\?/, '');
 }
-export function nativeReportDetailHref(id: string): string { return '/reports/signed/native?' + new URLSearchParams({reportId: nativeId(id)}); }
+export function nativeReportDetailHref(id: string): string { return '/reports/signed/native?' + new URLSearchParams({reportId: nativeId(id)}).toString().replace(/^\?/, ''); }
 function decodeRow(input: unknown, selection: ReturnType<typeof nativeReportInspectionQuery>): NativeInspectedReport {
  const row = keys(input, ['id', 'category', 'objectId', 'status', 'createdAt', 'details', 'reason'], 'native report');
  const reason = keys(row.reason, ['id', 'reason', 'version', 'detailsRequired'], 'native report reason');
@@ -90,7 +90,7 @@ export async function createNativeReportReader(assertCurrent: () => void, inject
   const selection = nativeReportInspectionQuery(input, scope.account.id);
   busy = true;
   try {
-   const response = await scope.send(selection.path + '?' + selection.query);
+   const response = await scope.send(selection.path + '?' + selection.query.toString().replace(/^\?/, ''));
    if (response.status !== 200) fail('Native report inspection refused', response.status);
    // Empty pages are private results too. Never install one after rebinding.
    await scope.verify();

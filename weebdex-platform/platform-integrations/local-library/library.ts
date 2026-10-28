@@ -218,6 +218,11 @@ export async function saveListMember(list: string, series: string, position: num
     rows.put(row);
   }));
 }
+export async function editListMember(list: string, series: string, direction: -1 | 0 | 1, assertCurrent = () => {}) {
+  const context = captureLibraryContext();
+  const current = () => { assertCurrent(); assertLibraryContext(context); };
+  return localAction(async () => { const { editDeviceListMember } = await import('./device-list-members'); current(); return editDeviceListMember(device, list, series, direction, current); });
+}
 export async function removeLocalRecord(family: Family, key: string) { return localAction(() => device.remove(family, key)); }
 export const encodeParams = (input: URLSearchParams) => [...input.entries()].map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value)).join('&');
 export const params = (input: URLSearchParams) => new URLSearchParams(input.toString().replace(/^\?/, ''));

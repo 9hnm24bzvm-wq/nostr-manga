@@ -72,8 +72,8 @@ test('public parser, preferences and read filters accept broader syntax without 
  assert.equal(nativeSearch.validateMangaSearchQuery(new URLSearchParams({lang:'tam'}),false),undefined);
 });
 function composed(relative,enabled){const file=path.join(frontend,relative);let code=fs.readFileSync(file,'utf8');for(const plugin of [createFrontendOverlays(frontend),createReaderOverlays(frontend),createLocalLibraryOverlays(frontend),createPublicApiOverlays(frontend,{enabled}),createPublicUploadOverlays(frontend,{enabled})])code=plugin.transform.handler(code,file)?.code??code;return code;}
-test('selected public controls accept code entry and native disabled gate retains its fixed selector',()=>{
- const upload='src/lib/components/upload/UploadChapterMetadata.svelte';assert.match(composed(upload,true),/Input type="text" bind:value=\{draft.language\}/);assert.match(composed(upload,true),/maxlength=\{5\}/);assert.doesNotMatch(composed(upload,true),/maxlength="5"/);assert.doesNotMatch(composed(upload,true),/Object.entries\(Locale.Languages\)/);assert.match(composed(upload,false),/Object.entries\(Locale.Languages\)/);
+test('selected public controls name languages while native disabled gate retains its original selector',()=>{
+ const upload='src/lib/components/upload/UploadChapterMetadata.svelte';assert.match(composed(upload,true),/<select aria-label="Language"[^>]+bind:value=\{draft.language\}/);assert.match(composed(upload,true),/Previously saved language/);assert.match(composed(upload,true),/Object.entries\(Locale.Languages\)/);assert.match(composed(upload,false),/Object.entries\(Locale.Languages\)/);
  const filter='src/lib/components/MangaSearchFilter.svelte';assert.match(composed(filter,true),/\$publicApi\/manga-search-query/);assert.match(composed(filter,true),/PublicLanguageFilter bind:value=\{search.lang\}/);assert.match(composed(filter,false),/\$platform\/manga-search-query/);assert.match(composed(filter,false),/Object.entries\(Locale.Languages\)/);
 });
 test('all supplied originals, including native Locale, remain exact attachment bytes',()=>{
@@ -81,10 +81,8 @@ test('all supplied originals, including native Locale, remain exact attachment b
  for(const entry of manifest.files)assert.equal(createHash('sha256').update(fs.readFileSync(path.join(frontend,entry.path))).digest('hex'),entry.source_sha256,entry.path);
 });
 
-test('actual public search entry preserves comma typing and case while route reset replaces its text',()=>{
- const source=fs.readFileSync(path.join(directory,'PublicLanguageFilter.svelte'),'utf8').match(/<script lang="ts">([\s\S]*?)<\/script>/)[1].replace(/import[^;]+;/,'');let effect;
- const ui=vm.runInNewContext(stripTypeScriptTypes(source,{mode:'transform'})+'\n({edit,get:()=>({text,value}),reset:next=>{value=next;}})',{$state:value=>value,$bindable:value=>value,$props:()=>({value:[],label:'Language'}),$effect:fn=>{effect=fn;},untrack:fn=>fn()});
- ui.edit({currentTarget:{value:'ta, '}});effect();assert.equal(ui.get().text,'ta, ');assert.deepEqual(plain(ui.get().value),['ta']);
- ui.edit({currentTarget:{value:'ta, EN'}});effect();assert.equal(ui.get().text,'ta, EN');assert.deepEqual(plain(ui.get().value),['ta','EN']);
- ui.reset(['pt-br']);effect();assert.equal(ui.get().text,'pt-br');
+test('named public search selections preserve exact codes, including unknown URL languages',()=>{
+ const source=fs.readFileSync(path.join(directory,'PublicLanguageFilter.svelte'),'utf8').match(/<script lang="ts">([\s\S]*?)<\/script>/)[1].replace(/import[^;]+;/,'');
+ const ui=vm.runInNewContext(stripTypeScriptTypes(source,{mode:'transform'})+'\n({toggle,get:()=>value})',{$state:value=>value,$derived:value=>value,$bindable:value=>value,$props:()=>({value:['EN'],label:'Language'}),Locale:{Languages:{en:'English',ja:'Japanese'}}});
+ ui.toggle('ja',true); assert.deepEqual(plain(ui.get()),['EN','ja']); ui.toggle('EN',false); assert.deepEqual(plain(ui.get()),['ja']);
 });

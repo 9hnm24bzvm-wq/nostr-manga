@@ -106,14 +106,14 @@ test('shared title selector retains exact visible status and strict structural u
 test('native wrapped select uses exact immediate label despite descendant option text', async () => {
   const panel = read('platform-integrations/local-library/LibraryManagementTools.svelte');
   assert.match(panel, /<label>List <select[^>]+bind:value=\{memberList\}/);
-  assert.match(panel, /<label>Series <select[^>]+bind:value=\{memberSeries\}/);
+  assert.match(panel, /<label>Title <select[^>]+bind:value=\{memberSeries\}/);
   const identity = read('platform-integrations/local-library/ProtocolIdentityPanel.svelte');
   assert.match(identity, /<label>Verified recipient <select[^>]+bind:value=\{selectedOrigin\}/);
   assert.doesNotMatch(identity, /Target type|Current instance catalogue ID/);
   assert.match(panel, /<label>Status for saved \{row.id\}<select/);
   const cases = [
     ['List', 'list-id', 'Choose list', 'Local example'],
-    ['Series', 'SeedManga1', 'Choose saved series', 'SeedManga1 (reading)'],
+    ['Title', 'SeedManga1', 'Choose a saved title', 'SeedManga1 (reading)'],
     ['Verified recipient', 'http://127.0.0.1:1', 'Choose instance', 'http://127.0.0.1:1 · public-key'],
     ['Status for saved SeedManga1', 'completed', 'reading', 'completed'],
     ['Status for saved SeedManga10', 'on_hold', 'reading', 'on_hold'],
@@ -141,7 +141,7 @@ test('native wrapped select uses exact immediate label despite descendant option
   assert.equal(await nativeSelectForLabel(scope, 'List name').count(), 0);
   const journeys = read('scripts/browser-journeys.mjs');
   assert.match(journeys, /nativeSelectForLabel\(target, 'List'\)\.selectOption\(list.id\)/);
-  assert.match(journeys, /nativeSelectForLabel\(target, 'Series'\)\.selectOption\(manga\)/);
+  assert.match(journeys, /nativeSelectForLabel\(target, 'Title'\)\.selectOption\(manga\)/);
   value.dom.window.close();
 });
 
@@ -152,9 +152,9 @@ test('account recovery and ordinary follow still use shared controls and durable
   assert.match(journeys, /row\.family === "series" && row\.id === manga/);
   const panel = read('platform-integrations/local-library/LibraryManagementTools.svelte');
   assert.match(panel, /const series = \$derived\(\$localLibraryState.records.filter\(row => row.family === 'series'\)\)/);
-  assert.match(panel, /Choose saved series<\/option>\{#each series as row\}<option value=\{row.id\}/);
+  assert.match(panel, /Choose a saved title<\/option>\{#each series.slice\(titlePage \* 100, \(titlePage \+ 1\) \* 100\) as row\}<option value=\{row.id\}/);
   assert.match(read('platform-integrations/local-library/library.ts'), /if \(!\(await request\(rows.get\(\['series', series\]\)\)\)\) throw Error\('Choose an existing scope-bound saved series'\)/);
-  assert.match(journeys, /row\.family === 'members' && row\.list === list.id && row\.series === manga && row\.position === 3/);
+  assert.match(journeys, /row\.family === 'members' && row\.list === list.id && row\.series === manga && row\.position === 0/);
 });
 
 function signerModule(window) {

@@ -620,8 +620,8 @@ export async function runJourneys(h) {
 				const listed = await until(device, value => value?.records.some(row => row.family === 'lists' && row.name === `Local ${marker}`), 'List control did not persist'); return listed.records.find(row => row.family === 'lists' && row.name === `Local ${marker}`);
 			});
 			await inspect('custom-member-durable', async () => {
-				await nativeSelectForLabel(target, 'List').selectOption(list.id); await nativeSelectForLabel(target, 'Series').selectOption(manga); await target.getByLabel('Position', { exact: true }).fill('3'); await target.getByRole('button', { name: 'Save member', exact: true }).click();
-				await until(device, value => value?.records.some(row => row.family === 'members' && row.list === list.id && row.series === manga && row.position === 3), 'Membership control did not persist');
+				await nativeSelectForLabel(target, 'List').selectOption(list.id); await nativeSelectForLabel(target, 'Title').selectOption(manga); await target.getByRole('button', { name: 'Add to list', exact: true }).click();
+				await until(device, value => value?.records.some(row => row.family === 'members' && row.list === list.id && row.series === manga && row.position === 0), 'Membership control did not persist');
 			});
 			await inspect('custom-backup-export', async () => {
 				await closeLibraryTool(); target = panel();

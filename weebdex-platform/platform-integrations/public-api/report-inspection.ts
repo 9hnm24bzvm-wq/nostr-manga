@@ -23,7 +23,7 @@ export function reportInspectionQuery(input:URLSearchParams,accountId?:string):U
 }
 export function reportInspectionHref(category:unknown,target:unknown):string {
  if(!reportCategories.includes(category as ReportCategory))fail('Native forum reports use the native report view',422);
- return '/reports/signed?'+new URLSearchParams({category:category as string,objectId:publicUuid(target)}).toString();
+ return '/reports/signed?'+new URLSearchParams({category:category as string,objectId:publicUuid(target)}).toString().replace(/^\?/,'');
 }
 function keys(value:unknown,expected:string[],label:string):Record<string,unknown>{const row=record(value,label);if(Object.keys(row).some(key=>!expected.includes(key))||expected.some(key=>!Object.hasOwn(row,key)))fail('Invalid '+label+' fields');return row;}
 function decode(bodyInput:unknown,query:URLSearchParams,accountId:string):InspectedReportPage {
@@ -48,7 +48,7 @@ function decode(bodyInput:unknown,query:URLSearchParams,accountId:string):Inspec
 export async function createSignedReportReader(assertCurrent:()=>void,injected:Partial<TitleDependencies>={},signal?:AbortSignal){
  const scope=await createSignedAccountScope(assertCurrent,injected,signal);let busy=false;
  async function read(input:URLSearchParams):Promise<InspectedReportPage>{scope.check();if(busy)fail('A report inspection is already running',409);const query=reportInspectionQuery(input,scope.account.id);busy=true;
-  try{const response=await scope.send('/report?'+query);if(response.status!==200)fail(`Personal reports unavailable (HTTP ${response.status}). No native-session fallback was used.`,response.status);
+  try{const response=await scope.send('/report?'+query.toString().replace(/^\?/,''));if(response.status!==200)fail(`Personal reports unavailable (HTTP ${response.status}). No native-session fallback was used.`,response.status);
    // Revalidate even an empty response; owner validation on rows alone cannot
    // detect a binding or service change during a private read.
    await scope.verify();const result=decode(response.body,query,scope.account.id);scope.check();return result;

@@ -121,7 +121,7 @@ test('actual case traverses UI/typed HTTP stand-ins, observes real-refusal shape
   assert.equal(f.state.requests.some(row => row.url.includes('upload-account')), false);
   assert.ok(f.state.requests.filter(row => row.method === 'POST').every(row => row.url.endsWith('/legacy/resolve') || row.url.endsWith('/fixture/protocol/account')));
 });
-for (const paragraphs of [[], editorParagraphs.map(text => text.replace('are immutable', 'are editable')), [...editorParagraphs, ...editorParagraphs]]) test('missing, altered or duplicate actual immutable-source notice refuses without weakening account authority: ' + (paragraphs.length ? paragraphs.length === editorParagraphs.length ? 'altered' : 'duplicate' : 'missing'), async () => {
+for (const paragraphs of [[], editorParagraphs.map(text => text.replace('cannot be changed', 'can be changed')), [...editorParagraphs, ...editorParagraphs]]) test('missing, altered or duplicate actual immutable-source notice refuses without weakening account authority: ' + (paragraphs.length ? paragraphs.length === editorParagraphs.length ? 'altered' : 'duplicate' : 'missing'), async () => {
   const f = await controlled({ editorParagraphs: paragraphs });
   await assert.rejects(f.run, { code: 'ERR_ASSERTION' });
   assert.equal(f.state.handlers.size, 0); assert.ok(f.state.secret.every(value => value === 0));

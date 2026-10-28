@@ -1,4 +1,6 @@
 <script lang="ts">
+ import IdentityGate from '../local-library/IdentityGate.svelte';
+ import { signerIdentity } from '../local-library/publication';
  import { onDestroy, onMount, untrack } from 'svelte';
  import { createSignedTitleController, titleAwaitingProjection, type SignedTitleController, type TitleAction } from './title-client';
  import PublicCoverEditor from './PublicCoverEditor.svelte';
@@ -30,7 +32,9 @@
  function restore(value:MangaView){current=value;title=originalText(value,'title');language=value.language;description=originalText(value,'description');status=value.status;rating=value.content_rating;fields=richTitleFields(value);}
  function failure(error:unknown){return error instanceof Error?error.message:'The title command was not confirmed.';}
  function responseError(response:{status:number;body?:unknown}){const body=response.body as {errors?:{detail?:string}[]}|undefined;return body?.errors?.[0]?.detail??`Title request refused (HTTP ${response.status})`;}
- onMount(()=>{void(async()=>{try{owner=await createSignedTitleController(active,captured);active();permissions=[...owner.account.permissions];roles=[...owner.account.roles];pending=owner.pending();if(captured){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}ready=true;if(pending)message='A previous title command has an unconfirmed outcome. It will not be replayed. Review the actual account drafts or contact the instance operator before further changes.';}catch(error){if(!disposed)message=failure(error);}})();});
+ let initializing = $state(false);
+ async function initialize(){if(initializing||disposed||!$signerIdentity.owner)return;initializing=true;message='';try{owner=await createSignedTitleController(active,captured);active();permissions=[...owner.account.permissions];roles=[...owner.account.roles];pending=owner.pending();if(captured){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}ready=true;if(pending)message='A previous title command has an unconfirmed outcome. It will not be replayed. Review the actual account drafts or contact the instance operator before further changes.';}catch(error){if(!disposed)message=failure(error);}finally{if(!disposed)initializing=false;}}
+ onMount(()=>{void initialize();});
  async function command(action:TitleAction){
   if(!owner||!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed)return;
   if(metadataDirty&&action!=='create'&&action!=='update'){message='Save metadata changes before reviewing this title.';return;}
@@ -64,19 +68,20 @@
  async function reload(){if(!owner||busy||coverBusy||dispositionBusy||relationBusy||removed||!current)return;if(metadataDirty&&!confirm('Discard unsaved title metadata changes and reload the actual server record?'))return;busy=true;try{const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);message='Current title read from the server. No mutation was replayed; an unconfirmed command remains fenced.';}catch(error){if(!disposed)message=failure(error);}finally{if(!disposed){busy=false;pending=owner?.pending()??pending;if(owner){permissions=[...owner.account.permissions];roles=[...owner.account.roles];}}}}
 </script>
 <section class="space-y-4 rounded border p-4">
- <h3 class="text-lg font-medium">Signed title metadata</h3>
- <p>Uses the selected public signing identity and its explicitly bound native account. Published edits are instance-local annotations; original signed source content is immutable.</p>
- <p>Cover, relation and instance title controls use separate exact signed interfaces below. External links, including official raw and English URLs, are instance metadata. The separate officialLinks dictionary below preserves exact opaque keys and values; it is not a provider identity or language/region registry. Main-cover selection is available in the original-cover panel; this form never calls native command chains.</p>
+ <h3 class="text-lg font-medium">Title details</h3>
+ <p>Changes apply to this site. Original publications remain unchanged.</p>
+ <p>Save your title details first, then add a cover and related titles below.</p>
  {#if message}<p role="status" class="rounded border p-3">{message}</p>{/if}
- {#if !ready}<p>Select a signing identity in Public identity settings and reopen this editor. A cookie session alone does not authorize these commands.</p>{/if}
+ <IdentityGate show={!ready && !$signerIdentity.owner} onfinish={() => { if ($signerIdentity.owner) void initialize(); }} />
+ {#if !ready && $signerIdentity.owner}<button type="button" class="rounded border px-3 py-2" disabled={initializing} onclick={() => { void initialize(); }}>Check my access again</button>{/if}
  {#if removed}<p role="status">This title was soft-hidden on this instance. Original signed publications are unchanged. Reopen the catalogue to continue.</p>{/if}
  {#if metadataDirty}<p>Save metadata changes before cover, relation, review or instance title actions.</p>{/if}
- {#if current}<p>Current state: {current.state}. Version: {current.version}.</p>{/if}
- {#if awaitingProjection}<p>This accepted original publication is read-only while local source projection is pending. Reload current metadata to observe actual public visibility.</p>{/if}
+ {#if current}<p>Status: {current.state}.</p>{/if}
+ {#if awaitingProjection}<p>This accepted original publication is read-only while local source projection is pending. Reload title details to observe actual public visibility.</p>{/if}
  <form onsubmit={event=>{event.preventDefault();void command(current?'update':'create');}} class="space-y-3">
   <fieldset disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||awaitingProjection||!canWrite} class="space-y-3">
    <label class="block">Original-language title<input class="block w-full rounded border p-2" bind:value={title} disabled={!access.title} maxlength="500" required={!current} /></label>
-   <p class="text-sm">New original-language values use lowercase two-letter codes such as ta or pt-br. Unchanged imported labels stay exact; other metadata can be edited without replacing them.</p>
+   <p class="text-sm">Use a language code, such as en for English, ja for Japanese, or pt-br for Brazilian Portuguese.</p>
    <label class="block">Original language<input class="block w-full rounded border p-2" bind:value={language} required={!current} /></label>
    <label class="block">Description<textarea class="block w-full rounded border p-2" bind:value={description} maxlength="30000"></textarea></label>
    <label class="block">Publication status<select class="block rounded border p-2" bind:value={status}><option value="ongoing">Ongoing</option><option value="completed">Completed</option><option value="hiatus">Hiatus</option><option value="cancelled">Cancelled</option></select></label>
@@ -95,29 +100,29 @@
    <PublicEntityPicker label="Authors" bind:selected={fields.authors} search={(query,signal)=>owner!.search('author',query,signal)} disabled={!ready||busy||pending||!access.authors} />
    <PublicEntityPicker label="Artists" bind:selected={fields.artists} search={(query,signal)=>owner!.search('author',query,signal)} disabled={!ready||busy||pending||!access.artists} />
    <PublicEntityPicker label="Tags" bind:selected={fields.tags} search={(query,signal)=>owner!.search('tag',query,signal)} disabled={!ready||busy||pending||!access.tags} />
-   <fieldset disabled={!canEditLinks} class="grid gap-3 rounded border p-3 sm:grid-cols-2"><legend class="font-medium">External links</legend>{#each titleLinks as [key,label]}<label>{label}<input class="block w-full rounded border p-2" value={fields.links[key]??''} oninput={event=>{fields.links[key]=event.currentTarget.value;}} maxlength="2048" placeholder={['raw','engtl','amz','ebj','cdj'].includes(key)?'https://…':'Provider ID or URL'} /></label>{/each}<p class="sm:col-span-2 text-sm">Unknown stored link keys are preserved. Clearing a field removes only that link when you save.</p>{#if !canEditLinks}<p>You do not have permission to edit links.</p>{/if}</fieldset>
-   <fieldset disabled={!canEditLinks} class="space-y-2 rounded border p-3"><legend class="font-medium">Official links dictionary</legend>
-    <p>Separate from external links. Keys and values are stored exactly as text, not opened or interpreted as provider identities, languages or regions. Remove a row to remove its entry when you save.</p>
-    {#each fields.officialLinks as entry,index}<div class="flex flex-wrap gap-2"><label>Official link key<textarea class="block rounded border p-2" bind:value={entry.key} rows="1" maxlength="100"></textarea></label><label class="flex-1">Official link value<textarea class="block w-full rounded border p-2" bind:value={entry.value} rows="2" maxlength="2048"></textarea></label><button type="button" class="rounded border px-3 py-1" onclick={()=>{fields.officialLinks=fields.officialLinks.filter((_,i)=>i!==index);}}>Remove official link</button></div>{/each}
+   <fieldset disabled={!canEditLinks} class="grid gap-3 rounded border p-3 sm:grid-cols-2"><legend class="font-medium">External links</legend>{#each titleLinks as [key,label]}<label>{label}<input class="block w-full rounded border p-2" value={fields.links[key]??''} oninput={event=>{fields.links[key]=event.currentTarget.value;}} maxlength="2048" placeholder={['raw','engtl','amz','ebj','cdj'].includes(key)?'https://…':'Provider ID or URL'} /></label>{/each}<p class="sm:col-span-2 text-sm">Clear a field to remove that link when you save. Other saved links are kept.</p>{#if !canEditLinks}<p>You do not have permission to edit links.</p>{/if}</fieldset>
+   <fieldset disabled={!canEditLinks} class="space-y-2 rounded border p-3"><legend class="font-medium">Additional official link information</legend>
+    <p>These entries are saved as text, not clickable links. Remove a row to delete it when you save.</p>
+    {#each fields.officialLinks as entry,index}<div class="flex flex-wrap gap-2"><label>Label<textarea class="block rounded border p-2" bind:value={entry.key} rows="1" maxlength="100"></textarea></label><label class="flex-1">Text<textarea class="block w-full rounded border p-2" bind:value={entry.value} rows="2" maxlength="2048"></textarea></label><button type="button" class="rounded border px-3 py-1" onclick={()=>{fields.officialLinks=fields.officialLinks.filter((_,i)=>i!==index);}}>Remove official link</button></div>{/each}
     <button type="button" class="rounded border px-3 py-1" disabled={fields.officialLinks.length>=100} onclick={()=>{fields.officialLinks=[...fields.officialLinks,{key:'',value:''}];}}>Add official link</button>
     {#if !canEditLinks}<p>You do not have permission to edit links.</p>{/if}
    </fieldset>
-   <button class="rounded border px-4 py-2" type="submit">{current?'Save instance metadata':'Save metadata draft'}</button>
+   <button class="rounded border px-4 py-2" type="submit">{current?'Save changes':'Save draft'}</button>
   </fieldset>
  </form>
  {#if current}
   {#key current.id}<PublicCoverEditor title={current} accountId={owner!.account.id} disabled={busy||pending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||awaitingProjection} assertCurrent={active} onState={state=>{coverPending=state.pending;coverBusy=state.busy;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}
   {#if !removed}{#key current.id}<PublicRelationEditor title={current} accountId={owner!.account.id} disabled={busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||metadataDirty||awaitingProjection} assertCurrent={active} onState={state=>{relationBusy=state.busy;relationPending=state.pending;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}{/if}
-  {#if !hasCover&&(current.state==='draft'||current.state==='rejected')}<p>Submission needs an actual original-language cover with hosted original bytes. Upload an original-language cover below and reload its acknowledged metadata. The server checks actual cover availability.</p>{/if}
+  {#if !hasCover&&(current.state==='draft'||current.state==='rejected')}<p>Add a cover in the title’s original language before submitting for review.</p>{/if}
   <div class="flex flex-wrap gap-3">
    {#if current.state==='draft'||current.state==='rejected'}<button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||!access.submit||!hasCover} onclick={()=>command('submit')}>Submit for review</button>{/if}
    {#if current.state==='submitted'&&canReview}
     <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty} onclick={()=>command('publish')}>Publish reviewed title</button>
     <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty} onclick={()=>command('reject')}>Reject reviewed draft</button>
    {/if}
-   <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||coverBusy||dispositionBusy||relationBusy||removed} onclick={reload}>Reload current metadata</button>
+   <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||coverBusy||dispositionBusy||relationBusy||removed} onclick={reload}>Reload title details</button>
   </div>
   {#if !removed}<PublicTitleDisposition title={current} controller={owner!} disabled={busy||pending||coverBusy||coverPending||relationBusy||relationPending||metadataDirty||awaitingProjection} onTitle={restore} onRemoved={()=>{removed=true;}} onState={state=>{dispositionBusy=state.busy;dispositionPending=state.pending;}} />{/if}
-  <a class="underline" href={`/title/${current.id}/edit?draft=${current.state!=='published'}`}>Open canonical title editor</a>
+  <a class="underline" href={`/title/${current.id}/edit?draft=${current.state!=='published'}`}>Open title editor</a>
  {/if}
 </section>

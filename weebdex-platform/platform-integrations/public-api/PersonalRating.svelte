@@ -1,4 +1,5 @@
 <script lang="ts">
+  import IdentityGate from '../local-library/IdentityGate.svelte';
   import {onDestroy,untrack} from 'svelte';
   import {Star} from '@lucide/svelte';
   import {Button} from '$lib/components/ui/button';
@@ -8,10 +9,10 @@
   const {mangaId,onSaved=async()=>{}}:{mangaId:string;onSaved?:()=>Promise<unknown>}=$props();
   let open=$state(false),pending=$state(false),error=$state(''),notice=$state(''),choice=$state('');
   let current=$state<PersonalRating>(),client:Awaited<ReturnType<typeof loadPersonalRating>>|undefined;
-  let epoch=0,disposed=false;
+  let epoch=0,disposed=false,lastTarget=mangaId;
   function guard(){const generation=epoch,target=mangaId,owner=$signerIdentity.owner,signerGeneration=$signerIdentity.generation;return()=>{if(disposed||!open||epoch!==generation||target!==mangaId||owner!==$signerIdentity.owner||signerGeneration!==$signerIdentity.generation)throw Error('The selected title or rating account changed. Reopen your rating.');};}
   function clear(){epoch++;client=undefined;current=undefined;choice='';error='';notice='';pending=false;}
-  $effect(()=>{const target=mangaId,owner=$signerIdentity.owner,generation=$signerIdentity.generation;untrack(()=>{clear();open=false;});});
+  $effect(()=>{const target=mangaId,owner=$signerIdentity.owner,generation=$signerIdentity.generation;untrack(()=>{clear();if(target!==lastTarget)open=false;lastTarget=target;});});
   onDestroy(()=>{disposed=true;epoch++;});
   async function load(){if(pending||!$signerIdentity.owner)return;const assert=guard();pending=true;error='';notice='';client=undefined;current=undefined;try{const selected=await loadPersonalRating(mangaId,assert);assert();const result=await selected.reload();assert();client=selected;current=result;choice=result.rating===null?'':String(result.rating);}catch(cause){try{assert();error=cause instanceof Error?cause.message:'Your rating could not be loaded.';}catch{}}finally{try{assert();pending=false;}catch{}}}
   function setOpen(value:boolean){if(!value){open=false;clear();return;}open=true;if($signerIdentity.owner)void load();}
@@ -21,9 +22,9 @@
 <Dialog.Root {open} onOpenChange={setOpen}>
   <Dialog.Content class="sm:max-w-sm">
     <Dialog.Header><Dialog.Title>Your rating</Dialog.Title><Dialog.Description>Choose a score from 1 to 10 for this title.</Dialog.Description></Dialog.Header>
+    <IdentityGate show={!$signerIdentity.owner} onfinish={() => { if ($signerIdentity.owner) void load(); }} />
     {#if !$signerIdentity.owner}
-      <p class="text-sm text-muted-foreground">Create or connect your public identity to use an account rating on this instance.</p>
-      <a class="underline text-sm" href="/settings/identity">Manage public identity</a>
+      <p class="text-sm text-muted-foreground">Ratings use your public identity, which is separate from your email login. Set it up here, then choose your score.</p>
     {:else if current}
       <p class="text-sm text-muted-foreground">Saved to {current.username} on this instance.</p>
       <label class="space-y-1 text-sm">Your score

@@ -58,7 +58,9 @@ test('Vite composes signed upload only after original source and catalogue overl
 test('public route uses current selected signer and actual bound account instead of native account lookup', () => {
   assert.match(route,/let user = \$state\.raw<User>\(\);/); assert.match(route,/loadUploadAccount\(assertLookup\)/); assert.match(route,/signerGeneration !== \$signerIdentity.generation/);
   assert.doesNotMatch(route,/\$Session|API\.User\.Get|X-WeebDex|setWithCredentials/);
-  assert.match(route,/Connect a signing identity/); assert.match(route,/Admission and upload permissions are checked separately/);
+  assert.match(route,/Set up your public identity to upload/); assert.match(route,/upload permission will be checked afterwards/);
+  assert.match(route,/<IdentityGate show=\{!\$signerIdentity.owner\} onfinish=\{\(\) => setupRevision\+\+\}/);
+  assert.ok(route.indexOf('<IdentityGate') < route.indexOf('{#if !$signerIdentity.owner}'));
   for (const file of ['src/routes/(app)/title/[id]/upload/+layout.svelte','src/routes/(app)/chapter/[id]/edit/+layout.svelte']) assert.doesNotMatch(codes.get(file), /ProtectedVerified|\$Session|Permission\./);
 });
 test('normal begin and file deletion retain actual public200 statuses', () => {
@@ -241,14 +243,14 @@ test('signed chapter editor keeps local annotations, exact owner and distinct mo
   assert.match(source, /owner\.chapterAccess\(chapter\.version\)/);
   const authority=fs.readFileSync(path.join(root,'platform-integrations/public-api/chapter-access.ts'),'utf8');
   assert.match(authority, /approvesHide=staff&&has\('chapter.remove'\)/);
-  assert.match(source, /Approve hiding this chapter on this instance immediately/);
-  assert.match(source, /chapter remains visible until approval/);
+  assert.match(source, /Hide this chapter on this site now\?/);
+  assert.match(source, /It stays visible until approval/);
   assert.match(source, /removalChoice = approvesHide \? 'approve-hide' : 'request-review'/);
   assert.match(source, /removalChoice === 'approve-hide' \? 'Approve and hide on this instance' : 'Submit removal request'/);
   assert.match(source, /command\('remove', removalChoice\)/);
   assert.match(source, /action === 'remove' \? \{ removalMode \} : undefined/);
-  assert.match(source, /Original signed source metadata and protocol image pages are immutable/);
-  assert.match(source, /Eligible local chapter pages use separate private staging below/);
+  assert.match(source, /Original publications and their pages cannot be changed/);
+  assert.match(source, /Where page editing is available, prepare your changes privately below/);
   assert.match(source, /<PublicChapterPagesEditor \{chapter\} \{owner\} \{access\}/);
   assert.match(source, /onDestroy\(\(\) => \{ disposed = true; owner\?\.dispose\(\); \}\)/);
   assert.doesNotMatch(source, /API\.|UploadChapterEdit|replaceUploadPage|setInterval/);
@@ -257,7 +259,7 @@ test('signed chapter editor keeps local annotations, exact owner and distinct mo
 });
 
 test('schedule controls are UTC-only, not ChapterEdit metadata, and preserve immediate default', () => {
-  assert.match(main, /scheduleEnabled = \$state\(false\)/); assert.match(main, /scheduledUtc\(publishAt\)/); assert.match(main, /publish-at-utc/); assert.match(main, /UTC only, not your local timezone/); assert.match(main, /Past timestamps publish immediately according to server time/);
+  assert.match(main, /scheduleEnabled = \$state\(false\)/); assert.match(main, /scheduledUtc\(publishAt\)/); assert.match(main, /publish-at-utc/); assert.match(main, /Use UTC, not your local time/); assert.match(main, /A past time publishes immediately/);
   assert.match(main, /scheduleValid && resumeReady/); assert.match(main, /<fieldset[^>]+disabled=\{\$mutex \|\| uploadSession.can_mutate === false\}/);
   assert.doesNotMatch(fs.readFileSync(path.join(root,'platform-integrations/public-api/PublicChapterEditor.svelte'),'utf8'), /publishAt|ScheduleReceipt/);
 });

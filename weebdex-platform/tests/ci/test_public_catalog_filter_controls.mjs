@@ -338,3 +338,13 @@ test('same-title Back and Reset cancel delayed Next; exact68a5e06 component repr
   }finally{gate.resolve();await view.dispose();}
  }
 });
+
+test('named translated languages work without Has Chapters; original and excluded filters stay independent and Reset clears all',async()=>{
+ const f=await ui();try{
+  const choose=(title,name)=>{const panel=[...f.host.querySelectorAll('details')].find(row=>row.querySelector('summary')?.textContent.startsWith(title+':'));assert(panel,title);const label=[...panel.querySelectorAll('label')].find(row=>row.textContent.trim()===name);assert(label,name);const checkbox=label.querySelector('input');assert.equal(checkbox.disabled,false);checkbox.click();};
+  choose('Translated languages','English');choose('Original languages','Japanese');choose('Excluded original languages','Korean');await settle();submit(f.host);
+  const q=new URL(f.routes.at(-1),'https://fixture.invalid').searchParams;assert.deepEqual(q.getAll('availableTranslatedLang'),['en']);assert.deepEqual(q.getAll('lang'),['ja']);assert.deepEqual(q.getAll('langx'),['ko']);assert.equal(q.has('hasChapters'),false);
+  const sent=wire((await searchRead(q)).requests[0]);assert.deepEqual(sent.getAll('availableTranslatedLanguage[]'),['en']);assert.deepEqual(sent.getAll('originalLanguage[]'),['ja']);assert.deepEqual(sent.getAll('excludedOriginalLanguage[]'),['ko']);
+  reset(f.host);await settle();const cleared=new URL(f.routes.at(-1),'https://fixture.invalid').searchParams;for(const key of ['lang','langx','availableTranslatedLang'])assert.equal(cleared.has(key),false);assert.equal([...f.host.querySelectorAll('details input[type=checkbox]')].some(row=>row.checked),false);
+ }finally{await f.dispose();}
+});

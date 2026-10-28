@@ -170,3 +170,20 @@ test('native Continue reserves selector plus completion and keeps an inspected u
   await f.controller.continueScan(); assert.equal(f.controller.snapshot.status, 'paused'); assert.equal(f.calls.length, 1); assert.equal(inspected.length, 7);
   await f.controller.continueScan(); assert.equal(f.calls.length, 2); assert.equal(f.calls[1].url.searchParams.get('groupChapter'), groups[6].id); assert.equal(inspected.length, 8); assert.equal(f.controller.snapshot.candidate.id, groups[6].id); assert.equal(f.navigated.length, 0); f.controller.dispose();
 });
+
+// Empty title controls do not contain stale chapter choices. Ownership must
+// still change, and genuine prepared/in-flight selections must remain fenced.
+test('idle title context changes stay quiet; prepared title choices still require restart', async () => {
+  const f = await fixture(); f.current = undefined; await f.controller.refresh();
+  f.changeEpoch(); assert.equal(f.controller.snapshot.status, 'ready'); assert.equal(f.controller.snapshot.message, '');
+  assert.equal(f.calls.length, 0);
+  await f.controller.groups(); f.changeEpoch(); assert.equal(f.controller.snapshot.status, 'restart');
+  assert.equal(f.controller.snapshot.groups.length, 0); f.controller.dispose();
+});
+test('pending title selection invalidates rather than becoming quietly ready', async () => {
+  const f = await fixture(), gate = deferred(); f.current = undefined;
+  f.responder = async url => { const value = f.envelope(url); await gate.promise; return value; };
+  const action = f.controller.start(); await turns(); f.changeEpoch();
+  assert.equal(f.controller.snapshot.status, 'restart'); gate.resolve(); await action;
+  assert.equal(f.navigated.length, 0); f.controller.dispose();
+});

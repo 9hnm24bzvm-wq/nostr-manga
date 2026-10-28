@@ -18,13 +18,13 @@ function fixture(failAt) {
       return {
         async click() {
           action(name);
-          if (name === 'Create a new key') { generated = true; if (failAt === 'create-ack-lost') throw Error('Click rejected after draft creation'); }
+          if (name === 'Create my public identity') { generated = true; if (failAt === 'create-ack-lost') throw Error('Click rejected after draft creation'); }
           if (name === 'Reveal private key') revealed = true;
           if (name === 'Hide private key') revealed = false;
           if (name === 'Copy public key') clipboard = publicKey;
           if (name === 'Copy private key') clipboard = failAt === 'empty-private-copy' ? '' : failAt === 'wrong-private-copy' ? 'different synthetic value' : secret;
           if (name === 'Discard setup and go back') { if (!generated) throw Error('Discard is not mounted'); generated = false; revealed = false; }
-          if (failAt === 'unexpected-mutation' && name === 'Create a new key') listeners.get('request')({method: () => 'POST'});
+          if (failAt === 'unexpected-mutation' && name === 'Create my public identity') listeners.get('request')({method: () => 'POST'});
         },
         async waitFor() { action(name); if (role === 'heading' && name === 'Set up your public identity') assert.equal(generated, false, 'The generated draft must really be gone'); },
         async isDisabled() { return failAt !== 'premature-review'; }
@@ -62,11 +62,11 @@ test('actual helper verifies real-control order and emits only booleans/counts',
   assert.deepEqual(f.state(), {clipboard: '', revealed: false, generated: false, listenerCount: 0});
   assert(f.redactions.has(secret));
   assert.doesNotMatch(JSON.stringify(value), /npub1|nsec1/);
-  assert(f.calls.indexOf('Create a new key') < f.calls.indexOf('Copy public key'));
+  assert(f.calls.indexOf('Create my public identity') < f.calls.indexOf('Copy public key'));
   assert(f.calls.indexOf('Reveal private key') < f.calls.indexOf('Copy private key'));
   assert(f.calls.indexOf('Hide private key') < f.calls.indexOf('Discard setup and go back'));
 });
-for (const failAt of ['grant', 'Create a new key', 'create-ack-lost', 'Copy public key', 'Public key copied.', 'Reveal private key', 'Copy private key', 'Private key copied. Save it somewhere safe; clipboard history or sync may keep a copy.', 'wrong-private-copy', 'empty-private-key', 'empty-private-copy', 'premature-review', 'unexpected-mutation']) {
+for (const failAt of ['grant', 'Create my public identity', 'create-ack-lost', 'Copy public key', 'Public key copied.', 'Reveal private key', 'Copy private key', 'Private key copied. Save it somewhere safe; clipboard history or sync may keep a copy.', 'wrong-private-copy', 'empty-private-key', 'empty-private-copy', 'premature-review', 'unexpected-mutation']) {
   test('actual helper refuses and releases owned context after ' + failAt, async () => {
     const f = fixture(failAt);
     await assert.rejects(exerciseGeneratedKeyBackup(f));
@@ -85,7 +85,7 @@ test('helper is wired only to the account signup and actual product control labe
   const journey = fs.readFileSync(new URL('../../scripts/browser-journeys.mjs', import.meta.url), 'utf8');
   const component = fs.readFileSync(new URL('../../platform-integrations/local-library/IdentitySetup.svelte', import.meta.url), 'utf8');
   assert.match(journey, /phase === 'account' \? await exerciseGeneratedKeyBackup/);
-  for (const name of ['Create a new key', 'Copy public key', 'Copy private key', 'Reveal private key', 'Hide private key', 'Discard setup and go back']) assert(component.includes(name), name);
+  for (const name of ['Create my public identity', 'Copy public key', 'Copy private key', 'Reveal private key', 'Hide private key', 'Discard setup and go back']) assert(component.includes(name), name);
   assert.match(component, /navigator\.clipboard\.writeText\(draft\.exportSecret\(\)\)/);
   assert.match(component, /navigator\.clipboard\.writeText\(identity\.npub\)/);
 });

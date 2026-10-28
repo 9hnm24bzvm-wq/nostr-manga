@@ -123,9 +123,9 @@ async function runChapterEntry(h) {
     const admission = await json(await context.request.post(pre.sink + '/fixture/protocol/account', { data: { pubkey, allowed: true }, maxRedirects: 0, timeout: left() }));
     assert.equal(admission.fixture_only, true); assert.equal(admission.pubkey, pubkey); assert.equal(admission.allowed, true);
     assert.equal(admission.publisher_permission_granted, false); assert.equal(admission.private_key_received, false);
-    await (await button(identity, 'Create or paste a key')).click({ timeout: left() });
+    await (await button(identity, 'Set up public identity')).click({ timeout: left() });
     const setup = page.locator('[data-identity-setup]');
-    await (await button(setup, 'Paste an existing key')).click({ timeout: left() });
+    await (await button(setup, 'I already have a private key')).click({ timeout: left() });
     const input = await unique(setup.getByLabel('Private key (nsec or hex)', { exact: true }));
     assert.equal(await input.getAttribute('type'), 'password');
     await input.fill(secretHex, { timeout: left() });
@@ -166,7 +166,7 @@ async function runChapterEntry(h) {
     assert.equal(await editor.getByRole('button', { name: 'Save instance metadata', exact: true }).isDisabled(), true);
     assert.equal(await editor.getByRole('button', { name: 'Claim local chapter ownership', exact: true }).isDisabled(), true);
     assert.equal(await editor.getByRole('button', { name: 'Request chapter removal', exact: true }).isDisabled(), true);
-    assert.equal(await editor.getByText('Changes are instance-local catalogue annotations. Original signed source metadata and protocol image pages are immutable. Eligible local chapter pages use separate private staging below.', { exact: true }).count(), 1);
+    assert.equal(await editor.getByText('Changes apply to this site. Original publications and their pages cannot be changed. Where page editing is available, prepare your changes privately below.', { exact: true }).count(), 1);
     await noCookie();
     return { actual_identity_ui: true, no_cookie_session: true, typed_target_association: true, edit_link_visible: true, canonical_edit_child_mounted: true, actual_account_status: 403, account_request_finished: true, mutation_controls_disabled: true, native_binding_ready_tested: false, metadata_save_tested: false };
   } finally { if (observeAccountRequest) page.off('request', observeAccountRequest); secret.fill(0); secretHex = ''; }

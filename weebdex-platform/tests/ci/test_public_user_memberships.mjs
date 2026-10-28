@@ -34,3 +34,20 @@ test('deadline suppresses pending stream and requests cancellation',async()=>{le
 test('preaborted read and foreign cursor do not fetch',async()=>{let calls=0;const read=createMembershipReader(async()=>{calls++;return json(page([]));}),abort=new AbortController();abort.abort();await assert.rejects(read(user,null,abort.signal));await assert.rejects(read(user,cursor(group(1),other)));assert.equal(calls,0);});
 test('empty public memberships remain an honest empty live page',async()=>{const result=await createMembershipReader(async()=>json(page([])))(user);assert.equal(result.data.length,0);assert.equal(result.nextCursor,null);});
 test('maximum JSON-escaped and800UTF8-byte names have usable next-page cursor roundtrips',async()=>{for(const name of ['\u0001'.repeat(200),'🦀'.repeat(200)]){const rows=Array.from({length:32},(_,n)=>group(n+1,name)),token=cursor(rows.at(-1));assert.ok(token.length<=2048);let calls=0;const read=createMembershipReader(async url=>{calls++;const after=new URL(url,'http://fixture').searchParams.get('after');return json(after?page([group(33,name)],after):page(rows,null,token));});const first=await read(user),second=await read(user,first.nextCursor);assert.equal(second.data[0].name,name);assert.equal(calls,2);}});
+for(const target of ['154965c1-6a5d-4e15-9a87-b783db928ba5',user])test('fresh reader and preferred public alias both retain a genuine empty group page: '+target,async()=>{
+ const body=page([]);body.nostr.requestedId=target;body.nostr.userId=target;
+ const read=createMembershipReader(async(url,init)=>{assert.equal(url,`/api/v1/nostr/user/${target}/memberships?limit=32`);assert.equal(init.credentials,'omit');return json(body);});
+ const result=await read(target);assert.equal(result.userId,target);assert.equal(result.data.length,0);assert.equal(result.nextCursor,null);
+});
+
+test('retained frontend query-prefix patch cannot produce a double question mark',async()=>{
+ const original=URLSearchParams.prototype.toString;
+ URLSearchParams.prototype.toString=function(){const value=original.call(this);return value?'?'+value:'';};
+ try {
+  const token=cursor(group(1));
+  for(const after of [null,token]){
+   const read=createMembershipReader(async(url)=>{assert.equal(url,`/api/v1/nostr/user/${user}/memberships?limit=32${after?'&after='+encodeURIComponent(after):''}`);assert.equal(new URL(url,'https://fixture').searchParams.get('limit'),'32');return json(page([],after));});
+   assert.equal((await read(user,after)).data.length,0);
+  }
+ }finally{URLSearchParams.prototype.toString=original;}
+});

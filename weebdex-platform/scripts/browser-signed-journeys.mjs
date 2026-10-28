@@ -471,8 +471,8 @@ export async function runSignedJourneys(h) {
         deviceList = (await databases()).device.records.find(row => row.family === "lists" && row.name === "Synthetic signed list " + marker); insist(deviceList && /^[0-9a-f]{32}$/.test(deviceList.id), "Visible custom list control did not persist its original 128-bit ID");
       });
       await inspect('device-member-durable', async () => {
-        await nativeSelectForLabel(library(), "List").selectOption(deviceList.id); await nativeSelectForLabel(library(), "Series").selectOption(manga); await library().getByLabel("Position", { exact: true }).fill("2"); await library().getByRole("button", { name: "Save member", exact: true }).click(); await idle(library());
-        await until(databases, state => state.device.records.some(row => row.family === "members" && row.list === deviceList.id && row.series === manga && row.position === 2), "Visible list membership control did not persist scoped native reference");
+        await nativeSelectForLabel(library(), "List").selectOption(deviceList.id); await nativeSelectForLabel(library(), "Title").selectOption(manga); await library().getByRole("button", { name: "Add to list", exact: true }).click(); await idle(library());
+        await until(databases, state => state.device.records.some(row => row.family === "members" && row.list === deviceList.id && row.series === manga && row.position === 0), "Visible list membership control did not persist scoped native reference");
       });
       await inspect('device-authority-unpublished', async () => {
         const state = await databases(); insist(state.device.instanceScope.catalogNamespace === seeded.catalog_namespace && state.device.instanceScope.serviceKey === fixture.service_key && state.protocol.jobs.length === 0 && mutationRequests.length === 0, "Anonymous local controls published or lost their namespace");

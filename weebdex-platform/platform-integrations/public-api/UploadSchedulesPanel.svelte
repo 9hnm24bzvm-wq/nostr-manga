@@ -3,6 +3,10 @@
   import type { PublicUploadOwner } from './upload-client';
   import type { ScheduleEntry, ScheduleLimits, RememberedSchedule } from './upload-schedules';
   let { owner, revision = 0 }: { owner: PublicUploadOwner; revision?: number } = $props();
+  let expanded = $state(false);
+  const localTime = (value: string | undefined) => value ? new Date(value + 'Z').toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' }) : 'Time unavailable';
+  const retryTime = (seconds: number) => seconds % 3600 === 0 ? `${seconds / 3600} hours` : seconds % 60 === 0 ? `${seconds / 60} minutes` : `${seconds} seconds`;
+  const scheduleState = (state: string) => ({ scheduled: 'Scheduled', starting: 'Publishing', blocked: 'Needs attention', complete: 'Finished', cancelled: 'Cancelled' }[state] ?? 'Check status');
   let entries = $state<ScheduleEntry[]>([]), recent = $state<RememberedSchedule[]>([]), limits = $state<ScheduleLimits>(), busy = $state(false), message = $state('');
   let readable = $state<Record<string, string>>({}), mounted = false, disposed = false, generation = 0, lastOwner = untrack(() => owner);
   const current = (captured: PublicUploadOwner, run: number) => !disposed && captured === owner && run === generation && captured.alive();
@@ -27,42 +31,47 @@
     finally { if (current(captured, run)) busy = false; }
   }
 </script>
-<section aria-label="Private scheduled uploads" class="space-y-3 rounded border p-4">
-  <h2 class="font-semibold">Private scheduled uploads</h2>
-  <p>Accepted schedules are not published chapters. Their original pages stay private until publication starts at or after the UTC deadline. A blocked or uncertain intent may retain storage until safely reconciled.</p>
-  <p>Metadata and pages are immutable after scheduling. Cancel before publication starts, then create a new upload to change them. Scheduling does not occupy your open upload slot.</p>
-  {#if limits}<p>Instance limits: {limits.maximumOutstanding} outstanding schedules, {Math.floor(limits.maximumRetainedBytes / 1048576)} MiB retained scheduling storage including derivatives, {Math.floor(limits.maximumHorizonSeconds / 86400)} days ahead. New intents use a {limits.retryWindowSeconds}-second retry window.</p>{/if}
-  <button type="button" class="underline" disabled={busy} onclick={refresh}>{busy ? 'Checking…' : 'Refresh private schedules'}</button>
+<details bind:open={expanded} class="rounded border px-4 py-2">
+  <summary class="cursor-pointer font-medium">Scheduled uploads{#if entries.length + recent.length}{' '}({entries.length + recent.length}){/if}{#if message || entries.some(entry => entry.uncertain || entry.receipt.state === 'blocked') || recent.some(entry => entry.uncertain)}{' '}· Needs attention{/if}</summary>
+  {#if expanded}
+  <section aria-label="Private scheduled uploads" class="space-y-3 pt-3">
+  {#if entries.length || recent.length}
+  <p>Scheduled pages stay private until publishing begins, at or after the time you chose. A schedule does not guarantee that the chapter is published.</p>
+  <p>You cannot change a scheduled upload. To make changes, cancel it before publishing starts and create a new upload. You can keep uploading other chapters meanwhile.</p>
+  {/if}
+  <button type="button" class="underline" disabled={busy} onclick={refresh}>{busy ? 'Checking…' : 'Refresh schedules'}</button>
   {#if message}<p role="status">{message}</p>{/if}
-  {#if !entries.length && !recent.length && !busy && !message}<p>No pending or recently remembered schedules.</p>{/if}
+  {#if !entries.length && !recent.length && !busy && !message}<p>No scheduled uploads. Upload a chapter and choose a publishing time to add one.</p>{/if}
   <ul class="space-y-4">
     {#each entries as entry (entry.sessionId)}
       <li class="space-y-1 border-t pt-3">
-        <p>Upload {entry.sessionId}</p>
-        <p>Requested UTC: {entry.receipt.publishAt ?? 'not retained in this browser'} · Captured retry window: {entry.receipt.retryWindowSeconds} seconds</p>
-        <p>Schedule: {entry.receipt.state}. {entry.receipt.readerAvailable ? 'A readable receipt is available; verify the current reader below.' : entry.receipt.sourceAccepted === true ? 'Original source acceptance verified; readable chapter not confirmed.' : entry.receipt.sourceAccepted === null ? 'Source acceptance is unverified. Retained originals must not be discarded.' : 'No chapter source acceptance is confirmed.'}</p>
-        {#if entry.receipt.sourceState}<p>Source status: {entry.receipt.sourceState}</p>{/if}
+        <p class="font-medium">{typeof entry.receipt.resource.attributes.title === 'string' && entry.receipt.resource.attributes.title || 'Scheduled upload'} · {entry.sessionId.slice(0, 8)}</p>
+        <p>Publishing time: {localTime(entry.receipt.publishAt)}</p>
+        <p>{scheduleState(entry.receipt.state)}. {entry.receipt.readerAvailable ? 'Check that the chapter is available before opening it below.' : entry.receipt.sourceAccepted === true ? 'The publisher accepted the chapter, but reading availability is not yet confirmed.' : entry.receipt.sourceAccepted === null ? 'Publication is not confirmed. Keep your original files.' : 'Publication has not been confirmed.'}</p>
         {#if entry.receipt.blockedReason}<p>Reason: {entry.receipt.blockedReason}</p>{/if}
-        {#if entry.uncertain}<p role="status">The {entry.uncertain} response is unconfirmed. Only check saved status; no operation will be replayed.</p>{/if}
+        {#if entry.uncertain}<p role="status">The last change has an unconfirmed result. Do not repeat it. Check saved status first; nothing will be repeated automatically.</p>{/if}
+        {#if entry.receipt.canRetry}<p>Retrying keeps the same pages and details. Its retry window is {retryTime(entry.receipt.retryWindowSeconds)}.</p>{/if}
         <div class="flex flex-wrap gap-4">
           <button type="button" class="underline" disabled={busy} onclick={() => act(entry.sessionId, 'get')}>Check saved status</button>
           {#if entry.receipt.canCancel}<button type="button" class="underline" disabled={busy || !!entry.uncertain} onclick={() => act(entry.sessionId, 'cancel')}>Cancel scheduled upload</button>{/if}
-          {#if entry.receipt.canRetry}<button type="button" class="underline" disabled={busy || !!entry.uncertain} onclick={() => act(entry.sessionId, 'retry')}>Retry checked immutable intent</button>{/if}
-          {#if entry.receipt.readerAvailable}<button type="button" class="underline" disabled={busy} onclick={() => act(entry.sessionId, 'read')}>Verify readable chapter</button>{/if}
-          {#if readable[entry.sessionId]}<a class="underline" href={`/chapter/${readable[entry.sessionId]}`}>Open verified reader</a>{/if}
+          {#if entry.receipt.canRetry}<button type="button" class="underline" disabled={busy || !!entry.uncertain} onclick={() => act(entry.sessionId, 'retry')}>Retry this upload</button>{/if}
+          {#if entry.receipt.readerAvailable}<button type="button" class="underline" disabled={busy} onclick={() => act(entry.sessionId, 'read')}>Check chapter availability</button>{/if}
+          {#if readable[entry.sessionId]}<a class="underline" href={`/chapter/${readable[entry.sessionId]}`}>Read chapter</a>{/if}
         </div>
       </li>
     {/each}
   </ul>
   {#if recent.length}
-    <h3 class="font-semibold">Recently remembered uploads</h3>
-    <p>These are not in the active list. Check each private status explicitly; absence does not prove publication, cancellation or deleted storage.</p>
+    <h3 class="font-semibold">Previous uploads</h3>
+    <p>These uploads are no longer in the active list. Check their status; being absent does not mean they were published or cancelled.</p>
     <ul class="space-y-2">
       {#each recent as item (item.sessionId)}<li>
-        <span>Upload {item.sessionId}{item.publishAt ? ` · Requested UTC: ${item.publishAt}` : ''}</span>
-        {#if item.uncertain}<p>Unconfirmed {item.uncertain}; its saved recovery marker is retained.</p>{/if}
-        <button type="button" class="underline" disabled={busy} onclick={() => act(item.sessionId, 'get')}>Check saved status for {item.sessionId}</button>
+        <span>Upload {item.sessionId.slice(0, 8)}{item.publishAt ? ` · ${localTime(item.publishAt)}` : ''}</span>
+        {#if item.uncertain}<p>The last change has an unconfirmed result. Do not repeat it; check saved status first.</p>{/if}
+        <button type="button" class="underline" disabled={busy} onclick={() => act(item.sessionId, 'get')}>Check saved status for {item.sessionId.slice(0, 8)}</button>
       </li>{/each}
     </ul>
   {/if}
 </section>
+  {/if}
+</details>

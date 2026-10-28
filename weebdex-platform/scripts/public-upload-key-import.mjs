@@ -54,16 +54,17 @@ export async function uniqueUploadControl(locator, until) {
 }
 export async function connectPublicUploadKey({ page, unique, button, until, assertUploadRoute, secretHex, importStep }) {
   let before;
+  // Retain fixed trace step identifiers for existing recovery evidence consumers.
+  // Setup now stays on the upload route; these checks never navigate to Settings.
+  const setup = page.locator('[data-identity-setup]');
   await importStep('open-settings', async () => {
     before = await page.evaluate(() => performance.timeOrigin);
-    await (await unique(page.getByRole('link', { name: 'Open Settings', exact: true }))).click();
+    await (await button(page, 'Set up public identity')).click();
   });
-  await importStep('settings-route', () => until(() => new URL(page.url()).pathname, value => value === '/settings/preferences', 'Settings replacement navigation settled'));
-  await importStep('public-identity', async () => { await (await unique(page.getByRole('link', { name: 'Public identity', exact: true }))).click(); });
-  const identity = page.locator('[data-protocol-identity-panel]');
-  await importStep('identity-panel', async () => { await (await button(identity, 'Create or paste a key')).click(); });
-  const setup = page.locator('[data-identity-setup]');
-  await importStep('key-dialog', async () => { await (await button(setup, 'Paste an existing key')).click(); });
+  await importStep('settings-route', async () => { assertUploadRoute(); });
+  await importStep('public-identity', async () => { await unique(setup.getByRole('heading', {name:'Set up your public identity', exact:true})); });
+  await importStep('identity-panel', async () => { await button(setup, 'I already have a private key'); });
+  await importStep('key-dialog', async () => { await (await button(setup, 'I already have a private key')).click(); });
   await importStep('import-form', async () => {
     const input = await unique(setup.getByLabel('Private key (nsec or hex)', { exact: true }));
     assert.equal(await input.getAttribute('type'), 'password'); await input.fill(secretHex);
@@ -83,12 +84,9 @@ export async function connectPublicUploadKey({ page, unique, button, until, asse
   // Use the real reviewed local-session control; it grants no server authority.
   await importStep('session-connect', async () => { await (await button(setup, 'Use this key for this session')).click(); });
   await importStep('session-ready', () => until(() => setup.getByRole('heading', { name: 'Key connected for this session', exact: true }).count(), count => count === 1, 'Local session connection confirmed'));
-  await importStep('done', async () => { await (await button(setup, 'Done')).click(); });
+  await importStep('done', async () => { await (await button(setup, 'Back to what I was doing')).click(); });
   await importStep('upload-return', async () => {
-    await until(async () => await identity.getByText(/^Session private key connected\./).count() === 1 && await identity.getByRole('button', { name: 'Lock private key', exact: true }).isEnabled(), Boolean, 'Actual imported identity ready');
-    assert.equal(new URL(page.url()).pathname, '/settings/identity');
-    await page.goBack({ waitUntil: 'domcontentloaded' }); await page.goBack({ waitUntil: 'domcontentloaded' });
-    assertUploadRoute(); assert.equal(await page.evaluate(() => performance.timeOrigin), before, 'Expected same-document Settings navigation');
+    assertUploadRoute(); assert.equal(await page.evaluate(() => performance.timeOrigin), before, 'Setup must preserve the upload page and session');
   });
   await importStep('upload-ready', () => until(() => page.getByRole('heading', { name: 'Upload Chapter', exact: true }).count(), count => count === 1, 'Bound upload editor ready'));
 }

@@ -14,11 +14,11 @@ test('actual import driver waits through delayed hydration, routes, dialogs, inp
   assert.deepEqual(f.attempts, [{ attempt: 1, substep: 'upload-ready', completed_substeps: keyImportSubsteps.length, status: 'passed', caught_category: 'none' }]);
   assert.equal(f.calls.filter(row => row[0] === 'click' && row[1] === 'Use this key for this session').length, 1);
   assert.equal(f.calls.some(row => row[1] === 'Join this instance'), false);
-  assert.equal(f.calls.filter(row => row[0] === 'back').length, 2);
+  assert.equal(f.calls.filter(row => row[0] === 'back').length, 0);
   assert(f.calls.filter(row => row[0] === 'count' && row[1] === 'Use this key for this session').length > 1);
   assert.doesNotMatch(JSON.stringify(f.attempts), /private|synthetic|http:|settings|Nostr |nsec|pubkey/);
 });
-for (const name of ['Open Settings', 'Public identity', 'Paste an existing key', 'Private key (nsec or hex)', 'Use this key for this session']) {
+for (const name of ['Set up public identity', 'Set up your public identity', 'I already have a private key', 'Private key (nsec or hex)', 'Use this key for this session']) {
   test('missing control fails at fixed substep with bounded readiness category: ' + name, async () => {
     const f = importFixture({ never: name }); await assert.rejects(f.run());
     assert.equal(f.attempts[0].status, 'failed'); assert.equal(f.attempts[0].caught_category, 'readiness-timeout');
@@ -97,10 +97,11 @@ test('fixture default and actual UI require local connection rather than self-en
 // This additional composition seam is pinned to the actual latest 301 component.
 // The explicit override lets the older d6-based harness worktree inspect those
 // bytes without changing any application source. The integrated tree defaults
-// to its own unchanged 301 component; future component edits must requalify it.
+// to the reviewed reader-UX component (including explicit local recovery download).
+// Exact current bytes are requalified by identity setup security tests; future edits must requalify it.
 function latestIdentityComposition() {
   const source = fs.readFileSync(process.env.WEEBDEX_IDENTITY_REVIEW_SOURCE ?? new URL('../../platform-integrations/local-library/IdentitySetup.svelte', import.meta.url), 'utf8');
-  assert.equal(createHash('sha256').update(source).digest('hex'), '1adede24df8b99cafafe7af39ee85fac300934bce31674e62ed530cd13c7e0cc');
+  assert.equal(createHash('sha256').update(source).digest('hex'), 'dd54050b5b0ff4b18ca914f41c086c6c612e22509bed14e2c3897990f0aea81b');
   const backup = source.slice(source.indexOf("{:else if stage === 'backup'"), source.indexOf("{:else if stage === 'review'"));
   const backupSessionControl = /onclick=\{connectSession\}>Use this key for this session/.test(backup);
   assert.equal(backupSessionControl, true);

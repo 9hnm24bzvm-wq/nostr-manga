@@ -73,3 +73,21 @@ test('uncertain mutation survives remount, ordinary revisions, and retries', asy
   const remount = f.make(); f.source.accountRevision++; remount.sync(); await remount.refresh();
   assert.equal(f.calls.length, 1); assert.equal(remount.snapshot.values, undefined); assert.throws(() => remount.beginMutation(), /pending or uncertain/);
 });
+
+for (const mode of ['account', 'device']) test(mode + ' changed context discovered during read automatically refreshes without accepting stale badges', async () => {
+  const f = await badgeFixture(mode, 1); f.control.hold = 1;
+  const pending = f.controller.refresh(); await turns();
+  f.control.ids = ['chapter:fresh']; f.source.admission.authority.epoch++;
+  // No sync notification: the in-flight budget itself discovers the changed key.
+  f.settleHeld(); await pending; await turns();
+  assert.equal(f.controller.snapshot.status, 'ready');
+  assert.deepEqual(Object.keys(f.controller.snapshot.values), ['chapter:fresh']);
+  assert(f.views.filter(view => view.values).every(view => !Object.hasOwn(view.values, 'chapter:0')));
+  assert.equal(f.budgets.length, 2); f.controller.dispose();
+});
+test('same-context read failures remain explicit and do not automatically retry', async () => {
+  const f = await badgeFixture('account', 1); f.control.fail = 1;
+  await f.controller.refresh(); await turns();
+  assert.equal(f.controller.snapshot.status, 'error'); assert.equal(f.calls.length, 1);
+  assert.equal(f.controller.snapshot.values, undefined); f.controller.dispose();
+});

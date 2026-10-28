@@ -6,7 +6,7 @@
  function cancel(){epoch++;abort?.abort();abort=undefined;busy=false;results=[];notice='';}
  onDestroy(()=>{disposed=true;cancel();});
  $effect(()=>{if(disabled)cancel();});
- async function find(){if(disabled)return;cancel();const generation=epoch,controller=new AbortController();abort=controller;busy=true;try{const rows=await search(query,controller.signal);if(disposed||generation!==epoch||disabled)return;results=rows;notice=rows.length?'Select an actual catalogue result. Search is bounded; narrow the name if needed.':'No matching current records.';}catch(error){if(!disposed&&generation===epoch)notice=error instanceof Error?error.message:'Search failed.';}finally{if(!disposed&&generation===epoch)busy=false;}}
+ async function find(){if(disabled)return;cancel();const generation=epoch,controller=new AbortController();abort=controller;busy=true;try{const rows=await search(query,controller.signal);if(disposed||generation!==epoch||disabled)return;results=rows;notice=rows.length?'Choose a result below. Try a more specific name if you do not see the one you need.':'No matching results.';}catch(error){if(!disposed&&generation===epoch)notice=error instanceof Error?error.message:'Search failed.';}finally{if(!disposed&&generation===epoch)busy=false;}}
  function select(row:EditorChoice){if(disabled||selected.some(r=>r.id===row.id))return;selected=single?[row]:[...selected,row];results=results.filter(r=>r.id!==row.id);}
 </script>
 <fieldset class="space-y-2 rounded border p-3" {disabled}>

@@ -5,4 +5,4 @@
 <svelte:head><title>Settings: Public identity - {PUBLIC_SITE_NAME}</title></svelte:head>
 <PublicIdentitySettings />
 
-<p><a class="underline" href="/reports/moderation">Signed instance moderation</a> requires a currently authorized moderator account, separately from personal report inspection.</p>
+<details class="mt-4"><summary class="cursor-pointer text-sm">Moderator tools</summary><p class="mt-2 text-sm"><a class="underline" href="/reports/moderation">Review reports</a>. A moderator account is required.</p></details>

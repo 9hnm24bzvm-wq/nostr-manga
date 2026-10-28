@@ -3999,6 +3999,25 @@ const patches = [
   "before": "\tconst temporaryUrls = new Set<string>();\r\n\tlet disposed = false;\r\n\tonDestroy(() => {\r\n\t\tdisposed = true;",
   "after": "\tconst temporaryUrls = new Set<string>();\r\n\tconst ownedPages = new Set<ReaderPage>();\r\n\tlet disposed = false;\r\n\tonDestroy(() => {\r\n\t\tdisposed = true;\r\n\t\tfor (const page of ownedPages) page.isLoading = false;\r\n\t\townedPages.clear();"
 }
+,
+{
+  "path": "src/routes/(app)/auth/login/+page.svelte",
+  "label": "failed password login preserves identifier without retaining password",
+  "sha256": "0f352782af49530504142a2e6dc79e621f9433a53e581710917b386bd279c8c5",
+  "count": 1,
+  "before": "if (data.id !== request.flow) throw new Constants.Error.Error(\"Authentication flow changed\", \"Reload the current form; an unrelated flow was not attached.\");\r\n\t\t\t\tflow = data;",
+  "after": "if (data.id !== request.flow) throw new Constants.Error.Error(\"Authentication flow changed\", \"Reload the current form; an unrelated flow was not attached.\");\r\n                if (method === \"password\" && typeof body.identifier === \"string\") {\r\n                    data.ui.nodes = data.ui.nodes.map(node => {\r\n                        const attributes = node.attributes;\r\n                        if (attributes.node_type !== \"input\") return node;\r\n                        if (attributes.name === \"identifier\" && attributes.type !== \"hidden\" && !attributes.value)\r\n                            return { ...node, attributes: { ...attributes, value: body.identifier } };\r\n                        if (attributes.name === \"password\") return { ...node, attributes: { ...attributes, value: \"\" } };\r\n                        return node;\r\n                    });\r\n                }\r\n                flow = data;"
+}
+,
+{
+  "path": "src/routes/(app)/group/[id]/Group.svelte",
+  "label": "group heading does not repeat technical identifier",
+  "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
+  "count": 1,
+  "approved_reader_copy_exception": "group_heading_identifier",
+  "before": "<strong class=\"text-muted-foreground truncate font-medium\">@{$group.id}</strong>",
+  "after": "<span class=\"sr-only\">Group</span>"
+}
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
 export function createFrontendOverlays(frontendRoot) {
@@ -4053,3 +4072,5 @@ export const frontendApprovedFollowReadinessExceptions = patches.filter(patch =>
 
 export const frontendApprovedRegistrationOnboardingExceptions = patches.filter(patch => patch.approved_registration_onboarding_exception).map(({ path, sha256, count, before, after, approved_registration_onboarding_exception }) => ({ path, sha256, count, before, after, approved_registration_onboarding_exception }));
 export const frontendApprovedReaderControlExceptions = patches.filter(patch => patch.approved_reader_control_exception).map(({ path, sha256, count, before, after, approved_reader_control_exception }) => ({ path, sha256, count, before, after, approved_reader_control_exception }));
+
+export const frontendApprovedReaderCopyExceptions = patches.filter(patch => patch.approved_reader_copy_exception).map(({ path, sha256, count, before, after, approved_reader_copy_exception }) => ({ path, sha256, count, before, after, approved_reader_copy_exception }));

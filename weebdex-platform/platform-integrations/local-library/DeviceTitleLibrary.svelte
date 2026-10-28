@@ -33,7 +33,10 @@
         try { assertOwner(epoch, key); } catch (cause) { await opened.dispose(); throw cause; }
         pager = opened;
       }
-      const next = await pager.load(n); assertOwner(epoch, key); result = next; target = next.page;
+      let next = await pager.load(n); assertOwner(epoch, key);
+      // A finished index needs one bounded page read, not another user action.
+      if (next.indexed && !next.ready && !next.notice) { pager.releaseDisplayedPage(); next = await pager.load(n); assertOwner(epoch, key); }
+      result = next; target = next.page;
     } catch (cause) {
       if (!destroyed && epoch === generation && key === identity()) { error = message(cause); stopped = cause instanceof TitleIndexStopped || cause instanceof HistoryTransportUnsettled; }
     } finally { if (!destroyed && epoch === generation) loading = false; }
@@ -66,7 +69,7 @@
     {#each result.data as manga (manga.id)}<article><MangaSearchEntryCard {manga} isGrid={$mangaView === 'grid'} /></article>{/each}
   </Grid>
 {:else if result?.ready && !error}
-  <p role="status">{result.total === 0 ? 'No saved titles matched this completed scan.' : 'This page is past the end of this completed scan.'}</p>
+  <p role="status">{result.total === 0 ? 'No saved titles match your filters.' : 'There are no more saved titles.'}</p>
 {/if}
 {#if error}<p role="alert">{error}</p>{/if}
 {#if loading}
@@ -74,22 +77,21 @@
   <Button variant="outline" onclick={cancel}>Cancel loading</Button>
 {:else}
   <div class="flex flex-wrap items-center gap-2">
-    {#if stopped}<Button variant="outline" onclick={reset}>Rebuild library scan</Button>
+    {#if stopped}<Button variant="outline" onclick={reset}>Refresh library</Button>
     {:else if error}<Button variant="outline" onclick={() => load()}>Retry titles</Button>
-    {:else if !result?.ready}<Button variant="outline" onclick={() => load()}>{result?.indexed ? 'Show sorted page' : result?.localOrder ? 'Continue scanning' : 'Continue indexing'}</Button>
+    {:else if !result?.ready}<Button variant="outline" onclick={() => load()}>Continue loading</Button>
     {:else if result.total === null || target * result.limit < result.total}<Button variant="outline" onclick={() => load(target + 1)}>Next page</Button>{/if}
     {#if result && !stopped}
       {#if target > 1}<Button variant="outline" onclick={() => load(target - 1)}>Previous page</Button><Button variant="outline" onclick={() => load(1)}>First page</Button>{/if}
       {#if result.total && Math.ceil(result.total / result.limit) !== target}<Button variant="outline" onclick={() => load(Math.ceil(result!.total! / result!.limit))}>Last page</Button>{/if}
-      <Button variant="outline" onclick={reset}>Rebuild library scan</Button>
+      <Button variant="outline" onclick={reset}>Refresh library</Button>
     {/if}
   </div>
 {/if}
 {#if result}
-  {#if result.notice}<p role="status">{result.notice}</p>{/if}
+  {#if result.notice}<p role="status">Loading paused. Choose Continue loading to keep going.</p>{/if}
   <p class="text-muted-foreground text-sm" role="status">
-    Page {target}. Indexed {result.scanned} of {result.candidates} saved titles.
-    {#if result.total === null}Matching total is not known yet. {#if result.localOrder}Pages follow the saved followed-at order; later candidates still need checking.{:else}All candidates must be checked before globally sorted results are shown.{/if}{:else}{result.total} matching titles in this completed scan.{/if}
+    Page {target}. {#if result.total === null}Checked {result.scanned} of {result.candidates} saved titles.{:else}{result.total} matching {result.total === 1 ? 'title' : 'titles'}.{/if}
   </p>
-  <p class="text-muted-foreground text-sm">Scan started {result.started}. Ordering and totals describe the titles observed in this scan, not an atomic live catalogue snapshot. The catalogue can change during indexing. Rebuild to check again. Only one DTO page is kept in memory; temporary ordering keys expire after inactivity.</p>
+  <p class="text-muted-foreground text-sm">Refresh to check for changes to your saved titles.</p>
 {/if}

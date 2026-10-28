@@ -131,3 +131,10 @@ for (const fault of ['namespace', 'account', 'conflict']) test('actual runtime n
   f.responder = url => accountResponse(f, url); await f.controller.start(); await f.controller.continueNative(); f.controller.cancel(); await f.controller.verifyIdentity();
   f.source.admission = { ...f.source.admission, selectionEpoch: 4 }; f.local.touch(); await f.controller.continueNative(); assert.equal(f.calls.length, count); assert.equal(f.navigated.length, 0); assert.equal(f.dbReads, 0); f.dispose();
 });
+for (const publicMode of [false, true]) test((publicMode ? 'public' : 'native') + ': unused title controls survive library context updates without stale-selection warning', async () => {
+  const f = await fixture(publicMode, true); await f.mount(); const requests = f.calls.length;
+  f.source.context.generation++; f.local.touch(); await f.settle();
+  assert.equal(f.controller.snapshot.status, 'ready'); assert.equal(f.controller.snapshot.message, '');
+  assert.equal(f.calls.length, requests); assert.equal(f.controller.snapshot.requiresReload, undefined);
+  await f.controller.start(); assert.equal(f.navigated.length, 1); f.dispose();
+});

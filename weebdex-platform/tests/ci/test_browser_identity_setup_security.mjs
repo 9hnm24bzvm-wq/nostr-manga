@@ -18,7 +18,7 @@ const syntheticPrivate = '0'.repeat(63) + '1';
 const get = store => { let value; store.subscribe(next => { value = next; })(); return value; };
 const deferred = () => { let resolve; const promise = new Promise(yes => { resolve = yes; }); return { promise, resolve }; };
 
-async function wizard({ clipboardFails = false, capabilityFails = false, proofFails = false, admissionFails = false, enrollmentOpen = true, policySequence, gateAt } = {}) {
+async function wizard({ downloadFails = false, changeOnDownloadUrl = false, clipboardFails = false, capabilityFails = false, proofFails = false, admissionFails = false, enrollmentOpen = true, policySequence, gateAt } = {}) {
   const f = await fixture({ moduleAdapters: { '@scure/base': encoding } });
   f.publication.disconnectSigner();
   const keys = await f.load('local-signing-key.ts');
@@ -30,7 +30,11 @@ async function wizard({ clipboardFails = false, capabilityFails = false, proofFa
   const props = Object.assign(() => ({ onfinish: () => { calls.finished++; }, assertCurrent: current }), { id: () => 'synthetic-setup' });
   const localState = Object.assign(value => value, { raw: value => value });
   const waitAt = async boundary => { if (gateAt === boundary) { entered.resolve(); await gate.promise; } };
-  const context = vm.createContext({ Error, Promise, Event, console: { error() { throw Error('Unexpected wizard logging'); } },
+  const downloads = { blobs: [], clicked: 0, removed: 0, revoked: [], filename: '', href: '' };
+  const context = vm.createContext({ Error, Promise, Event, Blob,
+    URL: { createObjectURL(file) { downloads.blobs.push(file); if (changeOnDownloadUrl) f.publication.disconnectSigner(); return 'blob:synthetic-download'; }, revokeObjectURL(url) { downloads.revoked.push(url); } },
+    document: { body: { appendChild() {} }, createElement(tag) { assert.equal(tag, 'a'); return { href: '', download: '', hidden: false, click() { if (downloadFails) throw Error('Synthetic download refusal'); downloads.clicked++; downloads.filename = this.download; downloads.href = this.href; }, remove() { downloads.removed++; } }; } },
+    console: { error() { throw Error('Unexpected wizard logging'); } },
     $props: props, $state: localState, $derived: value => value, get,
     onDestroy: fn => destroyers.push(fn), tick: () => Promise.resolve(),
     ...keys, signerIdentity: f.publication.signerIdentity,
@@ -54,9 +58,9 @@ async function wizard({ clipboardFails = false, capabilityFails = false, proofFa
     navigator: { clipboard: { async writeText(value) { calls.clipboard++; if (value.startsWith('nsec1')) calls.privateClipboard++; await waitAt('clipboard'); if (clipboardFails) throw Error('Synthetic clipboard refusal'); } } },
   });
   const script = source.match(/<script\b[^>]*>([\s\S]*?)<\/script>/)[1].replace(/^\s*import[^;]+;\s*$/gm, '');
-  const api = vm.runInContext('(function(){' + stripTypeScriptTypes(script, { mode: 'transform' }) + '\nreturn { createKey, openImport, importKey, useExtension, reveal, copyPrivate, copyPublic, reviewInstance, join, connectSession, finishLater, startAgain, bindInput(value){importInput=value}, bindHeading(value){heading=value}, acknowledge(){backupAcknowledged=true}, state(){return {stage,hasDraft:!!draft,hasSecret:!!revealedSecret,hasIdentity:!!identity,hasRelay:!!relay,pending,backupAcknowledged,error,notice,installed,enrollmentOpen}}, draftHandle(){return draft}, publicIdentity(){return identity} }; })()', context);
+  const api = vm.runInContext('(function(){' + stripTypeScriptTypes(script, { mode: 'transform' }) + '\nreturn { createKey, openImport, importKey, downloadRecoveryKey, useExtension, reveal, copyPrivate, copyPublic, reviewInstance, join, connectSession, finishLater, startAgain, bindInput(value){importInput=value}, bindHeading(value){heading=value}, acknowledge(){backupAcknowledged=true}, state(){return {stage,hasDraft:!!draft,hasSecret:!!revealedSecret,hasIdentity:!!identity,hasRelay:!!relay,pending,backupAcknowledged,error,notice,installed,enrollmentOpen}}, draftHandle(){return draft}, publicIdentity(){return identity} }; })()', context);
   api.bindInput(input); api.bindHeading({ focus() { calls.focuses++; } });
-  return { f, api, input, calls, entered: entered.promise, release: gate.resolve,
+  return { f, api, input, calls, downloads, entered: entered.promise, release: gate.resolve,
     identity: () => get(f.publication.signerIdentity),
     stale() { active = false; }, destroy() { destroyers.forEach(fn => fn()); },
     async dispose() { destroyers.forEach(fn => fn()); f.publication.disconnectSigner(); await f.dispose(); },
@@ -243,4 +247,36 @@ test('local reconnect cannot overwrite an identity selected after review', async
     await w.api.connectSession(); assert.equal(w.identity(), selected); assert.notEqual(w.api.state().stage, 'connected');
     assert.equal(w.calls.admissions, 0);
   } finally { await w.dispose(); }
+});
+
+
+test('recovery download is explicit, local, reimportable and never acknowledges or activates identity', async () => {
+  const w = await imported(); let recovered;
+  try {
+    const publicKey = w.api.publicIdentity().npub;
+    assert.equal(w.downloads.blobs.length, 0); w.api.downloadRecoveryKey();
+    assert.equal(w.downloads.clicked, 1); assert.equal(w.downloads.removed, 1);
+    assert.equal(w.downloads.filename, 'weebdex-recovery-key.txt'); assert.equal(w.downloads.href, 'blob:synthetic-download');
+    assert.deepEqual(w.downloads.revoked, ['blob:synthetic-download']);
+    assert.equal(w.api.state().backupAcknowledged, false); assert.equal(w.api.state().installed, false);
+    assert.equal(w.identity().owner, null); assert.equal(w.calls.admissions, 0); assert.equal(w.calls.clipboard, 0); assert.equal(w.f.calls.posts, 0);
+    assert.match(w.api.state().notice, /does not verify your backup/);
+    const contents = await w.downloads.blobs[0].text();
+    recovered = await imported({}, contents); assert.equal(recovered.api.publicIdentity().npub, publicKey);
+    assert.equal(recovered.identity().owner, null); assert.equal(recovered.input.value, '');
+  } finally { if (recovered) await recovered.dispose(); await w.dispose(); }
+});
+test('failed recovery download cleans up without acknowledgement or private error values', async () => {
+  const w = await imported({ downloadFails: true });
+  try { w.api.downloadRecoveryKey(); assert.equal(w.downloads.clicked, 0); assert.equal(w.downloads.removed, 1); assert.equal(w.downloads.revoked.length, 1); assert.equal(w.api.state().backupAcknowledged, false); assert.equal(w.identity().owner, null); assert.match(w.api.state().error, /could not be downloaded safely/); assert.doesNotMatch(w.api.state().error, /nsec|Synthetic/); } finally { await w.dispose(); }
+});
+test('identity changes during recovery download revoke the URL before any click', async () => {
+  const w = await imported({ changeOnDownloadUrl: true });
+  try { w.api.downloadRecoveryKey(); assert.equal(w.downloads.clicked, 0); assert.equal(w.downloads.revoked.length, 1); assert.equal(w.api.state().backupAcknowledged, false); } finally { await w.dispose(); }
+});
+test('closed or replaced identity setup cannot export a recovery download', async () => {
+  for (const stale of [w => w.stale(), w => w.f.publication.disconnectSigner()]) {
+    const w = await imported();
+    try { stale(w); w.api.downloadRecoveryKey(); assert.equal(w.downloads.blobs.length, 0); assert.equal(w.downloads.clicked, 0); } finally { await w.dispose(); }
+  }
 });

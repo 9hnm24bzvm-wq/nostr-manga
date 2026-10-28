@@ -1,4 +1,6 @@
 <script lang="ts">
+ import IdentityGate from '../local-library/IdentityGate.svelte';
+ import { signerIdentity } from '../local-library/publication';
  import { onMount,onDestroy,untrack } from 'svelte';
  import { createEditorialController,type EditorialController,type EditorialKind,type EditorialAction } from './editorial-client';
  import {editorialFields,editorialFieldsChanged,editorialPayload,completeMembershipRoles,authorLinks,groupLinks,type EditorialFields} from './editor-fields';
@@ -25,7 +27,9 @@
  function failure(error:unknown){return error instanceof Error?error.message:'Editorial command was not confirmed.';}
  function responseError(response:{status:number;body?:unknown}){const body=response.body as {errors?:{detail?:string}[]}|undefined;return body?.errors?.[0]?.detail??`Request refused (HTTP ${response.status})`;}
  onDestroy(()=>{disposed=true;owner?.dispose();});
- onMount(()=>{void(async()=>{try{owner=await createEditorialController(kind,target,active);active();permissions=[...owner.account.permissions];roles=[...owner.account.roles];if(target){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}pending=owner.pending();ready=true;}catch(error){if(!disposed)notice=failure(error);}})();});
+ let initializing = $state(false);
+ async function initialize(){if(initializing||disposed||!$signerIdentity.owner)return;initializing=true;notice='';try{owner=await createEditorialController(kind,target,active);active();permissions=[...owner.account.permissions];roles=[...owner.account.roles];if(target){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}pending=owner.pending();ready=true;}catch(error){if(!disposed)notice=failure(error);}finally{if(!disposed)initializing=false;}}
+ onMount(()=>{void initialize();});
  async function command(action:EditorialAction){
   if(!owner||!ready||busy||pending||removed)return;
   if((action==='create'||action==='update')&&!canEdit||action==='claim'&&!canClaim||action==='delete'&&!canDelete)return;
@@ -48,18 +52,19 @@
  async function reload(){if(!owner||busy||removed||!current)return;if(dirty&&!confirm('Discard unsaved editorial metadata and reload the actual server record?'))return;busy=true;try{const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);notice='Actual current record reloaded. No mutation was replayed; uncertain writes remain fenced.';}catch(error){if(!disposed)notice=failure(error);}finally{if(!disposed){busy=false;pending=owner?.pending()??pending;}}}
 </script>
 <section class="mx-auto max-w-270 space-y-4 p-5">
- <h1 class="text-xl font-medium">Signed {kind==='author'?'author':'group'} {current?'settings':'creation'}</h1>
- <p>Uses the selected signing identity and its explicitly bound instance account. These are local catalogue operations. Original group keys, source roles and signed events remain separate.</p>
+ <h1 class="text-xl font-medium">{current?'Edit':'Create'} {kind==='author'?'author':'group'}</h1>
+ <p>Changes apply to this site. Original publications and publishing permissions remain unchanged.</p>
  {#if notice}<p role="status" class="rounded border p-3">{notice}</p>{/if}
- {#if !ready}<p>Select the intended identity in <a class="underline" href="/settings/identity">Public identity settings</a>, then reopen this page.</p>{/if}
+ <IdentityGate show={!ready && !$signerIdentity.owner} onfinish={() => { if ($signerIdentity.owner) void initialize(); }} />
+ {#if !ready && $signerIdentity.owner}<button type="button" class="rounded border px-3 py-2" disabled={initializing} onclick={() => { void initialize(); }}>Check my access again</button>{/if}
  {#if pending}<p role="alert">A prior command has an unconfirmed outcome. It will not be replayed. Review the exact server record or ask the instance operator before further mutations.</p>{/if}
- {#if current}<p>Canonical UUID: {current.id}. Current version: {current.attributes.version}.</p>{/if}
+
  {#if dirty&&current}<p>There are unsaved changes. Save or reset before a claim or removal.</p>{/if}
  <form class="space-y-4" onsubmit={event=>{event.preventDefault();void command(current?'update':'create');}}>
   <fieldset class="space-y-4" {disabled}>
    <label class="block">Name<input class="block w-full rounded border p-2" bind:value={fields.name} maxlength="200" required disabled={kind==='group'&&!!current&&!(staff&&permissions.includes('scanlation_group.update'))} /></label>
    {#if kind==='author'}
-    <fieldset class="space-y-3 rounded border p-3"><legend class="font-medium">Localized biographies</legend>{#each fields.biography as entry,index}<div class="space-y-2"><label>Biography language<input class="block rounded border p-2" bind:value={entry.language} maxlength="100" required /></label><label class="block">Biography<textarea class="block w-full rounded border p-2" bind:value={entry.text} maxlength="25000"></textarea></label><button type="button" class="rounded border px-3 py-1" onclick={()=>{fields.biography=fields.biography.filter((_,i)=>i!==index);}}>Remove biography language</button></div>{/each}<button type="button" class="rounded border px-3 py-1" disabled={fields.biography.length>=100} onclick={()=>{fields.biography=[...fields.biography,{language:'',text:''}];}}>Add biography language</button><p class="text-sm">Every stored language is retained unless you explicitly edit or remove its row.</p></fieldset>
+    <fieldset class="space-y-3 rounded border p-3"><legend class="font-medium">Biographies</legend>{#each fields.biography as entry,index}<div class="space-y-2"><label>Biography language<input class="block rounded border p-2" bind:value={entry.language} maxlength="100" required /></label><label class="block">Biography<textarea class="block w-full rounded border p-2" bind:value={entry.text} maxlength="25000"></textarea></label><button type="button" class="rounded border px-3 py-1" onclick={()=>{fields.biography=fields.biography.filter((_,i)=>i!==index);}}>Remove biography language</button></div>{/each}<button type="button" class="rounded border px-3 py-1" disabled={fields.biography.length>=100} onclick={()=>{fields.biography=[...fields.biography,{language:'',text:''}];}}>Add biography language</button><p class="text-sm">Other languages are kept unless you remove them.</p></fieldset>
    {:else}
     <label class="block">Description<textarea class="block w-full rounded border p-2" bind:value={fields.description} maxlength="25000"></textarea></label>
     <label class="block"><input type="checkbox" bind:checked={fields.inactive} /> Group is inactive</label>
@@ -77,10 +82,10 @@
      </section>
     {:else}<p>Membership editing needs a server response with complete local officer roles. Existing membership is preserved.</p>{/if}
    {/if}
-   <div class="flex gap-3"><button class="rounded border px-4 py-2" type="submit" disabled={!!current&&!dirty}>{current?'Save instance metadata':'Create local record'}</button><button class="rounded border px-4 py-2" type="button" disabled={!dirty} onclick={()=>{fields=editorialFields(kind,current);}}>Reset changes</button></div>
+   <div class="flex gap-3"><button class="rounded border px-4 py-2" type="submit" disabled={!!current&&!dirty}>{current?'Save changes':kind==='author'?'Create author':'Create group'}</button><button class="rounded border px-4 py-2" type="button" disabled={!dirty} onclick={()=>{fields=editorialFields(kind,current);}}>Reset changes</button></div>
   </fieldset>
  </form>
  {#if canClaim&&!removed}<section class="space-y-3 rounded border p-3"><h2>Request local group leadership review</h2><p>Provide a public ownership-evidence URL and explanation for an instance moderator. Submitting does not claim the group or change any original key.</p><textarea aria-label="Ownership evidence" class="block w-full rounded border p-2" bind:value={evidence} maxlength="8000" disabled={busy||pending||dirty}></textarea><button class="rounded border px-4 py-2" type="button" disabled={busy||pending||dirty||!evidence.trim()} onclick={()=>command('claim')}>Submit claim for review</button></section>{/if}
- <div class="flex flex-wrap gap-3">{#if canDelete&&!removed}<button class="rounded border px-4 py-2" type="button" disabled={busy||pending||dirty} onclick={()=>command('delete')}>Hide {kind} on this instance</button>{/if}{#if current&&!removed}<button class="rounded border px-4 py-2" type="button" disabled={busy} onclick={reload}>Reload current record</button><a class="underline" href={`/${kind}/${current.id}`}>Open catalogue record</a>{/if}</div>
+ <div class="flex flex-wrap gap-3">{#if canDelete&&!removed}<button class="rounded border px-4 py-2" type="button" disabled={busy||pending||dirty} onclick={()=>command('delete')}>Hide {kind} on this instance</button>{/if}{#if current&&!removed}<button class="rounded border px-4 py-2" type="button" disabled={busy} onclick={reload}>Reload details</button><a class="underline" href={`/${kind}/${current.id}`}>Open catalogue record</a>{/if}</div>
  <nav class="flex flex-wrap gap-3"><a class="underline" href="/catalogue-tools?kind=author">Create author</a><a class="underline" href="/catalogue-tools?kind=group">Create group</a></nav>
 </section>

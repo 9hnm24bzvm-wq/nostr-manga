@@ -32,20 +32,20 @@
     {#if $localLibraryState.mode === 'device' || !publicUuidLibraryEnabled}
       <details>
         <summary>More reading options</summary>
-        <button type="button" class="underline" disabled={blocked} onclick={event => plainAction(event, startFirst)}>Start from first chapter (ignore saved completion)</button>
+        <button type="button" class="underline" disabled={blocked} onclick={event => plainAction(event, startFirst)}>Start from first chapter</button>
       </details>
     {/if}
   </div>
   {#if $readerLibrarySelection.pending}
-    <p class="text-muted-foreground text-xs">Wait for the selected library change to finish.</p>
+    <p class="text-muted-foreground text-xs">Saving your library choice…</p>
   {:else if $localLibraryState.mode === 'device'}
-    {#if !deviceHistoryReady}<p role="status">Device completion history is unavailable or still loading. It was not treated as empty. You can explicitly start from the first chapter without history.</p>{/if}
-    <p class="text-muted-foreground text-xs">Automatic device Continue uses the retained complete aggregate where supported. If its 10,000-chapter limit is exceeded, narrow language/group filters or explicitly start from the first chapter. Device history is never sent to the server.</p>
+    {#if !deviceHistoryReady}<p role="status">Your reading history is still loading or unavailable. You can start from the first chapter instead.</p>{/if}
+    <p class="text-muted-foreground text-xs">Continue picks up after your completed chapters. Finish a chapter to save it to History on this device. Your device history is never sent to the server.</p>
     {#if deviceError}<p role="alert">{deviceError}</p>{/if}
   {:else if publicUuidLibraryEnabled}
-    <p class="text-muted-foreground text-xs">Native-account Continue is unavailable in this public catalogue. Select device mode explicitly in Library to use device completion.</p>
+    <p class="text-muted-foreground text-xs">Continue Reading is available with an on-device library. Choose “On this device” in Library to use it.</p>
   {:else}
-    <p class="text-muted-foreground text-xs">Continue uses this native cookie account: oldest unread group, or newest if all eligible groups were completed in that request. Device history is not substituted. A later request may observe a changed catalogue or history.</p>
+    <p class="text-muted-foreground text-xs">Continue uses your signed-in account’s completed chapters, not this device’s history.</p>
   {/if}
   <Status {controller} />
   {#if $controller.groupAnchor}<EditionPage {controller} />{/if}

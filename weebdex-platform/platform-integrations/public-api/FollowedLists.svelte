@@ -1,4 +1,5 @@
 <script lang="ts">
+ import IdentityGate from '../local-library/IdentityGate.svelte';
  import {onDestroy,untrack} from 'svelte';
  import {PUBLIC_MANGADEX_CATALOGUE,PUBLIC_SITE_NAME} from '$env/static/public';
  import {Button} from '$lib/components/ui/button';
@@ -18,7 +19,8 @@
 <section class="space-y-5">
  <header class="space-y-3"><h1 class="text-xl font-semibold">Followed lists</h1><nav class="flex flex-wrap items-center gap-3"><a class="text-sm underline" href="/library">My library</a><Button variant="outline" disabled={pending||!$signerIdentity.owner} onclick={()=>{reader=undefined;void load();}}>Refresh</Button></nav></header>
  <FollowingNavigation active="list"/>
- {#if !$signerIdentity.owner}<p class="text-muted-foreground">Connect your public identity to view account-followed lists on this instance.</p><a class="underline" href="/settings/identity">Manage public identity</a>{/if}
+ <IdentityGate show={!$signerIdentity.owner} onfinish={() => { if ($signerIdentity.owner) void load(); }} />
+ {#if !$signerIdentity.owner}<p class="text-muted-foreground">Connect your public identity to view account-followed lists on this instance.</p>{/if}
  {#if username}<p class="text-sm text-muted-foreground">Following as {username} on this instance.</p>{/if}
  {#if pending}<p role="status" class="text-muted-foreground">Loading followed lists…</p>{/if}
  {#if error}<p role="alert" class="text-destructive">{error}</p>{:else if username&&!pending&&!rows.length}<p class="text-muted-foreground">{offset>0?'There are no available followed lists on this page.':'You have no available followed lists.'}</p>{/if}

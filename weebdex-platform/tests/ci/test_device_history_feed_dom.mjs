@@ -57,9 +57,9 @@ async function fixture(load, { opening } = {}) {
   const component = mount(Feed, { target: document.querySelector('main') }); await settle();
   return { prefs, views, identity, calls, opened, displayReleases, history: () => history, disposed: () => disposed, cancelled: () => cancelled, async close() { await unmount(component); await settle(); }, async click(text) { const button = [...document.querySelectorAll('button')].find(button => button.textContent === text); assert(button, `Missing button ${text}: ${document.body.textContent}`); button.click(); await settle(); } };
 }
-test('unknown empty sparse page shows Continue scanning, not false empty; exact final page becomes rows', async () => {
+test('unknown empty sparse page shows Keep loading, not false empty; exact final page becomes rows', async () => {
   let count = 0; const f = await fixture(async () => ++count === 1 ? result() : result({ data: [data('last')], total: 1, complete: true, ready: true, continuation: false, scanned: 10001 }));
-  try { assert.match(document.body.textContent, /No matching chapters found yet/); assert.doesNotMatch(document.body.textContent, /No results found/); assert.match(document.body.textContent, /Filtered total is not known/); await f.click('Continue scanning'); assert.match(document.body.textContent, /Title-last/); assert.deepEqual(f.calls, [1, 1]); assert.match(document.body.textContent, /1 matching chapters/); assert.doesNotMatch(document.body.textContent, /Continue loading/); } finally { await f.close(); }
+  try { assert.match(document.body.textContent, /No matching chapters found yet/); assert.doesNotMatch(document.body.textContent, /No results found/); assert.match(document.body.textContent, /More history may be available/); await f.click('Keep loading'); assert.match(document.body.textContent, /Title-last/); assert.deepEqual(f.calls, [1, 1]); assert.match(document.body.textContent, /1 matching completed chapters/); assert.doesNotMatch(document.body.textContent, /Continue loading/); } finally { await f.close(); }
 });
 test('next-page failure has an explicit retry without retaining previous page under the new label', async () => {
   let count = 0; const f = await fixture(async n => { count++; if (count === 2) throw Error('503 batch not skipped'); return result({ page: n, data: [data(String(n))], ready: true }); });
@@ -101,15 +101,15 @@ test('page-size fallback visibly restarts page 1 and continues with the new page
   try {
     await f.click('Continue loading'); assert.match(document.body.textContent, /Page size reduced to 50/); assert.match(document.body.textContent, /Restarted at page 1/); assert.match(document.body.textContent, /Page 1\./); assert.doesNotMatch(document.body.textContent, /Title-original|Page 2\./);
     assert.equal(f.displayReleases.length, 1); assert.doesNotMatch(f.displayReleases[0], /Title-original/);
-    await f.click('Continue scanning'); assert.deepEqual(f.calls, [1, 2, 1]); assert.match(document.body.textContent, /Title-restarted/);
+    await f.click('Keep loading'); assert.deepEqual(f.calls, [1, 2, 1]); assert.match(document.body.textContent, /Title-restarted/);
   } finally { await f.close(); }
 });
 for (const kind of ['HistoryTransportUnsettled', 'HistoryCapacityError']) test(kind + ' is a visible stopped state with explicit reopen, not ineffective retry or auto-continuation', async () => {
   const f = await fixture(async () => { throw new globalThis.__historyFixture[kind]('Loading stopped without skipping any chapter.'); });
-  try { assert.match(document.body.textContent, /Loading stopped without skipping/); assert.match(document.body.textContent, /Reopen history/); assert.doesNotMatch(document.body.textContent, /Retry history|Continue scanning|Continue loading|No results found/); assert.deepEqual(f.calls, [1]); await settle(); assert.deepEqual(f.calls, [1]); await f.click('Reopen history'); assert.deepEqual(f.calls, [1, 1]); assert.equal(f.disposed(), 1); } finally { await f.close(); }
+  try { assert.match(document.body.textContent, /Loading stopped without skipping/); assert.match(document.body.textContent, /Reopen history/); assert.doesNotMatch(document.body.textContent, /Retry history|Keep loading|Continue loading|No results found/); assert.deepEqual(f.calls, [1]); await settle(); assert.deepEqual(f.calls, [1]); await f.click('Reopen history'); assert.deepEqual(f.calls, [1, 1]); assert.equal(f.disposed(), 1); } finally { await f.close(); }
 });
 test('same-page continuation keeps displayed DTO pin while new work is pending', async () => {
   const pending = deferred(); let calls = 0;
   const f = await fixture(async () => ++calls === 1 ? result({ data: [data('partial')], ready: false }) : pending.promise);
-  try { await f.click('Continue scanning'); assert.match(document.body.textContent, /Title-partial/); assert.equal(f.displayReleases.length, 0); pending.resolve(result({ data: [data('finished')], ready: true })); await settle(); assert.match(document.body.textContent, /Title-finished/); } finally { await f.close(); }
+  try { await f.click('Keep loading'); assert.match(document.body.textContent, /Title-partial/); assert.equal(f.displayReleases.length, 0); pending.resolve(result({ data: [data('finished')], ready: true })); await settle(); assert.match(document.body.textContent, /Title-finished/); } finally { await f.close(); }
 });

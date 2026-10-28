@@ -60,5 +60,6 @@
   "src/routes/(app)/user/[id]/settings/+page.svelte": "b64a8ac906f93b0d74cbf9a658933a52370b91d7a413c317585dda59f9d6dc90",
   "src/routes/(app)/users/+page.svelte": "9cadc0f327f61a238358ae34e69a5d6a44623f3c8461d5f9a97522408adf5e2a",
   "src/lib/components/ChapterListFilter.svelte": "2f38ac6741bb02cff665ec0885929ce721082eae1afbc05ce8a3f1bd6f3db6fa",
-  "src/routes/(app)/user/[id]/+page.svelte": "eaa3d2bbcce25af67937528ee161931d406a76067692f62c6c455208315ef4b5"
+  "src/routes/(app)/user/[id]/+page.svelte": "eaa3d2bbcce25af67937528ee161931d406a76067692f62c6c455208315ef4b5",
+  "src/lib/components/LatestUpdatesGridEntry.svelte": "89b8bbd1fc61d12159044baa534f6d04aea63257a109615bd0153a2cf9383688"
 }

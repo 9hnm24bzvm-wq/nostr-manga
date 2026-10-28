@@ -42,7 +42,13 @@
         try { assertOwner(epoch, key); } catch (cause) { await opened.dispose(); throw cause; }
         pager = opened;
       }
-      const next = await pager.load(n); assertOwner(epoch, key); result = next; target = next.page;
+      let next = await pager.load(n); assertOwner(epoch, key);
+      // Indexing and hydration have independent bounded budgets. Once all titles
+      // are checked, display one page automatically; never auto-loop scans.
+      if (next.indexed && !next.ready && !next.notice) {
+        next = await pager.load(n); assertOwner(epoch, key);
+      }
+      result = next; target = next.page;
       const grouped = new Map<string, Manga>(), selected = new Set(next.data.map(row => row.id));
       const history: Record<string, Record<string, null>> = {};
       for (const saved of $localLibraryState.records) if (saved.family === 'chapters' && saved.completed && saved.id && saved.mangaId && selected.has(saved.id)) (history[saved.mangaId] ??= {})[saved.id] = null;
@@ -86,7 +92,7 @@
     </Grid>
   {/if}
 {:else if result?.ready && !error}
-  <p role="status">{result.total === 0 ? 'No updates matched this completed scan.' : 'This page is past the end of this completed scan.'}</p>
+  <p role="status">{result.total === 0 ? 'No new chapters found for your followed titles.' : 'There are no more updates on this page.'}</p>
 {/if}
 {#if error}<p role="alert">{error}</p>{/if}
 {#if loading}
@@ -94,22 +100,21 @@
   <Button variant="outline" onclick={cancel}>Cancel loading</Button>
 {:else}
   <div class="flex flex-wrap items-center gap-2">
-    {#if stopped}<Button variant="outline" onclick={reset}>Rebuild updates scan</Button>
+    {#if stopped}<Button variant="outline" onclick={reset}>Refresh updates</Button>
     {:else if error}<Button variant="outline" onclick={() => load()}>Retry updates</Button>
-    {:else if !result?.ready}<Button variant="outline" onclick={() => load()}>{result?.indexed ? 'Show sorted page' : 'Continue indexing'}</Button>
+    {:else if !result?.ready}<Button variant="outline" onclick={() => load()}>Continue loading</Button>
     {:else if result.total !== null && target * result.limit < result.total}<Button variant="outline" onclick={() => load(target + 1)}>Next page</Button>{/if}
     {#if result && !stopped}
       {#if target > 1}<Button variant="outline" onclick={() => load(target - 1)}>Previous page</Button><Button variant="outline" onclick={() => load(1)}>First page</Button>{/if}
       {#if result.total && Math.ceil(result.total / result.limit) !== target}<Button variant="outline" onclick={() => load(Math.ceil(result!.total! / result!.limit))}>Last page</Button>{/if}
-      <Button variant="outline" onclick={reset}>Rebuild updates scan</Button>
+      <Button variant="outline" onclick={reset}>Refresh updates</Button>
     {/if}
   </div>
 {/if}
 {#if result}
-  {#if result.notice}<p role="status">{result.notice}</p>{/if}
+  {#if result.notice}<p role="status">There’s more to check. Continue loading to pick up where you left off.</p>{/if}
   <p class="text-muted-foreground text-sm" role="status">
-    Page {target}. Checked {result.scanned} of {result.parents} notified titles and {result.chapters} matching chapters.
-    {#if result.total === null}Matching total is not known yet. Every title must be checked before globally sorted updates are shown.{:else}{result.total} matching {latestOnly ? 'latest-title updates' : 'chapters'} in this completed scan.{/if}
+    {#if !result.ready}Checking your followed titles: {result.scanned} of {result.parents}. Updates will appear when the check is complete.
+    {:else if result.total}{result.total} {latestOnly ? 'updated titles' : 'chapters'} · Page {target}{/if}
   </p>
-  <p class="text-muted-foreground text-sm">Scan started {result.started}. This is a live catalogue traversal, not an atomic server snapshot. Concurrent changes can require rebuilding and may cause offset-page omissions that cannot be detected. Public queries stop explicitly beyond offset 10,000 within one title; they never silently skip it. One DTO page is retained; temporary ordering keys expire after inactivity.</p>
 {/if}

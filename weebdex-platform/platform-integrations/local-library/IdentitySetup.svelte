@@ -63,6 +63,25 @@
     try { assertActive(); revealedSecret = revealedSecret ? '' : draft.exportSecret(); error = ''; }
     catch { revealedSecret = ''; error = 'This key is no longer available. Start again or import your saved key.'; }
   }
+  function downloadRecoveryKey() {
+    if (pending || !draft) return;
+    const epoch = generation, selectedGeneration = selectionGeneration;
+    const check = () => { assertActive(epoch); if (get(signerIdentity).generation !== selectedGeneration) throw Error('Identity changed'); };
+    let url = '', link: HTMLAnchorElement | null = null;
+    error = ''; notice = '';
+    try {
+      check();
+      const file = new Blob([draft.exportSecret(), '\n'], { type: 'text/plain;charset=utf-8' });
+      check(); url = URL.createObjectURL(file); check();
+      link = document.createElement('a'); link.href = url; link.download = 'weebdex-recovery-key.txt';
+      link.hidden = true; document.body.appendChild(link); check(); link.click(); check();
+      notice = 'Download requested. Open the saved file to check it, then keep it somewhere private. Downloading does not verify your backup.';
+    } catch {
+      if (!disposed && epoch === generation) error = 'The recovery file could not be downloaded safely. Try again, or reveal and save your private key.';
+    } finally {
+      link?.remove(); if (url) URL.revokeObjectURL(url);
+    }
+  }
   async function copyPrivate() {
     if (pending || !draft) return;
     const epoch = generation; error = ''; notice = '';
@@ -126,14 +145,14 @@
   <header class="space-y-2">
     <h2 id="identity-setup-title-{id}" bind:this={heading} tabindex="-1" class="text-lg font-semibold leading-tight">{title}</h2>
     {#if stage === 'choose'}
-      <p class="text-muted-foreground text-sm">Your public identity lets you use Nostr features across compatible apps. It uses its own key, separate from your site password.</p>
+      <p class="text-muted-foreground text-sm">Use a public identity for ratings, uploads and some public actions. It has a private recovery key, separate from your email login. We will help you save it safely.</p>
     {/if}
   </header>
   {#if stage === 'choose'}
     <div class="flex flex-col gap-2">
-      <Button class="min-h-11 w-full" disabled={pending} onclick={createKey}>Create a new key</Button>
-      <Button class="min-h-11 w-full" variant="outline" disabled={pending} onclick={openImport}>Paste an existing key</Button>
-      <Button class="min-h-11 w-full" variant="outline" disabled={pending} onclick={useExtension}>Use a browser signer</Button>
+      <Button class="min-h-11 w-full" disabled={pending} onclick={createKey}>Create my public identity</Button>
+      <Button class="min-h-11 w-full" variant="outline" disabled={pending} onclick={openImport}>I already have a private key</Button>
+      <details><summary class="cursor-pointer text-sm">More ways to connect</summary><Button class="mt-2 min-h-11 w-full" variant="outline" disabled={pending} onclick={useExtension}>Use a browser extension</Button></details>
     </div>
     <p class="text-muted-foreground text-sm">Private keys stay in this browser session. Nothing is published during key setup.</p>
   {:else if stage === 'import'}
@@ -150,6 +169,8 @@
     {:else}
       <p class="text-sm">Your private key controls this identity. Save a private copy somewhere safe before continuing.</p>
       <p class="text-destructive text-sm">If you lose it, this site cannot recover it. Resetting your site password will not restore this key.</p>
+      <Button class="min-h-11 w-full" disabled={pending} onclick={downloadRecoveryKey}>Download recovery key</Button>
+      <p class="text-muted-foreground text-sm">This file contains your private key. Anyone with it can use your identity. Keep it off shared devices and shared folders.</p>
       <div class="flex flex-wrap gap-2">
         <Button class="min-h-11" variant="outline" disabled={pending} onclick={reveal}>{revealedSecret ? 'Hide private key' : 'Reveal private key'}</Button>
         <Button class="min-h-11" variant="outline" disabled={pending} onclick={copyPrivate}>Copy private key</Button>
@@ -166,7 +187,7 @@
     <label class="flex items-start gap-3 text-sm"><input class="mt-1 size-4 shrink-0" type="checkbox" bind:checked={backupAcknowledged} disabled={pending} /> <span>{identity.source === 'external' ? 'I manage my private-key backup in my signer.' : 'I have saved my private key somewhere safe.'}</span></label>
     <p class="text-muted-foreground text-xs">This acknowledgement does not create or verify a backup for you.</p>
     <Button class="min-h-11 w-full" variant="outline" disabled={pending || !backupAcknowledged} onclick={connectSession}>Use this key for this session</Button>
-    <p class="text-muted-foreground text-xs">Connecting locally does not request admission or publish anything. Instance discovery can wait until you choose a public action.</p>
+    <p class="text-muted-foreground text-xs">Connecting locally does not request admission or publish anything. You can check site access when you are ready.</p>
     <Button class="min-h-11 w-full" disabled={pending || !backupAcknowledged} onclick={reviewInstance}>Review public identity</Button>
     <Button class="min-h-11 w-full" variant="ghost" disabled={pending} onclick={startAgain}>Discard setup and go back</Button>
   {:else if stage === 'review' && identity && relay}
@@ -192,7 +213,7 @@
     <p class="text-sm">This key is connected in this browser session. Instance approval has not been confirmed. Public actions still need this instance's permission.</p>
     <Input aria-label="Your public key" value={identity.npub} readonly spellcheck={false} class="font-mono text-xs" />
     <Button class="min-h-11" variant="outline" onclick={copyPublic}>Copy public key</Button>
-    <p class="text-muted-foreground text-sm">Your site login stays separate. Nothing was published. {identity.source === 'external' ? 'Your browser signer keeps the private key.' : 'After reloading or locking, paste your saved private key to reconnect.'}</p>
+    <p class="text-muted-foreground text-sm">Your email login stays separate. Nothing was published. {identity.source === 'external' ? 'Your browser signer keeps the private key.' : 'After reloading or locking, paste your saved private key to reconnect.'}</p>
     <Button class="min-h-11 w-full" variant="outline" disabled={pending} onclick={reviewInstance}>Review joining this instance</Button>
     <Button class="min-h-11 w-full" onclick={onfinish}>{finishLabel}</Button>
   {:else if stage === 'done' && identity && relay}

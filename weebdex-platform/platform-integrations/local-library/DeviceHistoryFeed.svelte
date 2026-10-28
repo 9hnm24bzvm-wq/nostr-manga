@@ -77,7 +77,7 @@
     {#each entries as manga (manga)}<ChapterFeedMangaEntry {manga} />{/each}
   </Grid>
 {:else if result?.complete && !error}
-  <Empty.Root><Empty.Header><Empty.Title>No results found</Empty.Title><Empty.Description>{#if result.total === 0}No read chapters match these preferences in this snapshot.{:else}This page is past the end of the matching history. Return to the first page.{/if}</Empty.Description></Empty.Header></Empty.Root>
+  <Empty.Root><Empty.Header><Empty.Title>No completed chapters here yet</Empty.Title><Empty.Description>{#if result.total === 0}Finish a chapter to add it to History. If you have already finished chapters, check your filters.{:else}This page is past the end of the matching history. Return to the first page.{/if}</Empty.Description></Empty.Header></Empty.Root>
 {:else if !loading && result}
   <p role="status">No matching chapters found yet. More saved history remains to be checked.</p>
 {/if}
@@ -89,7 +89,7 @@
   <div class="flex flex-wrap items-center gap-2">
     {#if stopped}<Button variant="outline" onclick={reset}>Reopen history</Button>
     {:else if error}<Button variant="outline" onclick={() => load()}>Retry history</Button>
-    {:else if !result?.ready}<Button variant="outline" onclick={() => load()}>Continue scanning</Button>
+    {:else if !result?.ready}<Button variant="outline" onclick={() => load()}>Keep loading</Button>
     {:else if result.continuation}<Button variant="outline" onclick={() => load(result!.page + 1)}>Continue loading</Button>{/if}
     {#if result?.total && Math.ceil(result.total / result.limit) !== target}<Button variant="outline" onclick={() => load(Math.ceil(result!.total! / result!.limit))}>Last page</Button>{/if}
     {#if target > 1}<Button variant="outline" onclick={() => load(target - 1)}>Previous page</Button><Button variant="outline" onclick={() => load(1)}>First page</Button>{/if}
@@ -99,8 +99,8 @@
   {#if result.notice}<p role="status">{result.notice}</p>{/if}
   <p class="text-muted-foreground text-sm" role="status">
     Page {target}. Checked {result.scanned} of {result.candidates} saved chapters.
-    {#if result.total === null}Filtered total is not known yet.{:else}{result.total} matching chapters in this scan.{/if}
-    {#if !result.ready}Continue scanning to finish this page.{/if}
+    {#if result.total === null}More history may be available.{:else}{result.total} matching completed chapters.{/if}
+    {#if !result.ready}Keep loading to finish this page.{/if}
   </p>
-  <p class="text-muted-foreground text-sm">Only a few pages are kept in memory. Older pages are scanned again when revisited.</p>
+  <p class="text-muted-foreground text-sm">History shows completed chapters, not every page you have opened.</p>
 {/if}

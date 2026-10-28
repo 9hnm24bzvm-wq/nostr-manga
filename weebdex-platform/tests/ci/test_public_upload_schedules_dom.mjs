@@ -45,7 +45,7 @@ const SESSION = '11111111-1111-8111-8111-111111111111', CHAPTER = '22222222-2222
 const limits = { maximumOutstanding: 32, maximumRetainedBytes: 500 * 1048576, maximumHorizonSeconds: 30 * 86400, retryWindowSeconds: 86400, timezone: 'UTC' };
 const deferred = () => { let resolve; const promise = new Promise(yes => resolve = yes); return { promise, resolve }; };
 function ownerFixture(options = {}) {
-  const state = { calls: [], pending: undefined, disposed: false, entries: [{ sessionId: SESSION, receipt: { chapterId: CHAPTER, state: 'scheduled', publishAt: '2026-12-01T12:30:45', retryWindowSeconds: 2, sourceAccepted: false, readerAvailable: false, canCancel: true, canRetry: false } }], ...options.state };
+  const state = { calls: [], pending: undefined, disposed: false, entries: [{ sessionId: SESSION, receipt: { chapterId: CHAPTER, resource: { attributes: { title: 'Scheduled test chapter' } }, state: 'scheduled', publishAt: '2026-12-01T12:30:45', retryWindowSeconds: 2, sourceAccepted: false, readerAvailable: false, canCancel: true, canRetry: false } }], ...options.state };
   const result = () => ({ recent: structuredClone(state.recent ?? []), entries: structuredClone(state.entries).map(row => ({ ...row, uncertain: state.pending })), limits });
   const owner = { alive: () => !state.disposed, schedules: {
     pending: id => state.pendingById?.[id] ?? state.pending,
@@ -58,35 +58,59 @@ function ownerFixture(options = {}) {
   return { state, owner };
 }
 async function settle() { for (let i = 0; i < 3; i++) { await new Promise(resolve => setTimeout(resolve, 0)); flushSync(); } }
-async function render(options = {}) { const f = ownerFixture(options), target = document.createElement('div'); document.querySelector('main').append(target); const component = mount(Component, { target, props: { initialOwner: f.owner } }); await settle(); return { ...f, target, component, async close() { await unmount(component); target.remove(); } }; }
+async function render(options = {}) { const f = ownerFixture(options), target = document.createElement('div'); document.querySelector('main').append(target); const component = mount(Component, { target, props: { initialOwner: f.owner } }); await settle(); if (!options.collapsed) { const disclosure = target.querySelector('details'); disclosure.open = true; disclosure.dispatchEvent(new window.Event('toggle')); await settle(); } return { ...f, target, component, async close() { await unmount(component); target.remove(); } }; }
 function button(f, text) { const rows = [...f.target.querySelectorAll('button')].filter(row => row.textContent.trim() === text); assert.equal(rows.length, 1, text); return rows[0]; }
 async function click(f, text) { button(f, text).click(); await settle(); }
-test('mounted pending schedule shows UTC, limits and captured deadline but no chapter link', async () => {
-  const f = await render(); try { assert.match(f.target.textContent, /2026-12-01T12:30:45/); assert.match(f.target.textContent, /500 MiB/); assert.match(f.target.textContent, /Captured retry window: 2 seconds/); assert.match(f.target.textContent, /not published chapters/); assert.equal(f.target.querySelector('a'), null); assert.deepEqual(f.state.calls, ['list']); } finally { await f.close(); }
+test('opened pending schedules show local time and essential privacy warnings but no chapter link', async () => {
+  const f = await render(); try { assert.match(f.target.textContent, /Publishing time:/); assert.match(f.target.textContent, /2026/); assert.match(f.target.textContent, /stay private until publishing begins/); assert.match(f.target.textContent, /cannot change a scheduled upload/); assert.doesNotMatch(f.target.textContent, /immutable intent|86400-second|UTC deadline|derivatives/); assert.equal(f.target.querySelector('a'), null); assert.deepEqual(f.state.calls, ['list']); } finally { await f.close(); }
 });
 test('mounted cancellation locks duplicate clicks and keeps an unknown response fenced after unchanged status', async () => {
   const gate = deferred(), f = await render({ cancel: async state => { await gate.promise; state.pending = 'cancel'; throw Error('Cancellation response unconfirmed'); } });
-  try { const cancel = button(f, 'Cancel scheduled upload'); cancel.click(); cancel.click(); await settle(); assert.equal(f.state.calls.filter(value => value === 'cancel').length, 1); assert.equal(cancel.disabled, true); gate.resolve(); await settle(); assert.match(f.target.textContent, /response is unconfirmed/); assert.equal(button(f, 'Cancel scheduled upload').disabled, true); await click(f, 'Check saved status'); assert.equal(button(f, 'Cancel scheduled upload').disabled, true); assert.equal(f.state.calls.filter(value => value === 'cancel').length, 1); } finally { await f.close(); }
+  try { const cancel = button(f, 'Cancel scheduled upload'); cancel.click(); cancel.click(); await settle(); assert.equal(f.state.calls.filter(value => value === 'cancel').length, 1); assert.equal(cancel.disabled, true); gate.resolve(); await settle(); assert.match(f.target.textContent, /unconfirmed result/); assert.equal(button(f, 'Cancel scheduled upload').disabled, true); await click(f, 'Check saved status'); assert.equal(button(f, 'Cancel scheduled upload').disabled, true); assert.equal(f.state.calls.filter(value => value === 'cancel').length, 1); } finally { await f.close(); }
 });
 test('mounted complete/source-accepted but unavailable receipt never exposes reader action', async () => {
-  const f = await render(); try { Object.assign(f.state.entries[0].receipt, { state: 'complete', canCancel: false, sourceAccepted: true }); await click(f, 'Refresh private schedules'); assert.match(f.target.textContent, /Original source acceptance verified/); assert.equal(f.target.querySelector('a'), null); assert.equal([...f.target.querySelectorAll('button')].some(row => row.textContent.includes('Verify readable')), false); } finally { await f.close(); }
+  const f = await render(); try { Object.assign(f.state.entries[0].receipt, { state: 'complete', canCancel: false, sourceAccepted: true }); await click(f, 'Refresh schedules'); assert.match(f.target.textContent, /publisher accepted the chapter/); assert.equal(f.target.querySelector('a'), null); assert.equal([...f.target.querySelectorAll('button')].some(row => row.textContent.includes('Check chapter availability')), false); } finally { await f.close(); }
 });
 test('mounted reader link appears only after explicit resolved reader verification', async () => {
-  const gate = deferred(), f = await render({ read: () => gate.promise }); try { Object.assign(f.state.entries[0].receipt, { state: 'complete', canCancel: false, readerAvailable: true, sourceAccepted: true }); await click(f, 'Refresh private schedules'); await click(f, 'Verify readable chapter'); assert.equal(f.target.querySelector('a'), null); gate.resolve({ id: CHAPTER }); await settle(); assert.equal(f.target.querySelector('a').getAttribute('href'), '/chapter/' + CHAPTER); } finally { await f.close(); }
+  const gate = deferred(), f = await render({ read: () => gate.promise }); try { Object.assign(f.state.entries[0].receipt, { state: 'complete', canCancel: false, readerAvailable: true, sourceAccepted: true }); await click(f, 'Refresh schedules'); await click(f, 'Check chapter availability'); assert.equal(f.target.querySelector('a'), null); gate.resolve({ id: CHAPTER }); await settle(); assert.equal(f.target.querySelector('a').getAttribute('href'), '/chapter/' + CHAPTER); } finally { await f.close(); }
 });
 test('mounted owner replacement discards delayed private list and reader results', async () => {
   const gate = deferred(), f = await render({ list: async (_state, result) => { await gate.promise; return result(); } });
-  try { const next = ownerFixture({ state: { entries: [] } }); f.component.replaceOwner(next.owner); await settle(); gate.resolve(); await settle(); assert.doesNotMatch(f.target.textContent, new RegExp(SESSION)); assert.match(f.target.textContent, /No pending/); assert.deepEqual(next.state.calls, ['list']); } finally { await f.close(); }
+  try { const next = ownerFixture({ state: { entries: [] } }); f.component.replaceOwner(next.owner); await settle(); gate.resolve(); await settle(); assert.doesNotMatch(f.target.textContent, new RegExp(SESSION)); assert.match(f.target.textContent, /No scheduled uploads/); assert.deepEqual(next.state.calls, ['list']); } finally { await f.close(); }
 });
 test('mounted disposal cannot adopt a late readable chapter', async () => {
-  const gate = deferred(), f = await render({ read: () => gate.promise }); Object.assign(f.state.entries[0].receipt, { state: 'complete', canCancel: false, readerAvailable: true, sourceAccepted: true }); await click(f, 'Refresh private schedules'); await click(f, 'Verify readable chapter'); await f.close(); gate.resolve({ id: CHAPTER }); await settle(); assert.equal(document.querySelector('a'), null);
+  const gate = deferred(), f = await render({ read: () => gate.promise }); Object.assign(f.state.entries[0].receipt, { state: 'complete', canCancel: false, readerAvailable: true, sourceAccepted: true }); await click(f, 'Refresh schedules'); await click(f, 'Check chapter availability'); await f.close(); gate.resolve({ id: CHAPTER }); await settle(); assert.equal(document.querySelector('a'), null);
 });
 test('mounted recent unavailable status is lazy, stays explicit and never hides active schedules', async () => {
   const recentId = '33333333-3333-8333-8333-333333333333';
   const f = await render({ state: { pendingById: { [recentId]: 'cancel' }, recent: [{ sessionId: recentId, chapterId: CHAPTER, uncertain: 'cancel' }] }, get: () => { throw Object.assign(Error('Private schedule status unavailable (HTTP 404)'), { status: 404 }); } });
-  try { assert.deepEqual(f.state.calls, ['list']); await click(f, 'Check saved status for ' + recentId); assert.match(f.target.textContent, /HTTP 404/); assert.match(f.target.textContent, /Unconfirmed cancel/); assert.match(f.target.textContent, /Schedule: scheduled/); assert.equal(f.target.querySelector('a'), null); assert.deepEqual(f.state.calls, ['list', 'get']); } finally { await f.close(); }
+  try { assert.deepEqual(f.state.calls, ['list']); await click(f, 'Check saved status for ' + recentId.slice(0, 8)); assert.match(f.target.textContent, /HTTP 404/); assert.match(f.target.textContent, /unconfirmed result/); assert.match(f.target.textContent, /Scheduled\. Publication has not been confirmed/); assert.equal(f.target.querySelector('a'), null); assert.deepEqual(f.state.calls, ['list', 'get']); } finally { await f.close(); }
 });
 test('mounted rebind conflict removes stale private rows and links without sending a mutation', async () => {
   const f = await render({ get: () => { throw Object.assign(Error('Captured account changed (HTTP 409)'), { status: 409 }); } });
   try { await click(f, 'Check saved status'); assert.doesNotMatch(f.target.textContent, new RegExp(SESSION)); assert.match(f.target.textContent, /Captured account changed/); assert.deepEqual(f.state.calls, ['list', 'get']); assert.equal(f.target.querySelector('a'), null); } finally { await f.close(); }
+});
+
+test('empty schedules are a compact closed disclosure without technical or irrelevant warnings', async () => {
+ const f = await render({ collapsed: true, state: { entries: [] } });
+ try {
+  assert.equal(f.target.querySelector('details').open, false);
+  assert.equal(f.target.textContent.trim(), 'Scheduled uploads');
+  assert.equal(f.target.querySelector('section'), null);
+  const disclosure = f.target.querySelector('details'); disclosure.open = true; disclosure.dispatchEvent(new window.Event('toggle')); await settle();
+  assert.match(f.target.textContent, /No scheduled uploads/);
+  assert.doesNotMatch(f.target.textContent, /cannot change|retry window|storage|UTC|immutable/);
+  assert.deepEqual(f.state.calls, ['list']);
+ } finally { await f.close(); }
+});
+test('collapsed unresolved schedules signal attention without replaying work', async () => {
+ const f = await render({ collapsed: true, state: { pending: 'cancel' } });
+ try { assert.match(f.target.querySelector('summary').textContent, /Scheduled uploads \(1\).*Needs attention/); assert.equal(f.target.querySelector('button'), null); assert.deepEqual(f.state.calls, ['list']); }
+ finally { await f.close(); }
+});
+
+test('retry keeps the existing upload and presents its duration in hours', async () => {
+ const f = await render();
+ try { Object.assign(f.state.entries[0].receipt, { state: 'blocked', canRetry: true, retryWindowSeconds: 86400 }); await click(f, 'Refresh schedules'); assert.match(f.target.textContent, /same pages and details/); assert.match(f.target.textContent, /24 hours/); assert.doesNotMatch(f.target.textContent, /86400/); await click(f, 'Retry this upload'); assert.equal(f.state.calls.filter(call => call === 'retry').length, 1); }
+ finally { await f.close(); }
 });

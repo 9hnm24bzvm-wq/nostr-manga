@@ -248,17 +248,17 @@ async function customProbe(fault) {
   };
   const list = {
     async waitFor(value) { await wait(value, 'visible'); assert.equal(active, 'lists'); }, async count() { return active === 'lists' ? 1 : 0; },
-    getByLabel(name, options) { assert(['List name', 'Position'].includes(name)); assert.equal(options.exact, true); return { async fill(value) { assert.equal(active, 'lists'); events.push(['fill', name, value]); } }; },
+    getByLabel(name, options) { assert(name === 'List name'); assert.equal(options.exact, true); return { async fill(value) { assert.equal(active, 'lists'); events.push(['fill', name, value]); } }; },
     locator(selector) {
-      const match = selector.match(/^label:text-is\("(List|Series)"\) > select$/); assert(match);
+      const match = selector.match(/^label:text-is\("(List|Title)"\) > select$/); assert(match);
       return { async selectOption(value) { assert.equal(active, 'lists'); events.push(['select', match[1], value]); } };
     },
     getByRole(role, options) {
-      assert.equal(role, 'button'); assert.equal(options.exact, true); assert(['Create list', 'Save member'].includes(options.name));
+      assert.equal(role, 'button'); assert.equal(options.exact, true); assert(['Create list', 'Add to list'].includes(options.name));
       return { async click() {
         assert.equal(active, 'lists'); events.push(options.name);
         if (options.name === 'Create list' && fault !== 'list-not-durable') state.records.push({ family: 'lists', id: 'synthetic-list', name: 'Local ' + marker });
-        if (options.name === 'Save member' && fault !== 'member-not-durable') state.records.push({ family: 'members', list: 'synthetic-list', series: manga, position: 3 });
+        if (options.name === 'Add to list' && fault !== 'member-not-durable') state.records.push({ family: 'members', list: 'synthetic-list', series: manga, position: 0 });
       } };
     },
   };

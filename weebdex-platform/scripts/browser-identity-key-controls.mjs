@@ -18,7 +18,7 @@ export async function exerciseGeneratedKeyBackup({page, context, origin, redacti
     permission = true;
     await page.evaluate(() => navigator.clipboard.writeText(''));
     creationAttempted = true;
-    await setup.getByRole('button', {name: 'Create a new key', exact: true}).click();
+    await setup.getByRole('button', {name: 'Create my public identity', exact: true}).click();
     await setup.getByRole('heading', {name: 'Keep your key safe', exact: true}).waitFor({state: 'visible'});
     assert.equal(await setup.getByLabel('Private key for backup', {exact: true}).count(), 0, 'Generated private key must start concealed');
     assert.ok(await setup.getByRole('button', {name: 'Review public identity', exact: true}).isDisabled(), 'Backup acknowledgement must precede admission review');

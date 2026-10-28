@@ -168,7 +168,7 @@ test('source-bound local eligibility is distinct from immutable protocol origina
   assert.match(read(api + 'normalize.ts'), /public_api:\{resource:row\}/);
   assert.match(read(api + 'types.ts'), /attributes: A/);
   assert.match(read(api + 'PublicChapterPagesEditor.svelte'), /access\?\.pageSource === 'protocol'/);
-  assert.match(read(api + 'PublicChapterPagesEditor.svelte'), /original signed protocol pages\. Edit Pages and Replace Pages are unavailable/);
+  assert.match(read(api + 'PublicChapterPagesEditor.svelte'), /These pages belong to the original publication and cannot be edited or replaced/);
   assert.match(read(api + 'chapter-pages-controller.ts'), /await owner\.chapterAccess\(version\)/);
   assert.match(read('weebdex-platform/backend/src/public_api/catalogue.rs'), /catalog_public_chapter_json\(c\.id\) \|\| jsonb_build_object\('_local_page_source_mutable', c\.protocol_event_id IS NULL\)/);
   assert.match(read('weebdex-platform/backend/src/public_api/catalogue_dto.rs'), /value\["_local_page_source_mutable"\]\.as_bool\(\)/);

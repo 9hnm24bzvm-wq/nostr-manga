@@ -9,6 +9,7 @@ import vm from 'node:vm';
 import { webcrypto } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test, { after } from 'node:test';
+import { createPublicApiOverlays } from '../../platform-integrations/public-api/overlays.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const dependencies = process.env.WEEBDEX_FRONTEND_ROOT, domRoot = process.env.WEEBDEX_BROWSER_DOM_NODE_MODULES;
 assert(dependencies && domRoot, 'Use existing exact-lock dependency roots');
@@ -43,23 +44,30 @@ async function compiled(name, source, replace = false) {
 const Generic = await compiled('Generic', '<script>let {children}=$props();</script><div>{@render children?.()}</div>');
 const Button = await compiled('Button', '<script>let {children,variant,...rest}=$props();</script><button {...rest}>{@render children?.()}</button>');
 const Entry = await compiled('Entry', '<script>let {manga}=$props();</script><article>{manga.title}</article>');
+// Use the actual latest-entry renderer and actual public overlay, not a stub:
+// normalized public chapters legitimately have no native forum relationship.
+String.prototype.ago = function () { return 'just now'; };
+const entryFile = path.join(dependencies, 'src/lib/components/LatestUpdatesGridEntry.svelte');
+const entrySource = fs.readFileSync(entryFile, 'utf8');
+const publicOverlay = createPublicApiOverlays(dependencies, {enabled:true});
+const ActualLatestEntry = await compiled('ActualLatestEntry', process.env.WEEBDEX_UPDATES_RENDERER_BASELINE === '1' ? entrySource : publicOverlay.transform.handler(entrySource, entryFile).code, true);
 const Feed = await compiled('DeviceUpdatesFeed', fs.readFileSync(path.join(root, 'platform-integrations/local-library/DeviceUpdatesFeed.svelte'), 'utf8'), true);
 const deferred = () => { let resolve, reject; const promise = new Promise((yes,no) => { resolve=yes;reject=no; }); return { promise,resolve,reject }; };
-const data = id => ({ id, title: 'Chapter-'+id, relationships:{manga:{id:'m'+id,title:'Title-'+id,relationships:{}}} });
+const data = id => ({ id, title: 'Chapter-'+id, language:'en', published_at:'2026-10-22T00:00:00Z', relationships:{manga:{id:'m'+id,title:'Title-'+id,relationships:{}}} });
 const result = (extra = {}) => ({ page:1,limit:100,data:[],total:null,scanned:1,parents:1005,chapters:2,indexed:false,ready:false,started:'2026-10-22T00:00:00Z', ...extra });
-const settle = async () => { for(let i=0;i<8;i++){await Promise.resolve();flushSync();} };
-async function fixture(load, {opening, disposal, query = '', latestOnly = false} = {}) {
+const settle = async () => { for(let i=0;i<24;i++){await Promise.resolve();flushSync();} };
+async function fixture(load, {opening, disposal, cancellation, query = '', latestOnly = false} = {}) {
   const prefs=writable({items_per_page:'42',version:0}), views=writable('device:0:verified'), identity=writable({accountId:null}), authority=writable({epoch:0}), mangaView=writable('grid');
   prefs.applyMangaPreferences = q => q.set('contentRating','safe'); prefs.applyChapterPreferences = q => q.set('tlang','en');
   const localLibraryState = writable({records:[]});
   const calls=[], opened=[], releases=[];let disposed=0,cancelled=0,navigation=0;
-  globalThis.__updatesFixture={prefs,mangaView,localLibraryState,setReadHistory:()=>{},writable,libraryViewKey:views,libraryIdentity:identity,nativeAuthority:authority,captureNavigationEpoch:()=>navigation,page:{url:new URL('https://title.fixture/library'+query)},Constants:{MangaGridBreakpoints:{},MangaSliderBreakpoints:{}},Grid:Generic,Carousel:Generic,ChapterFeedMangaEntry:Entry,LatestUpdatesGridEntry:Generic,Button,Spinner:Generic,MangaSearchEntryCard:Entry,message:error=>error.message,UpdatesCancelled:class extends Error {constructor(){super('cancelled');}},TitleIndexStopped:class extends Error{},HistoryTransportUnsettled:class extends Error{},async openDeviceUpdatesFeed(query,latestOnly,assertOwner){opened.push({query,latestOnly,assertOwner});if(opening)await opening.promise;return{async load(page){calls.push(page);return load(page,opened.length);},async dispose(){disposed++;if(disposal)await disposal.promise;},releaseDisplayedPage(){releases.push(document.body.textContent);},cancel(){cancelled++;}};}};
+  globalThis.__updatesFixture={prefs,mangaView,localLibraryState,setReadHistory:()=>{},writable,libraryViewKey:views,libraryIdentity:identity,nativeAuthority:authority,captureNavigationEpoch:()=>navigation,page:{url:new URL('https://title.fixture/library'+query)},Constants:{MangaGridBreakpoints:{},MangaSliderBreakpoints:{}},Grid:Generic,Carousel:Generic,ChapterFeedMangaEntry:Entry,LatestUpdatesGridEntry:ActualLatestEntry,Locale:{to3166:()=>'gb',toLanguage:()=>'English'},Utils:{chapterHeadline:chapter=>chapter.title},MessagesSquareIcon:Generic,UsersIcon:Generic,ImageLoader:Generic,Button,Spinner:Generic,MangaSearchEntryCard:Entry,message:error=>error.message,UpdatesCancelled:class extends Error {constructor(){super('cancelled');}},TitleIndexStopped:class extends Error{},HistoryTransportUnsettled:class extends Error{},async openDeviceUpdatesFeed(query,latestOnly,assertOwner){opened.push({query,latestOnly,assertOwner});if(opening)await opening.promise;return{async load(page){calls.push(page);return load(page,opened.length);},async dispose(){disposed++;if(disposal)await disposal.promise;},releaseDisplayedPage(){releases.push(document.body.textContent);},cancel(){cancelled++;cancellation?.();}};}};
   const component=mount(Feed,{target:document.querySelector('main'),props:{latestOnly}});await settle();
   return{prefs,views,identity,authority,calls,opened,releases,disposed:()=>disposed,cancelled:()=>cancelled,navigate(){navigation++;},async close(){await unmount(component);await settle();},async click(text){const button=[...document.querySelectorAll('button')].find(row=>row.textContent===text);assert(button,`Missing button ${text}: ${document.body.textContent}`);button.click();await settle();}};
 }
-test('unknown progress, explicit completion and latest-only intent remain distinct',async()=>{
+test('bounded progress automatically shows completed latest updates through actual renderer without a forum context',async()=>{
  let count=0;const f=await fixture(async()=>++count===1?result():count===2?result({scanned:1005,total:1,indexed:true}):result({scanned:1005,total:1,indexed:true,ready:true,data:[data('last')]}),{latestOnly:true});
- try{assert.match(document.body.textContent,/Matching total is not known/);assert.doesNotMatch(document.body.textContent,/No updates matched/);assert.equal(f.opened[0].latestOnly,true);assert.equal(f.opened[0].query.get('limit'),'10');await f.click('Continue indexing');assert.match(document.body.textContent,/1 matching latest-title updates/);await f.click('Show sorted page');assert.match(document.body.textContent,/Title-last/);assert.match(document.body.textContent,/not an atomic server snapshot/);assert.match(document.body.textContent,/10,000/);}finally{await f.close();}
+ try{assert.match(document.body.textContent,/Checking your followed titles/);assert.doesNotMatch(document.body.textContent,/No updates matched/);assert.equal(f.opened[0].latestOnly,true);assert.equal(f.opened[0].query.get('limit'),'10');await f.click('Continue loading');assert.match(document.body.textContent,/Title-last/);assert.match(document.body.textContent,/Chapter-last/);assert.doesNotMatch(document.body.textContent,/Show sorted|Loading updates|DTO|atomic|10,000/);assert.equal(document.querySelector('a[title="Go to comments"]'),null);}finally{await f.close();}
 });
 test('next-page failure removes previous displayed data and retries the exact intended page',async()=>{
  let count=0;const f=await fixture(async n=>{if(++count===2)throw Error('503 without skip');return result({page:n,total:205,indexed:true,ready:true,data:[data(String(n))]});});
@@ -70,7 +78,7 @@ for(const changed of ['prefs','views','identity','authority'])test(`${changed} i
  try{f[changed].set(changed==='prefs'?{items_per_page:20,version:1}:changed==='identity'?{accountId:'different'}:changed==='authority'?{epoch:1}:'device:changed');await settle();pending.resolve(result({data:[data('stale')],ready:true,indexed:true,total:1}));await settle();assert.doesNotMatch(document.body.textContent,/Title-stale/);assert(f.disposed()>=1);}finally{await f.close();}
 });
 test('unmount during opening disposes the late owner without showing data',async()=>{const pending=deferred(),f=await fixture(async()=>result(),{opening:pending});await f.close();pending.resolve();await settle();assert.equal(f.disposed(),1);assert.deepEqual(f.calls,[]);});
-test('rebuild waits for storage disposal before opening another scan',async()=>{const disposal=deferred(),f=await fixture(async()=>result({total:0,indexed:true,ready:true}),{disposal});try{await f.click('Rebuild updates scan');assert.equal(f.opened.length,1);disposal.resolve();await settle();assert.equal(f.opened.length,2);}finally{disposal.resolve();await f.close();}});
+test('rebuild waits for storage disposal before opening another scan',async()=>{const disposal=deferred(),f=await fixture(async()=>result({total:0,indexed:true,ready:true}),{disposal});try{await f.click('Refresh updates');assert.equal(f.opened.length,1);disposal.resolve();await settle();assert.equal(f.opened.length,2);}finally{disposal.resolve();await f.close();}});
 
 test('actual mounted pager traverses 1,005 sparse parents in 51 bounded indexing actions, not 1,005 clicks',async()=>{
  const {IDBFactory,IDBKeyRange}=require(path.join(domRoot,'fake-indexeddb'));
@@ -80,5 +88,11 @@ test('actual mounted pager traverses 1,005 sparse parents in 51 bounded indexing
  const store=await storage.namespace.TitleIndex.create(()=>{}),parents=Array.from({length:1005},(_,n)=>'p'+n),last={...data('last'),published_at:'2026-10-22T00:00:00Z',_sort_value:1,relationships:{manga:{id:'p1004',title:'Title-last',relationships:{}}}};let scans=0;
  const pager=new pagination.namespace.UpdatesPager(parents,store,{async scan(parent){scans++;return parent==='p1004'?{total:1,data:[last]}:{total:0,data:[]};},async hydrate(){return[last];}},()=>{},100,1,false);
  let finished=Promise.resolve();const f=await fixture(page=>finished=pager.load(page));
- try{await finished;await settle();assert.equal(scans,20);for(let action=1;action<51;action++){assert.doesNotMatch(document.body.textContent,/Title-last/);await f.click('Continue indexing');await finished;await settle();}assert.equal(scans,1005);assert.equal(f.calls.length,51);assert.match(document.body.textContent,/1 matching chapters/);await f.click('Show sorted page');await finished;await settle();assert.match(document.body.textContent,/Title-last/);}finally{await f.close();await pager.dispose();}
+ try{await finished;await settle();assert.equal(scans,20);for(let action=1;action<51;action++){assert.doesNotMatch(document.body.textContent,/Title-last/);await f.click('Continue loading');await finished;await settle();}assert.equal(scans,1005);await finished;await settle();assert.equal(f.calls.length,52);assert.match(document.body.textContent,/Title-last/);}finally{await f.close();await pager.dispose();}
 });
+
+test('completed scan budget notice pauses rather than silently restarting work',async()=>{let calls=0;const f=await fixture(async()=>{calls++;return result({indexed:true,total:1,notice:'budget'});});try{assert.equal(calls,1);assert.match(document.body.textContent,/Continue loading/);assert.doesNotMatch(document.body.textContent,/Loading updates/);}finally{await f.close();}});
+test('empty completed scan is displayed without another user action',async()=>{let calls=0;const f=await fixture(async()=>++calls===1?result({indexed:true,total:0}):result({indexed:true,ready:true,total:0}));try{assert.equal(calls,2);assert.match(document.body.textContent,/No new chapters found/);assert.doesNotMatch(document.body.textContent,/Show sorted|Continue loading/);}finally{await f.close();}});
+
+test('cancel forwards to the active load and allows retry without a stuck spinner',async()=>{const pending=deferred();let calls=0;const f=await fixture(async()=>++calls===1?pending.promise:result({indexed:true,ready:true,total:0}),{cancellation:()=>pending.reject(Error('Update loading was cancelled.'))});try{assert.match(document.body.textContent,/Loading updates/);await f.click('Cancel loading');assert.equal(f.cancelled(),1);assert.doesNotMatch(document.body.textContent,/Loading updates/);assert.match(document.body.textContent,/cancelled/);await f.click('Retry updates');assert.match(document.body.textContent,/No new chapters found/);}finally{await f.close();}});
+test('actual latest entry preserves a real native discussion link',async()=>{const chapter=data('forum');chapter.relationships.thread={id:'actual-thread',relationships:{stats:{replies:0}}};const f=await fixture(async()=>result({indexed:true,ready:true,total:1,data:[chapter]}),{latestOnly:true});try{assert.equal(document.querySelector('a[title="Go to comments"]').getAttribute('href'),'/forums/threads/actual-thread');}finally{await f.close();}});

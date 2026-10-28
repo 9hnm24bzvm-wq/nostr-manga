@@ -4,20 +4,39 @@
   import { createRouteActionOwner } from '$platform/route-action-owner';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
-  import { localLibraryState, libraryIdentity, openLibrary, useMode, verifyCatalogueScope, message, currentDeviceSnapshot, downloadBlob, createList, previewListName, renameList, type DeviceListNameReview, saveListMember, saveSavedSeries, removeLocalRecord, captureLibraryContext, assertLibraryContext } from './library';
+  import { localLibraryState, libraryIdentity, openLibrary, useMode, verifyCatalogueScope, message, currentDeviceSnapshot, downloadBlob, createList, previewListName, renameList, type DeviceListNameReview, editListMember, saveSavedSeries, removeLocalRecord, captureLibraryContext, assertLibraryContext } from './library';
+  import { loadDeviceListTitles } from './device-list-titles';
+  import { orderedListMembers } from './device-list-members';
   import { sameScope, statuses } from './device-store';
   import { recordKey } from './protocol/codec.js';
   import type { Counts, LibraryRecord } from './protocol/types.d.ts';
   import { connectSigner, disconnectSigner, signerIdentity, capabilities, relayPreferences, rememberRelay, selectRelays, forgetRelay, admitAccount, previewPublication, publishReviewed, publicationJobs, retryPublication, cancelPublication, removePublication, previewServiceAdoption, adoptServiceIdentity, type ServiceAdoptionReview, previewRecovery, applyRecovery, exportCanonicalBackup, exportLegacyCanonicalBackup, canonicalRecords, removeCanonicalRecord, previewCanonicalImport, applyCanonicalImport, type CanonicalImportReview, type CanonicalSelection, type Relay, type PublicationReview, type RecoveryReview, type Capabilities } from './publication';
   const { view, onTask, assertViewCurrent = () => {} }: { view: 'lists' | 'sync' | 'destinations' | 'publish' | 'public-recovery' | 'attempts' | 'recovery'; onTask: (view: 'sync' | 'destinations' | 'publish' | 'public-recovery' | 'attempts') => void; assertViewCurrent?: () => void } = $props();
   let showScope = $state(false), showAdoption = $state(false), showCanonical = $state(false), showKnownKey = $state(false), inspectedRelay = $state(''), inspectedJob = $state('');
-  const savedTitle = (id: string | undefined) => (series.some(row => row.id === id) ? 'Saved title ' : 'Unavailable saved title ') + (id ?? '(missing reference)');
+  let titleNames = $state<Record<string,string>>({}), titlePage = $state(0), titlesLoading = $state(false), titleError = $state('');
+  let titleEpoch = 0;
+  const savedTitle = (id: string | undefined) => id && titleNames[id] || 'Unavailable title · ' + (id ?? 'missing reference');
+  async function loadTitleNames(page = 0) {
+    const epoch = ++titleEpoch, context = captureLibraryContext();
+    titlePage = page; titlesLoading = true; titleError = '';
+    const current = () => { assertActive(); assertLibraryContext(context); if(epoch !== titleEpoch || view !== 'lists') throw Error('Saved title selection changed'); };
+    try {
+      const ids = series.slice(page * 100, (page + 1) * 100).map(row=>row.id!);
+      const names = ids.length ? await loadDeviceListTitles(ids, current) : {};
+      current(); titleNames = Object.fromEntries(Object.entries({...titleNames,...names}).slice(-1000));
+    } catch(cause) { if(!canonicalDisposed && epoch===titleEpoch) titleError = 'Title names could not be loaded. Your saved titles are unchanged.'; }
+    finally { if(!canonicalDisposed && epoch===titleEpoch) titlesLoading = false; }
+  }
+  async function changeMember(list: string, id: string, direction: -1 | 0 | 1) {
+    const context = captureLibraryContext();
+    await run('member', async () => { await editListMember(list,id,direction,()=>{assertActive();assertLibraryContext(context);}); notice = direction ? 'List order updated.' : 'Title added to your list.'; });
+  }
   const queueState = (state: string) => ({ prepared: 'Ready to send', pending: 'Waiting to send', sending: 'Sending', retryable: 'Ready to retry', refused: 'Not sent', accepted: 'Sent', superseded: 'Replaced by a newer snapshot', outcome_unknown: 'Delivery needs checking', projection_pending: 'Updating', cancelled: 'Cancelled' }[state] ?? 'Needs attention');
   let notice = $state('Changes stay local unless you review and publish a public snapshot.'), error = $state(''), pending = $state('');
   let relays = $state<Relay[]>([]), relayRevision = $state(0), jobs = $state<any[]>([]);
   let policy = $state<Capabilities>(), relayOrigin = $state(''), serviceKey = $state('');
   let publicConsent = $state(false), publication = $state<PublicationReview>(), recovery = $state<RecoveryReview>();
-  let listName = $state(''), memberList = $state(''), memberSeries = $state(''), memberPosition = $state(0), scopeText = $state('');
+  let listName = $state(''), memberList = $state(''), memberSeries = $state(''), scopeText = $state('');
   let listNameReview = $state.raw<DeviceListNameReview>();
   let renamedListName = $state('');
   let listNameContext: ReturnType<typeof captureLibraryContext> | undefined;
@@ -80,6 +99,9 @@
   function resetReviews() { publication = undefined; publicConsent = false; recovery = undefined; }
   $effect(() => { const owner = $signerIdentity.owner, generation = $signerIdentity.generation; untrack(() => { invalidateCanonical(); canonicalImport = undefined; resetReviews(); jobs = []; relays = []; relayRevision = 0; if (!canonicalDisposed) void refresh().catch(cause => { if (!canonicalDisposed) error = message(cause); }); }); });
   const listRouteOwner = createRouteActionOwner();
+  $effect(() => { const ready = $localLibraryState.ready, revision = $localLibraryState.revision, scope = $localLibraryState.scopeStatus;
+    if(view === 'lists' && ready) untrack(()=>{titleNames={};void loadTitleNames(titlePage);});
+  });
   async function openDeviceList(event: MouseEvent, id: string) {
     event.preventDefault();
     const route = listRouteOwner.capture(), listId = id;
@@ -121,17 +143,19 @@
 </script>
 <section class="space-y-5" data-library-tool={view}>
 {#if view === 'lists'}
-  <p class="text-muted-foreground text-sm">Organize titles saved on this device. Your account library is unchanged. Uncached titles are identified by their saved catalogue ID so you can distinguish them without changing their identity.</p>
+  <p class="text-muted-foreground text-sm">Organize your saved titles into lists. Changes stay on this device.</p>
       <form class="my-2 flex flex-wrap gap-2" onsubmit={event => { event.preventDefault(); void run('create-list', async () => { memberList = await createList(listName); listName = ''; notice = 'List created on this device.'; }); }}>
         <label for="device-list-name">List name <Input id="device-list-name" class="mt-1" bind:value={listName} maxlength={128} required /></label>
         <Button type="submit" disabled={!!pending}>Create list</Button>
       </form>
-      <form class="my-2 flex flex-wrap gap-2" onsubmit={event => { event.preventDefault(); void run('member', async () => { await saveListMember(memberList, memberSeries, memberPosition); notice = 'List membership saved locally.'; }); }}>
+      <form class="my-2 flex flex-wrap gap-2" onsubmit={event => { event.preventDefault(); void changeMember(memberList, memberSeries, 0); }}>
         <label>List <select class="rounded border px-2" bind:value={memberList} required><option value="">Choose list</option>{#each lists as list}<option value={list.id}>{list.name}</option>{/each}</select></label>
-        <label>Series <select class="rounded border px-2" bind:value={memberSeries} required><option value="">Choose saved series</option>{#each series as row}<option value={row.id}>{savedTitle(row.id)} ({row.status?.replaceAll('_', ' ')})</option>{/each}</select></label>
-        <label for="device-list-position">Position <Input id="device-list-position" class="w-20 rounded border px-2" type="number" min={0} step={1} bind:value={memberPosition} required /></label>
-        <Button type="submit" disabled={!!pending}>Save member</Button>
+        <label>Title <select class="rounded border px-2" bind:value={memberSeries} required><option value="">Choose a saved title</option>{#each series.slice(titlePage * 100, (titlePage + 1) * 100) as row}<option value={row.id}>{savedTitle(row.id)} ({row.status?.replaceAll('_', ' ')})</option>{/each}</select></label>
+        <Button type="submit" disabled={!!pending || !memberList || !memberSeries}>Add to list</Button>
       </form>
+      {#if titlesLoading}<p role="status">Loading title names…</p>{/if}
+      {#if titleError}<p role="status">{titleError}</p><Button variant="outline" onclick={()=>loadTitleNames(titlePage)}>Retry title names</Button>{/if}
+      {#if series.length > 100}<div class="flex gap-2"><Button variant="outline" disabled={titlesLoading || titlePage===0} onclick={()=>{memberSeries='';void loadTitleNames(titlePage-1);}}>Previous titles</Button><Button variant="outline" disabled={titlesLoading || (titlePage+1)*100>=series.length} onclick={()=>{memberSeries='';void loadTitleNames(titlePage+1);}}>More titles</Button></div>{/if}
       {#each lists as list}
         <div class="my-1 flex flex-wrap items-center gap-2"><a class="underline" href={'/library?list=' + list.id} onclick={event => openDeviceList(event, list.id!)}>{list.name}</a><Button variant="ghost" disabled={!!pending} onclick={() => beginListRename(list.id!)}>Rename</Button><Button variant="ghost" disabled={!!pending} onclick={() => { if (confirm('Remove this local list and its memberships?')) void run('remove-list', async () => { await removeLocalRecord('lists', list.key); }); }}>Remove locally</Button></div>
         {#if listNameReview && listNameReview.id === list.id}
@@ -141,8 +165,11 @@
             {#if $localLibraryState.revision !== listNameReview.revision}<p role="status" class="w-full text-sm">The device library changed. Cancel and reopen Rename before saving.</p>{/if}
           </form>
         {/if}
-        {#each $localLibraryState.records.filter(row => row.family === 'members' && row.list === list.id) as member}
-          <div class="ml-3 text-sm">#{member.position}: {savedTitle(member.series)} <Button variant="ghost" disabled={!!pending} onclick={() => run('remove-member', async () => { await removeLocalRecord('members', member.key); })}>Remove member</Button></div>
+        {#each orderedListMembers($localLibraryState.records, list.id!) as member, index}
+          <div class="ml-3 flex flex-wrap items-center gap-2 text-sm"><span>{index + 1}. {savedTitle(member.series)}</span>
+            <Button variant="ghost" disabled={!!pending || index===0} aria-label={'Move '+savedTitle(member.series)+' up'} onclick={()=>changeMember(list.id!,member.series!,-1)}>Move up</Button>
+            <Button variant="ghost" disabled={!!pending || index===orderedListMembers($localLibraryState.records,list.id!).length-1} aria-label={'Move '+savedTitle(member.series)+' down'} onclick={()=>changeMember(list.id!,member.series!,1)}>Move down</Button>
+            <Button variant="ghost" disabled={!!pending} onclick={() => run('remove-member', async () => { await removeLocalRecord('members', member.key); })}>Remove from list</Button></div>
         {/each}
       {/each}
 
@@ -157,7 +184,7 @@
 <Button variant="ghost" size="sm" onclick={() => onTask('sync')}>Back to public sync</Button>        <p class="text-sm">{$signerIdentity.owner ? 'Signing identity connected' : 'Connect a signing identity to publish or recover a public library.'}</p>
         <Button variant="outline" disabled={!!pending} onclick={() => run('connect-signer', async () => { resetReviews(); await connectSigner(assertActive); notice = 'Signer connected. No library data sent.'; })}>Connect external browser signer</Button>
         <Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => { disconnectSigner(); resetReviews(); }}>Disconnect signer</Button>
-        <p class="text-sm">Available protocol bridge: {policy?.available ? policy.origin : 'not configured'}. Public-key account admission is a separate instance prerequisite.</p>
+        <p class="text-sm">Available sharing service: {policy?.available ? policy.origin : 'not configured'}. Each destination must accept your identity before you can publish there.</p>
         <form class="flex flex-wrap gap-2" onsubmit={event => { event.preventDefault(); if (confirm(`Verify and remember ${relayOrigin} with expected service key ${serviceKey || 'identity discovered by signed proof'}? This does not send your library.`)) void run('remember-relay', async () => { await rememberRelay(relayOrigin, serviceKey.trim(), relayRevision); resetReviews(); notice = 'Verified instance remembered, initially unselected.'; }); }}>
           <label for="sync-instance-origin">Instance origin <Input id="sync-instance-origin" class="mt-1" type="url" bind:value={relayOrigin} placeholder="https://instance.example" required /></label>
           <Button type="button" variant="ghost" onclick={() => { showKnownKey = !showKnownKey; }}>Use a known service key</Button>{#if showKnownKey}<label for="sync-instance-key">Expected service public key <Input id="sync-instance-key" class="mt-1" bind:value={serviceKey} placeholder="64 lowercase hex characters" /><span class="text-muted-foreground text-sm">Optional. Use this only when you already know and want to verify the instance’s exact public identity.</span></label>{/if}
@@ -180,9 +207,9 @@
         <Button disabled={!!pending || !$signerIdentity.owner} onclick={() => run('publish-preview', async () => { publicConsent = false; await installCanonicalReview(previewPublication(), review => { publication = review; }); })}>Preview public snapshot</Button>
         {#if publication}
           <div class="rounded border p-2">
-            <p>Reviewed device revision {publication.deviceRevision}, canonical revision {publication.protocolRevision}. {publication.graph.records} canonical records included; {publication.excluded.length} native-only, hidden or unmapped records excluded.</p>
-            <p class="break-all">Manifest {publication.graph.root.hash}. Signing key {publication.owner}. Recipients: {publication.recipients.map(row => row.origin).join(', ')}</p>
-            {#if publication.excluded.length}<p class="break-all text-xs">Excluded IDs: {publication.excluded.slice(0, 30).join(', ')}{publication.excluded.length > 30 ? '…' : ''}</p>{/if}
+            <p>This copy includes {publication.graph.records} saved entries. {publication.excluded.length} entries cannot be shared because they are site-only, hidden, or could not be matched.</p>
+            <p class="break-all">Destinations: {publication.recipients.map(row => row.origin).join(', ')}</p>
+            {#if publication.excluded.length}<details><summary>Unshared entry references for support</summary><p class="break-all text-xs">{publication.excluded.slice(0, 30).join(', ')}{publication.excluded.length > 30 ? '…' : ''}</p></details>{/if}
             <label><input type="checkbox" bind:checked={publicConsent} /> I understand that this reviewed snapshot becomes public at these recipients.</label>
             <Button disabled={!!pending || !publicConsent} onclick={() => run('publish', async () => { const reviewed = $state.snapshot(publication!); publicConsent = false; publication = undefined; await publishReviewed(reviewed, true, assertActive); notice = 'Publication attempt finished. Review every instance receipt below.'; })}>Sign and publish reviewed snapshot</Button>
             <Button variant="outline" disabled={!!pending} onclick={resetReviews}>Cancel preview</Button>
@@ -198,8 +225,8 @@
   {#each relays as relay}<div class="space-y-2 border-t pt-4"><p>{relay.origin}</p>            <Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => run('recover-preview', async () => { await installCanonicalReview(previewRecovery(relay, assertActive), review => { recovery = review; }); })}>Preview verified public recovery</Button></div>{/each}
         {#if recovery}
           <div class="rounded border p-2">
-            <p class="break-all">Verified public recovery: {recovery.relay.origin}, owner {recovery.event.pubkey}, event {recovery.event.id}, signed at {recovery.event.created_at}. Canonical protocol records will be replaced; native device records remain separate.</p>
-            <Button disabled={!!pending} onclick={() => { if (confirm('Replace this device canonical protocol library with the verified recovery? Export its canonical backup first.')) void run('apply-recovery', async () => { await applyRecovery(recovery!); recovery = undefined; notice = 'Verified canonical library restored locally. Automatic publication is still off.'; }); }}>Restore reviewed canonical records</Button>
+            <p class="break-all">Restore your public library from {recovery.relay.origin}, saved {new Date(recovery.event.created_at * 1000).toLocaleString()}. This replaces the portable library for your selected identity. Your separate on-device library is kept.</p>
+            <Button disabled={!!pending} onclick={() => { if (confirm('Replace this identity’s portable library with the reviewed public copy? Export a backup first.')) void run('apply-recovery', async () => { await applyRecovery(recovery!); recovery = undefined; notice = 'Library restored on this device. Nothing is published automatically.'; }); }}>Restore reviewed library</Button>
             <Button variant="outline" disabled={!!pending} onclick={() => { recovery = undefined; }}>Cancel recovery</Button>
           </div>
         {/if}
@@ -246,14 +273,14 @@
         </div>
       {/each}
 </section>
-<section class="space-y-3 border-t pt-4"><strong class="block font-semibold">Portable library backups</strong><p class="text-muted-foreground text-sm">Canonical data and backups belong to the connected signing key. Device JSON backups are separate. Old unscoped protocol data is retained and is never automatically assigned to a key.</p>        <p class="break-all text-sm">Canonical key: {$signerIdentity.owner ?? 'connect the intended identity first'}</p><Button variant="outline" disabled={!!pending} onclick={() => run('canonical-connect', async () => { await connectSigner(assertActive); resetReviews(); })}>Connect intended canonical identity</Button><Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => run('canonical-export', canonicalExport)}>Export this key’s canonical backup</Button>
-        <Button variant="outline" disabled={!!pending} onclick={() => run('legacy-canonical-export', async () => { downloadBlob(await exportLegacyCanonicalBackup(), 'manga-legacy-unscoped-library.jsonl'); notice = 'Legacy unscoped backup exported locally. To adopt it, connect the intended key and explicitly review its import. Nothing published.'; })}>Export retained legacy unscoped backup</Button>
-        <label>Preview portable canonical backup <input type="file" accept=".jsonl,.json,application/json,application/x-ndjson" disabled={!!pending || !$signerIdentity.owner} onchange={canonicalFileChanged} /></label>
+<section class="space-y-3 border-t pt-4"><strong class="block font-semibold">Portable library backups</strong><p class="text-muted-foreground text-sm">Portable backups belong to your selected identity. They are separate from on-device library backups. Older backups without an identity are kept separately until you choose to import them.</p>        <p class="text-sm">{$signerIdentity.owner ? 'Using your selected identity' : 'Choose an identity first'}</p><Button variant="outline" disabled={!!pending} onclick={() => run('canonical-connect', async () => { await connectSigner(assertActive); resetReviews(); })}>Choose backup identity</Button><Button variant="outline" disabled={!!pending || !$signerIdentity.owner} onclick={() => run('canonical-export', canonicalExport)}>Export portable backup</Button>
+        <Button variant="outline" disabled={!!pending} onclick={() => run('legacy-canonical-export', async () => { downloadBlob(await exportLegacyCanonicalBackup(), 'manga-legacy-unscoped-library.jsonl'); notice = 'Legacy unscoped backup exported locally. To adopt it, connect the intended key and explicitly review its import. Nothing published.'; })}>Export older backup</Button>
+        <label>Preview portable backup <input type="file" accept=".jsonl,.json,application/json,application/x-ndjson" disabled={!!pending || !$signerIdentity.owner} onchange={canonicalFileChanged} /></label>
         {#if canonicalImport}
           <div class="rounded border p-2">
-            <p>Canonical backup preview: {canonicalImport.file.name}, {canonicalImport.records} records. {Object.entries(canonicalImport.counts).map(([name, count]) => name + ': ' + count).join(', ')}. This replaces only the reviewed key’s canonical records; anonymous device data remains scoped separately. Nothing is broadcast until a separate public snapshot is reviewed and approved.</p>
-            <Button disabled={!!pending} onclick={() => { if (confirm('Replace the canonical protocol library with this reviewed backup? Export its current backup first.')) void run('canonical-import', async () => { await applyCanonicalImport(canonicalImport!); canonicalImport = undefined; await loadCanonical(); notice = 'Canonical backup imported locally. Nothing published.'; }); }}>Restore reviewed canonical backup</Button>
-            <Button variant="outline" disabled={!!pending} onclick={() => { canonicalImport = undefined; }}>Cancel canonical import</Button>
+            <p>Backup: {canonicalImport.file.name}, {canonicalImport.records} entries. {Object.entries(canonicalImport.counts).map(([name, count]) => name + ': ' + count).join(', ')}. This replaces only your selected identity’s portable library. Your separate on-device library is kept. Nothing is made public unless you review and approve publishing it.</p>
+            <Button disabled={!!pending} onclick={() => { if (confirm('Replace this identity’s portable library with the reviewed backup? Export a backup first.')) void run('canonical-import', async () => { await applyCanonicalImport(canonicalImport!); canonicalImport = undefined; await loadCanonical(); notice = 'Backup restored on this device. Nothing published.'; }); }}>Restore reviewed backup</Button>
+            <Button variant="outline" disabled={!!pending} onclick={() => { canonicalImport = undefined; }}>Cancel import</Button>
           </div>
         {/if}
         <Button variant="outline" onclick={() => { showCanonical = !showCanonical; }}>Inspect saved protocol data</Button>{#if showCanonical}<div class="space-y-3 border-t pt-4">

@@ -1,4 +1,5 @@
 <script lang="ts">
+ import IdentityGate from '../../local-library/IdentityGate.svelte';
  import {onDestroy} from 'svelte';
  import {page} from '$app/state';
  import {Comments} from '$lib/components/comments';
@@ -34,17 +35,17 @@
 {#if comments?.thread}
  <div class={className} data-native-discussion-mode={mode??'unselected'}>
   <nav class="mb-3 flex flex-wrap gap-3" aria-label="Discussion account">
-   <button type="button" aria-pressed={mode==='browser'} onclick={()=>selected={mode:'browser',scope}}>Browser login</button>
-   <button type="button" aria-pressed={mode==='signed'} disabled={!currentTarget||!$signerIdentity.owner||resolving} onclick={()=>selected={mode:'signed',scope}}>Signed account</button>
+   <button type="button" aria-pressed={mode==='browser'} onclick={()=>selected={mode:'browser',scope}}>Email account</button>
+   <button type="button" aria-pressed={mode==='signed'} disabled={!currentTarget||!$signerIdentity.owner||resolving} onclick={()=>selected={mode:'signed',scope}}>Public identity</button>
   </nav>
-  <p class="text-muted-foreground mb-3 text-sm">Browser login uses the existing native session. Signed account uses only the native account explicitly bound to the selected signing identity. These accounts may differ.</p>
+  <p class="text-muted-foreground mb-3 text-sm">Choose which account to post with. Your email account and public identity may have different names and permissions.</p>
   {#if resolving}<p role="status">Checking this thread’s stored signed discussion target…</p>{/if}
   {#if failure}<p role="alert">{failure}</p><button type="button" disabled={resolving} onclick={()=>reload++}>Retry signed target lookup</button>
   {:else if !resolving&&!currentTarget}<p role="status">No verified manga, chapter or group target is available for signed actions on this thread. Browser login remains available.</p>{/if}
-  {#if !$signerIdentity.owner}<p><a class="underline" href="/settings/identity">Connect a signing identity</a> to use a signed account.</p>{/if}
+  <IdentityGate show={!$signerIdentity.owner && mode !== 'browser'} />
   {#if mode==='browser'}<Comments />
   {:else if mode==='signed'&&currentTarget}
    {#key scope}<SignedDiscussion target={currentTarget} />{/key}
-  {:else}<p role="status">{selected===undefined?'Choose Browser login or Signed account to open this discussion.':'The account or discussion changed. Choose Browser login or Signed account again; no draft or action was moved.'}</p>{/if}
+  {:else}<p role="status">{selected===undefined?'Choose Email account or Public identity to open this discussion.':'The account or discussion changed. Choose Email account or Public identity again; no draft or action was moved.'}</p>{/if}
  </div>
 {:else}<p class={className} role="status">Comments are unavailable for this resource.</p>{/if}

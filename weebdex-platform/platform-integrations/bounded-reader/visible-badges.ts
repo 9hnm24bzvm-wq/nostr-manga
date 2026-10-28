@@ -38,7 +38,7 @@ export class VisibleChapterBadges {
     let context: BadgeContext;
     try { context = this.context(); } catch { this.invalidate(); return; }
     const ids = Object.freeze([...context.ids]), key = this.key = context.key, generation = ++this.generation;
-    const current = () => { if (this.disposed || mutationFence || generation !== this.generation || this.context().key !== key) throw Error('Visible chapter page or library changed. No badge result was accepted.'); };
+    const current = () => { if (this.disposed || mutationFence || generation !== this.generation || this.context().key !== key) throw Error('Your reading options changed. Read status needs to be checked again.'); };
     const budget = this.active = new ReaderBudget(current);
     this.publish({ status: 'pending', message: 'Checking read status for this page.' });
     try {
@@ -61,7 +61,18 @@ export class VisibleChapterBadges {
       // The only coverage publication is after ALL exact batches and final fence.
       this.publish({ key, status: 'ready', message: '', values: Object.freeze(values) });
     } catch (error) {
-      if (!this.disposed && generation === this.generation) this.publish({ status: 'error', message: error instanceof Error ? error.message : 'Read status is unavailable. No unread state was inferred.' });
+      if (!this.disposed && generation === this.generation) {
+        // Route/identity epochs can change during an awaited read before a store
+        // notification reaches this owner. Reject the old result, then read the
+        // newly admitted context after this budget settles. Never retry a failed
+        // read of the same context, an invalid page, or a pending/uncertain write.
+        let changed = false;
+        try { const nextKey = this.context().key; changed = !mutationFence && !!nextKey && nextKey !== key; } catch { /* Page/catalogue admission must be repaired explicitly. */ }
+        if (changed) {
+          this.key = ''; this.again = true;
+          this.publish({ status: 'unknown', message: 'Updating read status for your current reading options…' });
+        } else this.publish({ status: 'error', message: error instanceof Error ? error.message : 'Read status could not be loaded. Please try again.' });
+      }
     } finally {
       budget.close(); if (this.active === budget) this.active = undefined;
       if (this.again && !this.disposed && !mutationFence) { this.again = false; this.sync(); if (!this.active && this.key) void this.refresh(); }

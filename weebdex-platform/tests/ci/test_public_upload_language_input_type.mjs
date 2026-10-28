@@ -1,3 +1,4 @@
+import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
 // Finite actual-composition type regression, not a whole-application or DOM pass.
 // Uses existing pinned dependencies only; no writes, subprocesses or runtime Git.
 import assert from 'node:assert/strict';
@@ -116,7 +117,7 @@ function checkProps(declarations, component) {
   return { filename, source, diagnostics };
 }
 
-test('actual public upload numeric maxlength satisfies real Input Props; exact old string fails TS2322', () => {
+test('exact pre-selector upload numeric maxlength satisfies real Input Props; exact old string fails TS2322', () => {
   assert.equal(ts.version, '5.9.3');
   assert.equal(require('svelte/package.json').version, '5.55.1');
   assert.equal(svelte.VERSION, '5.55.1');
@@ -129,7 +130,20 @@ test('actual public upload numeric maxlength satisfies real Input Props; exact o
   let composed = source;
   for (const [index, plugin] of plugins.entries()) {
     if (index === 4) assert.equal(hash(composed), 'e34402aebd6fae2085c3dedcaf650a0bc242c5d921ac2217c9c46515eaed1879');
-    composed = plugin.transform.handler(composed, filename)?.code ?? composed;
+    if (index === 4) {
+      // Current UX intentionally replaces this Input with a named selector.
+      // Preserve the numeric-prop regression on exact reviewed predecessor bytes,
+      // not by claiming the old Input is still the current product control.
+      const relative='weebdex-platform/platform-integrations/public-api/upload-anchors.json';
+      const prior=JSON.parse(restoreReaderUxPredecessor(relative,fs.readFileSync(path.join(root,'platform-integrations/public-api/upload-anchors.json'),'utf8')));
+      const file=one(prior.files.filter(row=>row.path===uploadRelative),'Exact predecessor upload source');
+      assert.equal(hash(composed),file.composed_sha256);
+      for(const patch of prior.patches.filter(row=>row.path===uploadRelative)){
+        assert.equal(composed.split(patch.before).length-1,patch.count);
+        composed=composed.split(patch.before).join(patch.after);
+      }
+      assert.equal(hash(composed),file.output_sha256);
+    } else composed = plugin.transform.handler(composed, filename)?.code ?? composed;
   }
   assert.equal(hash(composed), 'ec72abd0e8bb8ccc8925fcf45e65c963c0f1ce53b2fdc7f964bd4c8fb13bde63');
 

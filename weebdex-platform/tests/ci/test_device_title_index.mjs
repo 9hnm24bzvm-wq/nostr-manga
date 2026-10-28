@@ -13,9 +13,22 @@ const deps = process.env.WEEBDEX_BROWSER_DOM_NODE_MODULES;
 assert(deps, 'Use the existing exact-lock dependency root');
 const require = createRequire(path.join(deps, '../package.json'));
 const { indexedDB, IDBKeyRange, IDBObjectStore, IDBDatabase } = require(path.join(deps, 'fake-indexeddb'));
-let fastStorageClock = false;
-const storageTimer = (fn, ms) => setTimeout(fn, fastStorageClock && ms === 5000 ? 100 : fastStorageClock && ms === 250 ? 10 : ms);
-const context = vm.createContext({ indexedDB, IDBKeyRange, crypto: webcrypto, URLSearchParams, URL, Date, AbortController, setTimeout: storageTimer, clearTimeout, console, TextEncoder, TextDecoder });
+let controlledStorageClock;
+// Only storage deadlines are controlled. Real fake-IDB requests and terminal
+// events still execute; tests explicitly place deadlines AFTER the held event.
+const storageTimer = (fn, ms) => controlledStorageClock && [5000,250].includes(ms) ? controlledStorageClock.schedule(fn,ms) : setTimeout(fn,ms);
+const storageClear = timer => timer?.storageClock ? timer.storageClock.cancel(timer) : clearTimeout(timer);
+function storageClock() {
+ const scheduled=new Map(), observers=new Set();
+ const clock={schedule(fn,ms){const token={storageClock:clock};scheduled.set(token,{fn,ms});for(const observe of [...observers])observe();return token;},cancel(token){scheduled.delete(token);},
+  async fire(ms){
+   const matches=()=>[...scheduled].filter(([,entry])=>entry.ms===ms);
+   if(!matches().length)await new Promise((resolve,reject)=>{const observe=()=>{if(matches().length){clearTimeout(timer);observers.delete(observe);resolve();}};const timer=setTimeout(()=>{observers.delete(observe);reject(Error('Storage deadline '+ms+' was not registered within 2000ms'));},2000);observers.add(observe);});
+   const pending=matches();assert.equal(pending.length,1,'Exactly one owned storage deadline');const[token,entry]=pending[0];scheduled.delete(token);entry.fn();
+  },restore(){controlledStorageClock=undefined;}};
+ controlledStorageClock=clock;return clock;
+}
+const context = vm.createContext({ indexedDB, IDBKeyRange, crypto: webcrypto, URLSearchParams, URL, Date, AbortController, setTimeout: storageTimer, clearTimeout: storageClear, console, TextEncoder, TextDecoder });
 const modules = new Map();
 async function load(file) {
   const full = path.resolve(root, file); if (modules.has(full)) return modules.get(full);
@@ -232,25 +245,34 @@ test('old displayed DTO plus new pending DTO share one retention budget; explici
 });
 
 function holdTerminals(kind) {
- const original=IDBDatabase.prototype.transaction, callbacks=[];
- IDBDatabase.prototype.transaction=function(...args){const tx=original.apply(this,args);return new Proxy(tx,{get(target,key){const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;},set(target,key,value){if(key===kind&&typeof value==='function')return Reflect.set(target,key,event=>callbacks.push(()=>value(event)),target);return Reflect.set(target,key,value,target);}});};
- return {callbacks,restore(){IDBDatabase.prototype.transaction=original;},release(){for(const done of callbacks.splice(0))done();}};
+ const original=IDBDatabase.prototype.transaction, callbacks=[], observers=new Set();
+ IDBDatabase.prototype.transaction=function(...args){const tx=original.apply(this,args);return new Proxy(tx,{get(target,key){const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;},set(target,key,value){if(key===kind&&typeof value==='function')return Reflect.set(target,key,event=>{callbacks.push(()=>value(event));for(const observe of [...observers])observe();},target);return Reflect.set(target,key,value,target);}});};
+ return {callbacks,restore(){IDBDatabase.prototype.transaction=original;},release(){for(const done of callbacks.splice(0))done();},
+  // Synchronize with the captured native terminal event, not a presumed number
+  // of event-loop turns. Capture still withholds the production callback.
+  observed(){if(callbacks.length)return Promise.resolve();return new Promise((resolve,reject)=>{const observe=()=>{clearTimeout(timer);observers.delete(observe);resolve();};const timer=setTimeout(()=>{observers.delete(observe);reject(Error('Held '+kind+' event was not observed within 2000ms'));},2000);observers.add(observe);});}
+ };
 }
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 test('index cursor cannot advance before confirmed commit even when all requests already succeeded',async()=>{
  const store=await index(),pager=new TitlePager(candidates(101),store,async batch=>batch.map(row),()=>{},20,'rating',1),held=holdTerminals('oncomplete');let done=false;
- try{const pending=pager.load().then(value=>{done=true;return value;});await pause(30);assert.equal(done,false);assert.equal(pager.offset,0);assert.equal(held.callbacks.length,1);held.restore();held.release();const result=await pending;assert.equal(result.scanned,100);assert.equal(pager.offset,100);}finally{held.restore();held.release();await close(store);}
+ try{const pending=pager.load().then(value=>{done=true;return value;});await held.observed();assert.equal(done,false);assert.equal(pager.offset,0);assert.equal(held.callbacks.length,1);held.restore();held.release();const result=await pending;assert.equal(result.scanned,100);assert.equal(pager.offset,100);}finally{held.restore();held.release();await close(store);}
 });
+async function expireHeldStorage(clock,held) {
+ await held.observed();assert.equal(held.callbacks.length,1);
+ await clock.fire(5000);await clock.fire(250);
+}
+const settledTurn=()=>new Promise(resolve=>setImmediate(resolve));
 for(const terminal of ['oncomplete','onabort'])test(`unconfirmed ${terminal} poisons further work without advancing; late terminal remains observed`,async()=>{
- const store=await index(),pager=new TitlePager(candidates(101),store,async batch=>batch.map(row),()=>{},20,'rating',1),held=holdTerminals(terminal),add=IDBObjectStore.prototype.add;fastStorageClock=true;
+ const store=await index(),pager=new TitlePager(candidates(101),store,async batch=>batch.map(row),()=>{},20,'rating',1),held=holdTerminals(terminal),add=IDBObjectStore.prototype.add,clock=storageClock();
  if(terminal==='onabort')IDBObjectStore.prototype.add=function(...args){if(this.name==='keys')throw new DOMException('quota','QuotaExceededError');return add.apply(this,args);};
- try{await assert.rejects(pager.load(),/cleanup is unconfirmed/);assert.equal(pager.offset,0);await assert.rejects(store.page(0,1),/cleanup is unconfirmed/);assert.ok(held.callbacks.length);held.restore();IDBObjectStore.prototype.add=add;held.release();await pause(1);fastStorageClock=false;assert.equal((await store.page(0,100)).length,terminal==='oncomplete'?100:0);await assert.rejects(pager.load(),/cleanup is unconfirmed/);}finally{fastStorageClock=false;held.restore();IDBObjectStore.prototype.add=add;held.release();await close(store);}
+ try{const failure=assert.rejects(pager.load(),/cleanup is unconfirmed/);await expireHeldStorage(clock,held);await failure;assert.equal(pager.offset,0);await assert.rejects(store.page(0,1),/cleanup is unconfirmed/);assert.equal(held.callbacks.length,1);held.restore();IDBObjectStore.prototype.add=add;held.release();await settledTurn();clock.restore();assert.equal((await store.page(0,100)).length,terminal==='oncomplete'?100:0);await assert.rejects(pager.load(),/cleanup is unconfirmed/);}finally{clock.restore();held.restore();IDBObjectStore.prototype.add=add;held.release();await close(store);}
 });
 test('create and dispose own finite terminal waits; repeated disposal never invents confirmed cleanup',async()=>{
- let held=holdTerminals('oncomplete');fastStorageClock=true;
- try{await assert.rejects(TitleIndex.create(()=>{}),/cleanup is unconfirmed/);held.restore();held.release();await pause(1);await metadata((rows,store)=>rows.forEach(row=>store.put({...row,touched:0})));}finally{held.restore();held.release();fastStorageClock=false;}
- const store=await index();held=holdTerminals('oncomplete');fastStorageClock=true;
- try{const pending=store.dispose();await assert.rejects(pending,/cleanup is unconfirmed/);assert.equal(store.dispose(),pending);await assert.rejects(TitleIndex.create(()=>{}),/cleanup is unconfirmed/);held.restore();held.release();await pause(1);const next=await index();await close(next);}finally{fastStorageClock=false;held.restore();held.release();opened.delete(store);}
+ let held=holdTerminals('oncomplete'),clock=storageClock();
+ try{const failure=assert.rejects(TitleIndex.create(()=>{}),/cleanup is unconfirmed/);await expireHeldStorage(clock,held);await failure;held.restore();held.release();await settledTurn();clock.restore();await metadata((rows,store)=>rows.forEach(row=>store.put({...row,touched:0})));}finally{held.restore();held.release();clock.restore();}
+ const store=await index();held=holdTerminals('oncomplete');clock=storageClock();
+ try{const pending=store.dispose(),failure=assert.rejects(pending,/cleanup is unconfirmed/);await expireHeldStorage(clock,held);await failure;assert.equal(store.dispose(),pending);await assert.rejects(TitleIndex.create(()=>{}),/cleanup is unconfirmed/);held.restore();held.release();await settledTurn();clock.restore();const next=await index();await close(next);}finally{clock.restore();held.restore();held.release();opened.delete(store);}
 });
 
 test('incomplete stored page selection is rejected rather than claiming an exact partial page',async()=>{const store=await index(),pager=new TitlePager(candidates(101),store,async batch=>batch.map(row),()=>{},20,'rating',1);try{await pager.load();await pager.load();const page=store.page.bind(store);store.page=async(...args)=>(await page(...args)).slice(1);await assert.rejects(pager.load(),/Rebuild/);}finally{await close(store);}});
@@ -276,10 +298,10 @@ test('followedAt instant key preserves valid legacy dates, negative epochs, long
 });
 test('scope change after request success but before observed commit prevents cursor advance and publishing',async()=>{
  let current=true;const check=()=>{if(!current)throw Error('scope changed after requests');},store=await TitleIndex.create(check);opened.add(store);const pager=new TitlePager(candidates(101),store,async batch=>batch.map(row),check,20,'rating',1),held=holdTerminals('oncomplete');
- try{const pending=pager.load();await pause(40);assert.equal(held.callbacks.length,1);current=false;held.restore();held.release();await assert.rejects(pending,/scope changed/);assert.equal(pager.offset,0);assert.equal(pager.matches,0);assert.equal((await metadata(rows=>rows))[0].count,100);await close(store);assert.equal((await metadata(rows=>rows)).length,0);}finally{held.restore();held.release();await close(store);}
+ try{const pending=pager.load();await held.observed();assert.equal(held.callbacks.length,1);current=false;held.restore();held.release();await assert.rejects(pending,/scope changed/);assert.equal(pager.offset,0);assert.equal(pager.matches,0);assert.equal((await metadata(rows=>rows))[0].count,100);await close(store);assert.equal((await metadata(rows=>rows)).length,0);}finally{held.restore();held.release();await close(store);}
 });
 test('scope change during delayed creation is cleaned by its exact owner before rejection',async()=>{
- let current=true;const held=holdTerminals('oncomplete');try{const pending=TitleIndex.create(()=>{if(!current)throw Error('scope changed during open');});await pause(30);assert.equal(held.callbacks.length,1);current=false;held.restore();held.release();await assert.rejects(pending,/saved library is unchanged/);assert.equal((await metadata(rows=>rows)).length,0);}finally{held.restore();held.release();}
+ let current=true;const held=holdTerminals('oncomplete');try{const pending=TitleIndex.create(()=>{if(!current)throw Error('scope changed during open');});await held.observed();assert.equal(held.callbacks.length,1);current=false;held.restore();held.release();await assert.rejects(pending,/saved library is unchanged/);assert.equal((await metadata(rows=>rows)).length,0);}finally{held.restore();held.release();}
 });
 test('empty candidate set is exact without hydration; missing stored selection never becomes an empty successful page',async()=>{
  const empty=await index();try{const pager=new TitlePager([],empty,async()=>{throw Error('unscoped hydration');},()=>{}),result=await pager.load();assert.equal(result.ready,true);assert.equal(result.total,0);assert.equal(result.data.length,0);}finally{await close(empty);}

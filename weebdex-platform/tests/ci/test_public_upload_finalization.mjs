@@ -1,3 +1,4 @@
+import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
 // Source-extracted finalization and real observer state; fake signatures/events,
 // no browser, network, service, database, hosted execution or prior-run rewrite.
 import assert from 'node:assert/strict';
@@ -7,7 +8,7 @@ import { restoreUploadFinalization } from './upload-finalization-source-associat
 import { harness, finish } from './public-upload-observer-query-fixture.mjs';
 
 const source = fs.readFileSync(new URL('../../scripts/public-upload-recovery-browser.mjs', import.meta.url), 'utf8');
-const prior = restoreUploadFinalization(source);
+const prior = restoreUploadFinalization(restoreReaderUxPredecessor('weebdex-platform/scripts/public-upload-recovery-browser.mjs',source));
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 function finalization(text) {
   const marker = '  } finally {\n    result.transport_refusal_captures.push';

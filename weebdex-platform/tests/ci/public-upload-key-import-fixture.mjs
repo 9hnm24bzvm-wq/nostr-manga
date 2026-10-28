@@ -12,12 +12,12 @@ export function importFixture({ delayed = true, enrollmentOpen = false, backupSe
   const visible = name => {
     advance();
     if (never === name || polls > 0) return false;
-    return ({ 'Open Settings': stage === 'upload', 'Public identity': stage === 'settings', 'Create or paste a key': stage === 'identity',
-      'Paste an existing key': stage === 'choose', 'Private key (nsec or hex)': stage === 'import', 'Use this key': stage === 'import',
+    return ({ 'Set up public identity': stage === 'upload', 'Set up your public identity': stage === 'choose',
+      'I already have a private key': stage === 'choose', 'Private key (nsec or hex)': stage === 'import', 'Use this key': stage === 'import',
       'I have saved my private key somewhere safe.': stage === 'backup', 'Review public identity': stage === 'backup',
       'Use this key for this session': stage === 'review' || stage === 'backup' && backupSessionControl, 'Join this instance': stage === 'review' && enrollmentOpen,
       'Instance approval needed': stage === 'review' && !enrollmentOpen,
-      'Key connected for this session': stage === 'connected', 'Done': stage === 'connected', 'Session private key connected.': selected && stage === 'identity',
+      'Key connected for this session': stage === 'connected', 'Back to what I was doing': stage === 'connected', 'Session private key connected.': selected && stage === 'identity',
       'Lock private key': selected && stage === 'identity', 'Upload Chapter': selected && stage === 'upload' })[name] === true;
   };
   const control = name => ({
@@ -30,13 +30,13 @@ export function importFixture({ delayed = true, enrollmentOpen = false, backupSe
       assert.equal(visible(name), true, 'Control must really be mounted before click'); calls.push(['click', name]);
       if (name === 'Open Settings') { route = '/settings/preferences'; later('settings'); }
       else if (name === 'Public identity') { route = '/settings/identity'; later('identity'); }
-      else if (name === 'Create or paste a key') later('choose');
-      else if (name === 'Paste an existing key') later('import');
+      else if (name === 'Set up public identity') later('choose');
+      else if (name === 'I already have a private key') later('import');
       else if (name === 'Use this key') { assert.equal(filled, true); later('backup'); }
       else if (name === 'Review public identity') { assert.equal(acknowledged, true); reviewFailed = reviewFails; later(reviewFails ? 'backup' : 'review', delayed ? 4 : 0); }
       else if (name === 'Use this key for this session') { assert.equal(acknowledged, true); if (!delayed) selected = true; later('connected'); }
       else if (name === 'Join this instance') throw Error('Fixture self-enrollment is outside the expected import path');
-      else if (name === 'Done') later('identity');
+      else if (name === 'Back to what I was doing') later('upload');
     },
   });
   const scope = { getByRole(role, options) {

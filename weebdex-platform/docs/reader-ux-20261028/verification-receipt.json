@@ -1,0 +1,26 @@
+{
+  "scope": "Final current-source frontend build and applicable standalone test suite; separate historical qualification exclusions retained",
+  "suite": {
+    "tests": 5260,
+    "passed": 5254,
+    "failed": 0,
+    "skipped": 6,
+    "exclusions": "suite-exclusions.json"
+  },
+  "css_tests_passed": 1,
+  "strict_source_association_tests_passed": 2,
+  "artifact_manifest_sha256": "5b86ae18899e8cefbf633f507ae82cf8721b4483d2d61f237014417cace747d0",
+  "index_sha256": "adb4e929690c31670e4a8535f0e46049e7575aa742e4273bfc5fb35961cdc223",
+  "artifact_files": 465,
+  "artifact_bytes": 7697443,
+  "exact_sources": 55,
+  "exact_source_list_sha256": "79de7cdb242455a4c2007285cd17fdc910a4b6d7fe19a499e0c03011ca20244a",
+  "post_test_all_artifact_and_source_bytes_verified": true,
+  "browser": {
+    "scope": "Earlier immutable disposable browser fixture, before final language/schedules build",
+    "rating": "Mock rating 10/10 saved and read back",
+    "recovery": "Download recovery key and reimport passed",
+    "chapter_upload": "NOT VERIFIED: CUA submission approval remains pending; fixture expired",
+    "final_build_browser_retest": "Not completed"
+  }
+}

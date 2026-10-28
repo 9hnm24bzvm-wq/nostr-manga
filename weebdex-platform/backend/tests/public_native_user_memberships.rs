@@ -10,8 +10,9 @@ struct Server(tokio::task::JoinHandle<()>);
 impl Drop for Server {fn drop(&mut self){self.0.abort();}}
 async fn get(client:&reqwest::Client,origin:&str,path:&str,status:u16)->Value {
     let response=client.get(format!("{origin}{path}")).send().await.unwrap();
-    assert_eq!(response.status().as_u16(),status,"{path}");
-    let bytes=response.bytes().await.unwrap();assert!(bytes.len()<=65536);
+    let actual=response.status().as_u16();
+    let bytes=response.bytes().await.unwrap();
+    assert_eq!(actual,status,"{path}: {}",String::from_utf8_lossy(&bytes));assert!(bytes.len()<=65536);
     serde_json::from_slice(&bytes).unwrap()
 }
 fn cursor(user:&str,group:&str,name:&str)->String {
@@ -30,8 +31,8 @@ async fn public_memberships_are_visible_target_only_bounded_live_native_order() 
     state.db.migrate(domains::MIGRATIONS).await.unwrap();state.protocol.verify_schema().await.unwrap();
     assert!(!pg.get_hosts().is_empty()); assert!(pg.get_ports().iter().all(|p|*p>1024&&*p!=5432)); assert!(runtime.join("fixture.json").is_file());
     let db=state.db.client().await.unwrap();
-    for (user,disabled) in [("MembershipUser",false),("MembershipOther",false),("MembershipClosed",true)] {
-        db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,disabled,profile) VALUES($1,$1,$2,'synthetic',TRUE,$3,$4)",&[&user,&format!("{user}@fixture.invalid"),&disabled,&json!({"email":"private@fixture.invalid","private_key":"not-public"})]).await.unwrap();
+    for (user,disabled) in [("MembershipUser",false),("MembershipOther",false),("MembershipClosed",true),("154965c1-6a5d-4e15-9a87-b783db928ba5",false)] {
+        db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,disabled,profile) VALUES($1,$5,$2,'synthetic',TRUE,$3,$4)",&[&user,&format!("{user}@fixture.invalid"),&disabled,&json!({"email":"private@fixture.invalid","private_key":"not-public"}),&if user.len()>32 {"FreshReader"}else{user}]).await.unwrap();
     }
     let resolver=PostgresPublicIdResolver::new(state.db.clone());
     let owner=resolver.preferred(ResourceKind::User,"MembershipUser").await.unwrap().unwrap();
@@ -51,6 +52,14 @@ async fn public_memberships_are_visible_target_only_bounded_live_native_order() 
     let aliases:i64=db.query_one("SELECT count(*) FROM platform.public_resource_ids",&[]).await.unwrap().get(0);drop(db);
     let app=weebdex_platform::router::router(state.clone());let _server=Server(tokio::spawn(async move{axum::serve(listener,app).await.unwrap();}));
     let client=reqwest::Client::builder().no_proxy().timeout(Duration::from_secs(10)).build().unwrap();let base=format!("/api/v1/nostr/user/{owner}/memberships");
+    // Fresh native readers use UUID IDs, unlike the historical fixture names.
+    let fresh="154965c1-6a5d-4e15-9a87-b783db928ba5";
+    let fresh_public=resolver.preferred(ResourceKind::User,fresh).await.unwrap().unwrap();
+    let fresh_profile=get(&client,&origin,&format!("/api/v1/user/{fresh_public}"),200).await;
+    assert_eq!(fresh_profile["data"]["id"],fresh_public.as_str());
+    let empty=get(&client,&origin,&format!("/api/v1/nostr/user/{fresh_public}/memberships?limit=32"),200).await;
+    assert_eq!(empty["data"],json!([]));assert!(empty["nextCursor"].is_null());
+    assert_eq!(empty["nostr"]["userId"],fresh_public.as_str());
     let first=get(&client,&origin,&base,200).await;assert_eq!(first["data"].as_array().unwrap().len(),32);assert_eq!(first["nostr"]["consistency"],"live-keyset-v1");assert!(first.get("total").is_none());
     // Real server-emitted one-row continuations exercise same-name tie order,
     // multibyte DB collation and the maximum escaped cursor roundtrip.

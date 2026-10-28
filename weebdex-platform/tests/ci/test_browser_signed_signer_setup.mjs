@@ -169,7 +169,7 @@ test('composition: dedicated native Settings tabs own management and root retain
   assert.doesNotMatch(runtime.replace(/<script\b[^>]*>[\s\S]*?<\/script>/, ''), /\S/, 'persistent lifecycle has no visible management chrome');
 });
 
-test('composition: native Settings tools use Dialog tasks with no accordion or global preference panels', () => {
+test('composition: native Settings tasks use dialogs and identity hides only advanced connection options', () => {
   const read = name => fs.readFileSync(path.join(productRoot, 'platform-integrations/local-library', name), 'utf8');
   const panel = read('LocalLibraryPanel.svelte'), tools = read('LibraryManagementTools.svelte'), identity = read('PublicIdentitySettings.svelte');
   assert.match(panel, /<section\b[^>]*\bdata-local-library-panel/);
@@ -179,7 +179,12 @@ test('composition: native Settings tools use Dialog tasks with no accordion or g
   assert.match(tools, /view === 'sync'[\s\S]*onTask\('destinations'\)[^>]*>Choose destinations<\/Button>/);
   assert.match(tools, /view === 'destinations'[\s\S]*>Back to public sync<\/Button>[\s\S]*>Connect external browser signer<\/Button>/);
   assert.match(identity, /<section\b[^>]*data-protocol-identity-panel/); assert.match(identity, /<Dialog\.Root \{open\}/); assert.match(identity, /<ProtocolIdentityPanel\b[^>]*settingsView=\{view\}/);
-  for (const component of [panel, tools, identity]) assert.doesNotMatch(component, /<(?:details|summary)\b/);
+  assert.doesNotMatch(panel, /<(?:details|summary)\b/);
+  assert.equal((tools.match(/<details>/g) ?? []).length, 1);
+  assert.match(tools, /<summary>Unshared entry references for support<\/summary>/);
+  assert.equal((identity.match(/<details>/g) ?? []).length, 1);
+  assert.match(identity, /<summary[^>]*>Advanced connection options<\/summary>/);
+  assert.match(identity, /onclick=\{\(\) => edit\('keys'\)\}/);
   assert.match(source, /await openIdentityTool\("connections"\)/);
 });
 

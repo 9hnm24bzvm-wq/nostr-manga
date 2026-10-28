@@ -67,16 +67,16 @@
 </script>
 <section class="space-y-3 rounded border p-4" aria-label="Chapter pages">
   <h3 class="text-lg font-medium">Chapter pages</h3>
-  {#if access?.pageSource === 'protocol'}<p>These are original signed protocol pages. Edit Pages and Replace Pages are unavailable; the original is immutable.</p>
-  {:else if access?.pageSource !== 'local'}<p>Local page-source eligibility is unavailable. Neither a missing source field nor a cookie session grants page-edit access.</p>
-  {:else}<p>Edit the current local pages, or start empty private staging with Replace Pages. Neither action changes published pages before Save Pages.</p>{/if}
+  {#if access?.pageSource === 'protocol'}<p>These pages belong to the original publication and cannot be edited or replaced.</p>
+  {:else if access?.pageSource !== 'local'}<p>We could not verify permission to edit these pages. Editing is unavailable.</p>
+  {:else}<p>Edit the current pages, or choose Replace Pages to start with an empty draft. Readers will not see changes until you select Save Pages.</p>{/if}
   {#if message}<p role="status" class="rounded border p-3">{message}</p>{/if}
-  {#if recovery}<p>There is an unresolved signed operation. Writes and cancellation are disabled until its exact receipt is reconciled. No operation will be replayed automatically.</p>{/if}
+  {#if recovery}<p>An earlier change has an unconfirmed result. Editing and cancellation are disabled while it is checked. It will not be repeated automatically.</p>{/if}
   {#if foreign && session}
-    <p>Another upload already owns staging. It has not been deleted or replaced.</p>
+    <p>Another upload is already in progress. It has not been deleted or replaced.</p>
     <a class="underline" href={session.chapter_id ? `/chapter/${session.chapter_id}/edit` : `/title/${session.manga_id}/upload`}>Open the original upload editor</a>
   {:else if session}
-    <p>Private session version {session.version}; captured chapter version {session.edit_version}.</p>
+    <p>Your page changes are private until you save them.</p>
     <UploadChapterPages bind:pages={session.relationships.files!} disabled={!editable || session.can_mutate === false} />
     <label class="flex items-center gap-2"><input type="checkbox" bind:checked={terms} disabled={!editable || !session.can_mutate} />I accept the <a class="underline" href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> for this page upload.</label>
     <div class="flex flex-wrap gap-3">
@@ -94,7 +94,7 @@
   {#if recovery && capturedOwner.chapterBeginPending()}<button type="button" class="rounded border px-4 py-2" disabled={disabled || busy || $mutex} onclick={() => run(inspectReadOnly)}>Inspect owned staging (read-only)</button>{/if}
   {#if confirm}
     <div role="alertdialog" tabindex="-1" aria-label={confirm === 'replace' ? 'Confirm replacement staging' : 'Confirm staging cancellation'} class="space-y-3 rounded border p-3">
-      <p>{confirm === 'replace' ? 'Start an empty private page-edit session for this exact chapter version? Current published pages remain unchanged until a later successful Save Pages.' : 'Discard this exact private page-edit session? Published chapter pages are kept. Unsaved staging cannot be resumed afterward.'}</p>
+      <p>{confirm === 'replace' ? 'Start a new, empty page draft? Published pages stay unchanged until you successfully save the replacement.' : 'Discard this page draft? Published pages are kept. You cannot recover the discarded changes.'}</p>
       <button type="button" class="rounded border px-4 py-2" disabled={disabled || busy || $mutex || recovery || (confirm === 'replace' && !editable)} onclick={() => run(confirm === 'replace' ? () => begin(true) : cancel)}>{confirm === 'replace' ? 'Start empty staging' : 'Discard this staging'}</button>
       <button type="button" class="rounded border px-4 py-2" onclick={() => confirm = undefined}>Keep current state</button>
     </div>

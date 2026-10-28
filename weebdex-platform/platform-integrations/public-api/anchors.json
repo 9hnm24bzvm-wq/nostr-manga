@@ -893,7 +893,7 @@
     "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
     "count": 1,
     "before": "\t\t\t<Combobox.Root type=\"multiple\" bind:value={search.availableTranslatedLang} disabled={!search.hasChapters}>\r\n\t\t\t\t<Combobox.Trigger class=\"flex w-0 min-w-50 flex-auto border-none\">\r\n\t\t\t\t\t{#if search.availableTranslatedLang?.length}\r\n\t\t\t\t\t\t<span class=\"flex w-0 flex-auto flex-nowrap items-center gap-1 overflow-hidden text-left\">\r\n\t\t\t\t\t\t\t{#if search.availableTranslatedLang.length > 1}\r\n\t\t\t\t\t\t\t\t{#each search.availableTranslatedLang as code}\r\n\t\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(code)}.svg\"\r\n\t\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(code)}\r\n\t\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{/each}\r\n\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(search.availableTranslatedLang[0])}.svg\"\r\n\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(search.availableTranslatedLang[0])}\r\n\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{Locale.toLanguage(search.availableTranslatedLang[0])}\r\n\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t<strong class=\"shrink-0 font-medium text-green-600\">+{search.availableTranslatedLang.length}</strong>\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tTranslated Languages\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</Combobox.Trigger>\r\n\t\t\t\t<Combobox.Content>\r\n\t\t\t\t\t{#each Object.entries(Locale.Languages) as [key, value]}\r\n\t\t\t\t\t\t<Combobox.Item value={key}>\r\n\t\t\t\t\t\t\t<span class=\"size-5 shrink-0\">\r\n\t\t\t\t\t\t\t\t<ImageLoader class=\"size-5\" src=\"/images/flags/{Locale.to3166(key)}.svg\" alt={value} />\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t{value}\r\n\t\t\t\t\t\t</Combobox.Item>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Combobox.Content>\r\n\t\t\t</Combobox.Root>",
-    "after": "\t\t\t<PublicLanguageFilter bind:value={search.availableTranslatedLang} label=\"Translated languages\" disabled={!search.hasChapters} />",
+    "after": "\t\t\t<PublicLanguageFilter bind:value={search.availableTranslatedLang} label=\"Translated languages\" />",
     "label": "Public-only translated languages code entry preserves the native selector when disabled"
   },
   {
@@ -970,5 +970,13 @@
     "after": "{#if $user.public_profile_readonly}\n\t{#if $user.public_account_follow_available}<PublicUserMemberships userId={$user.id} />{/if}\n{:else if $user.relationships?.groups?.length}",
     "label": "Public native-user groups use visible bounded pages without expanded members",
     "approved_public_feature_exception": "public_uuid_native_user_memberships"
+  },
+  {
+    "path": "src/lib/components/LatestUpdatesGridEntry.svelte",
+    "sha256": "89b8bbd1fc61d12159044baa534f6d04aea63257a109615bd0153a2cf9383688",
+    "count": 1,
+    "before": "\t\t<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>",
+    "after": "{#if chapter.relationships.thread}\t\t<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>{/if}",
+    "approved_public_availability_exception": "actual_native_forum_context_only"
   }
 ]

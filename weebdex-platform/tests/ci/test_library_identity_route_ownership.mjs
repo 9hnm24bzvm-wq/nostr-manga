@@ -167,8 +167,8 @@ test('real native Settings pages retain failed-scope backups without accordions 
   await library.close();
   const identity = await render(IdentitySettings, env);
   assert.equal(identity.target.querySelectorAll('section[data-protocol-identity-panel]').length, 1);
-  assert.equal(identity.target.querySelectorAll('details,summary,[data-source-conversation],input').length, 0);
-  assert.equal(button(identity.target, 'Connect external signer').disabled, false);
+  assert.equal(identity.target.querySelectorAll('[data-source-conversation],input').length, 0);
+  assert.equal(button(identity.target, 'Connect a different identity').disabled, false);
   assert(!identity.target.textContent.includes('b'.repeat(64)));
   await click(identity.target, 'Edit public profile');
   assert.equal(identity.target.querySelectorAll('[data-public-identity-tool="profile"]').length, 1);

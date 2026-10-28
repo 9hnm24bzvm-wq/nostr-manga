@@ -20,8 +20,10 @@ const retained=value=>value.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'<scrip
 
 test('only the two exact reviewed language selector replacements enter the markup registry',()=>{
  assertPublicApiExceptionScope();
- assert.equal(hash(JSON.stringify(publicApiApprovedLanguageExceptions)),'ac9258ef63975095fd13b567be619cc43ad4e5913244d2054f07312ce277c41d');
+ assert.equal(hash(JSON.stringify(publicApiApprovedLanguageExceptions)),'ce6ba35bc27ca8eb40bc7e0dc0e8df3eab07c6160cab3662664827482a8fd443');
  assert.equal(publicApiApprovedLanguageExceptions.length,2);
+ assert.equal(publicApiApprovedLanguageExceptions[0].after,'\t\t\t<PublicLanguageFilter bind:value={search.availableTranslatedLang} label="Translated languages" />');
+ assert.match(publicApiApprovedLanguageExceptions[0].before,/disabled=\{!search.hasChapters\}/);
  for(const row of publicApiApprovedLanguageExceptions){assert.equal(row.path,relative);assert.equal(row.sha256,hash(original));assert.equal(row.count,1);assert.equal(row.composed_before,undefined);}
  assert.deepEqual(publicApiApprovedLanguageExceptions.map(row=>row.approved_public_language_exception),['public_wire_translated_language_codes','public_wire_original_language_codes']);
 });

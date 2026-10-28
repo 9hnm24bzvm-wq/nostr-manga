@@ -65,20 +65,20 @@
 </script>
 <section class="mx-auto max-w-270 space-y-4 p-5">
   <h2 class="text-xl font-medium">Edit chapter</h2>
-  <p>Changes are instance-local catalogue annotations. Original signed source metadata and protocol image pages are immutable. Eligible local chapter pages use separate private staging below.</p>
+  <p>Changes apply to this site. Original publications and their pages cannot be changed. Where page editing is available, prepare your changes privately below.</p>
   {#if message}<p role="status" class="rounded border p-3">{message}</p>{/if}
   {#if !ready}<p>Select a signing identity in Settings and open this page again if account authorization is required.</p>{/if}
-  {#if sourcePending}<p>Instance review was accepted, but the independent original-source request outcome is unconfirmed. Further chapter writes remain fenced; detail reload cannot reconcile that source request.</p>{:else if pending}<p>This tab’s chapter command recovery state is unconfirmed or unavailable. Reloading detail cannot confirm an unknown command. Further chapter writes stay disabled across reload and remount.</p>{/if}
+  {#if sourcePending}<p>Your review request was accepted here, but its delivery to the original publisher is unconfirmed. Do not submit it again. Further changes are disabled; reloading cannot confirm delivery.</p>{:else if pending}<p>An earlier change could not be confirmed. Do not repeat it. Editing stays disabled even after reloading; contact support to check the result.</p>{/if}
   {#if ready&&!access}<p>Chapter eligibility could not be verified. Reload the current chapter before changing it.</p>{/if}
-  {#if access&&!access.claimFactsAvailable}<p>Claim eligibility is unavailable because this server did not provide the exact stored uploader facts.</p>{/if}
+  {#if access&&!access.claimFactsAvailable}<p>We could not verify whether you can claim this chapter. Your access has not changed.</p>{/if}
   <form class="space-y-3" onsubmit={event => { event.preventDefault(); void command('update'); }}>
     <fieldset disabled={!ready || busy || pagesLocked || pending || removed || !canUpdate} class="space-y-3">
       <label class="block">Title<input class="block w-full rounded border p-2" bind:value={title} maxlength="255" /></label>
       <label class="block">Volume<input class="block w-full rounded border p-2" bind:value={volume} maxlength="32" /></label>
       <label class="block">Chapter<input class="block w-full rounded border p-2" bind:value={number} maxlength="32" /></label>
       <label class="block">Language<input class="block w-full rounded border p-2" bind:value={language} /></label>
-      <p class="text-sm">New language values use lowercase two-letter codes such as ta or pt-br. An unchanged imported label is kept exactly and is not resubmitted.</p>
-      <label class="block">Group UUIDs, comma separated<input class="block w-full rounded border p-2" bind:value={groups} /></label>
+      <p class="text-sm">Use a language code, such as en for English or pt-br for Brazilian Portuguese. You can leave an existing value unchanged.</p>
+      <label class="block">Group IDs, separated by commas<input class="block w-full rounded border p-2" bind:value={groups} /></label>
       <button type="submit" class="rounded border px-4 py-2">Save instance metadata</button>
     </fieldset>
   </form>
@@ -89,13 +89,13 @@
   </div>
   {#if removalChoice}
     <div role="alertdialog" tabindex="-1" aria-label="Confirm chapter removal" class="space-y-3 rounded border p-4">
-      <p>{removalChoice === 'approve-hide' ? 'Approve hiding this chapter on this instance immediately? This action uses your moderator chapter removal grant. Original protocol deletion and peer copies remain separate.' : 'Request instance moderator review of this chapter removal? The chapter remains visible until approval. Original protocol removal is reviewed separately.'}</p>
+      <p>{removalChoice === 'approve-hide' ? 'Hide this chapter on this site now? This does not remove the original publication or copies on other sites.' : 'Ask a moderator to remove this chapter from this site? It stays visible until approval. Removing the original publication requires a separate review.'}</p>
       <button type="button" class="rounded border px-4 py-2" disabled={!ready||busy||pagesLocked||pending||removed||!canRemove} onclick={() => command('remove', removalChoice)}>{removalChoice === 'approve-hide' ? 'Approve and hide on this instance' : 'Submit removal request'}</button>
       <button type="button" class="rounded border px-4 py-2" onclick={() => removalChoice = undefined}>Cancel</button>
     </div>
   {/if}
   {#if owner && ready && !removed}
-    {#if metadataChanged}<p>Save instance metadata or reload the current chapter before opening page staging. Unsaved metadata is not included in page commits.</p>{/if}
+    {#if metadataChanged}<p>Save your chapter details or reload before editing pages. Saving pages does not save unsaved chapter details.</p>{/if}
     <PublicChapterPagesEditor {chapter} {owner} {access} disabled={busy || pending || metadataChanged} onlock={locked => pagesLocked = locked} oncommit={value => { restore(value); void refreshAccess(); }} />
   {/if}
   <a class="underline" href={`/title/${chapter.relationships.manga.id}`}>Return to the title</a>

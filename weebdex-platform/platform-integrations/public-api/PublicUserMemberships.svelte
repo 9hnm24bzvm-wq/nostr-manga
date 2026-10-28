@@ -20,7 +20,7 @@
    groups=page.data;next=page.nextCursor;loaded=true;pageNumber=reset?1:pageNumber+1;
   }catch(error){
    if(ticket!==generation||own.signal.aborted||target!==userId)return;
-   groups=[];next=null;loaded=false;message=error instanceof Error?error.message:'Public memberships could not be loaded. Refresh to try again.';
+   groups=[];next=null;loaded=false;message=error instanceof Error && error.message.includes('cleanup is unconfirmed')?'Groups are still loading. Wait a moment, then try Refresh groups.':'Groups could not be loaded. Please try Refresh groups.';
   }finally{
    active=false;busy=false;request=undefined;
    if(queuedReset&&available){queuedReset=false;void load(true);}
@@ -31,9 +31,9 @@
 </script>
 <section class="space-y-2" aria-label="Public group memberships" aria-busy={busy}>
  <header class="flex items-center justify-between gap-2"><h2 class="text-base font-semibold">Groups</h2><Button variant="outline" size="sm" onclick={()=>load(true)}>Refresh groups</Button></header>
- <p class="text-muted-foreground text-sm">Public memberships on this instance. Pages are loaded live, not as a single snapshot. Next replaces this page; Refresh returns to the first page.</p>
+ <p class="text-muted-foreground text-sm">Groups this reader has joined.</p>
  {#if message}<p role="alert">{message}</p>{/if}
- {#if loaded}<p class="text-muted-foreground text-sm">Page {pageNumber} · {groups.length} public groups shown</p>{/if}
+ {#if loaded}<p class="text-muted-foreground text-sm">Page {pageNumber} · {groups.length} groups shown</p>{/if}
  {#if groups.length}
   <div class="flex flex-wrap items-center gap-1">
    {#each groups as group (group.id)}
@@ -45,6 +45,6 @@
    {/each}
   </div>
  {/if}
- {#if busy}<p role="status">Loading public groups…</p>{:else if loaded&&!groups.length}<p>No public group memberships.</p>{/if}
+ {#if busy}<p role="status">Loading groups…</p>{:else if loaded&&!groups.length}<p>No public groups joined yet.</p>{/if}
  {#if next}<Button variant="outline" disabled={busy} onclick={()=>load()}>Next groups</Button>{/if}
 </section>

@@ -54,6 +54,8 @@ await jsModule('MarkedExtensions',fs.readFileSync(path.join(frontend,'src/lib/Ma
 // unrelated root layout's global URLSearchParams/prototype patches.
 const formatting=fs.readFileSync(path.join(frontend,'src/routes/+layout.ts'),'utf8');
 await jsModule('CommentFormatting','import DOMPurify from "dompurify"; import {marked,type Tokens} from "marked"; import * as MarkedExtensions from "./MarkedExtensions.mjs"; const PUBLIC_PROXY_URL="/synthetic-image-proxy";\n'+formatting.slice(formatting.indexOf('const isSafeUrl')));
+// Setup is a leaf stand-in; the shared gate lifecycle/focus is tested separately.
+const IdentityGate=await compiled('IdentityGate','<script>let{show}=$props();</script>{#if show}<button data-identity-gate>Set up public identity</button>{/if}',false);
 const Empty=await compiled('Empty','<span></span>',false),Generic=await compiled('Generic','<script>let{children}=$props();</script><div>{@render children?.()}</div>',false);
 const BrowserComments=await compiled('BrowserComments','<script>import{onMount}from"svelte";import{Session}from"$lib/stores";const env=globalThis.__nativeDiscussionEnvironment;onMount(()=>{env.browserMounts++;});</script><div data-browser-comments>Browser account {$Session.identity.id}<button onclick={()=>env.nativeWrites.push({account:$Session.identity.id,operation:"create"})}>Browser comment action</button></div>');
 const Button=await compiled('Button','<script>let{children,type="button",...rest}=$props();</script><button {type} {...rest}>{@render children?.()}</button>',false);
@@ -135,6 +137,7 @@ async function ui(options={}){
   '$lib/components/comments':{Comments:BrowserComments,Provider:NativeProvider},
   '$lib/components/comments/context.svelte':context,'./context.svelte':context,
   '$platform/mutation-authority':{nativeAuthority},
+  '../../local-library/IdentityGate.svelte':{default:IdentityGate},
   '../../local-library/publication':{signerIdentity:identity},
   './context':contextModule,'./reader':{readNativeDiscussionTarget:readTarget},
   './signed-client':{createSignedNativeDiscussion:(kind,target,thread,check,_deps,signal)=>signedClient.createSignedNativeDiscussion(kind,target,thread,check,f.deps,signal)},
@@ -152,13 +155,13 @@ async function ui(options={}){
  env.modules['./context.svelte']={...context,useReader:()=>reader};
  globalThis.__nativeDiscussionEnvironment=env;window.history.replaceState({},'',initialUrl);
  const host=document.createElement('main');document.body.append(host);const instance=mount(Harness,{target:host});await settle();
- return{...f,env,page,host,identity,nativeAuthority,Session,signedCalls,contextCalls,async signed(){await click(host,'Signed account');},async dispose(){await unmount(instance);host.remove();}};
+ return{...f,env,page,host,identity,nativeAuthority,Session,signedCalls,contextCalls,async signed(){await click(host,'Public identity');},async dispose(){await unmount(instance);host.remove();}};
 }
 
 test('cookie account B and signer account A require independent explicit selections',async()=>{
  const f=await ui();try{
   assert.equal(f.env.browserMounts,0);assert.equal(f.signedCalls.length,0);assert.equal(f.host.querySelector('textarea'),null);
-  await click(f.host,'Browser login');assert.match(f.host.textContent,/Browser account BrowserB/);await click(f.host,'Browser comment action');assert.deepEqual(f.env.nativeWrites,[{account:'BrowserB',operation:'create'}]);assert.equal(f.signedCalls.length,0);
+  await click(f.host,'Email account');assert.match(f.host.textContent,/Browser account BrowserB/);await click(f.host,'Browser comment action');assert.deepEqual(f.env.nativeWrites,[{account:'BrowserB',operation:'create'}]);assert.equal(f.signedCalls.length,0);
   await f.signed();assert.equal(f.host.querySelector('[data-browser-comments]'),null);assert.match(f.host.textContent,/Signed discussion as Actual bound user/);assert.match(f.host.textContent,new RegExp(actor));assert.equal(f.env.nativeWrites.length,1);assert.equal(f.account.user.id,actor);
  }finally{await f.dispose();}
 });
@@ -170,11 +173,11 @@ test('actual forum route ignores native relation IDs and requires persisted targ
 });
 for(const failure of ['missing','unavailable','wrong-kind','wrong-thread','wrong-source'])test('forum '+failure+' never guesses a signed target and retains explicit browser choice',async()=>{
  const body=targetBody('manga');if(failure==='wrong-kind')body.data.kind='user';if(failure==='wrong-thread')body.data.threadId='different';if(failure==='wrong-source')body.nostr.source='guessed';
- const f=await ui({surface:'forum',contextBody:body,contextStatus:failure==='missing'?404:failure==='unavailable'?503:200});try{assert.equal(button(f.host,'Signed account').disabled,true);assert.equal(f.signedCalls.length,0);await click(f.host,'Browser login');assert.ok(f.host.querySelector('[data-browser-comments]'));if(failure==='missing')assert.match(f.host.textContent,/No verified manga/);else assert.ok(f.host.querySelector('[role=alert]'));}finally{await f.dispose();}
+ const f=await ui({surface:'forum',contextBody:body,contextStatus:failure==='missing'?404:failure==='unavailable'?503:200});try{assert.equal(button(f.host,'Public identity').disabled,true);assert.equal(f.signedCalls.length,0);await click(f.host,'Email account');assert.ok(f.host.querySelector('[data-browser-comments]'));if(failure==='missing')assert.match(f.host.textContent,/No verified manga/);else assert.ok(f.host.querySelector('[role=alert]'));}finally{await f.dispose();}
 });
 test('rich comments and exact normalized review render safely before one create dispatch',async()=>{
  const f=await ui();try{await f.signed();assert.ok(f.host.querySelector('article strong'));assert.ok(f.host.querySelector('article a[href="https://example.test/"]'));assert.equal(f.host.querySelector('article script'),null);assert.equal(window.__unsafe,undefined);const spoiler=f.host.querySelector('article [data-spoiler]');assert.ok(spoiler);spoiler.click();assert.ok(spoiler.hasAttribute('data-visible'));
-  edit(f.host,'  Reviewed **body**  ');await click(f.host,'Review comment');const review=f.host.querySelector('[aria-label="Review signed discussion action"]');assert.ok(review.querySelector('strong'));assert.match(review.textContent,new RegExp(actor));assert.match(review.textContent,new RegExp(id));assert.match(review.textContent,new RegExp(threadId));assert.equal(posts(f).length,0);
+  edit(f.host,'  Reviewed **body**  ');await click(f.host,'Review comment');const review=f.host.querySelector('[aria-label="Review signed discussion action"]');assert.ok(review.querySelector('strong'));assert.match(review.textContent,/Actual bound user/);assert.equal(posts(f).length,0);
   const confirm=button(f.host,'Confirm signed action');confirm.click();confirm.click();await settle();assert.equal(posts(f).length,1);assert.deepEqual(plain(posts(f)[0].body),{expectedAccountId:actor,expectedTargetId:id,expectedThreadId:threadId,operation:'create',body:'Reviewed **body**'});assert.equal(f.host.querySelector('textarea').value,'');assert.equal(f.env.nativeWrites.length,0);
  }finally{await f.dispose();}
 });
@@ -183,7 +186,7 @@ for(const label of ['Reply to #1','Edit #1','Remove #1','Permanently delete #1',
 });
 test('gate-off title retains the original native component without signed selection or reads',async()=>{const f=await ui({enabled:false});try{assert.ok(f.host.querySelector('[data-browser-comments]'));assert.equal(f.host.querySelector('[aria-label="Discussion account"]'),null);assert.equal(f.signedCalls.length,0);assert.equal(f.contextCalls.length,0);}finally{await f.dispose();}});
 test('missing stored thread never mounts cookie or signed discussion',async()=>{const f=await ui({missingThread:true});try{assert.match(f.host.textContent,/Comments are unavailable/);assert.equal(f.env.browserMounts,0);assert.equal(f.signedCalls.length,0);assert.equal(f.contextCalls.length,0);}finally{await f.dispose();}});
-test('unconnected signer cannot be silently replaced by the browser account',async()=>{const f=await ui({connected:false});try{assert.equal(button(f.host,'Signed account').disabled,true);assert.equal(f.signedCalls.length,0);assert.equal(f.env.browserMounts,0);assert.ok(f.host.querySelector('a[href="/settings/identity"]'));}finally{await f.dispose();}});
+test('unconnected signer cannot be silently replaced by the browser account',async()=>{const f=await ui({connected:false});try{assert.equal(button(f.host,'Public identity').disabled,true);assert.equal(f.signedCalls.length,0);assert.equal(f.env.browserMounts,0);assert.ok(f.host.querySelector('[data-identity-gate]'));}finally{await f.dispose();}});
 test('URL pages and order are bounded and browser-style Back clears stale review',async()=>{
  const f=await ui({url:'https://catalog.example/title/'+id+'?page=2&sort=oldest'});try{await f.signed();assert.match(f.signedCalls.at(-1).url,/page=2&order=asc$/);await click(f.host,'Previous comments');assert.equal(f.page.url.search,'?sort=oldest');await click(f.host,'Latest');assert.equal(f.page.url.search,'');edit(f.host,'Must not survive navigation');await click(f.host,'Review comment');f.env.setLocation('https://catalog.example/title/'+id+'?page=2&sort=oldest');await settle();assert.equal(f.host.querySelector('[aria-label="Review signed discussion action"]'),null);assert.equal(posts(f).length,0);assert.match(f.signedCalls.at(-1).url,/page=2&order=asc$/);}finally{await f.dispose();}
 });
@@ -193,13 +196,13 @@ for(const change of ['signer','target','cookie-authority'])test(change+' change 
 });
 test('same signer rebind between review and confirmation cannot dispatch to a new account',async()=>{const f=await ui();try{await f.signed();edit(f.host,'Reviewed as account A');await click(f.host,'Review comment');f.account.user.id=other;await click(f.host,'Confirm signed action');assert.equal(posts(f).length,0);assert.equal(f.host.querySelector('textarea'),null);assert.match(f.host.textContent,/another account/);assert.equal(f.env.nativeWrites.length,0);}finally{await f.dispose();}});
 test('unknown write outcome stays fenced across reload and explicit mode changes',async()=>{
- const f=await ui({signedHandler:request=>{if(request.method==='POST')throw new RequestFailure('Receipt lost','uncertain');}});try{await f.signed();edit(f.host,'May have committed');await click(f.host,'Review comment');await click(f.host,'Confirm signed action');assert.match(f.host.textContent,/unknown outcome/);await click(f.host,'Reload signed comments');assert.equal(f.host.querySelector('textarea'),null);await click(f.host,'Browser login');await f.signed();assert.equal(f.host.querySelector('textarea'),null);assert.equal(posts(f).length,1);assert.equal(f.fences.size,1);assert.equal(f.env.nativeWrites.length,0);}finally{await f.dispose();}
+ const f=await ui({signedHandler:request=>{if(request.method==='POST')throw new RequestFailure('Receipt lost','uncertain');}});try{await f.signed();edit(f.host,'May have committed');await click(f.host,'Review comment');await click(f.host,'Confirm signed action');assert.match(f.host.textContent,/unknown outcome/);await click(f.host,'Reload signed comments');assert.equal(f.host.querySelector('textarea'),null);await click(f.host,'Email account');await f.signed();assert.equal(f.host.querySelector('textarea'),null);assert.equal(posts(f).length,1);assert.equal(f.fences.size,1);assert.equal(f.env.nativeWrites.length,0);}finally{await f.dispose();}
 });
 test('Cancel while POST is pending preserves unknown-outcome fence without replay',async()=>{
  const gate=deferred(),f=await ui({signedHandler:async request=>{if(request.method==='POST'){await gate.promise;return receipt(request);}}});try{await f.signed();edit(f.host,'Sent once');await click(f.host,'Review comment');button(f.host,'Confirm signed action').click();await settle();assert.equal(posts(f).length,1);await click(f.host,'Cancel discussion request');assert.equal(posts(f)[0].signal.aborted,true);gate.release();await settle();assert.equal(f.fences.size,1);await click(f.host,'Reload signed comments');assert.equal(f.host.querySelector('textarea'),null);assert.equal(posts(f).length,1);assert.match(f.host.textContent,/unknown outcome/);}finally{gate.release();await f.dispose();}
 });
 test('navigation during delayed signed read discards old page and aborts its request',async()=>{
- const gate=deferred();let first=true;const f=await ui({signedHandler:async request=>{if(request.method==='GET'&&first){first=false;await gate.promise;}}});try{button(f.host,'Signed account').click();await settle();const old=f.signedCalls[0];f.env.setLocation('https://catalog.example/title/'+id+'?page=2');await settle();assert.equal(old.signal.aborted,true);gate.release();await settle();assert.match(f.host.textContent,/Page 2/);assert.equal(f.host.querySelector('article').id,'p27');assert.equal(posts(f).length,0);}finally{gate.release();await f.dispose();}
+ const gate=deferred();let first=true;const f=await ui({signedHandler:async request=>{if(request.method==='GET'&&first){first=false;await gate.promise;}}});try{button(f.host,'Public identity').click();await settle();const old=f.signedCalls[0];f.env.setLocation('https://catalog.example/title/'+id+'?page=2');await settle();assert.equal(old.signal.aborted,true);gate.release();await settle();assert.match(f.host.textContent,/Page 2/);assert.equal(f.host.querySelector('article').id,'p27');assert.equal(posts(f).length,0);}finally{gate.release();await f.dispose();}
 });
 test('unmount cancels delayed forum context before any signer or cookie request',async()=>{const gate=deferred(),f=await ui({surface:'forum',contextGate:gate});assert.equal(f.contextCalls.length,1);await f.dispose();assert.equal(f.contextCalls[0].request.signal.aborted,true);gate.release();await settle();assert.equal(f.signedCalls.length,0);assert.equal(f.env.browserMounts,0);});
 test('locked discussion exposes only existing-vote clear and no compose or new vote',async()=>{const f=await ui({locked:true});try{await f.signed();assert.equal(f.host.querySelector('textarea'),null);assert.ok(button(f.host,'Remove discussion upvote'));assert.ok(button(f.host,'Remove upvote #1'));assert.equal([...f.host.querySelectorAll('button')].some(row=>row.textContent.trim()==='Downvote #1'),false);await click(f.host,'Remove upvote #1');await click(f.host,'Confirm signed action');assert.equal(posts(f)[0].body.vote,0);assert.equal(posts(f)[0].body.expectedVote,1);}finally{await f.dispose();}});
@@ -207,41 +210,41 @@ test('locked discussion exposes only existing-vote clear and no compose or new v
 for(const surface of ['manga','chapter','group','forum'])test('negative control: historical wrapper on '+surface+' cannot satisfy signed selection or review',async()=>{
  const f=await ui({surface,historical:true});try{
   assert.ok(f.host.querySelector('[data-browser-comments]'),'Historical widget renders only native cookie comments');
-  const hasSignedButton=[...f.host.querySelectorAll('button')].some(row=>row.textContent.trim()==='Signed account');
+  const hasSignedButton=[...f.host.querySelectorAll('button')].some(row=>row.textContent.trim()==='Public identity');
   assert.equal(hasSignedButton,false);assert.throws(()=>assert.equal(hasSignedButton,true),{code:'ERR_ASSERTION'},'Current signed-mode acceptance must reject the historical wrapper');
   assert.equal(f.host.querySelector('[aria-label="Review signed discussion action"]'),null);assert.equal(f.host.querySelector('[data-signed-discussion-kind]'),null);assert.equal(f.signedCalls.length,0);assert.equal(f.contextCalls.length,0);
  }finally{await f.dispose();}
 });
 
 async function reportReview(f,reply=false){
- await click(f.host,reply?'Report comment #1':'Report native discussion');
- const select=f.host.querySelector('[aria-label="Native report reason"]');assert.ok(select);select.value=(reply?'reply':'thread')+'_actual_reason';select.dispatchEvent(new Event('change',{bubbles:true}));
- const details=f.host.querySelector('[aria-label="Native report details"]');details.value='Reviewed private explanation';details.dispatchEvent(new Event('input',{bubbles:true}));flushSync();await click(f.host,'Review native report');
+ await click(f.host,reply?'Report comment #1':'Report discussion');
+ const select=f.host.querySelector('[aria-label="Report reason"]');assert.ok(select);select.value=(reply?'reply':'thread')+'_actual_reason';select.dispatchEvent(new Event('change',{bubbles:true}));
+ const details=f.host.querySelector('[aria-label="Report details"]');details.value='Reviewed private explanation';details.dispatchEvent(new Event('input',{bubbles:true}));flushSync();await click(f.host,'Review report');
 }
 for(const surface of ['manga','chapter','group','forum'])for(const replyTarget of [false,true])test('mounted '+surface+' native '+(replyTarget?'reply':'thread')+' report reviews selected actor, stored target and reason before exact submit',async()=>{
  const f=await ui({surface,permissions:['report.create']});try{
   await f.signed();await reportReview(f,replyTarget);
-  assert.equal(posts(f).length,0);assert.match(f.host.querySelector('[aria-label="Native discussion report"]').textContent,new RegExp(actor));assert.match(f.host.textContent,/Actual native reason \(version 4\)/);if(replyTarget)assert.match(f.host.textContent,/reply 7, version 3/);
-  await click(f.host,'Confirm private native report');assert.equal(posts(f).length,1);const request=posts(f)[0];assert.equal(request.body.expectedAccountId,actor);assert.equal(request.body.expectedTargetId,id);assert.equal(request.body.expectedUserId,undefined);assert.equal(request.body.expectedThreadId,threadId);assert.equal(request.body.expectedReasonVersion,4);assert.equal(request.body.targetType,replyTarget?'reply':'thread');assert.equal(request.body.details,'Reviewed private explanation');assert.match(request.url,/\/discussion\/reports$/);assert.equal(f.env.nativeWrites.length,0);assert.match(f.host.textContent,/submitted privately/);assert.equal(f.host.querySelector('[aria-label="Native discussion report"]'),null);
+  assert.equal(posts(f).length,0);assert.match(f.host.querySelector('[aria-label="Native discussion report"]').textContent,/Actual bound user/);assert.match(f.host.textContent,/Actual native reason/);if(replyTarget)assert.match(f.host.textContent,/reporting this reply/);
+  await click(f.host,'Confirm private report');assert.equal(posts(f).length,1);const request=posts(f)[0];assert.equal(request.body.expectedAccountId,actor);assert.equal(request.body.expectedTargetId,id);assert.equal(request.body.expectedUserId,undefined);assert.equal(request.body.expectedThreadId,threadId);assert.equal(request.body.expectedReasonVersion,4);assert.equal(request.body.targetType,replyTarget?'reply':'thread');assert.equal(request.body.details,'Reviewed private explanation');assert.match(request.url,/\/discussion\/reports$/);assert.equal(f.env.nativeWrites.length,0);assert.match(f.host.textContent,/sent privately/);assert.equal(f.host.querySelector('[aria-label="Native discussion report"]'),null);
  }finally{await f.dispose();}
 });
-test('mounted generic reporting has no permission inference and cancellation sends nothing',async()=>{for(const permissions of [[],['report.create']]){const f=await ui({permissions});try{await f.signed();if(!permissions.length)assert.equal([...f.host.querySelectorAll('button')].some(row=>row.textContent==='Report native discussion'),false);else{await reportReview(f);await click(f.host,'Cancel native report');assert.equal(f.host.querySelector('[aria-label="Native discussion report"]'),null);}assert.equal(posts(f).length,0);assert.equal(f.env.nativeWrites.length,0);}finally{await f.dispose();}}});
+test('mounted generic reporting has no permission inference and cancellation sends nothing',async()=>{for(const permissions of [[],['report.create']]){const f=await ui({permissions});try{await f.signed();if(!permissions.length)assert.equal([...f.host.querySelectorAll('button')].some(row=>row.textContent==='Report discussion'),false);else{await reportReview(f);await click(f.host,'Cancel report');assert.equal(f.host.querySelector('[aria-label="Native discussion report"]'),null);}assert.equal(posts(f).length,0);assert.equal(f.env.nativeWrites.length,0);}finally{await f.dispose();}}});
 for(const change of ['page','signer','target','binding','browser-mode'])test('mounted native report review cannot survive '+change,async()=>{
  const f=await ui({permissions:['report.create']});try{await f.signed();await reportReview(f,true);
   if(change==='page'){f.env.setLocation('https://catalog.example/title/'+id+'?page=2');await settle();}
   if(change==='signer'){f.identity.set({owner:'b'.repeat(64),generation:2});await settle();}
   if(change==='target'){f.env.setResource(resource(other));await settle();}
-  if(change==='browser-mode')await click(f.host,'Browser login');
-  if(change==='binding'){f.account.user.id=other;await click(f.host,'Confirm private native report');}
+  if(change==='browser-mode')await click(f.host,'Email account');
+  if(change==='binding'){f.account.user.id=other;await click(f.host,'Confirm private report');}
   assert.equal(f.host.querySelector('[aria-label="Review native discussion report"]'),null);assert.equal(posts(f).length,0);assert.equal(f.env.nativeWrites.length,0);
  }finally{await f.dispose();}
 });
 for(const mode of ['uncertain','cancel'])test('mounted '+mode+' native report stays fenced across reload and mode changes',async()=>{
  const gate=deferred(),f=await ui({permissions:['report.create','reply.create'],signedHandler:async request=>{if(request.method==='POST'){if(mode==='uncertain')throw new RequestFailure('Report receipt lost','uncertain');await gate.promise;return reportResponse(request);}}});try{
-  await f.signed();await reportReview(f);button(f.host,'Confirm private native report').click();await settle();assert.equal(posts(f).length,1);
+  await f.signed();await reportReview(f);button(f.host,'Confirm private report').click();await settle();assert.equal(posts(f).length,1);
   if(mode==='cancel'){await click(f.host,'Cancel discussion request');assert.equal(posts(f)[0].signal.aborted,true);gate.release();await settle();}
-  await click(f.host,'Reload signed comments');assert.equal(f.fences.size,1);assert.match(f.host.textContent,/native report has an unknown outcome/);assert.equal(f.host.querySelector('textarea'),null);assert.equal(button(f.host,'Report native discussion').disabled,true);assert.equal(f.host.querySelector('a[href="/reports/signed/native"]')?.textContent,'Inspect your signed native reports');
-  await click(f.host,'Browser login');await f.signed();assert.equal(f.fences.size,1);assert.equal(button(f.host,'Report native discussion').disabled,true);assert.equal(posts(f).length,1);assert.equal(f.env.nativeWrites.length,0);
+  await click(f.host,'Reload signed comments');assert.equal(f.fences.size,1);assert.match(f.host.textContent,/report has an unknown result/);assert.equal(f.host.querySelector('textarea'),null);assert.equal(button(f.host,'Report discussion').disabled,true);assert.equal(f.host.querySelector('a[href="/reports/signed/native"]')?.textContent,'View your discussion reports');
+  await click(f.host,'Email account');await f.signed();assert.equal(f.fences.size,1);assert.equal(button(f.host,'Report discussion').disabled,true);assert.equal(posts(f).length,1);assert.equal(f.env.nativeWrites.length,0);
  }finally{gate.release();await f.dispose();}
 });
-test('delayed native report reasons discard navigation and unmount without a write',async()=>{const gate=deferred(),f=await ui({permissions:['report.create'],signedHandler:async request=>{if(request.url.includes('/reports/context')){await gate.promise;return reportResponse(request);}}});try{await f.signed();button(f.host,'Report native discussion').click();await settle();const request=f.signedCalls.at(-1);f.env.setLocation('https://catalog.example/title/'+id+'?page=2');await settle();assert.equal(request.signal.aborted,true);gate.release();await settle();assert.equal(f.host.querySelector('[aria-label="Native discussion report"]'),null);assert.equal(posts(f).length,0);}finally{gate.release();await f.dispose();}});
+test('delayed native report reasons discard navigation and unmount without a write',async()=>{const gate=deferred(),f=await ui({permissions:['report.create'],signedHandler:async request=>{if(request.url.includes('/reports/context')){await gate.promise;return reportResponse(request);}}});try{await f.signed();button(f.host,'Report discussion').click();await settle();const request=f.signedCalls.at(-1);f.env.setLocation('https://catalog.example/title/'+id+'?page=2');await settle();assert.equal(request.signal.aborted,true);gate.release();await settle();assert.equal(f.host.querySelector('[aria-label="Native discussion report"]'),null);assert.equal(posts(f).length,0);}finally{gate.release();await f.dispose();}});

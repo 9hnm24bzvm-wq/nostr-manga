@@ -38,15 +38,22 @@ export class BoundedReaderController {
   sync() {
     if (this.disposed) return;
     if (this.reloadMessage) { this.publish({ status: 'restart', pending: !!this.active, routing: !!this.routing, requiresReload: true, message: this.reloadMessage }); return; }
-    let key: string;
-    try { key = contextKey(this.context()); } catch (error) {
+    let key: string, context: ReaderContext;
+    try { context = this.context(); key = contextKey(context); } catch (error) {
       this.key = ''; this.generation++; this.active?.cancel(); this.scan = undefined; this.recent = []; this.continueIntent = undefined;
       this.value = empty(); this.publish({ status: 'error', pending: !!this.active, routing: !!this.routing, message: error instanceof Error ? error.message : 'Reader context is invalid.' }); return;
     }
     if (key === this.key) return;
+    // A title with no prepared selection has nothing stale to ask the reader to
+    // refresh. Still advance ownership and discard caches on every change.
+    // In-flight work, chapter neighbors, edition choices and scans must retain
+    // the explicit restart requirement; catalogue changes are fenced separately.
+    const quietTitle = !!this.key && !context.current && !this.active && !this.routing &&
+      ['idle', 'ready'].includes(this.value.status) && !this.value.current && !this.value.next && !this.value.previous &&
+      !this.value.groups.length && !this.value.editions.length && !this.value.groupAnchor && !this.value.candidate && !this.scan && !this.continueIntent;
     const hadKey = !!this.key; this.key = key; this.generation++; this.active?.cancel(); this.continueIntent = undefined;
     this.groupsCursor = this.editionCursor = null; this.groupsScope = this.editionScope = undefined; this.recent = []; this.scan = undefined;
-    this.value = empty(); this.publish({ pending: !!this.active, routing: !!this.routing, status: hadKey ? 'restart' : 'idle', message: this.routing ? 'The reader context changed after navigation was dispatched. Waiting for the router; its navigation cannot be cancelled here.' : hadKey ? 'Reader context changed. Refresh navigation or restart the scan.' : '' });
+    this.value = empty(); this.publish({ pending: !!this.active, routing: !!this.routing, status: quietTitle ? 'ready' : hadKey ? 'restart' : 'idle', message: this.routing ? 'The reader context changed after navigation was dispatched. Waiting for the router; its navigation cannot be cancelled here.' : hadKey && !quietTitle ? 'Your reading options changed. Refresh reading controls to continue.' : '' });
   }
   requireReload(message: string) { this.reloadMessage ??= message; this.generation++; this.active?.cancel(); this.scan = undefined; this.recent = []; this.continueIntent = undefined; this.value = empty(); this.publish({ status: 'restart', pending: !!this.active, routing: !!this.routing, requiresReload: true, message: this.reloadMessage }); }
   cancel() { if (this.reloadMessage) { this.sync(); return; } if (this.routing) { this.publish({ routing: true, message: 'Navigation is already owned by the router and cannot be cancelled here. Waiting for it to settle.' }); return; } this.generation++; this.active?.cancel(); this.scan = undefined; this.recent = []; this.continueIntent = undefined; this.publish({ pending: !!this.active, status: 'restart', groupAnchor: undefined, winner: undefined, editions: [], editionsMore: false, message: 'Reader action cancelled. Refresh or restart before continuing.' }); }

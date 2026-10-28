@@ -5,7 +5,7 @@
       "path": "src/lib/components/upload/UploadChapter.svelte",
       "source_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
       "composed_sha256": "ae8daf28579b883c7d0cdc9d6319e668f310b85b3a443ee62cbe3a21d7552377",
-      "output_sha256": "f4b8a0ec324f5bc483fd8012b02bd3272f521a183168d99cf7cab2256bd39d28"
+      "output_sha256": "ef91d7b85a2ef2082b655392b5cc02cdf1c6e957a052b1d8912d6bc908c9e55b"
     },
     {
       "path": "src/lib/components/upload/UploadChapterPages.svelte",
@@ -23,7 +23,7 @@
       "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
       "source_sha256": "0625ce874f8b332aec8e742919634676cf58e2b0a8dd78225dcc928425f607d0",
       "composed_sha256": "8a2861de12aa32d3e1f70a74b8e2ceacecba4a070aadeb383111f7d1bbaed1bb",
-      "output_sha256": "3ec51ec4f91ee79f537342b2112459f76200a4b6116affd1705e50902f2084ee"
+      "output_sha256": "fc85954a1e3f5cbd4b2401aefe2d298d6814d3add9e854749aa1c2937aa1e8c5"
     },
     {
       "path": "src/routes/(app)/chapter/[id]/edit/+page.svelte",
@@ -53,7 +53,7 @@
       "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
       "source_sha256": "c94de7465c23c046f6277dae37266b845b62ba8c5097980a3629014f6f3d7ff9",
       "composed_sha256": "e34402aebd6fae2085c3dedcaf650a0bc242c5d921ac2217c9c46515eaed1879",
-      "output_sha256": "ec72abd0e8bb8ccc8925fcf45e65c963c0f1ce53b2fdc7f964bd4c8fb13bde63"
+      "output_sha256": "c5a66bf9ffafabdd44cf64b4d754e5695f9364883d52344f286d71c479b9732b"
     },
     {
       "path": "src/@types/Upload.d.ts",
@@ -236,21 +236,21 @@
       "label": "signed identity and bound account imports",
       "count": 1,
       "before": "import { Session } from \"$lib/stores\";",
-      "after": "import { signerIdentity } from \"$localLibrary/publication\";\r\n\timport { loadUploadAccount } from \"$publicApi/upload-client\";"
+      "after": "import { signerIdentity } from \"$localLibrary/publication\";\r\n\timport { loadUploadAccount } from \"$publicApi/upload-client\";\r\n\timport IdentityGate from \"$localLibrary/IdentityGate.svelte\";"
     },
     {
       "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
       "label": "bound account lookup has current signer and target fences",
       "count": 1,
       "before": "\tlet lookupGeneration = 0, lookupDisposed = false;\r\n\tonDestroy(() => { lookupDisposed = true; lookupGeneration++; user = undefined; });\r\n\t$effect(() => {\r\n\t\tconst target = data.manga?.id, actor = $Session?.identity.id, generation = ++lookupGeneration;\r\n\t\tuser = undefined; error = undefined; isMounted = false;\r\n\t\tif (!target || !actor) return;\r\n\t\tvoid (async () => API.User.Get(actor))().then(res => {\r\n\t\t\tif (lookupDisposed || generation !== lookupGeneration || actor !== $Session?.identity.id || target !== data.manga?.id) return;\r\n\t\t\tif (res?.status === StatusCodes.OK && res.body?.id === actor) { user = res.body; isMounted = true; }\r\n\t\t\telse throw res?.status === StatusCodes.TOO_MANY_REQUESTS ? Constants.Error.TooManyRequests : Constants.Error.Unknown;\r\n\t\t}).catch(cause => { if (!lookupDisposed && generation === lookupGeneration) error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; });\r\n\t});\r\n\r\n\r\n\r\n",
-      "after": "\tlet lookupGeneration = 0, lookupDisposed = false;\r\n\tonDestroy(() => { lookupDisposed = true; lookupGeneration++; user = undefined; });\r\n\t$effect(() => {\r\n\t\tconst target = data.manga?.id, actor = $signerIdentity.owner, signerGeneration = $signerIdentity.generation, generation = ++lookupGeneration;\r\n\t\tuser = undefined; error = undefined; isMounted = false;\r\n\t\tif (!target || !actor) return;\r\n\t\tconst assertLookup = () => {\r\n\t\t\tif (lookupDisposed || generation !== lookupGeneration || actor !== $signerIdentity.owner || signerGeneration !== $signerIdentity.generation || target !== data.manga?.id) throw Error(\"The selected upload identity or target changed\");\r\n\t\t};\r\n\t\tvoid loadUploadAccount(assertLookup).then(account => {\r\n\t\t\tassertLookup(); user = account; isMounted = true;\r\n\t\t}).catch(cause => { if (!lookupDisposed && generation === lookupGeneration) error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; });\r\n\t});\r\n"
+      "after": "\tlet setupRevision = $state(0);\r\n\tlet lookupGeneration = 0, lookupDisposed = false;\r\n\tonDestroy(() => { lookupDisposed = true; lookupGeneration++; user = undefined; });\r\n\t$effect(() => {\r\n\t\tsetupRevision;\r\n\t\tconst target = data.manga?.id, actor = $signerIdentity.owner, signerGeneration = $signerIdentity.generation, generation = ++lookupGeneration;\r\n\t\tuser = undefined; error = undefined; isMounted = false;\r\n\t\tif (!target || !actor) return;\r\n\t\tconst assertLookup = () => {\r\n\t\t\tif (lookupDisposed || generation !== lookupGeneration || actor !== $signerIdentity.owner || signerGeneration !== $signerIdentity.generation || target !== data.manga?.id) throw Error(\"The selected upload identity or target changed\");\r\n\t\t};\r\n\t\tvoid loadUploadAccount(assertLookup).then(account => {\r\n\t\t\tassertLookup(); user = account; isMounted = true;\r\n\t\t}).catch(cause => { if (!lookupDisposed && generation === lookupGeneration) error = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown; });\r\n\t});\r\n"
     },
     {
       "path": "src/routes/(app)/title/[id]/upload/+page.svelte",
       "label": "missing signer is an explicit setup state",
       "count": 1,
       "before": "{#if error}",
-      "after": "{#if !$signerIdentity.owner}\r\n\t<section class=\"mx-auto max-w-270 space-y-3 p-5\"><h2 class=\"text-xl font-medium\">Connect a signing identity</h2><p>Open Public identity in Settings to create, import or connect the identity bound to your upload account. Admission and upload permissions are checked separately.</p><a class=\"underline\" href=\"/settings\">Open Settings</a></section>\r\n{:else if error}"
+      "after": "<div class=\"mx-auto max-w-270 px-5\"><IdentityGate show={!$signerIdentity.owner} onfinish={() => setupRevision++} /></div>\r\n{#if !$signerIdentity.owner}\r\n\t<section class=\"mx-auto max-w-270 space-y-3 p-5\"><h2 class=\"text-xl font-medium\">Set up your public identity to upload</h2><p>Your email login is separate. Setup stays on this page; upload permission will be checked afterwards. Nothing is uploaded during setup.</p></section>\r\n{:else if error}"
     },
     {
       "path": "src/routes/(app)/title/[id]/upload/+layout.svelte",
@@ -408,10 +408,10 @@
     },
     {
       "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
-      "label": "public upload language is explicit code entry, not the native Locale enum",
+      "label": "public upload language names preserve exact imported values",
       "count": 1,
       "before": "\t\t\t<Combobox.Root type=\"single\" bind:value={draft.language} {disabled}>\r\n\t\t\t\t<Combobox.Trigger class=\"w-full border-none\">\r\n\t\t\t\t\t{#if draft.language}\r\n\t\t\t\t\t\t<div class=\"flex w-0 flex-auto items-center gap-2\">\r\n\t\t\t\t\t\t\t<span class=\"size-5 shrink-0\">\r\n\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\tclass=\"size-5\"\r\n\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(draft.language)}.svg\"\r\n\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(draft.language)}\r\n\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t<span class=\"truncate\">\r\n\t\t\t\t\t\t\t\t{Locale.toLanguage(draft.language)}\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t</div>\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t<span class=\"truncate\">Select Language</span>\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</Combobox.Trigger>\r\n\t\t\t\t<Combobox.Content>\r\n\t\t\t\t\t{#each Object.entries(Locale.Languages) as [key, value]}\r\n\t\t\t\t\t\t<Combobox.Item value={key}>\r\n\t\t\t\t\t\t\t<span class=\"size-5 shrink-0\">\r\n\t\t\t\t\t\t\t\t<ImageLoader class=\"size-5\" src=\"/images/flags/{Locale.to3166(key)}.svg\" alt={value} />\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t{value}\r\n\t\t\t\t\t\t</Combobox.Item>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Combobox.Content>\r\n\t\t\t</Combobox.Root>",
-      "after": "\t\t\t<Input type=\"text\" bind:value={draft.language} placeholder=\"ta or pt-br\" maxlength={5} required {disabled} />\r\n\t\t\t<p class=\"text-muted-foreground text-sm\">Public uploads use lowercase two-letter codes, optionally followed by a two-letter region. Imported labels remain exact; replace an unsupported code explicitly before saving a full upload draft or publishing.</p>"
+      "after": "\t\t\t<select aria-label=\"Language\" class=\"w-full rounded border p-2\" bind:value={draft.language} required {disabled}>\r\n\t\t\t\t<option value=\"\">Choose a language</option>\r\n\t\t\t\t{#if draft.language && (!Object.hasOwn(Locale.Languages, draft.language) || !/^[a-z]{2}(?:-[a-z]{2})?$/.test(draft.language))}<option value={draft.language}>Previously saved language ({draft.language})</option>{/if}\r\n\t\t\t\t{#each Object.entries(Locale.Languages).filter(([code]) => /^[a-z]{2}(?:-[a-z]{2})?$/.test(code)) as [code, name]}<option value={code}>{name}</option>{/each}\r\n\t\t\t</select>\r\n\t\t\t{#if draft.language && !/^[a-z]{2}(?:-[a-z]{2})?$/.test(draft.language)}<p class=\"text-muted-foreground text-sm\">Choose a supported language before saving or publishing. Your previously saved value has not been changed.</p>{/if}"
     },
     {
       "path": "src/lib/components/upload/UploadChapter.svelte",
@@ -460,7 +460,7 @@
       "label": "UTC scheduling fields remain frozen through dispatch and uncertainty",
       "count": 1,
       "before": "\t\t\t<UploadChapterPages bind:pages={uploadSession.relationships.files!} disabled={$mutex || !uploadSession} />",
-      "after": "\t\t\t<UploadChapterPages bind:pages={uploadSession.relationships.files!} disabled={$mutex || !uploadSession} />\r\n\t\t\t<fieldset class=\"space-y-2 rounded border p-3\" disabled={$mutex || uploadSession.can_mutate === false}>\r\n\t\t\t\t<legend>Publication timing</legend>\r\n\t\t\t\t<label class=\"flex gap-2\"><input type=\"checkbox\" bind:checked={scheduleEnabled} />Schedule this upload in UTC</label>\r\n\t\t\t\t{#if scheduleEnabled}\r\n\t\t\t\t\t<label for=\"publish-at-utc\">UTC date and time, including seconds</label>\r\n\t\t\t\t\t<input id=\"publish-at-utc\" type=\"text\" class=\"block w-full rounded border p-2\" bind:value={publishAt} placeholder=\"YYYY-MM-DDTHH:MM:SS\" aria-describedby=\"publish-at-help\" aria-invalid={!scheduleValid} />\r\n\t\t\t\t\t<p id=\"publish-at-help\">UTC only, not your local timezone. A future timestamp creates a private schedule. Past timestamps publish immediately according to server time. Metadata and pages become immutable once scheduled.</p>\r\n\t\t\t\t\t{#if !scheduleValid}<p role=\"status\">Enter a real UTC date and time in YYYY-MM-DDTHH:MM:SS format.</p>{/if}\r\n\t\t\t\t{:else}<p>Publish immediately using the existing publication checks.</p>{/if}\r\n\t\t\t</fieldset>"
+      "after": "\t\t\t<UploadChapterPages bind:pages={uploadSession.relationships.files!} disabled={$mutex || !uploadSession} />\r\n\t\t\t<fieldset class=\"space-y-2 rounded border p-3\" disabled={$mutex || uploadSession.can_mutate === false}>\r\n\t\t\t\t<legend>Publication timing</legend>\r\n\t\t\t\t<label class=\"flex gap-2\"><input type=\"checkbox\" bind:checked={scheduleEnabled} />Schedule for later</label>\r\n\t\t\t\t{#if scheduleEnabled}\r\n\t\t\t\t\t<label for=\"publish-at-utc\">Publishing date and time (UTC)</label>\r\n\t\t\t\t\t<input id=\"publish-at-utc\" type=\"text\" class=\"block w-full rounded border p-2\" bind:value={publishAt} placeholder=\"YYYY-MM-DDTHH:MM:SS\" aria-describedby=\"publish-at-help\" aria-invalid={!scheduleValid} />\r\n\t\t\t\t\t<p id=\"publish-at-help\">Use UTC, not your local time. Pages stay private until publishing starts. You cannot change pages or details after scheduling. A past time publishes immediately.</p>\r\n\t\t\t\t\t{#if !scheduleValid}<p role=\"status\">Enter a real UTC date and time in YYYY-MM-DDTHH:MM:SS format.</p>{/if}\r\n\t\t\t\t{:else}<p>Publish when this upload is ready.</p>{/if}\r\n\t\t\t</fieldset>"
     },
     {
       "path": "src/lib/components/upload/UploadChapter.svelte",

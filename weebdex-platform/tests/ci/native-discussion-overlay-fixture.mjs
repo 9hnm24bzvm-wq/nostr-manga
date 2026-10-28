@@ -68,6 +68,10 @@ export const catalogueMembershipManifestRows=[
   }
 ];
 export function assertDiscussionManifest(rows){
+ assert.equal(rows.length,63);
+ const latest='src/lib/components/LatestUpdatesGridEntry.svelte';
+ assert.deepEqual(rows.filter(row=>row.path===latest),[{path:latest,sha256:'89b8bbd1fc61d12159044baa534f6d04aea63257a109615bd0153a2cf9383688',public_api_base:'/api/v1',activation:'explicit staged gate; default off',reconstructed_unverified:true}]);
+ rows=rows.filter(row=>row.path!==latest);
  assert.equal(rows.length,62);
  const addedPaths=catalogueMembershipManifestRows.map(row=>row.path);
  assert.deepEqual(rows.filter(row=>addedPaths.includes(row.path)),catalogueMembershipManifestRows);

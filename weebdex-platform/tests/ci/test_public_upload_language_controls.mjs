@@ -1,3 +1,4 @@
+import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
 import { restoreUploadFinalization } from './upload-finalization-source-association.mjs';
 // Finite actual-composition/source-extracted locator seams only. No browser,
 // Svelte runtime, signer, HTTP, database, dependency install or service is used.
@@ -34,11 +35,9 @@ function compose(enabled) {
   return code;
 }
 const composed = compose(true);
-const inputs = [...composed.matchAll(/<Input\b[^>]*\bbind:value=\{draft\.language\}[^>]*\/>/g)];
-assert.equal(inputs.length, 1, 'Use the single real composed language binding');
+const inputs = [...composed.matchAll(/<select\b[^>]*\bbind:value=\{draft\.language\}[^>]*>/g)];
+assert.equal(inputs.length, 1, 'Use the single real composed language selector');
 const inputSource = inputs[0][0];
-const placeholder = inputSource.match(/\bplaceholder="([^"]+)"/)[1];
-const inputType = inputSource.match(/\btype="([^"]+)"/)[1];
 
 function block(text, start, end) {
   const at = text.indexOf(start); assert.ok(at >= 0); assert.equal(text.indexOf(start, at + start.length), -1);
@@ -57,18 +56,18 @@ function harness(options = {}, text = source) {
   const missing = { count: async () => 0, filter() { return this; } };
   const input = {
     count: async () => options.duplicate ? 2 : options.missing || ++countReads <= (options.attachDelay ?? 0) ? 0 : 1,
-    getAttribute: async name => { assert.equal(name, 'type'); return options.inputType ?? inputType; },
+    getAttribute: async name => { assert.equal(name, 'aria-label'); return options.inputLabel ?? 'Language'; },
     isEnabled: async () => !options.disabled && ++enabledReads > (options.enableDelay ?? 0),
-    async fill(value) {
+    async selectOption({value}) {
       if (options.fillFailure) throw options.fillFailure;
       state.fills.push(value); if (!options.ignoreFill) state.value = value;
     },
     inputValue: async () => state.value,
   };
   const panel = {
+    getByLabel(name, settings) { assert.equal(name, 'Language'); assert.deepEqual(settings, { exact: true }); return input; },
     getByPlaceholder(name, settings) {
       assert.deepEqual(settings, { exact: true });
-      if (name === placeholder) return input;
       assert.ok(['Chapter Name', 'Chapter No.'].includes(name));
       return { inputValue: async () => name === 'Chapter Name' ? options.title ?? 'Synthetic public upload recovery' : options.chapter ?? '9001' };
     },
@@ -87,29 +86,23 @@ function harness(options = {}, text = source) {
     restoredMetadata: actualFunction(text, env, 'restoredMetadata', metadataBlock) };
 }
 
-test('exact active public composition is a code Input; the disabled public profile retains its native Combobox', () => {
+test('current public composition names languages and preserves imported values while disabled mode retains native Combobox', () => {
   assert.equal(hash(original), 'c94de7465c23c046f6277dae37266b845b62ba8c5097980a3629014f6f3d7ff9');
-  assert.equal(hash(composed), 'ec72abd0e8bb8ccc8925fcf45e65c963c0f1ce53b2fdc7f964bd4c8fb13bde63');
-  assert.equal(placeholder, 'ta or pt-br'); assert.equal(inputType, 'text');
-  assert.match(inputSource, /maxlength=\{5\} required \{disabled\}/);
-  assert.doesNotMatch(composed, /<(?:Combobox|Select)\./);
+  assert.match(inputSource, /aria-label="Language"/); assert.match(inputSource, /required \{disabled\}/);
+  assert.match(composed, /Object.entries\(Locale.Languages\)/); assert.match(composed, /Previously saved language/);
   assert.match(compose(false), /<Combobox\.Root type="single" bind:value=\{draft\.language\}/);
-  assert.doesNotMatch(compose(false), /placeholder="ta or pt-br"/);
-  const canonicalInput = read('frontend/src/lib/components/ui/input/input.svelte');
-  const parity = JSON.parse(read('test-evidence/frontend/source-parity.json'));
-  assert.equal(hash(canonicalInput), parity.files.find(row => row.path === 'src/lib/components/ui/input/input.svelte').source_sha256);
-  assert.match(canonicalInput, /<input[\s\S]*\{type\}\s*bind:value\s*\{\.\.\.restProps\}/);
 });
 
-test('apart from exact finalization successor, only language controls differ from run40133800331', () => {
-  const reverted = restoreUploadFinalization(source).replace(englishBlock(source), englishBlock(baseline)).replace(metadataBlock(source), metadataBlock(baseline));
+test('exact pre-selector UX predecessor preserves finalization and language comparison to run40133800331', () => {
+  const predecessor = restoreReaderUxPredecessor('weebdex-platform/scripts/public-upload-recovery-browser.mjs',source);
+  const reverted = restoreUploadFinalization(predecessor).replace(englishBlock(predecessor), englishBlock(baseline)).replace(metadataBlock(predecessor), metadataBlock(baseline));
   assert.equal(hash(reverted), '2c1edd5124418e1fb7c1d8a50e93f16aa2bc10bcbb42e7512f7dc2a47392975d');
   for (const code of [englishBlock(source), metadataBlock(source)]) {
     assert.doesNotMatch(code, /select-trigger|select-content|select-item|\.evaluate\(|dispatchEvent|fetch\(|request\(|force:/);
   }
 });
 
-for (const options of [{}, { attachDelay: 3, enableDelay: 2 }]) test('real english action fills the exact code input after bounded readiness ' + JSON.stringify(options), async () => {
+for (const options of [{}, { attachDelay: 3, enableDelay: 2 }]) test('real english action selects the exact language value after bounded readiness ' + JSON.stringify(options), async () => {
   const h = harness(options); await h.english();
   assert.deepEqual(h.state.fills, ['en']); assert.equal(h.state.value, 'en');
   assert.deepEqual(h.state.marks, ['language']); assert.equal(h.state.routeChecks, 1);
@@ -123,8 +116,8 @@ test('duplicate input fails closed before a fill', async () => {
   const h = harness({ duplicate: true }); await assert.rejects(h.english(), error => error.code === 'UPLOAD_UI_DUPLICATE_CONTROL');
   assert.deepEqual(h.state.fills, []); assert.equal(h.ticks(), 0);
 });
-test('an unexpected input type is not used', async () => {
-  const h = harness({ inputType: 'password' }); await assert.rejects(h.english(), error => error.code === 'ERR_ASSERTION');
+test('an unexpected control label is not used', async () => {
+  const h = harness({ inputLabel: 'Password' }); await assert.rejects(h.english(), error => error.code === 'ERR_ASSERTION');
   assert.deepEqual(h.state.fills, []);
 });
 test('the genuine fill must actually change the observed input value', async () => {

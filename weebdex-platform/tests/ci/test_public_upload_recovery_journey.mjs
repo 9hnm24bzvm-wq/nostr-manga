@@ -82,7 +82,7 @@ for(const state of [{receiptStatus:'unavailable'},{receiptStatus:'available',pub
 test('missing committed receipt status cannot borrow a completion title',()=>{assert.throws(()=>assertUploadCompletion('Upload request accepted',{}));});
 for(const changed of [false,true])test(`source-extracted restored metadata observes actual field values, changed=${changed}`,async()=>{
   const source=fs.readFileSync(new URL('../../scripts/public-upload-recovery-browser.mjs',import.meta.url),'utf8'),token='async function restoredMetadata() {';const at=source.indexOf(token);assert.ok(at>0);const body=source.slice(at+token.length,source.indexOf('\n  async function visibleCompletion',at)).trim();assert.ok(body.endsWith('}'));
-  const p={getByPlaceholder:(name,settings)=>{assert.equal(settings.exact,true);assert.ok(['Chapter Name','Chapter No.','ta or pt-br'].includes(name));return {inputValue:async()=>name==='Chapter Name'?'Synthetic public upload recovery':name==='ta or pt-br'?'en':changed?'changed':'9001'};}};
+  const p={getByPlaceholder:(name,settings)=>{assert.equal(settings.exact,true);assert.ok(['Chapter Name','Chapter No.'].includes(name));return {inputValue:async()=>name==='Chapter Name'?'Synthetic public upload recovery':changed?'changed':'9001'};},getByLabel:(name,settings)=>{assert.equal(name,'Language');assert.equal(settings.exact,true);return {inputValue:async()=>'en'};}};
   const until=async(read,valid)=>{const value=await read();assert.equal(valid(value),true);return value;};const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;const pending=new AsyncFunction('until','panel','assertUploadRoute','mark',body.slice(0,-1))(until,async()=>p,()=>{},()=>{});if(changed)await assert.rejects(pending);else await pending;
 });
 

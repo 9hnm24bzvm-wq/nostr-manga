@@ -13,7 +13,7 @@ function removal(f,mode){assert.equal(f.writes.length,1);const call=f.writes[0],
 test('actual ordinary dialog Cancel closes without any command or catalogue read',async()=>{
  const f=await render();try{
   const reads=f.requests.length;await click(f,'Request chapter removal');
-  assert.match(f.host.querySelector('[role=alertdialog]').textContent,/remains visible until approval/);
+  assert.match(f.host.querySelector('[role=alertdialog]').textContent,/(?:stays|remains) visible until approval/);
   await click(f,'Cancel');assert.equal(f.host.querySelector('[role=alertdialog]'),null);
   assert.equal(f.writes.length,0);assert.equal(f.requests.length,reads);
  }finally{await f.close();}
@@ -24,13 +24,13 @@ test('actual ordinary confirmation submits captured review after same-account se
   f.state.roles=['moderator'];f.state.permissions.push('chapter.remove');confirm.click();confirm.click();await settle();
   removal(f,'request-review');assert.equal(f.host.querySelector('[role=alertdialog]'),null);
   gate.release();await settle();assert.match(f.host.textContent,/awaiting instance moderator review/);
-  assert.match(f.host.textContent,/remains visible until approval/);assert.doesNotMatch(f.host.textContent,/approved hiding/);
+  assert.match(f.host.textContent,/(?:stays|remains) visible until approval/);assert.doesNotMatch(f.host.textContent,/approved hiding/);
  }finally{gate.release();await f.close();}
 });
 test('actual moderator confirmation submits explicit approval and confirms only204 hide',async()=>{
  const f=await render(moderator());try{
   f.state.customResponse=hidden();await click(f,'Approve instance hide');
-  assert.match(f.host.querySelector('[role=alertdialog]').textContent,/immediately/);
+  assert.match(f.host.querySelector('[role=alertdialog]').textContent,/site now/);
   await click(f,'Approve and hide on this instance');removal(f,'approve-hide');
   assert.match(f.host.textContent,/approved hiding this chapter/);assert.equal(button(f.host,'Approve instance hide').disabled,true);
  }finally{await f.close();}

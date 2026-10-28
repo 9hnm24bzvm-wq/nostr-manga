@@ -1,3 +1,4 @@
+import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
 // Execute the actual five-stage route and Chapter API composition in Node VM.
 // Catalogue replies and native cookie/grant reads are explicit stand-ins. The
 // page/layout/editor associations are exact source checks, not a DOM/browser,
@@ -115,14 +116,14 @@ test('fully composed edit layout/page reach the existing keyed signed child and 
   assert.match(page, /import PublicChapterEditor from "\$publicApi\/PublicChapterEditor.svelte"/);
   assert.match(page, /\{#key data.chapter.id\}<PublicChapterEditor initial=\{data.chapter\} \/>\{\/key\}/);
   const editor = fs.readFileSync(path.join(root, 'platform-integrations/public-api/PublicChapterEditor.svelte'));
-  assert.equal(createHash('sha256').update(restoreReviewedLanguageSource(editor.toString(), 'chapterEditor')).digest('hex'), 'b368c2419b3eb1babe92bc3c13d274265249cf7c2200f63fb43415467689d328');
+  assert.equal(createHash('sha256').update(restoreReviewedLanguageSource(restoreReaderUxPredecessor('weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte',editor.toString()), 'chapterEditor')).digest('hex'), 'b368c2419b3eb1babe92bc3c13d274265249cf7c2200f63fb43415467689d328');
   // Signed editor affordance successor retains exact source binding.
   assert.match(editor.toString(), /owner\.chapterAccess\(chapter\.version\)/);
   assert.match(editor.toString(), /loadUploadAccount\(current\)/);
   assert.match(editor.toString(), /publicUploadOwner\(\(\) => initial.id, account, 'chapter', 'caller'\)/);
   assert.match(editor.toString(), /removalChoice = approvesHide \? 'approve-hide' : 'request-review'/);
-  assert.match(editor.toString(), /Original signed source metadata and protocol image pages are immutable/);
-  assert.match(editor.toString(), /Eligible local chapter pages use separate private staging below/);
+  assert.match(editor.toString(), /Original publications and their pages cannot be changed/);
+  assert.match(editor.toString(), /Where page editing is available, prepare your changes privately below/);
   assert.match(editor.toString(), /<PublicChapterPagesEditor \{chapter\} \{owner\} \{access\}/);
   assert.match(editor.toString(), /onDestroy\(\(\) => \{ disposed = true; owner\?\.dispose\(\); \}\)/);
 });

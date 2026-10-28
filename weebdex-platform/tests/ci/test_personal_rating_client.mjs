@@ -18,3 +18,9 @@ test('signer/view/service/catalogue changes stop deferred or next requests at ca
 
 test('a pending rating command cannot race a second command for the same captured version',async()=>{const f=fixture(),client=await f.load();await client.reload();let release;f.hold(new Promise(resolve=>release=resolve));const pending=client.save(8);await assert.rejects(()=>client.save(9),error=>error.status===409);release();await pending;assert.equal(f.calls.filter(row=>row.method==='POST').length,1);assert.equal(client.view().rating,8);});
 test('known rating CAS rejects a contradictory changed flag even when receipt version arithmetic matches that flag',async()=>{for(const same of[false,true]){const f=fixture({rating:8,version:4,writeTransform:body=>({...body,nostr:{...body.nostr,changed:same,version:same?5:4}})}),client=await f.load();await client.reload();await assert.rejects(()=>client.save(same?8:9));assert.equal(client.view().rating,8);assert.equal(client.view().version,4);assert.equal(client.view().needsRecheck,true);}});
+
+test('403 permission refusal does not falsely diagnose an unbound identity', async () => {
+ const f = fixture({ status: 403 }), client = await f.load(); await client.reload();
+ await assert.rejects(() => client.save(8), error => { assert.equal(error.status, 403); assert.match(error.message, /does not have permission/); assert.doesNotMatch(error.message, /not bound|unbound/); return true; });
+ assert.equal(client.view().needsRecheck, true); assert.equal(client.view().rating, null); assert.equal(f.calls.filter(row => row.method === 'POST').length, 1);
+});

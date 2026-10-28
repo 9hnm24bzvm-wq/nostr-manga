@@ -1,3 +1,4 @@
+import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
 import { restoreUploadFinalization } from './upload-finalization-source-association.mjs';
 import { restoreCancellationObserver } from './upload-cancel-observer-association.mjs';
 // Finite source and injected filesystem tests. No package import or browser.
@@ -93,7 +94,7 @@ test('reused qualified acquisition, driver and native acceptance have exact unch
     'weebdex-platform/scripts/browser-acceptance.mjs': '7238ae50b559c54adacb61c95d17fb852ffe8b1ea9fb7a35a6fead0bd00eed8a',
     'weebdex-platform/scripts/public-upload-recovery-browser.mjs': '88f4ecc94ecd31cd4cb6c033e4be22d398c39f538e6b021b798b9baa00d2d95a',
   };
-  for (const [file, expected] of Object.entries(pins)) assert.equal(sha(file.endsWith('/public-upload-recovery-browser.mjs') ? restoreUploadFinalization(read(file)) : read(file)), expected, file);
+  for (const [file, expected] of Object.entries(pins)) assert.equal(sha(file.endsWith('/public-upload-recovery-browser.mjs') ? restoreUploadFinalization(restoreReaderUxPredecessor(file,read(file))) : read(file)), expected, file);
   const freeze = JSON.parse(read('.ci/native-upload-counterfactual/source-freeze-current.json'));
   const observer = freeze.files.find(row => row.path.endsWith('/public-upload-recovery-observer.mjs'));
   assert(observer); assert.equal(sha(restoreCancellationObserver(read(observer.path))), observer.sha256);

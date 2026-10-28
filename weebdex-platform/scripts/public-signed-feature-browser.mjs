@@ -78,8 +78,8 @@ export async function runPublicSignedFeatures(h) {
       await button(page, 'Report'); const timeOrigin = await page.evaluate(() => performance.timeOrigin);
       await click(unique(page.locator('a[href="/settings"]:visible'))); await until(() => new URL(page.url()).pathname, path => path === '/settings/preferences');
       await click(unique(page.getByRole('link', { name: 'Public identity', exact: true })));
-      const identity = page.locator('[data-protocol-identity-panel]'); await click(button(identity, 'Create or paste a key'));
-      const setup = page.locator('[data-identity-setup]'); await click(button(setup, 'Paste an existing key'));
+      const identity = page.locator('[data-protocol-identity-panel]'); await click(button(identity, 'Set up public identity'));
+      const setup = page.locator('[data-identity-setup]'); await click(button(setup, 'I already have a private key'));
       const input = await unique(setup.getByLabel('Private key (nsec or hex)', { exact: true })); assert.equal(await input.getAttribute('type'), 'password'); await input.fill(secretHex, { timeout: left() });
       await click(button(setup, 'Use this key')); await setup.getByRole('checkbox', { name: 'I have saved my private key somewhere safe.', exact: true }).check({ timeout: left() });
       await click(button(setup, 'Use this key for this session')); await click(button(setup, 'Done'));
