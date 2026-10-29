@@ -418,5 +418,33 @@
     "before": "init.lang = structuredClone($prefs.languages);",
     "after": "init.lang = searchLanguageCodes($prefs.languages);",
     "count": 1
+  },
+  {
+    "path": "src/lib/components/Guidelines.svelte",
+    "label": "optional current upload requirements link for shared guidelines",
+    "before": "<div class=\"typography space-y-2\">",
+    "after": "<script lang=\"ts\">\r\n\tlet { uploadRequirementsHref }: { uploadRequirementsHref?: string } = $props();\r\n</script>\r\n\r\n<div class=\"typography space-y-2\">",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/Guidelines.svelte",
+    "label": "guidelines defer formats and budgets to current authoritative preflight",
+    "before": "\t<div>\r\n\t\t<strong>File Technical Limits:</strong>\r\n\t\t<ul>\r\n\t\t\t<li>Allowed Formats: JPEG, PNG, GIF.</li>\r\n\t\t\t<li>Image Dimensions: Max 10,000 x 10,000 pixels.</li>\r\n\t\t\t<li>File Size: Max 25 MB per image; Max 500 MB per chapter.</li>\r\n\t\t</ul>\r\n\t</div>",
+    "after": "\t<div>\r\n\t\t<strong>Current file requirements:</strong>\r\n\t\t<ul>\r\n\t\t\t<li>Before selecting pages, check <strong>Publishing access</strong> on the title\u2019s upload page for accepted formats and current file and chapter limits.</li>\r\n\t\t\t<li>Requirements depend on this site\u2019s publishing configuration. Selected pages are checked against the current requirements; review any rejected entries before continuing.</li>\r\n\t\t</ul>\r\n\t\t{#if uploadRequirementsHref}<p><a class=\"underline\" href={uploadRequirementsHref}>Check current publishing requirements</a></p>{/if}\r\n\t</div>",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "current publishing access has a direct guidelines anchor",
+    "before": "<section aria-label=\"Publishing access\"",
+    "after": "<section id=\"publishing-access\" aria-label=\"Publishing access\"",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "embedded guidelines link to the live publishing access panel",
+    "before": "<Guidelines />",
+    "after": "<Guidelines uploadRequirementsHref=\"#publishing-access\" />",
+    "count": 1
   }
 ]

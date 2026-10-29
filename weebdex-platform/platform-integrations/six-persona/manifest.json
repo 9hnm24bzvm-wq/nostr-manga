@@ -3,8 +3,8 @@
   "baseline_commit_local": "9a70b771bfa8cb1b20f82c926f65956b93c2d5e6",
   "baseline_tree": "a035b00056557f83348db13c6288a680fd35aca8",
   "qualification": "Source composition only; no runtime, browser or release acceptance inherited.",
-  "patch_count": 90,
-  "patch_registry_sha256": "52682b68f79f493ff0b11b7fb3717d1b8d083bd2e6f2044baa129d420bbdb703",
+  "patch_count": 101,
+  "patch_registry_sha256": "fdeb615c5434e20e382ef755c8c5216da5a10eb649ba06162256c947f48d08a6",
   "rows": [
     {
       "path": "src/lib/Locale.ts",
@@ -23,6 +23,18 @@
       "original_sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5",
       "input_sha256": "0239cb7428b70b00ccb95a0e24cf0fae223f3dcbe07093d255c4e3c043b564e0",
       "output_sha256": "5e568ed4c8d7aabf68cb4d394ab0d8c9961b8e6daf113b89e40474370075b09a"
+    },
+    {
+      "path": "src/lib/components/ChapterFeed.svelte",
+      "original_sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+      "input_sha256": "b260d7176119a856ae40ad519d318b8b5a64f5b821e288995598844a512674ca",
+      "output_sha256": "c431787ea6bab1fab19fc2d0b7e1c9f58eed7e00a49f0fbfbd1ffc17e45c78c1"
+    },
+    {
+      "path": "src/lib/components/Guidelines.svelte",
+      "original_sha256": "123c7a4cf7a9c774f0abcc92d3f754074d3b97784779ad72590f889bc5f8ce4c",
+      "input_sha256": "123c7a4cf7a9c774f0abcc92d3f754074d3b97784779ad72590f889bc5f8ce4c",
+      "output_sha256": "db2be71192b2c01ffba13e69dc80f07e82328a4e8871b2c2148e7d43df4f1a86"
     },
     {
       "path": "src/lib/components/MangaSearchFilter.svelte",
@@ -46,7 +58,7 @@
       "path": "src/lib/components/upload/UploadChapter.svelte",
       "original_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
       "input_sha256": "cd7c05c772868f13e30268aada620ed994ba8a760a41cf4de8f97f3d9c45449a",
-      "output_sha256": "3e29cca73c66e66edf28cd4fe95f7f9ab7e2c9d226df0fe2edb97ca032607a92"
+      "output_sha256": "4914120ab8ed9aad951f0214be573465ee0d62bcee282e294f52db2c7e9efe4d"
     },
     {
       "path": "src/lib/components/upload/UploadChapterGroups.svelte",
@@ -77,6 +89,12 @@
       "original_sha256": "5cf47bdcf2ec5f9c02778f5b2bf646f4d4c4a2957e9a61b94c8e939d0960fa14",
       "input_sha256": "5cf47bdcf2ec5f9c02778f5b2bf646f4d4c4a2957e9a61b94c8e939d0960fa14",
       "output_sha256": "a00d34db4ef55dca2d34b67bca20a37064668a81b2151910ce5bbbeb3c598a71"
+    },
+    {
+      "path": "src/routes/(app)/auth/logout/+page.svelte",
+      "original_sha256": "fa75f6f66212865d2fe460c5160a33f22c35a9168401161bcdbcd04bf5c3e1e7",
+      "input_sha256": "cc449eb2105cba8360ebf9191f7b0b64a98b9d6809d98c0a2cd6b90a2a6c1df1",
+      "output_sha256": "ac9066d490567095349b3ffed41c0971feecb9663a0846ab829c8dc345909c4e"
     },
     {
       "path": "src/routes/(app)/author/[id]/settings/+layout.svelte",
@@ -161,6 +179,24 @@
       "original_sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e",
       "input_sha256": "106bd6d2d0d9cc2faf87a1cf6d358f6c360c1ad47bf83c2159030e79c4eac2da",
       "output_sha256": "b89d70dee97eb06e02a2b4142e641bedff1f4e1d6a7f427d4d2048dec14fb17f"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/+page.svelte",
+      "original_sha256": "8e42628444259720812e98f08678248bfdeaedc681154e34ae328641ae834a05",
+      "input_sha256": "8e42628444259720812e98f08678248bfdeaedc681154e34ae328641ae834a05",
+      "output_sha256": "5f0075c39c901e90bd448ec131398e8da96eea29a10cd64b8570b4ea62db4914"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/+page.ts",
+      "original_sha256": "f766c71a4ee390b02e835747361caf935a7170f20b457f09242b23f0ea1e0a05",
+      "input_sha256": "5353a60056d0eb3d3c926f64eb15c97a80b654220fd3d8e2b3ec0352b050cbb0",
+      "output_sha256": "58241586fbdb6d9f04150b3bf3fbed9621a7e76711d5fba0df41aac9a0d10c36"
+    },
+    {
+      "path": "src/routes/(app)/title/[id]/[slug]/+page.svelte",
+      "original_sha256": "45ad2a97778a646a142eefb7b54bfef851e02b1c3b3af5ce958d9e89b250eebb",
+      "input_sha256": "45ad2a97778a646a142eefb7b54bfef851e02b1c3b3af5ce958d9e89b250eebb",
+      "output_sha256": "b7a33701cc8c6d1de58ad28cb5b0c32751d3dfc7cbefa13643c3ef712147c149"
     },
     {
       "path": "src/routes/(app)/user/[id]/settings/+page.svelte",

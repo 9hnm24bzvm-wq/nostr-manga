@@ -632,6 +632,55 @@ async fn real_account_library_cas_privacy_history_progress_lists_and_legacy_writ
     .await;
     assert_eq!(f.revision().await, before);
     assert_eq!(f.get(&path).await["data"]["name"], "Ordered list");
+    // The reader's Follow control now toggles updates through this exact CAS
+    // route, never the destructive membership DELETE route. Preserve the whole
+    // saved record (except notification/update time), list placement and reading.
+    f.command(
+        "POST",
+        &follow,
+        json!({"status":"reading","notification":true}),
+        200,
+    )
+    .await;
+    let preserved_sql = "SELECT jsonb_build_object('follow',(SELECT to_jsonb(f)-'notification'-'updated_at' FROM platform.library_manga_follows f WHERE user_id='NativeActor' AND manga_id='NativeMng1'),'lists',(SELECT jsonb_agg(to_jsonb(m) ORDER BY m.list_id,m.manga_id) FROM platform.library_list_members m JOIN platform.library_lists l ON l.id=m.list_id WHERE l.user_id='NativeActor'),'progress',(SELECT jsonb_agg(to_jsonb(p) ORDER BY chapter_id) FROM platform.library_chapter_progress p WHERE user_id='NativeActor'),'history',(SELECT jsonb_agg(to_jsonb(h) ORDER BY chapter_id) FROM platform.library_chapter_history h WHERE user_id='NativeActor'))";
+    let db = f.state.db.client().await.unwrap();
+    let preserved: Value = db.query_one(preserved_sql, &[]).await.unwrap().get(0);
+    for notification in [false, true] {
+        let observed = f.get(&format!("/follows/state?ids[]={}", f.manga)).await;
+        assert_eq!(observed["data"][0]["status"], "reading");
+        let receipt = f.call("POST", &write_path, Some("NativeActor"), Some(json!({"expectedAccountId":f.account,"revision":observed["revision"],"status":"reading","notification":notification})), 200).await;
+        assert_eq!(receipt["data"]["saved"], true);
+        assert_eq!(receipt["data"]["status"], "reading");
+        assert_eq!(receipt["data"]["notification"], notification);
+        let after: Value = db.query_one(preserved_sql, &[]).await.unwrap().get(0);
+        assert_eq!(
+            after, preserved,
+            "updates toggle changed saved reading, privacy, list placement, history or progress"
+        );
+    }
+    // A status edit between review and submit cannot be overwritten by an old
+    // updates command, including when both operations belong to the same user.
+    let stale_updates_revision = f.revision().await;
+    f.command(
+        "POST",
+        &follow,
+        json!({"status":"completed","notification":true}),
+        200,
+    )
+    .await;
+    f.call("POST", &write_path, Some("NativeActor"), Some(json!({"expectedAccountId":f.account,"revision":stale_updates_revision,"status":"reading","notification":false})), 409).await;
+    let after_conflict = f.get(&format!("/follows/state?ids[]={}", f.manga)).await;
+    assert_eq!(after_conflict["data"][0]["status"], "completed");
+    assert_eq!(after_conflict["data"][0]["notification"], true);
+    f.command(
+        "POST",
+        &follow,
+        json!({"status":"reading","notification":true}),
+        200,
+    )
+    .await;
+    drop(db);
+
     // Account and session locks fence every private read/write and fail promptly.
     let mut blocker = f.state.db.client().await.unwrap();
     let hold = blocker.transaction().await.unwrap();

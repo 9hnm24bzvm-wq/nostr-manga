@@ -101,6 +101,64 @@ fn flow_id(flow: &Value) -> &str {
 const ORIGIN: &str = "https://auth-test.example.invalid";
 const FIXTURE_PASSWORD: &str = "isolated-auth-test-password";
 
+#[tokio::test]
+#[ignore = "Requires owned isolated PostgreSQL cluster; use scripts/run-auth-tests.sh"]
+async fn native_logout_post_no_referrer_origin_session_and_replay_fences() {
+    let state = isolated_state().await;
+    let app = weebdex_platform::router::router(state.clone());
+    let mut browser = Browser::default();
+    let registered = registration(&app, &mut browser, "logout-post@example.invalid", "logout-post-fixture").await;
+    let original_session = registered["session"]["id"].as_str().unwrap().to_owned();
+    let account = registered["session"]["identity"]["id"].as_str().unwrap().to_owned();
+    browser.expected_account = Some(account.clone());
+    let (status, flow) = browser.request(&app, Method::GET, "/auth/self-service/logout/browser", None, None).await;
+    assert_eq!(status, StatusCode::OK);
+    assert!(flow["session_id"] == original_session && flow["account_id"] == account);
+    let token = flow["logout_token"].as_str().unwrap().to_owned();
+    let command = json!({"token":token,"expected_session_id":original_session});
+    // This reproduces no-referrer GET refusal without weakening its CSRF gate.
+    let old_url = format!("/auth/self-service/logout?token={token}");
+    assert_eq!(browser.request(&app, Method::GET, &old_url, None, None).await.0, StatusCode::FORBIDDEN);
+    for origin in [None, Some("https://other.example.invalid")] {
+        assert_eq!(browser.request(&app, Method::POST, "/auth/self-service/logout", Some(command.clone()), origin).await.0, StatusCode::FORBIDDEN);
+    }
+    for invalid in [json!({"token":token}), json!({"token":token,"expected_session_id":original_session,"unknown":true}), json!({"token":"x".repeat(1100),"expected_session_id":original_session})] {
+        assert_eq!(browser.request(&app, Method::POST, "/auth/self-service/logout", Some(invalid), Some(ORIGIN)).await.0, StatusCode::BAD_REQUEST);
+    }
+    assert_eq!(browser.request(&app, Method::POST, "/auth/self-service/logout", Some(json!({"token":token,"expected_session_id":"another-session"})), Some(ORIGIN)).await.0, StatusCode::CONFLICT);
+    assert_eq!(browser.request(&app, Method::GET, "/api/auth/check", None, None).await.0, StatusCode::OK);
+    assert_eq!(state.db.client().await.unwrap().execute("UPDATE platform.auth_flows SET created_at=clock_timestamp()-interval '2 seconds',expires_at=clock_timestamp()-interval '1 second' WHERE kind='logout' AND csrf_token=$1", &[&token]).await.unwrap(), 1);
+    assert_eq!(browser.request(&app, Method::POST, "/auth/self-service/logout", Some(command), Some(ORIGIN)).await.0, StatusCode::FORBIDDEN);
+    let (_, stale) = browser.request(&app, Method::GET, "/auth/self-service/logout/browser", None, None).await;
+    // A same-account fresh login replaces the session, not the public account.
+    let (status, login) = browser.request(&app, Method::GET, "/auth/self-service/login/browser?refresh=true", None, None).await;
+    assert_eq!(status, StatusCode::OK);
+    let (status, refreshed) = browser.request(&app, Method::POST, &format!("/auth/self-service/login?flow={}", flow_id(&login)), Some(json!({"method":"password","csrf_token":csrf(&login),"identifier":"logout-post-fixture","password":FIXTURE_PASSWORD})), Some(ORIGIN)).await;
+    assert_eq!(status, StatusCode::OK);
+    let new_session = refreshed["session"]["id"].as_str().unwrap().to_owned();
+    assert!(new_session != original_session);
+    assert_eq!(browser.request(&app, Method::POST, "/auth/self-service/logout", Some(json!({"token":stale["logout_token"],"expected_session_id":original_session})), Some(ORIGIN)).await.0, StatusCode::CONFLICT);
+    assert_eq!(browser.request(&app, Method::POST, "/auth/self-service/logout", Some(json!({"token":stale["logout_token"],"expected_session_id":new_session})), Some(ORIGIN)).await.0, StatusCode::FORBIDDEN);
+    assert_eq!(browser.request(&app, Method::GET, "/api/auth/check", None, None).await.0, StatusCode::OK);
+    let mut other = Browser::default();
+    let other_account = registration(&app, &mut other, "logout-other@example.invalid", "logout-other-fixture").await;
+    other.expected_account = Some(account);
+    assert_eq!(other.request(&app, Method::POST, "/auth/self-service/logout", Some(json!({"token":stale["logout_token"],"expected_session_id":new_session})), Some(ORIGIN)).await.0, StatusCode::CONFLICT);
+    other.expected_account = Some(other_account["session"]["identity"]["id"].as_str().unwrap().to_owned());
+    let (_, fresh) = other.request(&app, Method::GET, "/auth/self-service/logout/browser", None, None).await;
+    let confirmed = json!({"token":fresh["logout_token"],"expected_session_id":fresh["session_id"]});
+    let mut copied_cookie = other.clone();
+    // Browser.request adds Origin only; no Referer is present, as with private pages.
+    assert_eq!(other.request(&app, Method::POST, "/auth/self-service/logout", Some(confirmed.clone()), Some(ORIGIN)).await.0, StatusCode::OK);
+    assert_eq!(other.request(&app, Method::GET, "/api/auth/check", None, None).await.0, StatusCode::UNAUTHORIZED);
+    assert_eq!(copied_cookie.request(&app, Method::GET, "/auth/sessions/whoami", None, None).await.0, StatusCode::UNAUTHORIZED);
+    assert_eq!(copied_cookie.request(&app, Method::POST, "/auth/self-service/logout", Some(confirmed), Some(ORIGIN)).await.0, StatusCode::UNAUTHORIZED);
+    // The legacy same-origin GET protocol remains compatible for old clients.
+    let (_, legacy) = browser.request(&app, Method::GET, "/auth/self-service/logout/browser", None, None).await;
+    assert_eq!(browser.request(&app, Method::GET, &format!("/auth/self-service/logout?token={}", legacy["logout_token"].as_str().unwrap()), None, Some(ORIGIN)).await.0, StatusCode::OK);
+    assert_eq!(browser.request(&app, Method::GET, "/api/auth/check", None, None).await.0, StatusCode::UNAUTHORIZED);
+}
+
 async fn bearer_status(
     app: &Router,
     key: &str,

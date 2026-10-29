@@ -112,4 +112,40 @@ export const contributorRoutePatches = [
     "after": "<script lang=\"ts\">let {children}=$props();</script>\n{@render children?.()}\n",
     "count": 1
   }
+,
+{
+  "path": "src/routes/(app)/title/[id]/+page.ts",
+  "label": "private-draft-preview-loader-mode",
+  "before": "return { id: response.body.id, manga: response.body as unknown as Manga };",
+  "after": "return { id: response.body.id, manga: response.body as unknown as Manga, draftPreview: true };",
+  "count": 1
+},
+{
+  "path": "src/routes/(app)/title/[id]/+page.svelte",
+  "label": "private-draft-preview-import-id",
+  "before": "<script lang=\"ts\">",
+  "after": "<script lang=\"ts\">\r\n\timport PrivateDraftPreview from \"$publicApi/PrivateDraftPreview.svelte\";",
+  "count": 1
+},
+{
+  "path": "src/routes/(app)/title/[id]/+page.svelte",
+  "label": "private-draft-preview-branch-id",
+  "before": "\t\t{#if data.manga.relationships.thread}",
+  "after": "\t\t{#if data.draftPreview}\r\n\t\t\t<PrivateDraftPreview target={data.id} />\r\n\t\t{:else if data.manga.relationships.thread}",
+  "count": 1
+},
+{
+  "path": "src/routes/(app)/title/[id]/[slug]/+page.svelte",
+  "label": "private-draft-preview-import-slug",
+  "before": "<script lang=\"ts\">",
+  "after": "<script lang=\"ts\">\r\n\timport PrivateDraftPreview from \"$publicApi/PrivateDraftPreview.svelte\";",
+  "count": 1
+},
+{
+  "path": "src/routes/(app)/title/[id]/[slug]/+page.svelte",
+  "label": "private-draft-preview-branch-slug",
+  "before": "\t\t{#if data.manga.relationships.thread}",
+  "after": "\t\t{#if data.draftPreview}\r\n\t\t\t<PrivateDraftPreview target={data.id} />\r\n\t\t{:else if data.manga.relationships.thread}",
+  "count": 1
+}
 ];

@@ -24,7 +24,7 @@ const FLOW_LIFETIME: i64 = 600;
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/self-service/logout/browser", get(create_logout))
-        .route("/self-service/logout", get(update_logout))
+        .route("/self-service/logout", get(update_logout).post(update_logout_post))
         .route("/self-service/errors", get(flow_error))
         .route("/self-service/{kind}/browser", get(create))
         .route("/self-service/{kind}/flows", get(read))
@@ -1137,7 +1137,7 @@ async fn create_logout(
     .await?;
     let mut response = reply(
         StatusCode::OK,
-        json!({"logout_token":flow.csrf_token,"logout_url":format!("{}/auth/self-service/logout?token={}",state.config.public_origin.trim_end_matches('/'),flow.csrf_token)}),
+        json!({"logout_token":flow.csrf_token,"logout_url":format!("{}/auth/self-service/logout?token={}",state.config.public_origin.trim_end_matches('/'),flow.csrf_token),"session_id":current.session_id,"account_id":current.user_id}),
     );
     if let Some(browser) = browser {
         set_cookie(
@@ -1156,14 +1156,53 @@ async fn update_logout(
     Query(query): Query<FlowQuery>,
     headers: HeaderMap,
 ) -> Result<Response, FlowError> {
+    complete_logout(state, headers, query.token, None).await
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct LogoutCommand {
+    token: String,
+    expected_session_id: String,
+}
+
+async fn update_logout_post(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    body: Bytes,
+) -> Result<Response, FlowError> {
+    // POST is needed when private-page no-referrer policy prevents the legacy
+    // GET client from supplying a request source. Never weaken the origin check.
     principal::validate_browser_mutation(&state.config.public_origin, &headers)?;
-    let token = query
-        .token
+    if body.len() > 1024 || headers.get(header::CONTENT_TYPE).and_then(|v| v.to_str().ok()).and_then(|v| v.split(';').next()) != Some("application/json") {
+        return Err(ApiError::bad_request("A bounded JSON logout command is required").into());
+    }
+    let command: LogoutCommand = serde_json::from_slice(&body).map_err(|_| ApiError::bad_request("Invalid logout command"))?;
+    if command.expected_session_id.is_empty() || command.expected_session_id.len() > 128 {
+        return Err(ApiError::bad_request("The captured browser session is required").into());
+    }
+    complete_logout(state, headers, Some(command.token), Some(command.expected_session_id)).await
+}
+
+async fn complete_logout(
+    state: AppState,
+    headers: HeaderMap,
+    token: Option<String>,
+    expected_session_id: Option<String>,
+) -> Result<Response, FlowError> {
+    principal::validate_browser_mutation(&state.config.public_origin, &headers)?;
+    let token = token
         .filter(|t| t.len() == 43)
         .ok_or_else(|| ApiError::bad_request("Logout token is required"))?;
     let current = principal::optional_principal(&state, &headers)
         .await?
         .ok_or_else(ApiError::unauthorized)?;
+    if current.is_api_client {
+        return Err(ApiError::forbidden("Browser logout requires a browser session").into());
+    }
+    if expected_session_id.as_deref().is_some_and(|expected| expected != current.session_id) {
+        return Err(ApiError::conflict("The browser session changed; review sign out again").into());
+    }
     let browser = principal::cookie(&headers, BROWSER_COOKIE)
         .ok_or_else(|| ApiError::forbidden("Logout flow belongs to another browser"))?;
     let hash = crypto::digest(browser);

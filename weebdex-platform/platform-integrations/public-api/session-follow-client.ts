@@ -1,3 +1,4 @@
+import {loadSessionTitleUpdates} from './session-title-updates-client';
 // Instance-account membership is separate from anonymous device-library saves.
 import {createNativeAccountScope,nativeAccountError,type NativeAccountDependencies} from './native-account-scope';
 import {publicUuid,record,PublicApiContractError} from './validation';
@@ -6,6 +7,7 @@ export interface AccountFollowView{kind:AccountFollowKind;targetId:string;accoun
 function fail(message:string,status=502):never{throw new PublicApiContractError(message,status);}
 function integer(value:unknown,minimum=0){if(!Number.isSafeInteger(value)||Number(value)<minimum||Number(value)>2147483647)fail('Invalid persisted account-follow version');return Number(value);}
 export async function loadSessionFollow(kind:AccountFollowKind,input:string,nativeAccount:string,assertCurrent=()=>{},injected:Partial<NativeAccountDependencies>={}){
+ if(kind==='manga')return loadSessionTitleUpdates(input,nativeAccount,assertCurrent,injected);
  if(!['manga','group','user'].includes(kind))fail('Unsupported account-follow target',422);const targetId=publicUuid(input),scope=await createNativeAccountScope(nativeAccount,assertCurrent,injected,{requireVerified:false}),account={accountId:scope.account.id,username:scope.account.name,check:scope.check,request:scope.send};account.check();if(kind==='user'&&targetId===account.accountId){scope.dispose();fail('You cannot follow your own account.',400);}
  let state:AccountFollowView={kind,targetId,accountId:account.accountId,username:account.username,followed:false,needsRecheck:true},busy=false;const view=()=>Object.freeze({...state});
  function provenance(input:unknown){const body=record(input),nostr=record(body.nostr);if(body.result!=='ok'||nostr.scope!=='instance-account'||nostr.authentication!=='native-session'||nostr.source!=='persisted-native-account-follows'||nostr.versionSemantics!=='membership-change-revision'||nostr.kind!==kind||publicUuid(nostr.targetId)!==targetId||publicUuid(nostr.accountId)!==account.accountId)fail('The followed resource or bound account changed. Reload before trying again.',409);return nostr;}

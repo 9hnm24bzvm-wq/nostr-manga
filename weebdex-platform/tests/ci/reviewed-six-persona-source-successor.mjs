@@ -5,7 +5,7 @@ import * as baseline from './reviewed-card-spinner-source-successor.mjs';
 export {readReaderUxAssociation,readReaderUxFixpassAssociation,readerUxFixpassAssociationSha256,readTitleSpinnerSourceAssociation,titleSpinnerSourceAssociationSha256,readReaderFollowupSourceAssociation,readerFollowupSourceAssociationSha256,readCardSpinnerSourceAssociation,cardSpinnerSourceAssociationSha256} from './reviewed-card-spinner-source-successor.mjs';
 const metadata=fs.readFileSync(new URL('../../docs/fixtures/six-persona-source-association-20261028.json',import.meta.url));
 const hash=value=>createHash('sha256').update(value).digest('hex');
-export const sixPersonaSourceAssociationSha256='4e30007ee41c0c1ad2392c1c1821324e85c72dd6cf31a2498375388b14e95444';
+export const sixPersonaSourceAssociationSha256='76afadd3f0dc7eb7e02b53fbe5d802565d65eb371fac2bc92bcffe9d3d5803ff';
 export function readSixPersonaSourceAssociation(bytes=metadata){
  if(!Buffer.isBuffer(bytes)||hash(bytes)!==sixPersonaSourceAssociationSha256)throw Error('Unknown six-persona source association');
  const value=JSON.parse(bytes);if(value.baseline_tree!=='a035b00056557f83348db13c6288a680fd35aca8'||value.predecessor_association_sha256!==baseline.cardSpinnerSourceAssociationSha256)throw Error('Unknown six-persona predecessor');return value;

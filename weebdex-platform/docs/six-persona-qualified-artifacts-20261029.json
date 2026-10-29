@@ -1,33 +1,36 @@
 {
-  "status": "non-browser-qualified-main-browser-pending",
-  "qualified_code_local_commit": "5dfeb5d36c6165018494d5717a9b410fa791098e",
-  "qualified_code_remote_commit": "8c5f6bcf9d968dc4750d8b5dc3a09f020d7d839c",
-  "qualified_code_tree": "539e33fb193601c1e90bdedecb012b67efe9c9f6",
+  "status": "automated-authenticated-finding-successor-qualified-targeted-browser-pending",
+  "source_checkpoint": "The containing reviewed source commit; immutable delivery receipt records its exact commit and tree.",
+  "source_parent_commit": "c184ccef4cd66a0341be3cdae712c09922581a7f",
+  "source_association_sha256": "76afadd3f0dc7eb7e02b53fbe5d802565d65eb371fac2bc92bcffe9d3d5803ff",
+  "source_association_rows": 230,
+  "last_verified_remote_head": "4410d118368a1747f4074809580e43668aed3333",
+  "remote_publication_status": "This newer successor has not been published; prior14-path publication does not cover this payload.",
   "frontend": {
     "directory": "weebdex-platform/artifacts/frontend",
-    "manifest_sha256": "dcd08134139f72f56a159f25619af4dba58373815e50b02a5051a92bffbda0cb",
+    "manifest_sha256": "b6b5ae4d5738e1cc3eb1b7859cd4e989949579f4187960304c370248c4e69e04",
     "file_count": 487,
-    "bytes": 7905047,
-    "index_sha256": "2c1a9c2aa8ef3093d60a1bc673e7f5f450fcfa3f4fdb2392f11eb851fb600ca8",
+    "bytes": 7920832,
+    "index_sha256": "02564a3fe81987b1555c559b08071a0012ff3b2d4f271d5eb3dcc89647bc47ff",
     "bootstrap_csp_hashes": [
-      "'sha256-+IiURYyKgUxCMlhPZJJr/tNcqQGJ65N10Y27GT+d+U4='"
+      "'sha256-8v2Wse+OxMilYfltC0fQ/gX6MHmkaDbAP080tS6Iwaw='"
     ]
   },
   "binaries": [
     {
       "path": "weebdex-platform/artifacts/bin/weebdex-platform",
-      "bytes": 55689392,
-      "sha256": "0f03853a57e48bb09caf98efd0a151f7727871e120ebdd4ccbe80b3c3fa020c3"
+      "bytes": 55792256,
+      "sha256": "7e954a522b2df2ff5c972178501e7cae89a9727b06f017c933e29bd5212d890e"
     },
     {
       "path": "weebdex-platform/artifacts/bin/weebdex-admin",
-      "bytes": 8918904,
-      "sha256": "5305fb88612dcc94a05f6db3212c3db7b72f6dc73bf7f96a24f8f8a48efd26ba"
+      "bytes": 8926536,
+      "sha256": "a928058b55a8067e0d19ef59a614b64d7ddd307944b76675984f7a0765b9793f"
     },
     {
       "path": "weebdex-platform/artifacts/bin/browser_fixture_provisioner",
-      "bytes": 33191024,
-      "sha256": "dd9490b8a0bc953d693581cabe6c3843d7f8433167afe9a723873aa9bc5da732"
+      "bytes": 33210200,
+      "sha256": "9da00de54f799a9e8c7bfa3e0522ba7e2c9f8d91517b6b0a43ec9ecd5d574405"
     },
     {
       "path": "weebdex-platform/artifacts/bin/manga-node",
@@ -37,36 +40,56 @@
   ],
   "qualification": {
     "frontend_aggregate": {
-      "tests": 5902,
-      "pass": 5896,
+      "tests": 6014,
+      "pass": 6008,
       "fail": 0,
-      "unchanged_historical_skips": 6,
-      "unchanged_inputs": 1725
+      "skipped": 6,
+      "unchanged_inputs": 1737
     },
     "strict": {
       "errors": 0,
-      "retained_warnings": 21
+      "retained_warnings": 21,
+      "canonical_files_unchanged": 679
     },
     "backend": {
       "normal_unit_cases": 227,
       "owned_database_library_cases": 3,
-      "actual_http_scenarios": 47,
-      "successful_invocations": 51,
-      "explicit_final_source_union": true
+      "http_router_postgresql_invocations": 49,
+      "successful_invocations": 53,
+      "source_files": 388,
+      "explicit_source_checked_union": true
     },
-    "source_association_rows": 204,
-    "source_association_sha256": "514b5f661408a9ac60ce67ff5a3dced059acc714eaba8c04b8bcd0f3317117e1",
-    "all_frontend_members_and_binaries_rehashed": true,
-    "optimized_build_source_inputs_unchanged": 388
+    "frontend_build_inputs_unchanged": 1179,
+    "platform_binaries_rebuilt": 3,
+    "standalone_node_unchanged_source_and_binary": true,
+    "authenticated_predecessor_browser": {
+      "direct_criterion_subsets": 41,
+      "inspection_only": 15,
+      "core_behaviors_not_run": 37,
+      "guidance_conflict": 1,
+      "new_findings": 5,
+      "targeted_current_successor_confirmation": false
+    }
+  },
+  "receipt_hashes": {
+    "aggregate-final-6-input-check.json": "ee23244e51e424e2d57de6ee9e27924e296fef229ba045a5ea9432c6adcd2f0c",
+    "aggregate-final-6/terminal.json": "865fe32d0756c9d74811c4c94c7ddaa4c191125ee81dc02c25414730ffe852bb",
+    "aggregate-final-6-build-continuity.json": "98288c229b2eb0ad8b416ca3afd3458dec20428ba90b7e557d0b44e5941abba2",
+    "backend-authenticated-followup-final-matrix.json": "d609b7f1bb06e41d3530e116e116f76ba3d24a2f4c4d1d2518bf358f95fde58b",
+    "release-build-final-4/receipt.json": "fac3be4163b082ae39fd2ddcc15ee59017a72a045f6def87626ba767564908b9",
+    "frontend-final-6/build-result.json": "cab48a87880f4051e2e3a368d5618bf61626803d773573d8ddd74bf00c55861f",
+    "frontend-final-6/artifact-manifest.json": "b6b5ae4d5738e1cc3eb1b7859cd4e989949579f4187960304c370248c4e69e04"
   },
   "limits": [
-    "Main-account browser acceptance pending; no fixture launched by this handoff.",
-    "Six historical Node skips and21 retained frontend warnings remain; retained Rust warnings also remain.",
-    "Account-library CSV/XML import/export unavailable; new staff-only history CSV is a separate explicit private download.",
-    "Advanced external identity/remote signing is optional and separate.",
-    "Unknown team/credit outcomes stay blocked pending read-only/support-assisted recovery.",
-    "Original staff query-schema test failure retained; exact plaintext400 fixture assertion now passes.",
-    "Original auth held-lock timeout retained; one quiet unchanged-binary/assertion/timeout diagnostic retry passes."
+    "The authenticated predecessor browser found five defects. Their current fixes passed automated gates, but targeted authenticated successor browser confirmation remains pending. No complete 94-criterion acceptance is claimed.",
+    "Six historical Node skips, 21 retained frontend warnings and retained Rust warnings remain.",
+    "Backend coverage includes real PostgreSQL with a mix of loopback TCP HTTP and in-process HTTP routing; it is not browser evidence.",
+    "The failed expired-flow fixture setup and held-throttle lock-timeout run remain preserved. Only fixture timestamps were corrected; one quiet all-auth rerun preserved assertions, product timeouts and security checks.",
+    "The first successor aggregate failed two test integration fixtures. Historical stage selection and relative module resolution were corrected without changing production code, weakening assertions or adding exclusions.",
+    "Account-library CSV/XML import/export remains unavailable; staff history CSV is a distinct reviewed private export.",
+    "Unknown team/credit outcomes remain fenced pending read-only or support-assisted recovery.",
+    "Advanced identity and remote signing remain optional. Simulated verification is not organic mail-verification evidence.",
+    "No production deployment, main merge or automated CI run is implied. Current successor publication is pending separate exact payload approval."
   ],
-  "source_and_evidence_boundary": "Sanitized artifact receipt. Raw runtime, personal data, credentials and private browser evidence are not included. A separate main-browser result is still required."
+  "source_and_evidence_boundary": "Sanitized artifact receipt only. Credentials, personal data, private browser records, raw runtime receipts and databases are excluded from public source backups."
 }
