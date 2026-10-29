@@ -400,8 +400,8 @@
     },
     {
       "path": "weebdex-platform/backend/src/domains/staff_workspace/history.rs",
-      "current_bytes": 3870,
-      "current_sha256": "448125d60b103363fe4217f9cf72b3b91061c1857dc03a2de054373abaec45d3",
+      "current_bytes": 8056,
+      "current_sha256": "ef237708c69cb5c8b7d1358549b979f9313a133bd946b4b3eca8692c42a8242e",
       "added": true
     },
     {
@@ -1133,8 +1133,8 @@
     },
     {
       "path": "weebdex-platform/backend/tests/staff_workspace_http.rs",
-      "current_bytes": 21477,
-      "current_sha256": "e965bb05311526d5a2a9f964da95cb4ca7c8a9f325c9035b8fcbe62ee195eb8d",
+      "current_bytes": 28040,
+      "current_sha256": "49c136b5282294f7c005396c1e3a0df27cf055b5eb659c57c593584c0aaaa383",
       "added": true
     },
     {
@@ -2519,8 +2519,8 @@
     },
     {
       "path": "weebdex-platform/platform-integrations/staff-workspace/ModerationWorkspace.svelte",
-      "current_bytes": 15569,
-      "current_sha256": "777901683daab2062f3b3b74e69870a3be950e48e980293bafcccc0f9ef40438",
+      "current_bytes": 19657,
+      "current_sha256": "a17d2fa387d2e8f56312a232764304830bbd8bcf9569b7d6dce1935f6a3e0dda",
       "added": true
     },
     {
@@ -2573,8 +2573,8 @@
     },
     {
       "path": "weebdex-platform/platform-integrations/staff-workspace/staff-client.ts",
-      "current_bytes": 9921,
-      "current_sha256": "7df25a0e553e16c52fb1ecdba6b4886b13c1511851ebd18b2f396542ebebf3a0",
+      "current_bytes": 12297,
+      "current_sha256": "c72faab80fbbb2a8dfe00fee5473ae1b4c904a91aba3353fae52f9cde1a5fa73",
       "added": true
     },
     {
@@ -4176,8 +4176,8 @@
     },
     {
       "path": "weebdex-platform/tests/ci/test_staff_workspace_dom.mjs",
-      "current_bytes": 22241,
-      "current_sha256": "acc16b637ab51c017c9fe0f00329530e22ec3fd2c36e4776c33a903861346ed1",
+      "current_bytes": 31624,
+      "current_sha256": "8167ea96b554fcd44cba8a0ccbd48ec31d5b9fd53e5a2dfa76efa4a9f7356929",
       "added": true
     },
     {

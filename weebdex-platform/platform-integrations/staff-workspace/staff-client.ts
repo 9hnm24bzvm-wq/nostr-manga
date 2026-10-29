@@ -53,3 +53,19 @@ export function effectText(context:Record<string,any>,action:string){
  if(effect?.action==='instance_soft_hide')return `Hide ${label} (${reference}) on this instance. Readers here will no longer see it. This does not delete the original source or copies elsewhere. Any local restoration needs a separate authorized review.`;
  return `Accept this report about ${label} (${reference}) and record your reason. No automatic content removal or authority change is attached to this report type.`;
 }
+
+const historyCsvHeader='\ufeff"Date (UTC)","Report","Subject type","Subject reference","Reviewer","Operation","Previous status","Status","Revision","Reason","Outcome"\r\n';
+// Server exports only this fixed, sanitized projection. Refuse partial, oversized
+// or malformed responses rather than downloading an ambiguous/private payload.
+export function checkedHistoryExport(value:unknown){
+ const body=object(value),csv=body.csv;
+ if(body.scope!=='staff-decision-history-export'||typeof csv!=='string'||body.rowLimit!==250||body.byteLimit!==262144||!Number.isSafeInteger(body.exported)||body.exported<0||body.exported>250||!Number.isSafeInteger(body.total)||body.total<body.exported||typeof body.truncated!=='boolean'||body.truncated!==(body.exported<body.total)||body.bytes!==new TextEncoder().encode(csv).length||body.bytes>262144||!csv.startsWith(historyCsvHeader)||!csv.endsWith('\r\n'))throw new WorkspaceError('The history export was incomplete or invalid. No file was downloaded.');
+ const lines=csv.slice(historyCsvHeader.length).split('\r\n');if(lines.pop()!==''||lines.length!==body.exported)throw new WorkspaceError('The history export row count did not match. No file was downloaded.');
+ for(const line of lines){const cells=line.match(/"(?:[^"]|"")*"/g);if(!cells||cells.length!==11||cells.join(',')!==line)throw new WorkspaceError('The history export format was invalid. No file was downloaded.');for(const cell of cells){const text=cell.slice(1,-1).replaceAll('""','"');if(/[\u0000-\u001f\u007f-\u009f\u2028\u2029\ufeff\u200b-\u200f\u202a-\u202e\u2060-\u206f]/u.test(text)||/^[=+\-@＝＋－＠]/u.test(text.trimStart()))throw new WorkspaceError('The history export contained an unsafe spreadsheet cell. No file was downloaded.');}}
+ return{csv,exported:body.exported as number,total:body.total as number,truncated:body.truncated as boolean};
+}
+export function downloadHistoryCsv(value:unknown,assertCurrent:()=>void){
+ const checked=checkedHistoryExport(value);assertCurrent();const blob=new Blob([checked.csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob);let link:HTMLAnchorElement|undefined;
+ try{link=document.createElement('a');link.href=url;link.download='moderation-history.csv';link.hidden=true;document.body.append(link);assertCurrent();link.click();}finally{try{link?.remove();}finally{URL.revokeObjectURL(url);}}
+ return checked;
+}
