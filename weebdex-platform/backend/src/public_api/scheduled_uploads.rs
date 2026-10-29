@@ -116,6 +116,33 @@ pub(super) async fn admit(
     state:&AppState,tx:&Transaction<'_>,actor:&BoundAccountWrite,cap:&AdmittedHttpCapability,
     id:&str,publish_at:Option<&str>,payload:&core::Commit,
 )->PublicApiResult<Option<Value>> {
+    let author=hex::encode(cap.principal());let service=hex::encode(cap.service());
+    admit_inner(state,tx,actor,&author,&service,id,publish_at,payload).await
+}
+/// Native scheduling captures only already provisioned publication authority.
+/// It does not manufacture an HTTP capability, bind an account, or grant source
+/// rights. The durable worker subsequently rechecks exactly the same captures.
+pub(super) async fn admit_native(
+    state:&AppState,tx:&Transaction<'_>,actor:&super::native_contributions::NativeActor,
+    id:&str,publish_at:Option<&str>,payload:&core::Commit,
+)->PublicApiResult<Option<Value>> {
+    let Some(time)=publish_at else{return Ok(None)};
+    if !super::publish_at::valid_publish_at(time){return Err(PublicApiError::bad_request("publishAt must be a real UTC timestamp"));}
+    let future:bool=tx.query_one("SELECT ($1::text::timestamp AT TIME ZONE 'UTC')>clock_timestamp()",&[&time]).await?.get(0);
+    if !future{return Ok(None)}
+    let config=state.config.protocol_publication.as_ref().filter(|c|c.native_node.is_some()).ok_or_else(||PublicApiError::forbidden("Scheduled publication is not configured on this site"))?;
+    let bindings=tx.query("SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL ORDER BY publisher FOR SHARE",&[&actor.user_id()]).await?;
+    if bindings.len()!=1{return Err(PublicApiError::forbidden("Your account has no unique site-configured publication role; ask the site team"));}
+    let author:String=bindings[0].get(0);let service=&config.storage_holder;
+    let author_bytes=hex::decode(&author).map_err(|_|PublicApiError::unavailable())?;
+    let version:i64=tx.query_opt("SELECT version FROM account_permissions WHERE publisher=$1 AND allowed FOR SHARE",&[&author_bytes]).await?.ok_or_else(||PublicApiError::forbidden("Your configured publication role is not currently enabled"))?.get(0);
+    auth::scheduled_account(tx,service,&author,version,actor.user_id()).await?;
+    admit_inner(state,tx,actor,&author,service,id,publish_at,payload).await
+}
+async fn admit_inner(
+    state:&AppState,tx:&Transaction<'_>,actor:&impl CatalogMutationActor,author:&str,service:&str,
+    id:&str,publish_at:Option<&str>,payload:&core::Commit,
+)->PublicApiResult<Option<Value>> {
     let Some(publish_at)=publish_at else{return Ok(None)};
     if !super::publish_at::valid_publish_at(publish_at) {return Err(PublicApiError::bad_request("publishAt must be a real YYYY-MM-DDTHH:MM:SS UTC timestamp"));}
     let hash=payload_hash(payload)?;
@@ -141,7 +168,6 @@ pub(super) async fn admit(
     if !is_edit && parent_source.is_none() && tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.protocol_publication_commands WHERE command_id=$1)",&[&format!("manga:{manga}")]).await?.get::<_,bool>(0) {
         return Err(PublicApiError::conflict("Reconcile the existing original parent publication command before scheduling"));
     }
-    let author=hex::encode(cap.principal());let service=hex::encode(cap.service());
     let (signer,group)=if is_edit {
         (state.config.protocol_publication.as_ref().ok_or_else(PublicApiError::unavailable)?.expected_publisher.clone(),None)
     } else {source_identity(state,tx,&author,&session.get::<_,Vec<String>>("groups")).await?};
@@ -167,7 +193,8 @@ pub(super) async fn admit(
     let chapter=session.get::<_,Option<String>>("chapter_id").unwrap_or_else(storage::short_id);
     if !is_edit && tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_chapters WHERE id=$1) OR EXISTS(SELECT 1 FROM platform.scheduled_uploads WHERE chapter_id=$1)",&[&chapter]).await?.get::<_,bool>(0) {return Err(PublicApiError::conflict("Reserved chapter identity collided; retry scheduling"));}
     let uuid:String=tx.query_one("SELECT COALESCE((SELECT public_id FROM platform.public_resource_ids WHERE kind='chapter' AND native_id=$1 AND preferred),platform.public_native_uuid(namespace,'chapter',$1))::text FROM platform.catalogue_namespace WHERE singleton",&[&chapter]).await?.get(0);
-    let admission:i64=tx.query_one("SELECT version FROM account_permissions WHERE publisher=$1",&[&&cap.principal()[..]]).await?.get(0);
+    let author_bytes=hex::decode(author).map_err(|_|PublicApiError::unavailable())?;
+    let admission:i64=tx.query_one("SELECT version FROM account_permissions WHERE publisher=$1",&[&author_bytes]).await?.get(0);
     let version=session.get::<_,i32>("version").checked_add(1).ok_or_else(PublicApiError::unavailable)?;
     let value=serde_json::to_value(payload).map_err(|_|PublicApiError::bad_request("Invalid commit"))?;
     tx.execute("INSERT INTO platform.scheduled_uploads(session_id,owner_id,publish_at,due_at,retry_until,payload,payload_hash,session_version,author,service,origin,admission_version,signer,signing_group,parent_source,parent_fingerprint,parent_manifest,files_fingerprint,chapter_id,chapter_uuid,retained_bytes,parent_cover_id) VALUES($1,$2,$3,$3::text::timestamp AT TIME ZONE 'UTC',($3::text::timestamp AT TIME ZONE 'UTC')+$21::bigint*interval '1 second',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18::text::uuid,$19,$20)",&[&id,&actor.user_id(),&publish_at,&value,&hash,&version,&author,&service,&state.config.public_origin,&admission,&signer,&group,&parent_source,&parent_fp,&manifest,&files_fp,&chapter,&uuid,&bytes,&cover,&i64::from(state.config.scheduled_upload_retry_seconds)]).await?;
@@ -329,7 +356,7 @@ pub async fn run_due(state:&AppState)->PublicApiResult<bool> {
     Ok(true)
 }
 
-pub(super) async fn cancel_in(tx:&Transaction<'_>,actor:&BoundAccountWrite,id:&str)->PublicApiResult<bool> {
+pub(super) async fn cancel_in(tx:&Transaction<'_>,actor:&impl CatalogMutationActor,id:&str)->PublicApiResult<bool> {
     actor.require_permission("self.chapter.update")?;
     let session=tx.query_opt("SELECT state FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR UPDATE",&[&id,&actor.user_id()]).await?.ok_or_else(PublicApiError::not_found)?;
     let Some(intent)=load_intent(tx,id,true).await? else{return Ok(false)};
@@ -462,5 +489,63 @@ async fn retry(
     // prepared outcomes before any publication call. Unknown stays blocked.
     tx.execute("UPDATE platform.scheduled_uploads SET state=CASE WHEN started_at IS NULL THEN 'scheduled' ELSE 'starting' END,lease_token=NULL,lease_until=NULL,failure_code=NULL,retry_attempts=0,next_attempt_at=clock_timestamp(),updated_at=clock_timestamp() WHERE session_id=$1",&[&id]).await?;
     let receipt=owner_receipt(&state,&tx,&id,actor.user_id()).await?.ok_or_else(PublicApiError::unavailable)?;
+    tx.commit().await?;Ok((axum::http::StatusCode::ACCEPTED,axum::Json(receipt)))
+}
+
+pub fn native_router()->axum::Router<AppState> {
+ axum::Router::new().route("/account/uploads/schedules",axum::routing::get(native_list)).route("/account/uploads/{session}/schedule",axum::routing::get(native_get)).route("/account/uploads/{session}/schedule/retry",axum::routing::post(native_retry))
+}
+async fn native_list(
+    axum::extract::State(state):axum::extract::State<AppState>,axum::extract::OriginalUri(uri):axum::extract::OriginalUri,
+    headers:axum::http::HeaderMap,request:axum::extract::Request,
+)->PublicApiResult<axum::Json<Value>> {
+    require_get(&request)?;
+    let (cap,expected)=super::native_uploads::authorize_account_query(&state,&uri,&headers,request).await?;
+    let mut client=state.db.client().await?;let tx=client.transaction().await?;
+    let actor=super::native_uploads::authority(&state,&tx,&cap,false).await?;
+    captured_account(&tx,actor.user_id(),expected.as_ref()).await?;
+    let rows=tx.query("SELECT session_id FROM platform.scheduled_uploads WHERE owner_id=$1 AND state NOT IN ('complete','cancelled') ORDER BY due_at,session_id LIMIT 1000",&[&actor.user_id()]).await?;
+    let mut data=Vec::new();
+    for row in rows {
+        let id:String=row.get(0);
+        let session=super::uploads::preferred(&tx,super::ResourceKind::UploadSession,&id).await?;
+        let receipt=owner_receipt(&state,&tx,&id,actor.user_id()).await?.ok_or_else(PublicApiError::unavailable)?;
+        data.push(json!({"uploadSessionId":session,"receipt":receipt}));
+    }
+    let account=super::uploads::preferred(&tx,super::ResourceKind::User,actor.user_id()).await?;tx.commit().await?;Ok(axum::Json(json!({"result":"ok","nostr":{"scope":"instance-account","authentication":"native-session","accountId":account},"data":data,"limits":{"maximumOutstanding":state.config.scheduled_upload_maximum,"maximumRetainedBytes":state.config.scheduled_upload_bytes,"maximumHorizonSeconds":state.config.scheduled_upload_horizon_seconds,"retryWindowSeconds":state.config.scheduled_upload_retry_seconds,"timezone":"UTC"}})))
+}
+async fn native_get(
+    axum::extract::State(state):axum::extract::State<AppState>,axum::extract::Path(session):axum::extract::Path<String>,axum::extract::OriginalUri(uri):axum::extract::OriginalUri,
+    headers:axum::http::HeaderMap,request:axum::extract::Request,
+)->PublicApiResult<axum::Json<Value>> {
+    require_get(&request)?;
+    let session=super::PublicUuid::parse(&session)?;
+    let (cap,expected)=super::native_uploads::authorize_account_query(&state,&uri,&headers,request).await?;
+    let mut client=state.db.client().await?;let tx=client.transaction().await?;
+    let actor=super::native_uploads::authority(&state,&tx,&cap,false).await?;
+    captured_account(&tx,actor.user_id(),expected.as_ref()).await?;
+    let id=super::uploads::resolve(&tx,super::ResourceKind::UploadSession,&session).await?;
+    let receipt=owner_receipt(&state,&tx,&id,actor.user_id()).await?.ok_or_else(PublicApiError::not_found)?;
+    let account=super::uploads::preferred(&tx,super::ResourceKind::User,actor.user_id()).await?;tx.commit().await?;Ok(axum::Json(json!({"result":"ok","uploadSessionId":session,"receipt":receipt,"nostr":{"scope":"instance-account","authentication":"native-session","accountId":account}})))
+}
+async fn native_retry(
+    axum::extract::State(state):axum::extract::State<AppState>,axum::extract::Path(session):axum::extract::Path<String>,axum::extract::OriginalUri(uri):axum::extract::OriginalUri,
+    headers:axum::http::HeaderMap,request:axum::extract::Request,
+)->PublicApiResult<(axum::http::StatusCode,axum::Json<Value>)> {
+    let session=super::PublicUuid::parse(&session)?;
+    let (cap,expected)=super::native_uploads::authorize_account_query(&state,&uri,&headers,request).await?;
+    let mut client=state.db.client().await?;let tx=client.transaction().await?;
+    let actor=super::native_uploads::authority(&state,&tx,&cap,true).await?;
+    captured_account(&tx,actor.user_id(),expected.as_ref()).await?;
+    actor.require_permission("self.chapter.update")?;
+    let id=super::uploads::resolve(&tx,super::ResourceKind::UploadSession,&session).await?;
+    tx.query_opt("SELECT id FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 AND state='scheduled' FOR UPDATE",&[&id,&actor.user_id()]).await?.ok_or_else(PublicApiError::not_found)?;
+    let intent=load_intent(&tx,&id,true).await?.ok_or_else(PublicApiError::not_found)?;
+    if intent.state!="blocked" {return Err(PublicApiError::conflict("Only a blocked immutable schedule can request rechecking"));}
+    // Requeue is not permission to replay. The same fresh gate must still prove
+    // prepared outcomes before any publication call. Unknown stays blocked.
+    tx.execute("UPDATE platform.scheduled_uploads SET state=CASE WHEN started_at IS NULL THEN 'scheduled' ELSE 'starting' END,lease_token=NULL,lease_until=NULL,failure_code=NULL,retry_attempts=0,next_attempt_at=clock_timestamp(),updated_at=clock_timestamp() WHERE session_id=$1",&[&id]).await?;
+    let mut receipt=owner_receipt(&state,&tx,&id,actor.user_id()).await?.ok_or_else(PublicApiError::unavailable)?;
+    super::native_account_profile_settings::provenance(&mut receipt,super::uploads::preferred(&tx,super::ResourceKind::User,actor.user_id()).await?.as_str());
     tx.commit().await?;Ok((axum::http::StatusCode::ACCEPTED,axum::Json(receipt)))
 }

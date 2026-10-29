@@ -21,6 +21,6 @@ test('known rating CAS rejects a contradictory changed flag even when receipt ve
 
 test('403 permission refusal does not falsely diagnose an unbound identity', async () => {
  const f = fixture({ status: 403 }), client = await f.load(); await client.reload();
- await assert.rejects(() => client.save(8), error => { assert.equal(error.status, 403); assert.match(error.message, /does not have permission/); assert.doesNotMatch(error.message, /not bound|unbound/); return true; });
+ await assert.rejects(() => client.save(8), error => { assert.equal(error.status, 403); assert.match(error.message, /is not allowed/); assert.doesNotMatch(error.message, /not bound|unbound/); return true; });
  assert.equal(client.view().needsRecheck, true); assert.equal(client.view().rating, null); assert.equal(f.calls.filter(row => row.method === 'POST').length, 1);
 });

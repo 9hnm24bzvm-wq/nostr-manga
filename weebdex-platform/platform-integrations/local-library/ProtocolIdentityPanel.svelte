@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea';
@@ -11,7 +11,7 @@
   let actions = $state<PublicActionRecord[]>([]);
   let profileName = $state(''), displayName = $state(''), about = $state(''), followsText = $state(''), routesText = $state('');
   let review = $state<PublicReview>(), consent = $state(false), source = $state<SourceMapping>(), events = $state<SignedEvent[]>([]), metadata = $state<{ kind: number; event: SignedEvent | null; head: any }[]>([]), receipts = $state<any[]>([]);
-  let conversationOpen = $state(false), inspectedAction = $state(''), inspectedMetadata = $state('');
+  let sourcePublishingOpen = $state(false), conversationOpen = $state(false), inspectedAction = $state(''), inspectedMetadata = $state('');
   const queueState = (state: string) => ({ prepared: 'Ready to send', pending: 'Waiting to send', sending: 'Sending', retryable: 'Ready to retry', refused: 'Not sent', accepted: 'Sent', superseded: 'Replaced by a newer action', outcome_unknown: 'Delivery needs checking', projection_pending: 'Updating', cancelled: 'Cancelled' }[state] ?? 'Needs attention');
   const actionName = (kind: number) => ({ 0: 'Profile update', 3: 'People you follow', 10002: 'Posting destinations', 1: 'Comment', 1111: 'Comment', 7: 'Reaction', 5: 'Removal request' }[kind] ?? 'Public action');
   let comment = $state(''), reaction = $state('+'), replyParent = $state<SignedEvent>(), offset = $state(0);
@@ -30,7 +30,7 @@
     // This synchronous fence also covers an input change before the effect runs.
     if (activeKey !== contextKey) {
       generation++; activeKey = contextKey;
-      clearReview(); source = undefined; sourceContext = ''; events = []; replyParent = undefined; comment = ''; reaction = '+'; offset = 0;
+      clearReview(); sourcePublishingOpen = false; source = undefined; sourceContext = ''; events = []; replyParent = undefined; comment = ''; reaction = '+'; offset = 0;
       if (activeTransportKey !== transportKey) { metadata = []; metadataContext = ''; }
       activeTransportKey = transportKey;
     }
@@ -73,7 +73,7 @@
     const previousSource = more ? selectedSource(context) : undefined;
     const next = more ? offset + 50 : 0, previous = more ? events : [];
     const mapped = await contextResult(context, sourceResource(context.kind, context.id, () => assertContext(context)));
-    if (previousSource && previousSource.event_id !== mapped.event_id) { clearReview(); source = undefined; sourceContext = ''; events = []; replyParent = undefined; comment = ''; reaction = '+'; offset = 0; generation++; throw Error('The canonical source mapping changed. Reload this conversation before continuing.'); }
+    if (previousSource && previousSource.event_id !== mapped.event_id) { clearReview(); sourcePublishingOpen = false; source = undefined; sourceContext = ''; events = []; replyParent = undefined; comment = ''; reaction = '+'; offset = 0; generation++; throw Error('The canonical source mapping changed. Reload this conversation before continuing.'); }
     const rows = await contextResult(context, readSocial(recipient, mapped, next));
     if (source?.event_id !== mapped.event_id) { if (source) generation++; clearReview(); replyParent = undefined; comment = ''; reaction = '+'; }
     source = mapped; sourceContext = context.key; events = [...previous, ...rows]; offset = next;
@@ -101,7 +101,7 @@
   }
   function toggleConversation() {
     conversationOpen = !conversationOpen;
-    if (!conversationOpen) { generation++; clearReview(); source = undefined; sourceContext = ''; events = []; replyParent = undefined; comment = ''; reaction = '+'; offset = 0; }
+    if (!conversationOpen) { generation++; clearReview(); sourcePublishingOpen = false; source = undefined; sourceContext = ''; events = []; replyParent = undefined; comment = ''; reaction = '+'; offset = 0; }
   }
   $effect(() => { contextKey; currentContext(); });
   onMount(() => { void run(refreshRelays); return () => { disposed = true; generation++; }; });
@@ -125,23 +125,26 @@
 {/snippet}
 <section class={resourceId ? 'space-y-3' : 'space-y-5'} data-public-identity-tool={resourceId ? undefined : settingsView} data-source-conversation={resourceId ? true : undefined} data-resource-kind={resourceId ? resourceKind : undefined} data-resource-id={resourceId} data-verified-source-id={sourceContext === contextKey && source?.kind === target.kind && source?.id === target.id ? source.event_id : undefined}>
   {#if resourceId}
-    <Button variant="ghost" size="sm" aria-expanded={conversationOpen} onclick={toggleConversation}>Signed comments</Button>
+    <Button variant="ghost" size="sm" aria-expanded={conversationOpen} onclick={toggleConversation}>Comments from other sites</Button>
     {#if conversationOpen}
       <div class="space-y-3 border-t pt-4">
-        <p class="text-muted-foreground text-sm">Public comments and reactions for this {resourceKind === 'chapter' ? 'chapter' : 'title'} use an external signing identity. <a class="underline" href="/settings/identity">Manage public identity</a></p>
-        {#if !relays.length}<p class="text-sm">To choose where to post, <a class="underline" href="/settings/library">set up public sync in Library settings</a>.</p>{:else}{@render recipientControls()}{/if}
+        <p class="text-muted-foreground text-sm">These comments were published outside this site. They are separate from the conversation above. You can read them without a signing identity.</p>
+        {#if !relays.length}<p class="text-sm">To read a source site, <a class="underline" href="/settings/library">add it in Library settings</a> → Public sync. This does not publish anything.</p>{:else}{@render recipientControls()}{/if}
         <Button variant="outline" disabled={pending || !relay} onclick={() => run(() => refreshSocial())}>Load verified public conversation</Button>
         {#if source}
           <details class="text-sm"><summary class="cursor-pointer text-muted-foreground">Source details</summary><p class="break-all text-xs" data-verified-source-id={source.event_id}>Verified canonical source: {source.event_id} · publisher {source.publisher} · kind {source.source_kind}</p></details>
-          {#if replyParent}<p class="break-all">Replying to {replyParent.id} by {replyParent.pubkey} <Button variant="ghost" onclick={() => { replyParent = undefined; clearReview(); }}>Cancel reply</Button></p>{/if}
+          <details class="space-y-3 rounded border p-3" data-source-publishing bind:open={sourcePublishingOpen}><summary class="cursor-pointer font-medium">Post to the source site (advanced)</summary>
+          <p class="text-sm">Posting outside this site requires an external signing identity. Your site login does not sign messages. Nothing is sent until you review the exact public post and approve it. <a class="underline" href="/settings/identity">Advanced identity settings</a></p>
+          {#if replyParent}<p class="break-all">Replying to a source comment <Button variant="ghost" onclick={() => { replyParent = undefined; clearReview(); }}>Cancel reply</Button></p>{/if}
           <label class="block" for="public-source-comment">Public comment <Textarea id="public-source-comment" class="mt-1" bind:value={comment} maxlength={4000}></Textarea></label>
           <Button disabled={pending || !$signerIdentity.owner} onclick={() => run(async () => { const context = currentContext(); setReview(reviewComment(contextRelay(context), selectedSource(context), comment, replyParent)); })}>Review public {replyParent ? 'reply' : 'comment'}</Button>
           <label for="public-source-reaction">Public reaction <Input id="public-source-reaction" class="mt-1 w-24" bind:value={reaction} maxlength={64} /></label>
           <Button variant="outline" disabled={pending || !$signerIdentity.owner} onclick={() => run(async () => { const context = currentContext(); setReview(reviewReaction(contextRelay(context), selectedSource(context), reaction)); })}>Review public reaction</Button>
+          </details>
         {/if}
         {#each events as event}
-          <article class="space-y-3 border-t pt-4"><p class="break-all text-xs">{event.kind === 1111 ? 'Comment' : 'Reaction'} · {event.pubkey} · signed at {event.created_at} · {event.id}</p><p class="whitespace-pre-wrap break-words">{event.content}</p>
-            {#if event.kind === 1111}<Button variant="ghost" disabled={pending || !$signerIdentity.owner} onclick={() => run(async () => { const context = currentContext(); selectedSource(context); if (!events.some(row => row.id === event.id)) throw new ContextChanged(); replyParent = event; comment = ''; clearReview(); })}>Reply to this verified comment</Button>{/if}
+          <article class="space-y-3 border-t pt-4"><p class="text-sm">{event.kind === 1111 ? 'Comment' : 'Reaction'} from the source site · {new Date(event.created_at * 1000).toLocaleString()}</p><p class="whitespace-pre-wrap break-words">{event.content}</p><details><summary class="cursor-pointer text-xs">Author and source details</summary><p class="break-all text-xs">Author: {event.pubkey} · Post: {event.id}</p></details>
+            {#if event.kind === 1111}<Button variant="ghost" disabled={pending || !$signerIdentity.owner} onclick={() => run(async () => { const context = currentContext(); selectedSource(context); if (!events.some(row => row.id === event.id)) throw new ContextChanged(); replyParent = event; comment = ''; clearReview(); sourcePublishingOpen = true; await tick(); assertContext(context); document.getElementById('public-source-comment')?.focus(); })}>Reply to this verified comment</Button>{/if}
             {#if event.pubkey === $signerIdentity.owner}<Button variant="ghost" disabled={pending} onclick={() => run(async () => { setWithdrawal(event, 'social'); })}>Review authored event withdrawal</Button>{/if}
           </article>
         {/each}

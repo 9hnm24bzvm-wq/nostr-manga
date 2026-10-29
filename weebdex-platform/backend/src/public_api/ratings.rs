@@ -15,7 +15,7 @@ async fn private_headers(request:Request,next:Next)->Response {
     response.headers_mut().insert(header::CACHE_CONTROL,HeaderValue::from_static("private, no-store"));
     response.headers_mut().insert(header::VARY,HeaderValue::from_static("Authorization, Cookie")); response
 }
-fn selected(raw:Option<&str>)->PublicApiResult<Vec<PublicUuid>> {
+pub(super) fn selected(raw:Option<&str>)->PublicApiResult<Vec<PublicUuid>> {
     let q=PublicQuery::parse(raw,&QuerySchema {default_limit:0,max_limit:0,max_offset:0,scalar:&[],arrays:&["manga","manga[]"],includes:&[],order:&[]})?;
     q.require_allowed(&["manga","manga[]"])?;
     let plain=q.list("manga"); let brackets=q.list("manga[]");

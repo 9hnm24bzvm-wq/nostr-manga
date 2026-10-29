@@ -1,3 +1,4 @@
+import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 import {restoreHistorySource} from './reviewed-history-source-successors.mjs';
 import {readBoundedReaderAssociation,restoreBoundedReaderSource,boundedReaderAssociationSha256,boundedReaderSuccessorPaths} from './reviewed-bounded-reader-source-successors.mjs';
 // Source-bound comparison controls. No build, browser, network, or historical execution claim.
@@ -17,6 +18,24 @@ const root=fileURLToPath(new URL('../../../',import.meta.url));
 const metadata=fs.readFileSync(new URL('../../docs/fixtures/reviewed-bundle-source-successors.json',import.meta.url));
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const encoded=value=>Buffer.from(JSON.stringify(value,null,2)+'\n');
+// Source-only historical inputs: first undo the exact second pass, then the
+// exact published first pass where applicable. Runtime tests read live files.
+const firstReaderPaths = new Set(readReaderUxAssociation().rows.map(row => row.path));
+const secondReaderPaths = new Set(readReaderUxFixpassAssociation().rows.map(row => row.path));
+function beforeReaderUx(file, value) {
+ return firstReaderPaths.has(file) ? restoreReaderUxPredecessor(file, value)
+  : secondReaderPaths.has(file) ? restoreReaderUxFixpassPredecessor(file, value) : value;
+}
+const liveSourceSnapshots = new Map();
+function readCompared(file, encoding) {
+ const live = fs.readFileSync(path.join(root, file));
+ if (liveSourceSnapshots.has(file)) assert.deepEqual(live, liveSourceSnapshots.get(file), 'Physical source changed during comparison: '+file);
+ else liveSourceSnapshots.set(file, Buffer.from(live));
+ const value = beforeReaderUx(file, live);
+ assert.notEqual(value, null, 'An added source cannot impersonate a historical predecessor: '+file);
+ return encoding ? value.toString(encoding) : value;
+}
+function assertUnwritten(file) { assert.deepEqual(fs.readFileSync(path.join(root, file)), liveSourceSnapshots.get(file)); }
 const data=readBundleAssociation();
 function stageInput(row,physical){
  if(row.path==='weebdex-platform/scripts/prepare-frontend-integration.mjs')return restoreBoundedReaderSource('bounded-reader-to-frozen-main:scripts/prepare-frontend-integration.mjs',row.path,physical);
@@ -33,15 +52,15 @@ test('five explicitly named source stages preserve exact immutable predecessors 
  assert.equal(data.rows[3].previous_sha256,'9e2427f87e8542c449bad010c869d767ab826cec05e73b03620066375753b70b');
  assert.equal(data.rows[4].previous_sha256,'b9079ea5b27f19ecdbbaaea5f9316804b563fa4400c04c19b26a5ed966640411');
  for(const row of data.rows){
-  const physical=fs.readFileSync(path.join(root,row.path)),current=stageInput(row,physical),previous=restoreBundleSource(row.stage,row.path,current);
+  const physical=readCompared(row.path),current=stageInput(row,physical),previous=restoreBundleSource(row.stage,row.path,current);
   assert(Buffer.isBuffer(previous));assert.equal(current.length,row.current_bytes);assert.equal(hash(current),row.current_sha256);
   assert.equal(previous.length,row.previous_bytes);assert.equal(hash(previous),row.previous_sha256);
   assert.equal(restoreBundleSource(row.stage,row.path,current.toString()),previous.toString());
-  assert.deepEqual(fs.readFileSync(path.join(root,row.path)),physical);
+  assertUnwritten(row.path);
  }
 });
 for(const row of data.rows)test('exact stage rejects historical, edited, partial, duplicated and wrong-stage input: '+row.stage+' '+row.path,()=>{
- const physical=fs.readFileSync(path.join(root,row.path)),current=stageInput(row,physical),previous=restoreBundleSource(row.stage,row.path,current),changed=Buffer.from(current);changed[0]^=1;
+ const physical=readCompared(row.path),current=stageInput(row,physical),previous=restoreBundleSource(row.stage,row.path,current),changed=Buffer.from(current);changed[0]^=1;
  for(const bad of [previous,changed,current.subarray(1),Buffer.concat([current,Buffer.from(' ')]),null,{},new Uint8Array(current)])assert.throws(()=>restoreBundleSource(row.stage,row.path,bad));
  for(const edit of row.literal_reversals){
   const source=current.toString();assert.equal(source.split(edit.current).length,2);
@@ -60,11 +79,11 @@ test('full metadata digest binds every claim, stage, source commit, count, liter
   for(let j=0;j<data.rows[i].literal_reversals.length;j++)for(const key of ['current','previous']){const copy=structuredClone(data);copy.rows[i].literal_reversals[j][key]+=' ';candidates.push(encoded(copy));}
  }
  for(const mutate of [copy=>copy.rows.reverse(),copy=>copy.rows.pop(),copy=>copy.rows.push(copy.rows[0]),copy=>copy.rows[0].literal_reversals.reverse(),copy=>copy.http_executed=true,copy=>copy.unknown=true]){const copy=structuredClone(data);mutate(copy);candidates.push(encoded(copy));}
- const row=data.rows[0],current=fs.readFileSync(path.join(root,row.path));
+ const row=data.rows[0],current=readCompared(row.path);
  for(const bytes of candidates){assert.throws(()=>readBundleAssociation(bytes));assert.throws(()=>restoreBundleSource(row.stage,row.path,current,bytes));}
 });
 test('preparation follows reader then updates then moderator then profile, never skipped or reordered layers',()=>{
- const file='weebdex-platform/scripts/prepare-frontend-integration.mjs',physical=fs.readFileSync(path.join(root,file)),reader=restoreBoundedReaderSource('bounded-reader-to-frozen-main:scripts/prepare-frontend-integration.mjs',file,physical),updates=restoreBundleSource('updates-composition',file,reader),moderator=restoreModeratorCompositionSource(file,reader),profile=restoreNativeProfileActionsSource(file,moderator);
+ const file='weebdex-platform/scripts/prepare-frontend-integration.mjs',physical=readCompared(file),reader=restoreBoundedReaderSource('bounded-reader-to-frozen-main:scripts/prepare-frontend-integration.mjs',file,physical),updates=restoreBundleSource('updates-composition',file,reader),moderator=restoreModeratorCompositionSource(file,reader),profile=restoreNativeProfileActionsSource(file,moderator);
  assert.deepEqual([physical.length,reader.length,updates.length,moderator.length,profile.length],[31867,30561,29891,29847,29805]);
  assert.equal(hash(physical),'e55efc65d6efda7ee894aa29d5671ba3c35ee827d9f3b7cababf1125092353f4');
  assert.equal(hash(reader),'d498597c8b214f6e4f5025eb6216e0c2b1516d4d1bb27933a727f0c3cfedc38c');
@@ -74,13 +93,13 @@ test('preparation follows reader then updates then moderator then profile, never
  for(const bad of [physical,updates,moderator,profile])assert.throws(()=>restoreModeratorCompositionSource(file,bad));
  for(const bad of [reader,updates,moderator,profile])assert.throws(()=>restoreBoundedReaderSource('bounded-reader-to-frozen-main:scripts/prepare-frontend-integration.mjs',file,bad));
  assert.throws(()=>restoreBundleSource('updates-composition',file,physical));
- assert.deepEqual(fs.readFileSync(path.join(root,file)),physical);
+ assertUnwritten(file);
  for(const bad of [physical,reader,updates,profile])assert.throws(()=>restoreNativeProfileActionsSource(file,bad));
  const row=readModeratorCompositionAssociation().rows.find(row=>row.path===file);
  for(const edit of row.literal_reversals){assert.equal(updates.toString().split(edit.current).length,2);assert.throws(()=>restoreModeratorCompositionSource(file,updates.toString().replace(edit.current,()=>edit.previous)));}
 });
 test('isolated predecessor overlay comparison refuses current preparation and edited predecessors',async()=>{
- const file='weebdex-platform/scripts/prepare-frontend-integration.mjs',physical=fs.readFileSync(path.join(root,file),'utf8'),comparison=restoreBoundedReaderSource('bounded-reader-to-frozen-main:scripts/prepare-frontend-integration.mjs',file,physical),old=restoreModeratorCompositionSource(file,comparison);
+ const file='weebdex-platform/scripts/prepare-frontend-integration.mjs',physical=readCompared(file,'utf8'),comparison=restoreBoundedReaderSource('bounded-reader-to-frozen-main:scripts/prepare-frontend-integration.mjs',file,physical),old=restoreModeratorCompositionSource(file,comparison);
  for(const bad of [physical,old+' ',old.slice(1),null,{},Buffer.from(old)])await assert.rejects(()=>preUpdatesOverlayComparison(bad,vm.createContext({})),/Unknown predecessor preparation comparison bytes/);
 });
 test('comparison helpers never enter current runtime or build imports',()=>{
@@ -101,16 +120,16 @@ test('five bounded reader comparison stages bind exact combined inputs and ninet
  for(const flag of ['tests_executed','build_executed','browser_executed','http_executed','capacity_qualified','external_mounted_preparation_applied'])assert.equal(readerData[flag],false);
  for(const row of readerData.rows){
   assert.equal(row.stage,'bounded-reader-to-frozen-main:'+row.path.slice('weebdex-platform/'.length));
-  const physical=fs.readFileSync(path.join(root,row.path)),previous=restoreBoundedReaderSource(row.stage,row.path,physical);
+  const physical=readCompared(row.path),previous=restoreBoundedReaderSource(row.stage,row.path,physical);
   assert(Buffer.isBuffer(previous));assert.equal(physical.length,row.current_bytes);assert.equal(hash(physical),row.current_sha256);
   assert.equal(previous.length,row.previous_bytes);assert.equal(hash(previous),row.previous_sha256);
   assert.equal(restoreBoundedReaderSource(row.stage,row.path,physical.toString('utf8')),previous.toString('utf8'));
   assert.deepEqual(row.literal_reversals.map(edit=>edit.ordinal),row.literal_reversals.map((_,index)=>index+1));
-  assert.deepEqual(fs.readFileSync(path.join(root,row.path)),physical);
+  assertUnwritten(row.path);
  }
 });
 for(const row of readerData.rows)test('bounded stage rejects every unknown, skipped, duplicate or reordered input: '+row.path,()=>{
- const physical=fs.readFileSync(path.join(root,row.path)),source=physical.toString(),previous=restoreBoundedReaderSource(row.stage,row.path,physical),changed=Buffer.from(physical);changed[0]^=1;
+ const physical=readCompared(row.path),source=physical.toString(),previous=restoreBoundedReaderSource(row.stage,row.path,physical),changed=Buffer.from(physical);changed[0]^=1;
  for(const bad of [previous,changed,physical.subarray(1),physical.subarray(0,-1),Buffer.concat([physical,Buffer.from(' ')]),null,{},[],0,new String(source),new Uint8Array(physical)])assert.throws(()=>restoreBoundedReaderSource(row.stage,row.path,bad));
  for(const edit of row.literal_reversals){
   assert.equal(source.split(edit.current).length,2);
@@ -121,10 +140,10 @@ for(const row of readerData.rows)test('bounded stage rejects every unknown, skip
  assert.throws(()=>restoreBoundedReaderSource(row.stage,row.path,reordered));
  for(const stage of ['',null,'unknown','consumer-to-frozen-main:'+row.path,...readerData.rows.filter(other=>other!==row).map(other=>other.stage)])assert.throws(()=>restoreBoundedReaderSource(stage,row.path,physical));
  for(const file of ['',null,'../'+row.path,row.path+'unknown',row.path.slice('weebdex-platform/'.length),...boundedReaderSuccessorPaths.filter(file=>file!==row.path)])assert.throws(()=>restoreBoundedReaderSource(row.stage,file,physical));
- assert.deepEqual(fs.readFileSync(path.join(root,row.path)),physical);
+ assertUnwritten(row.path);
 });
 test('bounded metadata encoding, every nested fact and literal ordering are indivisibly digest-bound',()=>{
- const row=readerData.rows[0],physical=fs.readFileSync(path.join(root,row.path));
+ const row=readerData.rows[0],physical=readCompared(row.path);
  const reject=bytes=>{assert.throws(()=>readBoundedReaderAssociation(bytes));assert.throws(()=>restoreBoundedReaderSource(row.stage,row.path,physical,bytes));};
  for(const bytes of [readerMetadata.toString(),null,{},new Uint8Array(readerMetadata),readerMetadata.subarray(1),Buffer.concat([readerMetadata,Buffer.from(' ')]),Buffer.from(JSON.stringify(readerData)),encoded(Object.fromEntries(Object.entries(readerData).reverse()))])reject(bytes);
  function visit(value,keys=[]){
@@ -144,7 +163,7 @@ test('physical dependencies, old metadata and capsule dispositions are checked i
   ["weebdex-platform/platform-integrations/bounded-reader/EditionSelector.svelte", {before: [481, "d3d28a1164341dfce9eb9cfad7df90b77c1c3cfae4f2211828b1bf881da0673c"], after: [555, "1f384b4e5348091db37a0462150e890390ff9e05ed752199abf755a7d9b8e607"]}],
   ["weebdex-platform/platform-integrations/bounded-reader/anchors.json", {before: [48213, "57a4c1020b4afcb7f66c345d3d0ff070d24cb649a90623a3b3ccd504d56d3e23"], after: [48293, "feafb34479f4d81413f44cc24d786beb431e9bebffc6d6be24de1753139d2fae"]}],
  ]);
- const assertPhysical=pin=>{const physical=fs.readFileSync(path.join(root,pin.path)),strict=strictSuccessors.get(pin.path);if(strict){assert.deepEqual([pin.bytes,pin.sha256],strict.before,pin.path);assert.deepEqual([physical.length,hash(physical)],strict.after,pin.path);return;}if(pin.path==='weebdex-platform/scripts/integrated-load/mounted-reader.mjs'){/* Historical association metadata stays immutable; current test-harness successor is explicit. */assert.deepEqual([pin.bytes,pin.sha256],[44683,'b6d7b0a15681feada198897b35a4c497dde8b800226a011eba85fe8fe910e977']);assert.deepEqual([physical.length,hash(physical)],[45414,'badb60c9f59b93f2267a5a50bda41364acc7086d7bd2cff4e38a0d8153c998ee']);return;}assert.equal(physical.length,pin.bytes,pin.path);assert.equal(hash(physical),pin.sha256,pin.path);};
+ const assertPhysical=pin=>{const physical=readCompared(pin.path),strict=strictSuccessors.get(pin.path);if(strict){assert.deepEqual([pin.bytes,pin.sha256],strict.before,pin.path);assert.deepEqual([physical.length,hash(physical)],strict.after,pin.path);return;}if(pin.path==='weebdex-platform/scripts/integrated-load/mounted-reader.mjs'){/* Historical association metadata stays immutable; current test-harness successor is explicit. */assert.deepEqual([pin.bytes,pin.sha256],[44683,'b6d7b0a15681feada198897b35a4c497dde8b800226a011eba85fe8fe910e977']);assert.deepEqual([physical.length,hash(physical)],[45414,'badb60c9f59b93f2267a5a50bda41364acc7086d7bd2cff4e38a0d8153c998ee']);return;}assert.equal(physical.length,pin.bytes,pin.path);assert.equal(hash(physical),pin.sha256,pin.path);};
  assert.equal(readerData.actual_dependency_pins.length,37);
  for(const pin of readerData.actual_dependency_pins)assertPhysical(pin);
  assert.equal(readerData.preserved_metadata.length,11);for(const pin of readerData.preserved_metadata)assertPhysical(pin);
@@ -164,10 +183,20 @@ test('physical dependencies, old metadata and capsule dispositions are checked i
  assert.equal(Buffer.byteLength(slice),801);assert.equal(hash(slice),'213da1c168ac55a52403f2520959fa2ea8e7a3d87d8b36e4d559dafc822bd9c0');
 });
 test('library reader predecessor precedes history exactly once without swallowing another layer',()=>{
- const file='weebdex-platform/platform-integrations/local-library/library.ts',stage='bounded-reader-to-frozen-main:platform-integrations/local-library/library.ts',physical=fs.readFileSync(path.join(root,file)),reader=restoreBoundedReaderSource(stage,file,physical),history=restoreHistorySource(file,reader);
+ const file='weebdex-platform/platform-integrations/local-library/library.ts',stage='bounded-reader-to-frozen-main:platform-integrations/local-library/library.ts',physical=readCompared(file),reader=restoreBoundedReaderSource(stage,file,physical),history=restoreHistorySource(file,reader);
  assert.deepEqual([physical.length,reader.length,Buffer.byteLength(history)],[37875,35991,35984]);
  assert.deepEqual([hash(physical),hash(reader),hash(history)],['aba0286cf8cb386d703fa2580f937722fe4e68f383a14b73f3a5ebd5830e1838','18a90ef68078943f7fbc25bcac80479f0311079f745ef924acd538a00c45cb0e','7a731e22f8242e278068779393ff1b3b75e3e9306d608598bdb066d5e18a3eef']);
  assert.throws(()=>restoreHistorySource(file,physical));
  for(const input of [reader,history])assert.throws(()=>restoreBoundedReaderSource(stage,file,input));
- assert.deepEqual(fs.readFileSync(path.join(root,file)),physical);
+ assertUnwritten(file);
+});
+
+test('historical comparison layers never accept edited current UX bytes or rewrite live source files',()=>{
+ for(const [file,live] of liveSourceSnapshots){
+  assertUnwritten(file);
+  if(firstReaderPaths.has(file)||secondReaderPaths.has(file)){
+   assert.throws(()=>beforeReaderUx(file,Buffer.concat([live,Buffer.from(' ')])));
+   const prior=beforeReaderUx(file,live);assert.throws(()=>beforeReaderUx(file,prior));
+  }
+ }
 });

@@ -1363,3 +1363,61 @@ async fn signed_original_page_edits_refuse_both_modes_despite_forged_local_metad
     for key in ["protocol_event_id","version","data","updated_at"]{assert_eq!(after[key],before[key]);}
     assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.upload_sessions WHERE state='open'",&[]).await.unwrap().get::<_,i64>(0),0);
 }
+
+// Explicit native scheduling uses an already operator-provisioned account role;
+// it never asks the caller for a signer or manufactures an HTTP capability.
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="owned isolated PostgreSQL and configured synthetic publication runtime; run alone"]
+async fn native_cookie_schedule_captures_configured_authority_without_user_signature() {
+    let f=fixture_full(Config::default(),true,false).await;
+    let account=schedule_account(&f,"PublicUploadUser1").await;
+    async fn native(f:&Fixture,method:&str,path:&str,body:Vec<u8>,mime:&str,status:u16)->Value {
+        let response=f.http.request(method.parse().unwrap(),format!("{}{path}",f.origin))
+            .header("origin",&f.origin).header("cookie","weebdex_session=synthetic-public-upload-cookie")
+            .header("x-weebdex-expected-account","PublicUploadUser1").header("content-type",mime).body(body).send().await.unwrap();
+        let actual=response.status().as_u16();assert_eq!(response.headers()["cache-control"],"private, no-store");
+        let value:Value=response.json().await.unwrap();assert_eq!(actual,status,"{method} {path}: {value}");
+        if status<300 {assert_eq!(value["nostr"]["authentication"],"native-session");assert_eq!(value["nostr"]["scope"],"instance-account");}
+        value
+    }
+    let path=|suffix:&str|format!("/api/v1/account/{suffix}?expectedAccountId={account}");
+    let before=f.state.db.client().await.unwrap().query_one("SELECT (SELECT count(*) FROM platform.protocol_identity_bindings),(SELECT count(*) FROM account_permissions),(SELECT count(*) FROM platform.protocol_publication_commands)",&[]).await.unwrap();
+    let start=native(&f,"POST",&path("upload/begin"),serde_json::to_vec(&json!({"manga":f.manga,"groups":[],"expectedAccountId":account})).unwrap(),"application/json",200).await;
+    let session=start["id"].as_str().unwrap();
+    let (mime,bytes)=multipart(&[("scheduled.png","image/png",&png())]);
+    let files=native(&f,"POST",&path(&format!("upload/{session}")),bytes,&mime,200).await;
+    let mut payload=commit(files["data"].as_array().unwrap());payload["chapterDraft"]["publishAt"]=json!(schedule_time(&f,3600).await);
+    let commit_path=path(&format!("upload/{session}/commit"));let bytes=serde_json::to_vec(&payload).unwrap();
+    let receipt=native(&f,"POST",&commit_path,bytes.clone(),"application/json",202).await;
+    assert_eq!(receipt["nostr"]["scheduleAccepted"],true);assert_eq!(receipt["nostr"]["sourceAccepted"],false);
+    let replay=native(&f,"POST",&commit_path,bytes,"application/json",202).await;assert_eq!(replay["id"],receipt["id"]);
+    let list=native(&f,"GET",&path("uploads/schedules"),vec![],"application/json",200).await;assert_eq!(list["data"].as_array().unwrap().len(),1);
+    native(&f,"GET",&path(&format!("uploads/{session}/schedule")),vec![],"application/json",200).await;
+    // Source admission revocation is authoritative even though native login
+    // remains valid; failed requests create no alternate binding or permission.
+    f.repository.set_account_admission(id(1),false).await.unwrap();
+    native(&f,"POST",&commit_path,serde_json::to_vec(&payload).unwrap(),"application/json",403).await;
+    let native_id=f.native(ResourceKind::UploadSession,session).await;
+    let db=f.state.db.client().await.unwrap();
+    let after=db.query_one("SELECT (SELECT count(*) FROM platform.protocol_identity_bindings),(SELECT count(*) FROM account_permissions),(SELECT count(*) FROM platform.protocol_publication_commands)",&[]).await.unwrap();
+    for index in 0..3 {assert_eq!(after.get::<_,i64>(index),before.get::<_,i64>(index));}
+    let capture=db.query_one("SELECT author,service,owner_id,payload_hash,state FROM platform.scheduled_uploads WHERE session_id=$1",&[&native_id]).await.unwrap();
+    assert_eq!(capture.get::<_,String>(0),public(1));assert_eq!(capture.get::<_,String>(1),public(11));assert_eq!(capture.get::<_,String>(2),"PublicUploadUser1");assert_eq!(capture.get::<_,String>(4),"scheduled");
+    drop(db);
+    // Owner cancellation remains available after publication admission is
+    // revoked, provided no source attempt has started. It cannot impersonate one.
+    native(&f,"DELETE",&path(&format!("upload/{session}")),vec![],"application/json",200).await;
+    let db=f.state.db.client().await.unwrap();assert_eq!(db.query_one("SELECT state FROM platform.scheduled_uploads WHERE session_id=$1",&[&native_id]).await.unwrap().get::<_,String>(0),"cancelled");
+    db.execute("INSERT INTO platform.sessions(id,user_id,token_hash,expires_at) VALUES('native-other-upload','PublicUploadUser2',$1,clock_timestamp()+interval '1 hour')",&[&Sha256::digest(b"synthetic-other-native-cookie").to_vec()]).await.unwrap();drop(db);
+    async fn other(f:&Fixture,method:&str,path:&str,body:Vec<u8>,mime:&str,status:u16)->Value {
+        let response=f.http.request(method.parse().unwrap(),format!("{}{path}",f.origin)).header("origin",&f.origin).header("cookie","weebdex_session=synthetic-other-native-cookie").header("x-weebdex-expected-account","PublicUploadUser2").header("content-type",mime).body(body).send().await.unwrap();let actual=response.status().as_u16();let value:Value=response.json().await.unwrap();assert_eq!(actual,status,"{value}");value
+    }
+    let other_account=schedule_account(&f,"PublicUploadUser2").await;
+    let other_path=|suffix:&str|format!("/api/v1/account/{suffix}?expectedAccountId={other_account}");
+    let begin=other(&f,"POST",&other_path("upload/begin"),serde_json::to_vec(&json!({"manga":f.manga,"groups":[],"expectedAccountId":other_account})).unwrap(),"application/json",200).await;let other_session=begin["id"].as_str().unwrap();
+    let (mime,bytes)=multipart(&[("ordinary.png","image/png",&png())]);let files=other(&f,"POST",&other_path(&format!("upload/{other_session}")),bytes,&mime,200).await;
+    let denied=other(&f,"POST",&other_path(&format!("upload/{other_session}/commit")),serde_json::to_vec(&commit(files["data"].as_array().unwrap())).unwrap(),"application/json",403).await;
+    assert!(denied["errors"][0]["detail"].is_string());
+    let kept=other(&f,"GET",&other_path(&format!("uploads/{other_session}")),vec![],"application/json",200).await;assert_eq!(kept["session"]["state"],"open");assert_eq!(kept["session"]["files"].as_array().unwrap().len(),1);
+    other(&f,"DELETE",&other_path(&format!("upload/{other_session}")),vec![],"application/json",200).await;
+}

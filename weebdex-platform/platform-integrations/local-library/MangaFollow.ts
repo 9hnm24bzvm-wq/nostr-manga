@@ -1,6 +1,7 @@
 import {assertCataloguePreviewLibraryReady,publicUuidLibraryEnabled} from '../public-api/library-staging';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { HTTPError } from '$lib/HTTP';
+import { uuidPattern } from '../public-api/validation';
 import type { Constants } from '$lib';
 import { apiRead, accountRequest, captureLibraryView, assertLibraryView, currentDeviceSnapshot, isCurrentCatalogueId, isAccountMode, saveSeries, removeSeries, params, applyCatalogueRecords, captureImportContext, assertImportContext, type LibraryImportContext, openLibrary, captureLibraryContext, assertLibraryContext } from './library';
 import { filteredCatalog } from './catalog';
@@ -14,8 +15,8 @@ export async function Search(searchParams: URLSearchParams): Promise<{ status: n
   await openLibrary();
   const q = params(searchParams), context = captureLibraryContext(), account = context.mode === 'account', view = captureLibraryView();
   const list = q.get('list');
-  if (q.has('list') && (q.getAll('list').length !== 1 || !list || !/^[0-9a-f]{32}$/.test(list))) throw new HTTPError(400, 'Choose one existing custom device list', 'Invalid device list');
-  if (account && list) throw new HTTPError(409, 'This link selects a custom device list. Choose Use device library, then reopen this list. Account results are not a substitute for its saved members.', 'Device library selection required');
+  if (q.has('list') && (q.getAll('list').length !== 1 || !list || !(account && publicUuidLibraryEnabled ? uuidPattern.test(list) : /^[0-9a-f]{32}$/.test(list)))) throw new HTTPError(400, 'Choose one existing custom device list', 'Invalid device list');
+  if (account && list && !publicUuidLibraryEnabled) throw new HTTPError(409, 'This link selects a custom device list. Choose Use device library, then reopen this list. Account results are not a substitute for its saved members.', 'Device library selection required');
   if (account) { const body = await apiRead<MangaFollowFeedResponse>('/user/follows/manga', q, true); assertLibraryView(view); return { status: 200, body }; }
   // The mounted device component owns incremental indexing. The compatibility
   // endpoint can return a complete one-batch result, never a false total/page.

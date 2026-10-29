@@ -6,6 +6,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import { stripTypeScriptTypes } from 'node:module';
 import test from 'node:test';
+import { createPublicSearchModeFixture } from './public-search-mode-fixture.mjs';
 import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../../platform-integrations/frontend-reader-overlays.mjs';
 import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
@@ -17,8 +18,9 @@ const context = vm.createContext({ URL, URLSearchParams: BrowserSearchParams, Ab
 // exact retained extension on an isolated subclass, preserving the test host.
 const layout = fs.readFileSync(path.join(frontend, 'src/routes/+layout.ts'), 'utf8');
 vm.runInContext(stripTypeScriptTypes(layout.slice(layout.indexOf('const _toString ='), layout.indexOf('Number.prototype.short ='))), context);
+const searchMode = createPublicSearchModeFixture(context);
 async function load(file) {
-  if (!modules.has(file)) { const module = new vm.SourceTextModule(stripTypeScriptTypes(fs.readFileSync(file, 'utf8'), { mode: 'transform' }), { context, identifier: file }); modules.set(file, module); await module.link((specifier, importer) => load(specifier.startsWith('$lib/') ? path.join(frontend, 'src/lib', specifier.slice(5) + '.ts') : path.resolve(path.dirname(importer.identifier), specifier + '.ts'))); }
+  if (!modules.has(file)) { const module = searchMode.module(file) ?? new vm.SourceTextModule(stripTypeScriptTypes(fs.readFileSync(file, 'utf8'), { mode: 'transform' }), { context, identifier: file }); modules.set(file, module); await module.link((specifier, importer) => load(searchMode.resolve(specifier, importer) ?? (specifier.startsWith('$lib/') ? path.join(frontend, 'src/lib', specifier.slice(5) + '.ts') : path.resolve(path.dirname(importer.identifier), specifier + '.ts')))); }
   return modules.get(file);
 }
 for (const name of ['validation', 'query', 'normalize', 'client']) { const module = await load(path.join(directory, name + '.ts')); await module.evaluate(); }

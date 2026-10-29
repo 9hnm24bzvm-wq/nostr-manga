@@ -8,12 +8,12 @@ use std::time::Duration;
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields,rename_all="camelCase")]
-struct Command {
-    expected_account_id:PublicUuid,expected_user_id:PublicUuid,version:i32,
+pub(super) struct Command {
+    pub(super) expected_account_id:PublicUuid,pub(super) expected_user_id:PublicUuid,version:i32,
     description:Option<String>,discord:Option<String>,twitter:Option<String>,website:Option<String>,
 }
 impl Command {
-    fn patch(self)->ProfilePatch {ProfilePatch{version:self.version,description:self.description,discord:self.discord,twitter:self.twitter,website:self.website}}
+    pub(super) fn patch(self)->ProfilePatch {ProfilePatch{version:self.version,description:self.description,discord:self.discord,twitter:self.twitter,website:self.website}}
 }
 pub fn router()->Router<AppState> {
     Router::new().route("/nostr/user/{p0}/profile",get(preview))
@@ -24,13 +24,13 @@ async fn private_headers(request:Request,next:Next)->Response {
     response.headers_mut().insert(header::CACHE_CONTROL,HeaderValue::from_static("private, no-store"));
     response.headers_mut().append(header::VARY,HeaderValue::from_static("Authorization, Cookie"));response
 }
-fn envelope(attributes:Value,account:&str,user:&PublicUuid,changed:Option<bool>)->Value {
+pub(super) fn envelope(attributes:Value,account:&str,user:&PublicUuid,changed:Option<bool>)->Value {
     let mut meta=json!({"scope":"instance-account","source":"persisted-native-account-profile","accountId":account,"userId":user,"versionSemantics":"shared-native-user-revision"});
     if let Some(changed)=changed {meta["changed"]=json!(changed);}
     let mut provenance=meta.clone();provenance["identity"]=json!("native_public_user");
     json!({"result":"ok","response":"entity","data":{"id":user,"type":"user","attributes":attributes,"relationships":[],"nostr":provenance},"nostr":meta})
 }
-async fn target(tx:&tokio_postgres::Transaction<'_>,id:&PublicUuid,actor:&str)->PublicApiResult<super::ResolvedPublicId> {
+pub(super) async fn target(tx:&tokio_postgres::Transaction<'_>,id:&PublicUuid,actor:&str)->PublicApiResult<super::ResolvedPublicId> {
     let target=PostgresPublicIdResolver::resolve_many_in(&*tx,ResourceKind::User,&[id.clone()]).await?.into_values().next()
         .filter(|r|r.target==PublicIdTarget::NativeResource).ok_or_else(PublicApiError::not_found)?;
     if target.native_id!=actor {return Err(PublicApiError::forbidden("Only your explicitly bound native profile can be edited"));}

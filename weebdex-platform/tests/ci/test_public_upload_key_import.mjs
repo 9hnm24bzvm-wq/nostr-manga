@@ -1,3 +1,5 @@
+// Historical signed UI regression only; current native coverage is test_native_contribution_dom.mjs.
+import {historicalContributionSource} from './historical-contribution-ui-fixture.mjs';
 // Production UI driver and fixed progress with delayed explicit control fakes.
 // No browser, network, real key, application state, service or install is used.
 import assert from 'node:assert/strict';
@@ -85,7 +87,7 @@ test('fixture default and actual UI require local connection rather than self-en
   const native = provisioner.match(/let native = json!\(([^\n]+)\);/)[1]; assert.doesNotMatch(native, /enrollment/);
   assert.match(provisioner, /repo\.set_account_admission\(id\(public\)\?, true\)/);
   const policy = fs.readFileSync(new URL('../../../manga-protocol-lab/server/src/enrollment.rs', import.meta.url), 'utf8'); assert.match(policy, /impl Default for Policy[\s\S]*?enabled: false/);
-  const component = read('platform-integrations/local-library/IdentitySetup.svelte');
+  const component = historicalContributionSource(new URL('../../platform-integrations/local-library/IdentitySetup.svelte', import.meta.url));
   assert.match(component, /\{#if enrollmentOpen\}[\s\S]*?onclick=\{join\}>[\s\S]*?'Join this instance'[\s\S]*?\{:else\}/);
   assert.match(component, /onclick=\{connectSession\}>Use this key for this session/);
   assert.match(component, /for="identity-private-key-\{id\}"[^>]*>Private key \(nsec or hex\)/);
@@ -100,7 +102,7 @@ test('fixture default and actual UI require local connection rather than self-en
 // to the reviewed reader-UX component (including explicit local recovery download).
 // Exact current bytes are requalified by identity setup security tests; future edits must requalify it.
 function latestIdentityComposition() {
-  const source = fs.readFileSync(process.env.WEEBDEX_IDENTITY_REVIEW_SOURCE ?? new URL('../../platform-integrations/local-library/IdentitySetup.svelte', import.meta.url), 'utf8');
+  const source = historicalContributionSource(process.env.WEEBDEX_IDENTITY_REVIEW_SOURCE ?? new URL('../../platform-integrations/local-library/IdentitySetup.svelte', import.meta.url));
   assert.equal(createHash('sha256').update(source).digest('hex'), 'dd54050b5b0ff4b18ca914f41c086c6c612e22509bed14e2c3897990f0aea81b');
   const backup = source.slice(source.indexOf("{:else if stage === 'backup'"), source.indexOf("{:else if stage === 'review'"));
   const backupSessionControl = /onclick=\{connectSession\}>Use this key for this session/.test(backup);

@@ -10,6 +10,7 @@ import vm from 'node:vm';
 import { createRequire, stripTypeScriptTypes } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createVmModuleLoader } from './vm-module-fixture.mjs';
+import { createPublicSearchModeFixture } from './public-search-mode-fixture.mjs';
 import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../../platform-integrations/frontend-reader-overlays.mjs';
 import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
@@ -36,9 +37,11 @@ const layout = fs.readFileSync(path.join(frontend, 'src/routes/+layout.ts'), 'ut
 vm.runInContext(stripTypeScriptTypes(layout.slice(layout.indexOf('const _toString ='), layout.indexOf('Number.prototype.short ='))), context);
 savedGlobals.set('URLSearchParams', Object.getOwnPropertyDescriptor(globalThis, 'URLSearchParams'));
 globalThis.URLSearchParams = BrowserSearchParams;
+export const searchMode = createPublicSearchModeFixture(context);
 const loader = createVmModuleLoader({
-  createModule(file, importModuleDynamically) { return new vm.SourceTextModule(stripTypeScriptTypes(fs.readFileSync(file, 'utf8'), { mode: 'transform' }), { context, identifier: file, importModuleDynamically }); },
+  createModule(file, importModuleDynamically) { return searchMode.module(file) ?? new vm.SourceTextModule(stripTypeScriptTypes(fs.readFileSync(file, 'utf8'), { mode: 'transform' }), { context, identifier: file, importModuleDynamically }); },
   resolve(specifier, importer) {
+    const boundary = searchMode.resolve(specifier, importer); if (boundary) return boundary;
     const base = specifier.startsWith('$lib/') ? path.join(frontend, 'src/lib', specifier.slice(5)) : path.resolve(path.dirname(importer.identifier), specifier);
     return base.endsWith('.ts') ? base : base + '.ts';
   }

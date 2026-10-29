@@ -1,10 +1,10 @@
 import { readerLibrarySource, assertLibraryAdmission } from '../local-library/library';
 import { createNativeContinueJsonReader, NATIVE_CONTINUE_LIMITS, type NativeCompletionDependencies, type NativeContinueInput } from '../public-api/owned-json';
-import { ReaderIdentityChanged } from './contract';
+import { ReaderIdentityChanged, type Row } from './contract';
 import { historySourceKey } from './history';
 import { nativeContinueScope, nativeContinueResult, type NativeContinueResult } from './native-continue-contract';
 import type { ReaderBudget, ReaderEndpoint, ReaderIdentity } from './client';
-export type NativeContinueAccess = Readonly<{ key: string; available: boolean; reason: string; read(filters: string, budget: ReaderBudget): Promise<NativeContinueResult> }>;
+export type NativeContinueAccess = Readonly<{ key: string; available: boolean; reason: string; read(filters: string, budget: ReaderBudget): Promise<NativeContinueResult>; resume?(winner: Row, selection: NativeContinueResult, budget: ReaderBudget): Promise<number> }>;
 export function createNativeContinueAccess(endpoint: () => ReaderEndpoint, injected: Partial<NativeCompletionDependencies> = {}) {
   const read = createNativeContinueJsonReader(endpoint, injected);
   return (mangaId: string, identity: ReaderIdentity | undefined): NativeContinueAccess => {

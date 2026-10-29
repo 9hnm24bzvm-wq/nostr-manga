@@ -1,8 +1,10 @@
 <script lang="ts">
- import IdentityGate from '../local-library/IdentityGate.svelte';
- import { signerIdentity } from '../local-library/publication';
+ import AccountActionGate from './AccountActionGate.svelte';
+ import { Session } from '$lib/stores';
+ import { Locale } from '$lib';
+ import { nativeAccountIssue, type NativeAccountIssue } from './native-account-scope';
  import { onDestroy, onMount, untrack } from 'svelte';
- import { createSignedTitleController, titleAwaitingProjection, type SignedTitleController, type TitleAction } from './title-client';
+ import { createSessionTitleController, titleAwaitingProjection, type SignedTitleController, type TitleAction } from './session-title-client';
  import PublicCoverEditor from './PublicCoverEditor.svelte';
  import PublicTitleDisposition from './PublicTitleDisposition.svelte';
  import PublicRelationEditor from './PublicRelationEditor.svelte';
@@ -12,14 +14,16 @@
  let { data }: { data?: { manga?: { id:string }; covers?: unknown[] } } = $props();
  const captured=untrack(()=>data?.manga?.id),path=window.location.pathname;
  let owner=$state<SignedTitleController>();
- let disposed=false;
+ let disposed=false,generation=0;let capturedSession=$state.raw(untrack(()=>$Session)),issue=$state<NativeAccountIssue>();
  let current=$state<MangaView>(),ready=$state(false),busy=$state(false),pending=$state(false),message=$state('');
+ const languages=Object.entries({...Locale.Languages,ta:'Tamil'}).filter(([code])=>/^[a-z]{2}(-[a-z]{2})?$/.test(code)).sort((a,b)=>a[1].localeCompare(b[1]));
+ let customLanguage=$state(false);
  let title=$state(''),language=$state('en'),description=$state(''),status=$state('ongoing'),rating=$state('safe');
  let fields=$state<RichTitleFields>(richTitleFields());
  let coverPending=$state(false),coverBusy=$state(false),dispositionBusy=$state(false),dispositionPending=$state(false),removed=$state(false);
  let relationBusy=$state(false),relationPending=$state(false);
  let permissions=$state<string[]>([]),roles=$state<string[]>([]);
- const active=()=>{if(disposed||window.location.pathname!==path||data?.manga?.id!==captured)throw Error('The title editor changed. Reopen the current route.');};
+ const active=()=>{if(disposed||$Session!==capturedSession||window.location.pathname!==path||data?.manga?.id!==captured)throw Error('The title editor changed. Reopen the current route.');};
  onDestroy(()=>{disposed=true;owner?.dispose();});
  const access=$derived(titleEditAffordances(current,{id:owner?.account.id??'',permissions,roles}));
  const canWrite=$derived(access.write);
@@ -29,18 +33,18 @@
  const awaitingProjection=$derived(titleAwaitingProjection(current));
  const hasCover=$derived(!!current?.relationships.cover&&current.relationships.cover.language===current.language);
  function originalText(value:MangaView,key:'title'|'description'){const map=value.public_api.resource.attributes[key];return map&&typeof map==='object'&&value.language in map&&typeof (map as Record<string,unknown>)[value.language]==='string'?(map as Record<string,string>)[value.language]:'';}
- function restore(value:MangaView){current=value;title=originalText(value,'title');language=value.language;description=originalText(value,'description');status=value.status;rating=value.content_rating;fields=richTitleFields(value);}
+ function restore(value:MangaView){customLanguage=false;current=value;title=originalText(value,'title');language=value.language;description=originalText(value,'description');status=value.status;rating=value.content_rating;fields=richTitleFields(value);}
  function failure(error:unknown){return error instanceof Error?error.message:'The title command was not confirmed.';}
  function responseError(response:{status:number;body?:unknown}){const body=response.body as {errors?:{detail?:string}[]}|undefined;return body?.errors?.[0]?.detail??`Title request refused (HTTP ${response.status})`;}
  let initializing = $state(false);
- async function initialize(){if(initializing||disposed||!$signerIdentity.owner)return;initializing=true;message='';try{owner=await createSignedTitleController(active,captured);active();permissions=[...owner.account.permissions];roles=[...owner.account.roles];pending=owner.pending();if(captured){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}ready=true;if(pending)message='A previous title command has an unconfirmed outcome. It will not be replayed. Review the actual account drafts or contact the instance operator before further changes.';}catch(error){if(!disposed)message=failure(error);}finally{if(!disposed)initializing=false;}}
- onMount(()=>{void initialize();});
+ async function initialize(){if(initializing||disposed||!$Session?.identity?.id)return;capturedSession=$Session;const session=capturedSession,token=generation,check=()=>{active();if(generation!==token||$Session!==session)throw Error('This account view changed.');};initializing=true;issue=undefined;message='';try{const next=await createSessionTitleController(session.identity.id,check,captured);try{active();if(token!==generation)throw Error('This account view changed.');}catch(error){next.dispose();throw error;}owner=next;permissions=[...owner.account.permissions];roles=[...owner.account.roles];pending=owner.pending();if(captured){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}ready=true;if(pending)message='A previous title command has an unconfirmed outcome. It will not be replayed. Review the actual account drafts or contact the instance operator before further changes.';}catch(error){if(!disposed&&token===generation){issue=nativeAccountIssue(error);message=failure(error);}}finally{if(!disposed&&token===generation)initializing=false;}}
+ $effect(()=>{const session=$Session;untrack(()=>{generation++;owner?.dispose();owner=undefined;current=undefined;ready=false;initializing=false;busy=false;pending=false;permissions=[];roles=[];customLanguage=false;language='en';title='';description='';fields=richTitleFields();coverBusy=false;coverPending=false;relationBusy=false;relationPending=false;dispositionBusy=false;dispositionPending=false;removed=false;message='';issue=undefined;capturedSession=session;if(session?.identity?.id)void initialize();});});
  async function command(action:TitleAction){
   if(!owner||!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed)return;
   if(metadataDirty&&action!=='create'&&action!=='update'){message='Save metadata changes before reviewing this title.';return;}
   if(action==='create'||action==='update'){if(!canWrite){message='You do not have permission to edit this title.';return;}}
   else if(action==='submit'?!access.submit:!canReview){message='You do not have permission for this title transition.';return;}
-  busy=true;message='';
+  const operationOwner=owner,token=generation;busy=true;message='';
   try{
    let payload:Record<string,unknown>|undefined;
    if(action==='create')payload={title,language,description,status,content_rating:rating,...richTitlePayload(fields)};
@@ -61,19 +65,19 @@
    restore(response.body);
    const source=response.body.public_api.resource.attributes.nostr as {publicationStatus?:string;publicationScope?:string;metadataScope?:string}|undefined;
    message=action==='publish'?(source?.publicationStatus==='accepted_pending_projection'?'The original signed title was accepted and is waiting for actual local source projection. Public detail is not readable yet.':source?.publicationScope==='original-protocol'?'The original signed title publication receipt was accepted. Public readability remains a separate observation.':'Title published on this instance. No original-protocol publication is claimed.'):
-    action==='submit'?'Draft submitted for instance review.':action==='reject'?'Draft rejected by the instance reviewer.':action==='create'?'Metadata draft saved. Upload an actual original-language cover below before submission.':'Instance-local metadata saved. Original signed source metadata is unchanged.';
-  }catch(error){if(!disposed)message=failure(error);}
-  finally{if(!disposed){busy=false;pending=owner?.pending()??pending;if(owner){permissions=[...owner.account.permissions];roles=[...owner.account.roles];}}}
+    action==='submit'?'Draft submitted for instance review.':action==='reject'?'Draft rejected by the instance reviewer.':action==='create'?'Draft saved. Add a cover in the original language before submitting for review.':'Changes saved on this site. Original publications are unchanged.';
+  }catch(error){if(!disposed&&token===generation&&owner===operationOwner)message=failure(error);}
+  finally{if(!disposed&&token===generation&&owner===operationOwner){busy=false;pending=owner?.pending()??pending;if(owner){permissions=[...owner.account.permissions];roles=[...owner.account.roles];}}}
  }
- async function reload(){if(!owner||busy||coverBusy||dispositionBusy||relationBusy||removed||!current)return;if(metadataDirty&&!confirm('Discard unsaved title metadata changes and reload the actual server record?'))return;busy=true;try{const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);message='Current title read from the server. No mutation was replayed; an unconfirmed command remains fenced.';}catch(error){if(!disposed)message=failure(error);}finally{if(!disposed){busy=false;pending=owner?.pending()??pending;if(owner){permissions=[...owner.account.permissions];roles=[...owner.account.roles];}}}}
+ async function reload(){if(!owner||busy||coverBusy||dispositionBusy||relationBusy||removed||!current)return;if(metadataDirty&&!confirm('Discard unsaved title metadata changes and reload the actual server record?'))return;const operationOwner=owner,token=generation;busy=true;try{const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);message='Current title read from the server. No mutation was replayed; an unconfirmed command remains fenced.';}catch(error){if(!disposed&&token===generation&&owner===operationOwner)message=failure(error);}finally{if(!disposed&&token===generation&&owner===operationOwner){busy=false;pending=owner?.pending()??pending;if(owner){permissions=[...owner.account.permissions];roles=[...owner.account.roles];}}}}
 </script>
 <section class="space-y-4 rounded border p-4">
  <h3 class="text-lg font-medium">Title details</h3>
  <p>Changes apply to this site. Original publications remain unchanged.</p>
  <p>Save your title details first, then add a cover and related titles below.</p>
  {#if message}<p role="status" class="rounded border p-3">{message}</p>{/if}
- <IdentityGate show={!ready && !$signerIdentity.owner} onfinish={() => { if ($signerIdentity.owner) void initialize(); }} />
- {#if !ready && $signerIdentity.owner}<button type="button" class="rounded border px-3 py-2" disabled={initializing} onclick={() => { void initialize(); }}>Check my access again</button>{/if}
+ <AccountActionGate {issue} onready={initialize} />
+ {#if !ready && $Session?.identity?.id}<button type="button" class="rounded border px-3 py-2" disabled={initializing} onclick={() => { void initialize(); }}>Check my access again</button>{/if}
  {#if removed}<p role="status">This title was soft-hidden on this instance. Original signed publications are unchanged. Reopen the catalogue to continue.</p>{/if}
  {#if metadataDirty}<p>Save metadata changes before cover, relation, review or instance title actions.</p>{/if}
  {#if current}<p>Status: {current.state}.</p>{/if}
@@ -81,8 +85,11 @@
  <form onsubmit={event=>{event.preventDefault();void command(current?'update':'create');}} class="space-y-3">
   <fieldset disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||awaitingProjection||!canWrite} class="space-y-3">
    <label class="block">Original-language title<input class="block w-full rounded border p-2" bind:value={title} disabled={!access.title} maxlength="500" required={!current} /></label>
-   <p class="text-sm">Use a language code, such as en for English, ja for Japanese, or pt-br for Brazilian Portuguese.</p>
-   <label class="block">Original language<input class="block w-full rounded border p-2" bind:value={language} required={!current} /></label>
+   <label class="block">Original language<select class="block w-full rounded border p-2" value={customLanguage?'__other__':language} onchange={event=>{const value=event.currentTarget.value;customLanguage=value==='__other__';language=customLanguage?'':value;}}>
+    {#if !customLanguage&&!languages.some(([code])=>code===language)}<option value={language}>{Locale.toLanguage(language)||'Unspecified language'}</option>{/if}
+    {#each languages as [code,name]}<option value={code}>{name}</option>{/each}<option value="__other__">Other language…</option>
+   </select></label>
+   {#if customLanguage}<label class="block">Other original language code<input class="block w-full rounded border p-2" bind:value={language} required placeholder="For example, ta or pt-br" /></label>{/if}
    <label class="block">Description<textarea class="block w-full rounded border p-2" bind:value={description} maxlength="30000"></textarea></label>
    <label class="block">Publication status<select class="block rounded border p-2" bind:value={status}><option value="ongoing">Ongoing</option><option value="completed">Completed</option><option value="hiatus">Hiatus</option><option value="cancelled">Cancelled</option></select></label>
    <label class="block">Content rating<select class="block rounded border p-2" bind:value={rating}><option value="safe">Safe</option><option value="suggestive">Suggestive</option><option value="erotica">Erotica</option><option value="pornographic">Pornographic</option></select></label>
@@ -111,8 +118,8 @@
   </fieldset>
  </form>
  {#if current}
-  {#key current.id}<PublicCoverEditor title={current} accountId={owner!.account.id} disabled={busy||pending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||awaitingProjection} assertCurrent={active} onState={state=>{coverPending=state.pending;coverBusy=state.busy;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}
-  {#if !removed}{#key current.id}<PublicRelationEditor title={current} accountId={owner!.account.id} disabled={busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||metadataDirty||awaitingProjection} assertCurrent={active} onState={state=>{relationBusy=state.busy;relationPending=state.pending;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}{/if}
+  {#key current.id}<PublicCoverEditor nativeAccount={capturedSession!.identity.id} title={current} accountId={owner!.account.id} disabled={busy||pending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||awaitingProjection} assertCurrent={active} onState={state=>{coverPending=state.pending;coverBusy=state.busy;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}
+  {#if !removed}{#key current.id}<PublicRelationEditor nativeAccount={capturedSession!.identity.id} title={current} accountId={owner!.account.id} disabled={busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||metadataDirty||awaitingProjection} assertCurrent={active} onState={state=>{relationBusy=state.busy;relationPending=state.pending;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}{/if}
   {#if !hasCover&&(current.state==='draft'||current.state==='rejected')}<p>Add a cover in the title’s original language before submitting for review.</p>{/if}
   <div class="flex flex-wrap gap-3">
    {#if current.state==='draft'||current.state==='rejected'}<button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||!access.submit||!hasCover} onclick={()=>command('submit')}>Submit for review</button>{/if}

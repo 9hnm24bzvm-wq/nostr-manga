@@ -26,7 +26,7 @@ export function createNativeProfileActionsClient(openScope=createSignedAccountSc
  let following:Awaited<ReturnType<ReturnType<typeof createAccountFollowClient>>>|undefined;
  const view=()=>Object.freeze({...state,unconfirmed:pending()});
  async function reload(){scope.check();if(busy)fail('A profile action is already pending.');busy=true;state={...state,needsRecheck:true,settingsHref:undefined,canBlock:false};try{
-  if(self){if(!permissions.includes('self.user.update'))fail('This account cannot edit its public profile.',403);await scope.verify();state={...state,targetName:username,settingsHref:'/user/'+targetId+'/settings?account='+accountId,needsRecheck:false};}
+  if(self){if(!permissions.includes('self.user.update'))fail('This account cannot edit its public profile.',403);await scope.verify();state={...state,targetName:username,settingsHref:'/user/'+targetId+'/settings?authority=external&account='+accountId,needsRecheck:false};}
   else {
    if(!permissions.includes('self.preferences.update'))fail('This account cannot change uploader preferences.',403);
    const result=await createUserDirectorySearch(access)(new URLSearchParams({'ids[]':targetId,limit:'1'}));scope.check();

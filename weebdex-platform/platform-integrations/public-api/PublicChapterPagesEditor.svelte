@@ -4,8 +4,8 @@
   import { Mutex } from '$lib';
   import { setMutex, setUploadSession } from '$lib/Context';
   import UploadChapterPages from '$lib/components/upload/UploadChapterPages.svelte';
-  import { setUploadOwner, prepareResume, acknowledge, signature, snapshot, isRemoteUploadFile, type PublicUploadOwner, type PublicSession } from './upload-client';
-  import { createChapterPagesController } from './chapter-pages-controller';
+  import { setUploadOwner, prepareResume, acknowledge, signature, snapshot, isRemoteUploadFile, type PublicUploadOwner, type PublicSession } from './native-upload-client';
+  import { createChapterPagesController } from './native-chapter-pages-controller';
   import type { ChapterEditAccess } from './chapter-access';
   let { chapter, owner, access, disabled = false, onlock, oncommit }: {
     chapter: Chapter; owner: PublicUploadOwner; access?: ChapterEditAccess; disabled?: boolean;
@@ -37,7 +37,7 @@
     });
   }
   async function inspect() { adopt(await controller.inspect()); ready = true; }
-  async function inspectReadOnly() { await inspect(); message = 'Current owned staging was inspected read-only. This does not prove the original admission or its mode; its uncertainty fence was kept.'; }
+  async function inspectReadOnly() { await inspect(); message = 'Your private page draft was checked without making changes. The earlier request is still unconfirmed, so editing remains disabled.'; }
   async function begin(replace: boolean) { adopt(await controller.begin(replace)); ready = true; message = replace ? 'Empty private staging opened. Published pages are unchanged until Save Pages succeeds.' : 'Original pages restored into private staging. Published pages are unchanged until Save Pages succeeds.'; }
   async function save() {
     if (!session) return; const saved = await controller.save(session); current();
@@ -46,13 +46,13 @@
   async function commit() {
     if (!session) return; const response = await controller.commit(session, terms); current();
     if (response.body) { oncommit(response.body); adopt(); message = 'Local chapter pages updated. Original signed protocol entries were not changed.'; }
-    else { updateRecovery(); message = 'The page save was accepted but its exact readable receipt is not available. Reconcile the saved outcome; do not submit again.'; }
+    else { updateRecovery(); message = 'Your page changes were accepted, but we could not confirm the chapter is ready to read. Check page status; do not submit again.'; }
   }
   async function reconcile() {
     if (dirty() && !recovery) { message = 'Save the private page order before reloading staging. No local changes were discarded.'; return; }
     const next = await controller.reconcile(); current();
-    if (next?.is_committed && next.receipt) { oncommit(next.receipt); adopt(); message = 'The exact saved chapter receipt was reconciled. No commit was replayed.'; }
-    else { adopt(next); message = 'Current owned staging restored. No mutation was replayed.'; }
+    if (next?.is_committed && next.receipt) { oncommit(next.receipt); adopt(); message = 'Your saved pages were confirmed. Nothing was submitted again.'; }
+    else { adopt(next); message = 'Current page status checked. Nothing was submitted again.'; }
     ready = true;
   }
   async function cancel() { if (!session) return; await controller.cancel(session); adopt(); message = 'Private staging cancelled. Published chapter pages were kept.'; }
@@ -80,7 +80,7 @@
     <UploadChapterPages bind:pages={session.relationships.files!} disabled={!editable || session.can_mutate === false} />
     <label class="flex items-center gap-2"><input type="checkbox" bind:checked={terms} disabled={!editable || !session.can_mutate} />I accept the <a class="underline" href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> for this page upload.</label>
     <div class="flex flex-wrap gap-3">
-      <button type="button" class="rounded border px-4 py-2" disabled={!editable || !filesReady || !session.can_mutate} onclick={() => run(save)}>Save staged order</button>
+      <button type="button" class="rounded border px-4 py-2" disabled={!editable || !filesReady || !session.can_mutate} onclick={() => run(save)}>Save page order</button>
       <button type="button" class="rounded border px-4 py-2" disabled={!editable || !filesReady || !terms || !session.can_retry_commit} onclick={() => run(commit)}>Save Pages</button>
       <button type="button" class="rounded border px-4 py-2" disabled={!ready || disabled || busy || $mutex || recovery || (!session.can_cancel && !session.is_deleted)} onclick={() => confirm = 'cancel'}>{session.is_deleted ? 'Acknowledge cancelled staging' : 'Cancel page editing'}</button>
     </div>
@@ -90,13 +90,13 @@
       <button type="button" class="rounded border px-4 py-2" disabled={!editable} onclick={() => confirm = 'replace'}>Replace Pages</button>
     </div>
   {/if}
-  <button type="button" class="rounded border px-4 py-2" disabled={disabled || busy || $mutex} onclick={() => run(reconcile)}>{recovery ? 'Reconcile saved page outcome' : 'Reload owned staging'}</button>
-  {#if recovery && capturedOwner.chapterBeginPending()}<button type="button" class="rounded border px-4 py-2" disabled={disabled || busy || $mutex} onclick={() => run(inspectReadOnly)}>Inspect owned staging (read-only)</button>{/if}
+  <button type="button" class="rounded border px-4 py-2" disabled={disabled || busy || $mutex} onclick={() => run(reconcile)}>{recovery ? 'Check page status' : 'Reload page draft'}</button>
+  {#if recovery && capturedOwner.chapterBeginPending()}<button type="button" class="rounded border px-4 py-2" disabled={disabled || busy || $mutex} onclick={() => run(inspectReadOnly)}>View page draft (read-only)</button>{/if}
   {#if confirm}
-    <div role="alertdialog" tabindex="-1" aria-label={confirm === 'replace' ? 'Confirm replacement staging' : 'Confirm staging cancellation'} class="space-y-3 rounded border p-3">
+    <div role="alertdialog" tabindex="-1" aria-label={confirm === 'replace' ? 'Confirm replacement draft' : 'Confirm draft cancellation'} class="space-y-3 rounded border p-3">
       <p>{confirm === 'replace' ? 'Start a new, empty page draft? Published pages stay unchanged until you successfully save the replacement.' : 'Discard this page draft? Published pages are kept. You cannot recover the discarded changes.'}</p>
-      <button type="button" class="rounded border px-4 py-2" disabled={disabled || busy || $mutex || recovery || (confirm === 'replace' && !editable)} onclick={() => run(confirm === 'replace' ? () => begin(true) : cancel)}>{confirm === 'replace' ? 'Start empty staging' : 'Discard this staging'}</button>
-      <button type="button" class="rounded border px-4 py-2" onclick={() => confirm = undefined}>Keep current state</button>
+      <button type="button" class="rounded border px-4 py-2" disabled={disabled || busy || $mutex || recovery || (confirm === 'replace' && !editable)} onclick={() => run(confirm === 'replace' ? () => begin(true) : cancel)}>{confirm === 'replace' ? 'Start empty draft' : 'Discard this draft'}</button>
+      <button type="button" class="rounded border px-4 py-2" onclick={() => confirm = undefined}>Keep current draft</button>
     </div>
   {/if}
 </section>

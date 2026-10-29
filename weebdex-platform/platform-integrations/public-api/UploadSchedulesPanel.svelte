@@ -31,6 +31,7 @@
     finally { if (current(captured, run)) busy = false; }
   }
 </script>
+{#if (owner as PublicUploadOwner & {schedulingAvailable?:boolean}).schedulingAvailable===false}<p class="text-sm text-muted-foreground">Scheduled publishing is not available on this site. You can upload now instead.</p>{/if}
 <details bind:open={expanded} class="rounded border px-4 py-2">
   <summary class="cursor-pointer font-medium">Scheduled uploads{#if entries.length + recent.length}{' '}({entries.length + recent.length}){/if}{#if message || entries.some(entry => entry.uncertain || entry.receipt.state === 'blocked') || recent.some(entry => entry.uncertain)}{' '}· Needs attention{/if}</summary>
   {#if expanded}

@@ -1,19 +1,20 @@
 <script lang="ts">
- import IdentityGate from '../local-library/IdentityGate.svelte';
- import { signerIdentity } from '../local-library/publication';
+ import AccountActionGate from './AccountActionGate.svelte';
+ import {Session} from '$lib/stores';
+ import {nativeAccountIssue,type NativeAccountIssue} from './native-account-scope';
  import { onMount,onDestroy,untrack } from 'svelte';
- import { createEditorialController,type EditorialController,type EditorialKind,type EditorialAction } from './editorial-client';
+ import { createSessionEditorialController,type EditorialController,type EditorialKind,type EditorialAction } from './session-editorial-client';
  import {editorialFields,editorialFieldsChanged,editorialPayload,completeMembershipRoles,authorLinks,groupLinks,type EditorialFields} from './editor-fields';
  import PublicEntityPicker from './PublicEntityPicker.svelte';
  import type { Resource } from './types';
  import { record } from './validation';
  let {kind,target}:{kind:EditorialKind;target?:string}=$props();
  const selected=untrack(()=>({kind,target})),href=window.location.href;
- let owner=$state<EditorialController>(),disposed=false;
+ let owner=$state<EditorialController>(),disposed=false,generation=0,capturedSession=untrack(()=>$Session),issue=$state<NativeAccountIssue>();
  let current=$state<Resource>(),ready=$state(false),busy=$state(false),pending=$state(false),removed=$state(false),notice=$state('');
  let fields=$state<EditorialFields>(editorialFields(selected.kind)),evidence=$state('');
  let permissions=$state<string[]>([]),roles=$state<string[]>([]);
- const active=()=>{if(disposed||kind!==selected.kind||target!==selected.target||window.location.href!==href)throw Error('The editorial route changed. Reopen the intended target.');};
+ const active=()=>{if(disposed||$Session!==capturedSession||kind!==selected.kind||target!==selected.target||window.location.href!==href)throw Error('The editorial route changed. Reopen the intended target.');};
  const staff=$derived(roles.some(r=>['moderator','staff','sysop'].includes(r)));
  const isLeader=$derived(!!current?.relationships.some(r=>r.type==='leader'&&r.id===owner?.account.id));
  const canEdit=$derived(current?(kind==='author'?permissions.includes('author.update')&&(!current.attributes.locked||staff):staff&&permissions.includes('scanlation_group.update')||isLeader&&permissions.includes('self.scanlation_group.update')&&!current.attributes.locked):permissions.includes(kind==='author'?'author.create':'scanlation_group.create'));
@@ -28,13 +29,13 @@
  function responseError(response:{status:number;body?:unknown}){const body=response.body as {errors?:{detail?:string}[]}|undefined;return body?.errors?.[0]?.detail??`Request refused (HTTP ${response.status})`;}
  onDestroy(()=>{disposed=true;owner?.dispose();});
  let initializing = $state(false);
- async function initialize(){if(initializing||disposed||!$signerIdentity.owner)return;initializing=true;notice='';try{owner=await createEditorialController(kind,target,active);active();permissions=[...owner.account.permissions];roles=[...owner.account.roles];if(target){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}pending=owner.pending();ready=true;}catch(error){if(!disposed)notice=failure(error);}finally{if(!disposed)initializing=false;}}
- onMount(()=>{void initialize();});
+ async function initialize(){if(initializing||disposed||!$Session?.identity?.id)return;capturedSession=$Session;const session=capturedSession,token=generation,check=()=>{active();if(token!==generation||$Session!==session)throw Error('The contribution account changed.');};initializing=true;issue=undefined;notice='';try{const next=await createSessionEditorialController(session.identity.id,kind,target,check);try{check();}catch(error){next.dispose();throw error;}owner=next;permissions=[...owner.account.permissions];roles=[...owner.account.roles];if(target){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}pending=owner.pending();ready=true;}catch(error){if(!disposed&&token===generation){issue=nativeAccountIssue(error);notice=failure(error);}}finally{if(!disposed&&token===generation)initializing=false;}}
+ $effect(()=>{const session=$Session;untrack(()=>{generation++;owner?.dispose();owner=undefined;capturedSession=session;current=undefined;ready=false;busy=false;pending=false;removed=false;notice='';issue=undefined;initializing=false;fields=editorialFields(selected.kind);evidence='';permissions=[];roles=[];if(session?.identity?.id)void initialize();});});
  async function command(action:EditorialAction){
   if(!owner||!ready||busy||pending||removed)return;
   if((action==='create'||action==='update')&&!canEdit||action==='claim'&&!canClaim||action==='delete'&&!canDelete)return;
   if(dirty&&(action==='claim'||action==='delete')){notice='Save or reset unsaved metadata before claim or removal actions.';return;}
-  busy=true;notice='';try{
+  const operationOwner=owner,token=generation;busy=true;notice='';try{
    let payload:Record<string,unknown>|undefined;
    if(action==='create'||action==='update'){
     payload=editorialPayload(kind,fields,current);
@@ -46,17 +47,17 @@
    const response=await owner.mutate(action,payload);active();if(response.status>=400)throw Error(responseError(response));
    if(action==='delete'){removed=true;notice=`${kind==='author'?'Author':'Group'} hidden on this instance. Original source publications are unchanged.`;}
    else if(action==='claim'){const receipt=record(response.body);notice=`Claim request ${receipt.requestId} is awaiting explicit instance moderator review. Local leadership and original signing authority have not changed.`;}
-   else{const row=owner.current();if(!row)throw Error('Actual editorial receipt missing.');restore(row);notice=action==='create'?(kind==='group'?'Local group created with your bound account as its instance leader. No original group key or source publisher was created.':'Local author record created. No original source publication was created.'):'Instance metadata saved. Original source keys and signed publications are unchanged.';}
-  }catch(error){if(!disposed)notice=failure(error);}finally{if(!disposed){busy=false;pending=owner?.pending()??pending;}}
+   else{const row=owner.current();if(!row)throw Error('Actual editorial receipt missing.');restore(row);notice=action==='create'?(kind==='group'?'Group created with your account as its leader on this site. Publishing permissions have not changed.':'Author created on this site.'):'Changes saved on this site. Original publications are unchanged.';}
+  }catch(error){if(!disposed&&token===generation&&owner===operationOwner)notice=failure(error);}finally{if(!disposed&&token===generation&&owner===operationOwner){busy=false;pending=owner?.pending()??pending;}}
  }
- async function reload(){if(!owner||busy||removed||!current)return;if(dirty&&!confirm('Discard unsaved editorial metadata and reload the actual server record?'))return;busy=true;try{const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);notice='Actual current record reloaded. No mutation was replayed; uncertain writes remain fenced.';}catch(error){if(!disposed)notice=failure(error);}finally{if(!disposed){busy=false;pending=owner?.pending()??pending;}}}
+ async function reload(){if(!owner||busy||removed||!current)return;if(dirty&&!confirm('Discard unsaved editorial metadata and reload the actual server record?'))return;const operationOwner=owner,token=generation;busy=true;try{const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);notice='Actual current record reloaded. No mutation was replayed; uncertain writes remain fenced.';}catch(error){if(!disposed&&token===generation&&owner===operationOwner)notice=failure(error);}finally{if(!disposed&&token===generation&&owner===operationOwner){busy=false;pending=owner?.pending()??pending;}}}
 </script>
 <section class="mx-auto max-w-270 space-y-4 p-5">
  <h1 class="text-xl font-medium">{current?'Edit':'Create'} {kind==='author'?'author':'group'}</h1>
  <p>Changes apply to this site. Original publications and publishing permissions remain unchanged.</p>
  {#if notice}<p role="status" class="rounded border p-3">{notice}</p>{/if}
- <IdentityGate show={!ready && !$signerIdentity.owner} onfinish={() => { if ($signerIdentity.owner) void initialize(); }} />
- {#if !ready && $signerIdentity.owner}<button type="button" class="rounded border px-3 py-2" disabled={initializing} onclick={() => { void initialize(); }}>Check my access again</button>{/if}
+ <AccountActionGate {issue} onready={initialize} />
+ {#if !ready && $Session?.identity?.id}<button type="button" class="rounded border px-3 py-2" disabled={initializing} onclick={() => { void initialize(); }}>Check my access again</button>{/if}
  {#if pending}<p role="alert">A prior command has an unconfirmed outcome. It will not be replayed. Review the exact server record or ask the instance operator before further mutations.</p>{/if}
 
  {#if dirty&&current}<p>There are unsaved changes. Save or reset before a claim or removal.</p>{/if}

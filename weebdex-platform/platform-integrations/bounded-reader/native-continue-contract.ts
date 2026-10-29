@@ -2,7 +2,7 @@ import { nativeContinueFilters, type NativeContinueInput } from '../public-api/o
 import { chapterRow, ReaderIdentityChanged, sameRow, type Row } from './contract';
 export type NativeContinueResult = Readonly<{
   scope: string; state: 'ready' | 'boundary'; reason: 'oldest-unread' | 'all-completed-newest' | 'empty';
-  winner: Row | null; hasMultipleEditions: boolean;
+  winner: Row | null; hasMultipleEditions: boolean; accountRevision?: number;
 }>;
 function plain(value: unknown): value is Record<string, unknown> { return typeof value === 'object' && value !== null && !Array.isArray(value) && Object.getPrototypeOf(value) === Object.prototype; }
 function object(value: unknown, keys: readonly string[]): Record<string, unknown> {
@@ -52,7 +52,7 @@ export function nativeContinueResult(value: unknown, input: NativeContinueInput,
   if (target.anchorChapterId !== winner.id || target.volume !== winner.volume || target.chapter !== winner.chapter) throw Error('Native Continue target does not match its winner');
   return Object.freeze({ scope, state: 'ready', reason: body.reason, winner, hasMultipleEditions: body.hasMultipleEditions });
 }
-export const sameContinueSelection = (a: NativeContinueResult, b: NativeContinueResult) => a.scope === b.scope && a.state === b.state && a.reason === b.reason && a.hasMultipleEditions === b.hasMultipleEditions && sameRow(a.winner, b.winner);
+export const sameContinueSelection = (a: NativeContinueResult, b: NativeContinueResult) => a.scope === b.scope && a.accountRevision === b.accountRevision && a.state === b.state && a.reason === b.reason && a.hasMultipleEditions === b.hasMultipleEditions && sameRow(a.winner, b.winner);
 export function singletonContinueFilters(original: string, selected: string): string {
   const query = nativeContinueFilters(original), ids = query.getAll('id');
   // Native id values form an OR set. Replace only after proving intersection;

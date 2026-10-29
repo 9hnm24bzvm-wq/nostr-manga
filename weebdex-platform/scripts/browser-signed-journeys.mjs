@@ -406,7 +406,7 @@ export async function runSignedJourneys(h) {
     await surface.waitFor({ state: "visible" });
     insist(await identity().count() === 1 && await page.locator("[data-protocol-identity-panel], [data-local-library-panel]").count() === 0, "Context route mounted global management controls or wrong conversation");
     insist(await surface.getByLabel("Current instance catalogue ID", { exact: true }).count() === 0 && await surface.getByLabel("Target type", { exact: true }).count() === 0, "Conversation target is editable instead of route-bound");
-    const disclosure = surface.getByRole("button", { name: "Signed comments", exact: true });
+    const disclosure = surface.getByRole("button", { name: "Comments from other sites", exact: true });
     if (await disclosure.getAttribute("aria-expanded") !== "true") await disclosure.click();
     await nativeSelectForLabel(surface, "Verified recipient").selectOption(protocol);
   };
@@ -430,7 +430,7 @@ export async function runSignedJourneys(h) {
   };
   const sendAction = async () => { const button = identity().getByRole("button", { name: "Sign and send reviewed public action", exact: true }); insist(await button.isDisabled(), "Public action enabled before exact-action consent"); await identity().getByLabel("I approve this exact public action and recipient.", { exact: true }).check(); await button.click(); await idle(identity()); };
   const openOutbox = async () => { await openIdentityTool("actions"); await identity().getByRole("button", { name: "Refresh saved actions", exact: true }).click(); await idle(identity()); };
-  const reviewComment = async text => { if (await page.locator("[data-source-conversation]").count() !== 1) await loadConversation("manga", manga, seeded.series.event_id); await identity().getByLabel("Public comment", { exact: true }).fill(text); await identity().getByRole("button", { name: "Review public comment", exact: true }).click(); await identity().getByText("Publish this public source comment. Recipient: " + protocol, { exact: false }).waitFor({ state: "visible" }); };
+  const reviewComment = async text => { if (await page.locator("[data-source-conversation]").count() !== 1) await loadConversation("manga", manga, seeded.series.event_id); const composer = identity().locator("[data-source-publishing]"); if (await composer.getAttribute("open") === null) await composer.locator("summary").click(); await identity().getByLabel("Public comment", { exact: true }).fill(text); await identity().getByRole("button", { name: "Review public comment", exact: true }).click(); await identity().getByText("Publish this public source comment. Recipient: " + protocol, { exact: false }).waitFor({ state: "visible" }); };
   const lifecycleCoverage = { source_revocation_restoration: false, real_namespace_rebuild: false, joined_runtime_restart: false, two_real_recipients: false };
   const prepareLifecycleLibrary = async () => {
     await admit(true); await (await reviewSnapshot()).click(); await idle(library());
@@ -610,7 +610,7 @@ export async function runSignedJourneys(h) {
         return { actual_library_staging_post: mutationRequests.some(row => row.path === "/library/batches"), actual_library_publish_post: mutationRequests.some(row => row.path === "/libraries"), event_id: firstJob.id, recipient_state: "accepted", projected_exact_counterpart_verified: true, no_snapshot_resigning: true, federation_peer_only_status: peerOnly.status };
       });
       await step("lost genuine library acceptance response retains exact-event retry through ordinary reload", async () => {
-        await openLibraryTool("recovery"); await nativeSelectForLabel(library(), "Status for saved " + manga).selectOption("completed"); await idle(library()); await prepareSignerControls();
+        await openLibraryTool("recovery"); const savedStatus = library().locator('div:has(> details > p:text-is(' + JSON.stringify(manga) + ')) > label > select'); insist(await savedStatus.count() === 1, "Exact saved title recovery control required"); await savedStatus.selectOption("completed"); await idle(library()); await prepareSignerControls();
         let lost = 0; const intercept = async route => { if (route.request().method() !== "POST") return route.continue(); const response = await route.fetch({ maxRedirects: 0 }); insist([200, 202].includes(response.status()), "Original library was not accepted before deliberate response loss"); lost++; await route.abort("failed"); };
         await context.route(protocol + "/libraries", intercept);
         try { await (await reviewSnapshot()).click(); await idle(library()); } finally { await context.unroute(protocol + "/libraries", intercept); }

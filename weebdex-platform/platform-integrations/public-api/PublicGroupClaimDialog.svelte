@@ -5,5 +5,5 @@
  const target=$derived(publicUuid(group.id));
 </script>
 <Dialog.Header><Dialog.Title>Request local group leadership review</Dialog.Title></Dialog.Header>
-<p>This opens the selected signer's instance account and reloads the actual group version before accepting ownership evidence. An instance moderator must explicitly approve the request. No original group key, source role or signing authority changes.</p>
-<a class="rounded border px-4 py-2" href={`/catalogue-tools?kind=group&id=${target}`} onclick={()=>{open=false;}}>Continue to signed claim review</a>
+<p>Continue with your account to review the current group details and provide evidence of ownership. A moderator must approve your request before leadership changes. Submitting does not give you publishing permissions or control of the original publication.</p>
+<a class="rounded border px-4 py-2" href={`/catalogue-tools?kind=group&id=${target}`} onclick={()=>{open=false;}}>Continue to leadership review</a>

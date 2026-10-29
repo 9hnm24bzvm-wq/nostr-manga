@@ -85,6 +85,46 @@ domain. It never changes the default disabled production configuration.
 
 ## Shared domain interface
 
+Ordinary catalogue account actions have an explicit native-browser UUID surface
+under `/api/v1/account`: `me`, `rating`, `rating/{uuid}`,
+`report/reasons/{category}`, `report`, `{manga|group|user}/{uuid}/follow`,
+`user/follows/{manga|group|user|list}`, `user/follows/manga/feed`,
+`user/follows/list/{uuid}` and `list/{uuid}/follow`.
+They use the existing native account, rating, follow, report and audit rows. No
+protocol enrollment, signing identity, identity binding or server signing occurs.
+The independent signed endpoints retain their original proof/admission rules.
+
+These routes require exactly one normal session cookie and the captured native
+account ID in `X-Weebdex-Expected-Account` (from `/api/auth/check`). Any
+`Authorization` header is refused, even if a valid cookie accompanies it. The
+account is locked before the session inside the actual operation transaction;
+revocation, expiry, recovery-only sessions and account changes cannot be bypassed
+using a cached principal. Busy authority rows fail with a retryable conflict.
+`me` returns the canonical public account UUID, display name and effective
+permissions, not email or credentials. It allows unverified normal accounts to
+see verification guidance. Follow collection/status/feed reads preserve existing
+native own-library policy, including unverified/restricted read access. Manga
+and public-list follow writes are private preferences, allowing unverified
+active accounts with `self.preferences.update`, exactly like private Library
+saves. User/group follow mutations, ratings and reports still require verified
+active accounts and their actual permissions. Signed endpoints retain their
+separate verified bound-account policy. Mutations additionally require same-origin source,
+the expected canonical account UUID, and the reviewed rating/follow/reason
+revision. Canonical target aliases are resolved server-side, never used as auth.
+All responses, including early errors, are private/no-store and vary on the
+cookie, authorization and expected-account headers.
+
+`backend/tests/native_account_actions.rs` exercises this surface with real HTTP
+and isolated PostgreSQL via `scripts/run-auth-tests.sh`, including cookie-only
+authority, source/permission/account fences, shared data, aliases, CAS races,
+locked/revoked sessions, private headers and zero protocol identity side effects.
+It also checks an unverified legacy save is visible through canonical follows.
+`public_list_follows.rs` exercises genuine original public-list visibility and
+head revisions with an unbound ordinary cookie account, stale/foreign CAS,
+withdrawal-safe status/unfollow, source metadata privacy, and unchanged signed
+proof behavior. Native status returns membership and actual tombstone version,
+not a misleading absent/version-zero state after unfollow.
+
 `require_principal(&AppState, &HeaderMap)` authenticates normal sessions or API
 credentials and rejects recovery-only sessions. `optional_principal` also exposes
 recovery state to the account facade. Every cookie-authenticated domain mutation

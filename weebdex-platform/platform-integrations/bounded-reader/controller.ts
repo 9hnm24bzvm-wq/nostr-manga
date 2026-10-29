@@ -1,3 +1,4 @@
+import { singletonAccountContinueFilters } from './account-reader-contract';
 import { ReaderBudget, READER_LIMITS, readReader, type ReaderRead } from './client';
 import { NATIVE_COMPLETION_LIMITS } from '../public-api/owned-json';
 import { ReaderIdentityChanged, sameGroup, sameRow, type Destination, type Operation, type Request, type Row, type SelectorPage } from './contract';
@@ -31,7 +32,7 @@ export class BoundedReaderController {
   private continueIntent?: { key: string; result: NativeContinueResult };
   private recent: string[] = [];
   private scan?: { groups: readonly Row[]; index: number; groupAfter?: string; groupScope?: string; end: boolean; anchor?: Row; editionAfter?: string; editionScope?: string; completed: boolean };
-  constructor(private readonly context: () => ReaderContext, private readonly navigate: (row: Row, lastPage: boolean) => Promise<void>, private readonly read: ReaderRead = readReader) {}
+  constructor(private readonly context: () => ReaderContext, private readonly navigate: (row: Row, lastPage: boolean, page?: number) => Promise<void>, private readonly read: ReaderRead = readReader) {}
   get snapshot() { return this.value; }
   subscribe = (listener: (view: ReaderView) => void) => { this.listeners.add(listener); listener(this.value); return () => { this.listeners.delete(listener); }; };
   private publish(update: Partial<ReaderView>) { this.value = Object.freeze({ ...this.value, ...update }); for (const listener of this.listeners) listener(this.value); }
@@ -161,11 +162,11 @@ export class BoundedReaderController {
     if (!sameRow(target, page.groupAnchor) || !sameRow(target, page.winner)) throw new Restart('The first group changed before edition selection. Restart Start Reading.');
     this.editionScope = page.scope; this.editionCursor = page.nextCursor; this.recent = [];
     this.observe(page.data, 'e:');
-    this.publish({ status: 'ready', editions: page.data, editionsMore: !!page.nextCursor, groupAnchor: target, winner: page.winner, hasMultipleEditions: page.hasMultipleEditions, message: 'Choose an edition of the first chapter. The complete-set preferred edition is shown separately.' });
+    this.publish({ status: 'ready', editions: page.data, editionsMore: !!page.nextCursor, groupAnchor: target, winner: page.winner, hasMultipleEditions: page.hasMultipleEditions, message: 'Choose a translation of the first chapter.' });
   }); }
   private async checkedContinue(context: ReaderContext, budget: ReaderBudget, expected?: NativeContinueResult) {
     const access = context.nativeContinue;
-    if (context.current || context.destination.profile !== 'native-aggregate-v1' || !access?.available) throw Error(access?.reason ?? 'Native-account Continue is unavailable. No history fallback was used.');
+    if (context.current || !access?.available) throw Error(access?.reason ?? 'Native-account Continue is unavailable. No history fallback was used.');
     const result = await access.read(context.destination.filters, budget); budget.check();
     if (expected && !sameContinueSelection(expected, result)) throw new Restart('The native Continue selection changed. Retry Continue; no replacement group was selected.');
     return result;
@@ -175,15 +176,19 @@ export class BoundedReaderController {
     this.publish({ groupAnchor: undefined, winner: undefined, editions: [], editionsMore: false, candidate: undefined });
     const first = await this.checkedContinue(context, budget), checked = await this.checkedContinue(context, budget, first);
     const winner = checked.winner;
-    if (!winner) { this.publish({ status: 'boundary', message: 'No eligible chapter is visible for native-account Continue.' }); return; }
-    if (!checked.hasMultipleEditions) { budget.check(); await this.route(budget, () => this.navigate(winner, false)); return; }
+    if (!winner) { this.publish({ status: 'boundary', message: 'No chapters match your current reading options.' }); return; }
+    if (!checked.hasMultipleEditions) {
+      const page = context.nativeContinue?.resume ? await context.nativeContinue.resume(winner, checked, budget) : 1;
+      if (context.nativeContinue?.resume) await this.checkedContinue(context, budget, checked);
+      budget.check(); await this.route(budget, () => this.navigate(winner, false, page)); return;
+    }
     if (!budget.fits(1, READER_LIMITS.page + 2, READER_LIMITS.bytes)) throw Error('Native Continue chooser budget exceeded');
     const page = await this.request(context, budget, 'editions', { groupChapter: winner.id });
     if (!sameRow(winner, page.groupAnchor) || !sameRow(winner, page.winner) || page.hasMultipleEditions !== true) throw new Restart('The native Continue group changed before edition selection. Retry Continue.');
     const access = context.nativeContinue; if (!access) throw new Restart('Native Continue admission changed.');
     this.continueIntent = { key: access.key, result: checked }; this.editionScope = page.scope; this.editionCursor = page.nextCursor; this.observe(page.data, 'e:');
     this.publish({ status: 'ready', groupAnchor: winner, winner: page.winner, editions: page.data, editionsMore: !!page.nextCursor, hasMultipleEditions: true,
-      message: checked.reason === 'all-completed-newest' ? 'All eligible groups were completed in this native-account request. Choose an edition of its newest group.' : 'Choose an edition of the oldest unread group selected by this native-account request.' });
+      message: checked.reason === 'all-completed-newest' ? 'You’re caught up. Choose a translation of the latest chapter to read again.' : 'Choose a translation to continue reading.' });
   }); }
   private async recheckContinueIntent(context: ReaderContext, budget: ReaderBudget) {
     const intent = this.continueIntent;
@@ -229,12 +234,18 @@ export class BoundedReaderController {
     if (this.continueIntent) {
       await this.recheckContinueIntent(context, budget); budget.check();
       const access = context.nativeContinue; if (!access?.available) throw new Restart('Native Continue admission changed.');
-      const selectedFilters = singletonContinueFilters(context.destination.filters, selected.id);
+      const selectedFilters = (context.destination.profile === 'public-retained-v1' ? singletonAccountContinueFilters : singletonContinueFilters)(context.destination.filters, selected.id);
       const checked = await access.read(selectedFilters, budget); budget.check();
       // This different singleton scope proves only the selected edition's current
       // account/eligibility/row/group, never the original Continue semantics.
       if (!checked.winner || checked.hasMultipleEditions || !sameRow(selected, checked.winner) || !sameGroup(group, checked.winner)) throw new Restart('The selected Continue edition changed. Retry Continue.');
-      const winner = checked.winner; budget.check(); await this.route(budget, () => this.navigate(winner, false)); return;
+      const winner = checked.winner, page = access.resume ? await access.resume(winner, checked, budget) : 1;
+      if (access.resume) {
+        await this.recheckContinueIntent(context, budget);
+        const final = await access.read(selectedFilters, budget);
+        if (!sameContinueSelection(checked, final)) throw new Restart('The selected Continue edition changed while checking its saved page. Retry Continue.');
+      }
+      budget.check(); await this.route(budget, () => this.navigate(winner, false, page)); return;
     }
     const result = await this.request(context, budget, 'resolve-group', { groupChapter: selected.id });
     if (!sameRow(selected, result.groupAnchor) || !sameGroup(group, result.groupAnchor!)) throw new Restart('The selected edition changed. Reload editions.');

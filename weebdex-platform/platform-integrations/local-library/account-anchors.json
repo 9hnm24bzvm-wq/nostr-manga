@@ -1,0 +1,410 @@
+[
+  {
+    "path": "src/lib/components/MangaSearchEntryCard.svelte",
+    "label": "bounded visible-title account observation imports",
+    "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\n  import { nativeAccountLibraryState, observeAccountLibraryTitle, refreshAccountLibraryTitles } from \"$localLibrary/native-account-library\";"
+  },
+  {
+    "path": "src/lib/components/MangaSearchEntryCard.svelte",
+    "label": "observe only mounted canonical titles; unknown is not unfollowed",
+    "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+    "count": 1,
+    "before": "\tconst mutex = new Mutex();",
+    "after": "  const accountFollowUnknown = $derived($localLibraryState.mode === \"account\" && ($nativeAccountLibraryState.owner !== $libraryIdentity.accountId || !$nativeAccountLibraryState.known[manga.id]));\r\n  $effect(() => { if ($localLibraryState.mode === \"account\" && $libraryIdentity.accountId) return observeAccountLibraryTitle(manga.id); });\r\n\tconst mutex = new Mutex();"
+  },
+  {
+    "path": "src/lib/components/MangaSearchEntryCard.svelte",
+    "label": "refuse unknown follow command",
+    "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+    "count": 1,
+    "before": "if (!$libraryIdentity.canUse) return;",
+    "after": "if (!$libraryIdentity.canUse || accountFollowUnknown) return;"
+  },
+  {
+    "path": "src/lib/components/MangaSearchEntryCard.svelte",
+    "label": "accessible known-state library button",
+    "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+    "count": 1,
+    "before": "\t\ttype=\"button\"\r\n\t\tonclick={e => {",
+    "after": "\t\ttype=\"button\"\r\n    disabled={accountFollowUnknown || $mutex}\r\n    aria-label={accountFollowUnknown ? \"Checking saved-title status\" : isFollowed ? \"Remove from library\" : \"Add to library\"}\r\n    title={accountFollowUnknown ? \"Checking saved-title status\" : isFollowed ? \"Remove from library\" : \"Add to library\"}\r\n\t\tonclick={e => {"
+  },
+  {
+    "path": "src/lib/components/MangaSearchEntryCard.svelte",
+    "label": "unknown card status stays visible",
+    "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+    "count": 1,
+    "before": "class:opacity-0={!isMobile() && (!isFollowed || isGrid)}",
+    "after": "class:opacity-0={!accountFollowUnknown && !isMobile() && (!isFollowed || isGrid)}"
+  },
+  {
+    "path": "src/lib/components/MangaSearchEntryCard.svelte",
+    "label": "truthful card library status and explicit retry",
+    "sha256": "378d0dee427e11f61166d9433f67eaf71155d127a6491a2156371b228338230c",
+    "count": 1,
+    "before": "{#if isGrid}\r\n\t{@render grid()}\r\n{:else}\r\n\t{@render list()}\r\n{/if}",
+    "after": "{#if isGrid}\r\n\t{@render grid()}\r\n{:else}\r\n\t{@render list()}\r\n{/if}\r\n{#if accountFollowUnknown && !isEdit}\r\n  {#if $nativeAccountLibraryState.error}<p role=\"alert\" class=\"text-sm text-destructive\">{$nativeAccountLibraryState.error}</p><button type=\"button\" onclick={refreshAccountLibraryTitles} disabled={$nativeAccountLibraryState.pending}>Retry library status</button>\r\n  {:else}<p role=\"status\" class=\"text-sm text-muted-foreground\">Checking library\u2026</p>{/if}\r\n{/if}"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "bounded visible-title account observation imports",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\n  import { nativeAccountLibraryState, observeAccountLibraryTitle, refreshAccountLibraryTitles } from \"$localLibrary/native-account-library\";"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "observe only mounted canonical titles; unknown is not unfollowed",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "\tconst isPublished = ",
+    "after": "  const accountFollowUnknown = $derived($localLibraryState.mode === \"account\" && ($nativeAccountLibraryState.owner !== $libraryIdentity.accountId || !$nativeAccountLibraryState.known[manga.id]));\r\n  $effect(() => { if ($localLibraryState.mode === \"account\" && $libraryIdentity.accountId) return observeAccountLibraryTitle(manga.id); });\r\n\tconst isPublished = "
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "refuse unknown title command 8",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "if (!$libraryIdentity.canUse || readingStatus",
+    "after": "if (!$libraryIdentity.canUse || accountFollowUnknown || readingStatus"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "refuse unknown title command 9",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "if (!$libraryIdentity.canUse || !currentReadingStatus",
+    "after": "if (!$libraryIdentity.canUse || accountFollowUnknown || !currentReadingStatus"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "refuse unknown title command 10",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "if (!$libraryIdentity.canUse || !isPublished) return;",
+    "after": "if (!$libraryIdentity.canUse || accountFollowUnknown || !isPublished) return;"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "disable title status and notification until known",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 2,
+    "before": "disabled={isUpdatingReadingStatus || isUpdatingNotificationStatus || !isPublished}",
+    "after": "disabled={isUpdatingReadingStatus || isUpdatingNotificationStatus || !isPublished || accountFollowUnknown}"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "unknown title status is not Add to Library",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "\t\t\t\t\t\t\t{#if currentReadingStatus}",
+    "after": "\t\t\t\t\t\t\t{#if accountFollowUnknown}Checking library\u2026\r\n\t\t\t\t\t\t\t{:else if currentReadingStatus}"
+  },
+  {
+    "path": "src/routes/(app)/title/MangaActions.svelte",
+    "label": "explicit title status retry",
+    "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
+    "count": 1,
+    "before": "\t\t\t</ButtonGroup.Root>",
+    "after": "\t\t\t</ButtonGroup.Root>\r\n      {#if accountFollowUnknown && $nativeAccountLibraryState.error}<p role=\"alert\" class=\"text-sm text-destructive\">{$nativeAccountLibraryState.error}</p><Button type=\"button\" onclick={refreshAccountLibraryTitles} disabled={$nativeAccountLibraryState.pending}>Retry library status</Button>{/if}"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedMangaEntry.svelte",
+    "label": "bounded visible-title account observation imports",
+    "sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\n  import { nativeAccountLibraryState, observeAccountLibraryTitle, refreshAccountLibraryTitles } from \"$localLibrary/native-account-library\";"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedMangaEntry.svelte",
+    "label": "selected library mode for visible feed observation",
+    "sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b",
+    "count": 1,
+    "before": "import { libraryIdentity }",
+    "after": "import { libraryIdentity, localLibraryState }"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedMangaEntry.svelte",
+    "label": "observe only mounted canonical titles; unknown is not unfollowed",
+    "sha256": "fe05c6a639a507a1cfb082d3b3a322dfa998eeb1fc04064ba7690f9b6c0ed00b",
+    "count": 1,
+    "before": "\tlet isFollowed = ",
+    "after": "  const accountFollowUnknown = $derived($localLibraryState.mode === \"account\" && ($nativeAccountLibraryState.owner !== $libraryIdentity.accountId || !$nativeAccountLibraryState.known[manga.id]));\r\n  $effect(() => { if ($localLibraryState.mode === \"account\" && $libraryIdentity.accountId) return observeAccountLibraryTitle(manga.id); });\r\n\tlet isFollowed = "
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "single acknowledged native progress writer imports",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n  import { saveNativeAccountProgress } from \"$localLibrary/native-account-library\";\r\n  import { createReaderProgressQueue } from \"$localLibrary/reader-progress-queue\";"
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "serialize admitted progress; keep latest while pending; never replay after uncertainty",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "  let queued: { manga: string; chapter: string; page: number; completed: boolean; intent: ProgressIntent } | undefined;\r\n  const flush = (finalPreviouslyAdmittedPage = false) => {\r\n    const pending = queued; queued = undefined;\r\n    if (!pending) return;\r\n    // Exit may finish the immutable page action already admitted while live;\r\n    // it never discovers a different account/mode after destruction.\r\n    const assert = finalPreviouslyAdmittedPage ? pending.intent.assertDestination : pending.intent.assert;\r\n    try { assert(); } catch { return; }\r\n    void saveProgress(pending.manga, pending.chapter, pending.page, pending.completed, assert).catch(error => { if (!disposed) toast.error(\"Progress save failed\", { description: message(error) }); });\r\n  };\r\n  onDestroy(() => { window.clearTimeout(timer); flush(true); disposed = true; });\r\n",
+    "after": "  type AdmittedPage = { manga: string; chapter: string; page: number; completed: boolean; account: boolean; intent: ProgressIntent };\r\n  const progress = createReaderProgressQueue<AdmittedPage>({\r\n    assert: (item, afterClose) => (afterClose ? item.intent.assertDestination : item.intent.assert)(),\r\n    save: (item, assert) => item.account ? saveNativeAccountProgress(item.chapter, item.page, item.completed, assert) : saveProgress(item.manga, item.chapter, item.page, item.completed, assert),\r\n    onError: error => { if (!disposed) toast.error(\"Progress save stopped\", { description: message(error) + \" Reload the chapter to check saved progress before continuing.\" }); }\r\n  });\r\n  onDestroy(() => { window.clearTimeout(timer); void progress.finish(); disposed = true; });\r\n"
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "account completion is actual page progress, not opening the chapter",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "  let accountReadToken = \"\";\r\n  $effect(() => {\r\n    const actor = $nativeAuthority.actor, epoch = $nativeAuthority.epoch, chapter = reader.chapter;\r\n    if (disposed || !$localLibraryState.ready || $localLibraryState.mode !== \"account\" || !actor || !chapter) return;\r\n    const mangaId = chapter.relationships.manga.id, chapterId = chapter.id, token = JSON.stringify([actor, epoch, mangaId, chapterId]);\r\n    if (token === accountReadToken) return;\r\n    // A still-mounted reader can admit initial identity readiness, but a\r\n    // destroyed callback cannot select that later identity. Harmless Session\r\n    // data refreshes do not issue another history POST.\r\n    const intent = historyOwner.capture(); accountReadToken = token;\r\n    void intent.open().then(async context => {\r\n      intent.assert();\r\n      const response = await API.ChapterHistory.UpdateBatch(mangaId, { read_ids: [chapterId] }, { context, assert: intent.assert });\r\n      intent.assert();\r\n      requireMutationAcknowledgement(response, 200, true);\r\n    }).catch(error => reportCurrentMutationFailure(\"History save failed\", error, intent.alive));\r\n  });\r\n",
+    "after": "  // Native account completion is recorded with the admitted page below.\r\n"
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "admit device or signed-in account progress",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "if (disposed || !$localLibraryState.ready || $localLibraryState.mode !== \"device\" || !canSaveLocalProgress($localLibraryState) || !reader.chapter || !reader.currentPage) return;",
+    "after": "if (disposed || !$localLibraryState.ready || ($localLibraryState.mode === \"device\" ? !canSaveLocalProgress($localLibraryState) : !$nativeAuthority.actor) || !reader.chapter || !reader.currentPage) return;"
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "capture destination mode before any async work",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "queued = { manga: chapter.relationships.manga.id, chapter: chapter.id, page, completed, intent };\r\n    timer = window.setTimeout(() => flush(), 350);",
+    "after": "progress.enqueue({ manga: chapter.relationships.manga.id, chapter: chapter.id, page, completed, account: $localLibraryState.mode === \"account\", intent });\r\n    timer = window.setTimeout(() => { void progress.flush(); }, 350);"
+  },
+  {
+    "path": "src/routes/(app)/settings/library/+page.svelte",
+    "label": "explicit unsupported account file formats imports",
+    "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n  import { publicUuidLibraryEnabled } from \"$publicApi/library-staging\";"
+  },
+  {
+    "path": "src/routes/(app)/settings/library/+page.svelte",
+    "label": "refuse legacy native-ID importWeebDex",
+    "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+    "count": 1,
+    "before": "const importWeebDex = async (file: File) => {",
+    "after": "const importWeebDex = async (file: File) => {\r\n    if (publicUuidLibraryEnabled) throw Error(\"Account file import and export are not available here yet. You can manage account lists above, copy reviewed device saves into your account, and back up the library on this device.\");"
+  },
+  {
+    "path": "src/routes/(app)/settings/library/+page.svelte",
+    "label": "refuse legacy native-ID importMAL",
+    "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+    "count": 1,
+    "before": "const importMAL = async (file: File) => {",
+    "after": "const importMAL = async (file: File) => {\r\n    if (publicUuidLibraryEnabled) throw Error(\"Account file import and export are not available here yet. You can manage account lists above, copy reviewed device saves into your account, and back up the library on this device.\");"
+  },
+  {
+    "path": "src/routes/(app)/settings/library/+page.svelte",
+    "label": "refuse programmatic legacy file selection",
+    "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+    "count": 1,
+    "before": "const file = importRef?.files?.[0];",
+    "after": "if (publicUuidLibraryEnabled) throw Error(\"Account file import and export are not available here yet. You can manage account lists above, copy reviewed device saves into your account, and back up the library on this device.\");\r\n                const file = importRef?.files?.[0];"
+  },
+  {
+    "path": "src/routes/(app)/settings/library/+page.svelte",
+    "label": "refuse programmatic legacy native-ID export",
+    "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+    "count": 1,
+    "before": "if (!(await isAccountMode()))",
+    "after": "if (publicUuidLibraryEnabled) throw Error(\"Account file import and export are not available here yet. You can manage account lists above, copy reviewed device saves into your account, and back up the library on this device.\");\r\n                if (!(await isAccountMode()))"
+  },
+  {
+    "path": "src/routes/(app)/settings/library/+page.svelte",
+    "label": "hide unavailable legacy CSV XML forms; preserve supported account and device tools",
+    "sha256": "7ca6181b34ecb147d3d079beed6f309575b459c04b988f46d3bea3a63dc3ed88",
+    "count": 1,
+    "before": "<Separator class=\"my-5\" />\r\n<section class=\"mb-5 space-y-1\">\r\n\t<h2 class=\"font-semibold\">CSV and MyAnimeList files</h2>\r\n\t<p class=\"text-muted-foreground text-sm\">{$localLibraryState.mode === \"device\" ? \"These imports and CSV exports use this device library.\" : \"These imports and CSV exports use your signed-in account library.\"}</p>\r\n\t{#if $localLibraryState.mode === \"account\" && !$Session}<p class=\"text-muted-foreground text-sm\">Sign in for account import and export, or choose Use device library above.</p>{/if}\r\n</section>\r\n<input class=\"hidden\" type=\"file\" bind:this={importRef} onchange={onImportChange} />\r\n\r\n<section class=\"space-y-5\">\r\n\t<div class=\"space-y-3\">\r\n\t\t<div class=\"flex-auto space-y-1\">\r\n\t\t\t<strong class=\"block font-semibold\">List Importer</strong>\r\n\t\t\t<p class=\"text-foreground/85 max-w-md\">Add your library from external services.</p>\r\n\t\t</div>\r\n\t\t<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t<Button\r\n\t\t\t\ttype=\"button\"\r\n\t\t\t\tonclick={() => {\r\n\t\t\t\t\tif (importRef) {\r\n\t\t\t\t\t\timportRef.accept = \".csv\";\r\n\t\t\t\t\t\timportRef?.click();\r\n\t\t\t\t\t\timportType = \"weebdex\";\r\n\t\t\t\t\t}\r\n\t\t\t\t}}\r\n\t\t\t\tdisabled={$mutex || ($localLibraryState.mode === \"account\" && !$Session)}>Import from WeebDex (.csv)</Button\r\n\t\t\t>\r\n\t\t\t<Button\r\n\t\t\t\ttype=\"button\"\r\n\t\t\t\tonclick={() => {\r\n\t\t\t\t\tif (importRef) {\r\n\t\t\t\t\t\timportRef.accept = \".xml\";\r\n\t\t\t\t\t\timportRef?.click();\r\n\t\t\t\t\t\timportType = \"mal\";\r\n\t\t\t\t\t}\r\n\t\t\t\t}}\r\n\t\t\t\tdisabled={$mutex || ($localLibraryState.mode === \"account\" && !$Session)}>Import from MyAnimeList (.xml)</Button\r\n\t\t\t>\r\n\t\t</div>\r\n\t</div>\r\n\t<Separator />\r\n\t<div class=\"space-y-3\">\r\n\t\t<div class=\"flex-auto space-y-1\">\r\n\t\t\t<strong class=\"block font-semibold\">List Exporter</strong>\r\n\t\t\t<p class=\"text-foreground/85 max-w-md\">Download your library for backup or use with other services.</p>\r\n\t\t</div>\r\n\t\t<div class=\"shrink-0\">\r\n\t\t\t<Button type=\"button\" onclick={onExport} disabled={$mutex || ($localLibraryState.mode === \"account\" && !$Session)}>Generate .csv</Button>\r\n\t\t</div>\r\n\t</div>\r\n</section>\r\n",
+    "after": "{#if publicUuidLibraryEnabled}\r\n<p class=\"text-sm text-muted-foreground\">Account file import and export are not available here yet. You can manage account lists above, copy reviewed device saves into your account, and back up the library on this device.</p>\r\n{:else}\r\n<Separator class=\"my-5\" />\r\n<section class=\"mb-5 space-y-1\">\r\n\t<h2 class=\"font-semibold\">CSV and MyAnimeList files</h2>\r\n\t<p class=\"text-muted-foreground text-sm\">{$localLibraryState.mode === \"device\" ? \"These imports and CSV exports use this device library.\" : \"These imports and CSV exports use your signed-in account library.\"}</p>\r\n\t{#if $localLibraryState.mode === \"account\" && !$Session}<p class=\"text-muted-foreground text-sm\">Sign in for account import and export, or choose Use device library above.</p>{/if}\r\n</section>\r\n<input class=\"hidden\" type=\"file\" bind:this={importRef} onchange={onImportChange} />\r\n\r\n<section class=\"space-y-5\">\r\n\t<div class=\"space-y-3\">\r\n\t\t<div class=\"flex-auto space-y-1\">\r\n\t\t\t<strong class=\"block font-semibold\">List Importer</strong>\r\n\t\t\t<p class=\"text-foreground/85 max-w-md\">Add your library from external services.</p>\r\n\t\t</div>\r\n\t\t<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t<Button\r\n\t\t\t\ttype=\"button\"\r\n\t\t\t\tonclick={() => {\r\n\t\t\t\t\tif (importRef) {\r\n\t\t\t\t\t\timportRef.accept = \".csv\";\r\n\t\t\t\t\t\timportRef?.click();\r\n\t\t\t\t\t\timportType = \"weebdex\";\r\n\t\t\t\t\t}\r\n\t\t\t\t}}\r\n\t\t\t\tdisabled={$mutex || ($localLibraryState.mode === \"account\" && !$Session)}>Import from WeebDex (.csv)</Button\r\n\t\t\t>\r\n\t\t\t<Button\r\n\t\t\t\ttype=\"button\"\r\n\t\t\t\tonclick={() => {\r\n\t\t\t\t\tif (importRef) {\r\n\t\t\t\t\t\timportRef.accept = \".xml\";\r\n\t\t\t\t\t\timportRef?.click();\r\n\t\t\t\t\t\timportType = \"mal\";\r\n\t\t\t\t\t}\r\n\t\t\t\t}}\r\n\t\t\t\tdisabled={$mutex || ($localLibraryState.mode === \"account\" && !$Session)}>Import from MyAnimeList (.xml)</Button\r\n\t\t\t>\r\n\t\t</div>\r\n\t</div>\r\n\t<Separator />\r\n\t<div class=\"space-y-3\">\r\n\t\t<div class=\"flex-auto space-y-1\">\r\n\t\t\t<strong class=\"block font-semibold\">List Exporter</strong>\r\n\t\t\t<p class=\"text-foreground/85 max-w-md\">Download your library for backup or use with other services.</p>\r\n\t\t</div>\r\n\t\t<div class=\"shrink-0\">\r\n\t\t\t<Button type=\"button\" onclick={onExport} disabled={$mutex || ($localLibraryState.mode === \"account\" && !$Session)}>Generate .csv</Button>\r\n\t\t</div>\r\n\t</div>\r\n</section>\r\n{/if}\r\n"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "label": "bounded account list heading imports",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n  import AccountListHeading from \"$localLibrary/AccountListHeading.svelte\";"
+  },
+  {
+    "path": "src/routes/(app)/library/+page.svelte",
+    "label": "canonical account list name with bounded current-owner lookup",
+    "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
+    "count": 1,
+    "before": "{selectedListName ? `${selectedListName} \u2014 My Library` : \"My Library\"}",
+    "after": "{#if $localLibraryState.mode === \"account\" && page.url.searchParams.get(\"list\")}<AccountListHeading id={page.url.searchParams.get(\"list\")!}/>{:else}{selectedListName ? `${selectedListName} \u2014 My Library` : \"My Library\"}{/if}"
+  },
+  {
+    "path": "src/lib/components/ChapterFeed.svelte",
+    "label": "exact displayed chapter history imports",
+    "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n  import { readNativeVisibleChapterHistory } from \"$localLibrary/native-account-library\";\r\n  let accountHistoryError = $state(\"\"), accountHistoryRetry = $state(0);"
+  },
+  {
+    "path": "src/lib/components/ChapterFeed.svelte",
+    "label": "history observation captures current session and route without assuming empty",
+    "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+    "count": 1,
+    "before": "const view = $libraryViewKey, ids = entries.map(row => row.id), allowed = $libraryIdentity.canUse;",
+    "after": "const view = $libraryViewKey, ids = entries.map(row => row.id), allowed = $libraryIdentity.canUse;\r\n    const session = $Session, href = window.location.href, account = $localLibraryState.mode === \"account\";\r\n    accountHistoryRetry; accountHistoryError = \"\";"
+  },
+  {
+    "path": "src/lib/components/ChapterFeed.svelte",
+    "label": "account reads only exact bounded displayed chapter IDs",
+    "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+    "count": 1,
+    "before": "void API.ChapterHistory.Search(query).then(res => {",
+    "after": "const assertHistory = () => { if (historyDisposed || generation !== historyGeneration || captureLibraryView() !== view || $Session !== session || window.location.href !== href) throw Error(\"The account or chapter feed changed\"); };\r\n    const selected = account ? readNativeVisibleChapterHistory(entries.flatMap(manga => manga.relationships._chapters ?? []), assertHistory) : API.ChapterHistory.Search(query);\r\n    void selected.then(res => {\r\n      assertHistory();"
+  },
+  {
+    "path": "src/lib/components/ChapterFeed.svelte",
+    "label": "history failure stays unknown with explicit recovery",
+    "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+    "count": 1,
+    "before": "}).catch(() => { if (!historyDisposed && generation === historyGeneration) readHistory.set(undefined); });",
+    "after": "}).catch(cause => { try { assertHistory(); readHistory.set(undefined); if (account) accountHistoryError = cause instanceof Error ? cause.message : \"Read status is unavailable. Reload or narrow the chapter feed.\"; } catch {} });"
+  },
+  {
+    "path": "src/lib/components/ChapterFeed.svelte",
+    "label": "show failed bounded history and explicit retry without auto-replay",
+    "sha256": "966b57b14dee30e3f1c4c2d93fe6b7d414f0ea0d7959fe86e162035a2fd3f13b",
+    "count": 1,
+    "before": "{#if error}\r\n\t<ErrorComponent",
+    "after": "{#if accountHistoryError}<p role=\"alert\" class=\"text-sm text-destructive\">{accountHistoryError}</p><Button variant=\"outline\" onclick={() => accountHistoryRetry++}>Retry read status</Button>{/if}\r\n{#if error}\r\n\t<ErrorComponent"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "label": "unknown account completion is not unread",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 1,
+    "before": "($readHistory && manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false)",
+    "after": "($readHistory === undefined ? undefined : manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false)"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "label": "unknown feed completion refuses mutation before capture",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 1,
+    "before": "if (isUpdatingReadHistory) return;",
+    "after": "if (isUpdatingReadHistory || isRead === undefined) return;"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "label": "unknown feed completion disables toggle",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 1,
+    "before": "disabled={isUpdatingReadHistory}",
+    "after": "disabled={isUpdatingReadHistory || isRead === undefined}"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "label": "unknown feed completion does not claim unread",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 2,
+    "before": "isRead ? \"Mark as unread\" : \"Mark as read\"",
+    "after": "isRead === undefined ? \"Read status unavailable\" : isRead ? \"Mark as unread\" : \"Mark as read\""
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "label": "unknown feed completion has visible neutral state",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 1,
+    "before": "{:else if isRead}\r\n\t\t\t\t\t\t<EyeOff />",
+    "after": "{:else if isRead === undefined}<span aria-hidden=\"true\">?</span>\r\n\t\t\t\t\t{:else if isRead}\r\n\t\t\t\t\t\t<EyeOff />"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "label": "unknown feed completion has no unread highlight",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 1,
+    "before": "$libraryIdentity.canUse && !isRead",
+    "after": "$libraryIdentity.canUse && isRead === false"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "unknown account completion is not unread",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "($readHistory && manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false)",
+    "after": "($readHistory === undefined ? undefined : manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false)"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "label": "bind rendered history observation without tracking later sessions",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n  import { untrack } from \"svelte\";"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "label": "synchronous account switch cannot interpret old owner completion as current",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 1,
+    "before": "\tconst isRead = $derived($libraryIdentity.mode === \"device\"\r\n\t\t? ($localLibraryState.scopeStatus === \"verified\" && $localLibraryState.records.some(row => row.family === \"chapters\" && row.id === chapter.id && row.completed))\r\n\t\t: ($readHistory === undefined ? undefined : manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false));",
+    "after": "  let historyObservationSession = $state.raw<typeof $Session>();\r\n  $effect(() => { const observation = $readHistory; untrack(() => { historyObservationSession = observation === undefined ? undefined : $Session; }); });\r\n\tconst isRead = $derived($localLibraryState.mode === \"account\" && historyObservationSession !== $Session ? undefined : $libraryIdentity.mode === \"device\"\r\n\t\t? ($localLibraryState.scopeStatus === \"verified\" && $localLibraryState.records.some(row => row.family === \"chapters\" && row.id === chapter.id && row.completed))\r\n\t\t: ($readHistory === undefined ? undefined : manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false));"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "bind rendered history observation without tracking later sessions",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n  import { untrack } from \"svelte\";"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "label": "synchronous account switch cannot interpret old owner completion as current",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "\tconst isRead = $derived(visibleBadges ? visibleBadges.value($badgeState, chapter.id) : ($libraryIdentity.mode === \"device\"\r\n\t\t? ($localLibraryState.scopeStatus === \"verified\" && $localLibraryState.records.some(row => row.family === \"chapters\" && row.id === chapter.id && row.completed))\r\n\t\t: ($readHistory === undefined ? undefined : manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false)));",
+    "after": "  let historyObservationSession = $state.raw<typeof $Session>();\r\n  $effect(() => { const observation = $readHistory; untrack(() => { historyObservationSession = observation === undefined ? undefined : $Session; }); });\r\n\tconst isRead = $derived($localLibraryState.mode === \"account\" && historyObservationSession !== $Session ? undefined : visibleBadges ? visibleBadges.value($badgeState, chapter.id) : ($libraryIdentity.mode === \"device\"\r\n\t\t? ($localLibraryState.scopeStatus === \"verified\" && $localLibraryState.records.some(row => row.family === \"chapters\" && row.id === chapter.id && row.completed))\r\n\t\t: ($readHistory === undefined ? undefined : manga.id in $readHistory ? chapter.id in ($readHistory[manga.id] ?? {}) : false)));"
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "authoritative progress check before automatic admission imports",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "import { saveNativeAccountProgress }",
+    "after": "import { saveNativeAccountProgress, checkNativeAccountProgress }"
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "untracked explicit progress admission lifecycle",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "import { onMount, onDestroy }",
+    "after": "import { onMount, onDestroy, untrack }"
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "fresh destination checks authoritative progress; failed queue resumes only after explicit check",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "  const progress = createReaderProgressQueue<AdmittedPage>({\r\n    assert: (item, afterClose) => (afterClose ? item.intent.assertDestination : item.intent.assert)(),\r\n    save: (item, assert) => item.account ? saveNativeAccountProgress(item.chapter, item.page, item.completed, assert) : saveProgress(item.manga, item.chapter, item.page, item.completed, assert),\r\n    onError: error => { if (!disposed) toast.error(\"Progress save stopped\", { description: message(error) + \" Reload the chapter to check saved progress before continuing.\" }); }\r\n  });\r\n  onDestroy(() => { window.clearTimeout(timer); void progress.finish(); disposed = true; });\r\n",
+    "after": "  let progressReady = $state(false), progressChecking = $state(false), progressFailure = $state(\"\");\r\n  let checkedDestination = \"\", readyDestination = \"\", checkGeneration = 0, writerGeneration = 0, writerDestination = \"\";\r\n  const createProgressWriter = () => {\r\n    const owner = ++writerGeneration;\r\n    return createReaderProgressQueue<AdmittedPage>({\r\n      assert: (item, afterClose) => (afterClose ? item.intent.assertDestination : item.intent.assert)(),\r\n      save: (item, assert) => item.account ? saveNativeAccountProgress(item.chapter, item.page, item.completed, assert) : saveProgress(item.manga, item.chapter, item.page, item.completed, assert),\r\n      onError: error => {\r\n        if (disposed || owner !== writerGeneration) return;\r\n        progressReady = false;\r\n        progressFailure = message(error) + \" Check saved progress before resuming. Nothing will be sent twice automatically.\";\r\n        toast.error(\"Progress save stopped\", { description: progressFailure });\r\n      }\r\n    });\r\n  };\r\n  let progress = createProgressWriter();\r\n  async function checkAccountProgress() {\r\n    const chapter = reader.chapter;\r\n    if (disposed || !chapter || $localLibraryState.mode !== \"account\" || !$nativeAuthority.actor) return;\r\n    const intent = historyOwner.capture(), generation = ++checkGeneration;\r\n    checkedDestination = intent.destinationKey; readyDestination = \"\";\r\n    progressReady = false; progressChecking = true; progressFailure = \"\";\r\n    try {\r\n      await checkNativeAccountProgress(chapter.id, intent.assert); intent.assert();\r\n      if (disposed || generation !== checkGeneration) return;\r\n      progress = createProgressWriter(); writerDestination = intent.destinationKey; progressToken = \"\"; readyDestination = intent.destinationKey; progressReady = true;\r\n    } catch (error) {\r\n      if (!disposed && generation === checkGeneration && intent.alive()) progressFailure = message(error) + \" Check saved progress before resuming.\";\r\n    } finally { if (!disposed && generation === checkGeneration) progressChecking = false; }\r\n  }\r\n  $effect(() => {\r\n    const actor = $nativeAuthority.actor, epoch = $nativeAuthority.epoch, mode = $localLibraryState.mode, ready = $localLibraryState.ready, chapter = reader.chapter;\r\n    if (disposed) return;\r\n    if (mode !== \"account\" || !actor) {\r\n      checkGeneration++; checkedDestination = \"\"; readyDestination = \"\"; progressReady = false; progressChecking = false; progressFailure = \"\";\r\n      if (mode === \"device\" && ready && chapter) { const destination = historyOwner.capture().destinationKey; if (writerDestination !== destination) { progress = createProgressWriter(); writerDestination = destination; progressToken = \"\"; } }\r\n      return;\r\n    }\r\n    if (!ready || !chapter) return;\r\n    const intent = historyOwner.capture();\r\n    if (intent.destinationKey !== checkedDestination) untrack(() => { void checkAccountProgress(); });\r\n  });\r\n  onDestroy(() => { checkGeneration++; window.clearTimeout(timer); void progress.finish(); disposed = true; });\r\n"
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "account page save requires checked exact current destination",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "const token = JSON.stringify([intent.destinationKey, chapter.id, page, completed]);",
+    "after": "if ($localLibraryState.mode === \"account\" && (!progressReady || readyDestination !== intent.destinationKey)) return;\r\n    const token = JSON.stringify([intent.destinationKey, chapter.id, page, completed]);"
+  },
+  {
+    "path": "src/lib/components/reader/reader-history.svelte",
+    "label": "truthful saved-progress checking and explicit uncertainty reconciliation",
+    "sha256": "ba14aa6c0d83334004b5d680d8cff52d842b7061bad6f31fbc7cc858d2f67052",
+    "count": 1,
+    "before": "</script>\r\n",
+    "after": "</script>\r\n{#if $localLibraryState.mode === \"account\"}\r\n  {#if progressChecking}<p role=\"status\" class=\"text-sm\">Checking saved progress\u2026</p>{/if}\r\n  {#if progressFailure}<p role=\"alert\" class=\"text-sm text-destructive\">{progressFailure}</p><button type=\"button\" disabled={progressChecking} onclick={() => { void checkAccountProgress(); }}>Check saved progress and resume</button>{/if}\r\n{/if}\r\n"
+  }
+]

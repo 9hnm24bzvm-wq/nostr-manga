@@ -1,4 +1,4 @@
-import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
+import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 import { restoreUploadFinalization } from './upload-finalization-source-association.mjs';
 // Finite source-extracted harness control. No browser, signer, HTTP, fixture,
 // Svelte runtime, dependency install or backend is started by this file.

@@ -99,7 +99,7 @@ function script(relative, exports, supplied = {}) {
   const sandbox = vm.createContext({ console, URLSearchParams, URL, TextEncoder, Uint8Array, ArrayBuffer, structuredClone, Promise,
     Constants: { Manga, MangaFollow, Error: ErrorNamespace }, ...query, ...prompt,
     $bindable: value => value, $state: state, $derived: value => value, $props: () => ({ feed: undefined, isShowFilter: true }), $effect: Object.assign(callback => effects.push(callback), { pre: callback => preEffects.push(callback) }), onMount: callback => mounts.push(callback), onDestroy() {},
-    $libraryViewKey: 'owner-a:0', $mangaView: 'grid', $prefs: { items_per_page: '20', show_safe: true, languages: [], tags: [] },
+    $localLibraryState: {ready:false,mode:'device',records:[]}, $libraryViewKey: 'owner-a:0', $mangaView: 'grid', $prefs: { items_per_page: '20', show_safe: true, languages: [], tags: [] },
     window: { location: { pathname: '/search', search: '', href: 'http://localhost/search' }, clearTimeout() {}, setTimeout: () => 1 }, ...supplied,
   });
   const transformed = stripTypeScriptTypes(code, { mode: 'transform' });

@@ -1,3 +1,5 @@
+// Historical signed UI regression only; current native coverage is test_native_contribution_dom.mjs.
+import {historicalContributionSource} from './historical-contribution-ui-fixture.mjs';
 // Source-only keyed-card/lease counterexample. The genuine composed adoption
 // function and preview lease execute with explicit fake DOM lifecycle, transport,
 // URL and account inputs. This is not Svelte/browser/HTTP/decoder evidence.
@@ -12,7 +14,7 @@ import { stripTypeScriptTypes } from 'node:module';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const spec=JSON.parse(fs.readFileSync(path.join(root,'platform-integrations/public-api/upload-anchors.json'),'utf8'));
-const nativeText=fs.readFileSync(path.join(root,'platform-integrations/frontend-overlays.mjs'),'utf8');
+const nativeText=historicalContributionSource(path.join(root,'platform-integrations/frontend-overlays.mjs'));
 const native=JSON.parse(nativeText.slice(nativeText.indexOf('const patches = [')+'const patches = '.length,nativeText.indexOf('\n];\nconst hash')+2));
 const relative='src/lib/components/upload/UploadChapterPages.svelte';
 let code=fs.readFileSync(path.join(root,'frontend',relative),'utf8');

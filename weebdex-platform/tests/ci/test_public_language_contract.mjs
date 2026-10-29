@@ -6,6 +6,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { stripTypeScriptTypes } from 'node:module';
+import { createVmModuleLoader } from './vm-module-fixture.mjs';
+import { createPublicSearchModeFixture } from './public-search-mode-fixture.mjs';
 import { title, editorFields, plain, id } from './title-edit-route-fixture.mjs';
 import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../../platform-integrations/frontend-reader-overlays.mjs';
@@ -13,9 +15,13 @@ import { createLocalLibraryOverlays } from '../../platform-integrations/local-li
 import { createPublicApiOverlays } from '../../platform-integrations/public-api/overlays.mjs';
 import { createPublicUploadOverlays } from '../../platform-integrations/public-api/upload-overlays.mjs';
 const root=path.resolve(new URL('../../',import.meta.url).pathname),frontend=path.join(root,'frontend'),directory=path.join(root,'platform-integrations/public-api');
-const context=vm.createContext({URL,URLSearchParams,TextEncoder,TextDecoder,Uint8Array,ArrayBuffer,structuredClone,console}),modules=new Map();
-async function load(file){if(!modules.has(file)){const module=new vm.SourceTextModule(stripTypeScriptTypes(fs.readFileSync(file,'utf8'),{mode:'transform'}),{context,identifier:file});modules.set(file,module);await module.link((specifier,importer)=>load(specifier.startsWith('$lib/')?path.join(frontend,'src/lib',specifier.slice(5)+'.ts'):path.resolve(path.dirname(importer.identifier),specifier+'.ts')));}return modules.get(file);}
-async function namespace(relative){const module=await load(path.join(root,relative));await module.evaluate();return module.namespace;}
+const context=vm.createContext({URL,URLSearchParams,TextEncoder,TextDecoder,Uint8Array,ArrayBuffer,structuredClone,console});
+const searchMode=createPublicSearchModeFixture(context);
+const loader=createVmModuleLoader({
+ createModule(file,importModuleDynamically){return searchMode.module(file)??new vm.SourceTextModule(stripTypeScriptTypes(fs.readFileSync(file,'utf8'),{mode:'transform'}),{context,identifier:file,importModuleDynamically});},
+ resolve(specifier,importer){return searchMode.resolve(specifier,importer)??(specifier.startsWith('$lib/')?path.join(frontend,'src/lib',specifier.slice(5)+'.ts'):path.resolve(path.dirname(importer.identifier),specifier+'.ts'));}
+});
+const namespace=relative=>loader.namespace(path.join(root,relative));
 const language=await namespace('platform-integrations/public-api/language.ts'),query=await namespace('platform-integrations/public-api/query.ts'),cover=await namespace('platform-integrations/public-api/cover-multipart.ts'),publicSearch=await namespace('platform-integrations/public-api/manga-search-query.ts'),nativeSearch=await namespace('platform-integrations/frontend-behavior/manga-search-query.ts');
 for(const code of ['en','ta','pt-br','zh-hk','aa-zz'])test('public write accepts syntax outside the native enum: '+code,()=>assert.equal(language.publicWriteLanguage(code),code));
 for(const code of ['tam','und','zh-hant','EN','en-US',' ta','ta ','en\n','en\r\n','','e','abcd','en--us','en-1a',null])test('public write rejects, without normalization: '+String(code),()=>assert.throws(()=>language.publicWriteLanguage(code)));
@@ -85,4 +91,23 @@ test('named public search selections preserve exact codes, including unknown URL
  const source=fs.readFileSync(path.join(directory,'PublicLanguageFilter.svelte'),'utf8').match(/<script lang="ts">([\s\S]*?)<\/script>/)[1].replace(/import[^;]+;/,'');
  const ui=vm.runInNewContext(stripTypeScriptTypes(source,{mode:'transform'})+'\n({toggle,get:()=>value})',{$state:value=>value,$derived:value=>value,$bindable:value=>value,$props:()=>({value:['EN'],label:'Language'}),Locale:{Languages:{en:'English',ja:'Japanese'}}});
  ui.toggle('ja',true); assert.deepEqual(plain(ui.get()),['EN','ja']); ui.toggle('EN',false); assert.deepEqual(plain(ui.get()),['ja']);
+});
+
+for(const mode of ['device','account'])test('public list parser keeps '+mode+' IDs distinct without changing the native parser',()=>{
+ searchMode.setMode(mode);
+ try {
+  const device='a'.repeat(32),account='11111111-1111-4111-8111-111111111111',accepted=mode==='device'?device:account,rejected=mode==='device'?account:device;
+  for(const value of [accepted,rejected,accepted+'\n']){
+   const q=new URLSearchParams({list:value,lang:'ta',limit:'100'}),ok=value===accepted;
+   assert.equal(publicSearch.validateMangaSearchQuery(q,true)===undefined,ok);
+   const parsed=publicSearch.parseMangaSearchQuery({},q,true);assert.equal(parsed.issues.length===0,ok);
+   const read=publicSearch.mangaSearchReadQuery(q,true);assert.equal(read.error===undefined,ok);if(ok)assert.equal(read.query.get('list'),accepted);
+   const effective=publicSearch.effectiveMangaSearchReadQuery(q,true,{applyMangaPreferences(){assert.fail('Private library must not apply discovery preferences');}},'20');assert.equal(effective.error===undefined,ok);
+  }
+  assert.ok(publicSearch.validateMangaSearchQuery(new URLSearchParams({list:accepted}),false),'Discovery cannot accept private-list filters');
+  assert.ok(publicSearch.validateMangaSearchQuery(new URLSearchParams([['list',accepted],['list',accepted]]),true),'A list selection is scalar');
+  assert.ok(publicSearch.validateMangaSearchQuery(new URLSearchParams({list:accepted,limit:'101'}),true),'Page size remains bounded');
+  assert.equal(nativeSearch.validateMangaSearchQuery(new URLSearchParams({list:device}),true),undefined);
+  assert.ok(nativeSearch.validateMangaSearchQuery(new URLSearchParams({list:account}),true),'Native parser has not gained canonical-account UUID semantics');
+ } finally {searchMode.setMode('device');}
 });

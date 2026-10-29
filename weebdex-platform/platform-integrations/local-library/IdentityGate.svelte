@@ -23,7 +23,7 @@
 {#if show}<Button bind:ref={trigger} variant="outline" onclick={() => setOpen(true)}>{label}</Button>{/if}
 <Dialog.Root {open} onOpenChange={setOpen}>
   <Dialog.Content onCloseAutoFocus={restoreTaskFocus} class="max-h-[calc(100dvh-2rem)] !max-w-[min(42rem,calc(100dvw-2rem))] overflow-y-auto">
-    <Dialog.Header><Dialog.Title>Public identity</Dialog.Title><Dialog.Description>Set up here, then continue where you left off. Nothing is posted without your approval.</Dialog.Description></Dialog.Header>
-    {#if open}{#key generation}<IdentitySetup onfinish={finish} assertCurrent={guard(generation)} finishLabel="Back to what I was doing" />{/key}{/if}
+    <Dialog.Header><Dialog.Title>Set up your identity</Dialog.Title><Dialog.Description>Save your recovery key, review joining this site, then return to your task. Nothing is posted without your approval.</Dialog.Description></Dialog.Header>
+    {#if open}{#key generation}<IdentitySetup resumeSelected onfinish={finish} assertCurrent={guard(generation)} finishLabel="Back to what I was doing" />{/key}{/if}
   </Dialog.Content>
 </Dialog.Root>

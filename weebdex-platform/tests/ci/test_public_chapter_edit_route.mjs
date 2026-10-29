@@ -1,4 +1,7 @@
-import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
+// Historical signed route regression; not current native UI qualification.
+import {historicalContributionSource,historicalContributionOverlayFactories} from './historical-contribution-ui-fixture.mjs';
+const {createFrontendOverlays,createReaderOverlays,createLocalLibraryOverlays,createPublicApiOverlays,createPublicUploadOverlays}=await historicalContributionOverlayFactories();
+import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 // Execute the actual five-stage route and Chapter API composition in Node VM.
 // Catalogue replies and native cookie/grant reads are explicit stand-ins. The
 // page/layout/editor associations are exact source checks, not a DOM/browser,
@@ -11,11 +14,6 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
-import { createReaderOverlays } from '../../platform-integrations/frontend-reader-overlays.mjs';
-import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
-import { createPublicApiOverlays } from '../../platform-integrations/public-api/overlays.mjs';
-import { createPublicUploadOverlays } from '../../platform-integrations/public-api/upload-overlays.mjs';
 import { restoreReviewedLanguageSource } from './reviewed-local-page-source-successors.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -117,15 +115,16 @@ test('fully composed edit layout/page reach the existing keyed signed child and 
   assert.match(page, /\{#key data.chapter.id\}<PublicChapterEditor initial=\{data.chapter\} \/>\{\/key\}/);
   const editor = fs.readFileSync(path.join(root, 'platform-integrations/public-api/PublicChapterEditor.svelte'));
   assert.equal(createHash('sha256').update(restoreReviewedLanguageSource(restoreReaderUxPredecessor('weebdex-platform/platform-integrations/public-api/PublicChapterEditor.svelte',editor.toString()), 'chapterEditor')).digest('hex'), 'b368c2419b3eb1babe92bc3c13d274265249cf7c2200f63fb43415467689d328');
-  // Signed editor affordance successor retains exact source binding.
-  assert.match(editor.toString(), /owner\.chapterAccess\(chapter\.version\)/);
-  assert.match(editor.toString(), /loadUploadAccount\(current\)/);
-  assert.match(editor.toString(), /publicUploadOwner\(\(\) => initial.id, account, 'chapter', 'caller'\)/);
-  assert.match(editor.toString(), /removalChoice = approvesHide \? 'approve-hide' : 'request-review'/);
-  assert.match(editor.toString(), /Original publications and their pages cannot be changed/);
-  assert.match(editor.toString(), /Where page editing is available, prepare your changes privately below/);
-  assert.match(editor.toString(), /<PublicChapterPagesEditor \{chapter\} \{owner\} \{access\}/);
-  assert.match(editor.toString(), /onDestroy\(\(\) => \{ disposed = true; owner\?\.dispose\(\); \}\)/);
+  const historicalEditor = historicalContributionSource(path.join(root, 'platform-integrations/public-api/PublicChapterEditor.svelte'));
+  // Signed editor affordance predecessor retains exact source binding.
+  assert.match(historicalEditor, /owner\.chapterAccess\(chapter\.version\)/);
+  assert.match(historicalEditor, /loadUploadAccount\(current\)/);
+  assert.match(historicalEditor, /publicUploadOwner\(\(\) => initial.id, account, 'chapter', 'caller'\)/);
+  assert.match(historicalEditor, /removalChoice = approvesHide \? 'approve-hide' : 'request-review'/);
+  assert.match(historicalEditor, /Original publications and their pages cannot be changed/);
+  assert.match(historicalEditor, /Where page editing is available, prepare your changes privately below/);
+  assert.match(historicalEditor, /<PublicChapterPagesEditor \{chapter\} \{owner\} \{access\}/);
+  assert.match(historicalEditor, /onDestroy\(\(\) => \{ disposed = true; owner\?\.dispose\(\); \}\)/);
 });
 test('public native Chapter mutation methods stay blocked instead of exposing a revision API', async () => {
   const f = await fixture();

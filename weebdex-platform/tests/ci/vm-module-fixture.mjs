@@ -48,7 +48,7 @@ export function createVmModuleLoader({createModule, resolve}) {
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const directory = path.join(root, 'platform-integrations/public-api');
 const localName = /^[a-z][a-z0-9-]*$/;
-export function createPublicApiModuleLoader({context, boundAccountAccess}) {
+export function createPublicApiModuleLoader({context, boundAccountAccess, sessionUserDirectory}) {
   return createVmModuleLoader({
     resolve(specifier) {
       if (specifier === '$lib/constants/Error') return 'error';
@@ -57,6 +57,9 @@ export function createPublicApiModuleLoader({context, boundAccountAccess}) {
     },
     createModule(name, importModuleDynamically) {
       if (!localName.test(name)) throw Error('Unexpected public API fixture module: ' + name);
+      if (name === 'session-user-directory' && sessionUserDirectory) {
+        return new vm.SyntheticModule(['searchUserDirectory'], function () { this.setExport('searchUserDirectory', sessionUserDirectory); }, {context, identifier: 'fixture:session-user-directory'});
+      }
       if (name === 'bound-account-request' && boundAccountAccess) {
         return new vm.SyntheticModule(['boundAccountAccess'], function () {
           this.setExport('boundAccountAccess', boundAccountAccess);

@@ -110,13 +110,13 @@ test('native wrapped select uses exact immediate label despite descendant option
   const identity = read('platform-integrations/local-library/ProtocolIdentityPanel.svelte');
   assert.match(identity, /<label>Verified recipient <select[^>]+bind:value=\{selectedOrigin\}/);
   assert.doesNotMatch(identity, /Target type|Current instance catalogue ID/);
-  assert.match(panel, /<label>Status for saved \{row.id\}<select/);
+  assert.match(panel, /<label>Status for saved title \{i \+ 1\}<select/);
   const cases = [
     ['List', 'list-id', 'Choose list', 'Local example'],
     ['Title', 'SeedManga1', 'Choose a saved title', 'SeedManga1 (reading)'],
     ['Verified recipient', 'http://127.0.0.1:1', 'Choose instance', 'http://127.0.0.1:1 · public-key'],
-    ['Status for saved SeedManga1', 'completed', 'reading', 'completed'],
-    ['Status for saved SeedManga10', 'on_hold', 'reading', 'on_hold'],
+    ['Status for saved title 1', 'completed', 'reading', 'completed'],
+    ['Status for saved title 10', 'on_hold', 'reading', 'on_hold'],
   ];
   const fragment = cases.map(([name, value, placeholder, choice]) => `<label>${name} <select><option value="">${placeholder}</option><option value="${value}">${choice}</option></select></label>`).join('');
   const value = makeDOM(fragment), calls = [];
@@ -195,11 +195,12 @@ test('former incomplete binding is rejected before the prompt, proving harness c
 test('account import preview follows the actual explicit source without changing review authority', () => {
   const journeys = read('scripts/browser-journeys.mjs'), library = read('platform-integrations/local-library/library.ts'), panel = read('platform-integrations/local-library/LocalLibraryPanel.svelte');
   const source = library.match(/source: '(Explicit account-library import)'/)[1];
-  assert.match(panel, /Import preview: \{imported.source\}/);
-  const text = 'Import preview: ' + source + ' · 1 rows';
-  assert.equal(text.includes('Import preview: account'), false);
-  assert(text.includes('Import preview: Explicit account-library import'));
-  assert.match(journeys, /getByText\('Import preview: Explicit account-library import', \{ exact: false \}\)/);
+  assert.match(panel, /<BackupReviewSummary \{imported\} restore=\{deviceRestore\}/);
+  assert.match(read('platform-integrations/local-library/BackupReviewSummary.svelte'), /<p[^>]*>\{imported.source\}<\/p>/);
+  const text = source;
+  assert.equal(text, 'Explicit account-library import');
+  assert.match(read('platform-integrations/local-library/BackupReviewSummary.svelte'), /saved titles<\/li>/);
+  assert.match(journeys, /getByText\('Explicit account-library import', \{ exact: true \}\)/);
   assert.match(library, /previewAccountImport[\s\S]*?assertCatalogueScope[\s\S]*?authoritativeAccount/);
   assert.match(library, /applyImport[\s\S]*?accountId[\s\S]*?authoritativeAccount/);
   assert.match(journeys, /getByRole\('button', \{ name: 'Merge reviewed import', exact: true \}\)\.click\(\)/);

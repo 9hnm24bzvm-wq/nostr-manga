@@ -1,27 +1,29 @@
 <script lang="ts">
- import IdentityGate from '../local-library/IdentityGate.svelte';
+ import AccountActionGate from './AccountActionGate.svelte';
+ import {nativeAccountIssue,type NativeAccountIssue} from './native-account-scope';
  import {onDestroy,untrack} from 'svelte';
  import {PUBLIC_MANGADEX_CATALOGUE,PUBLIC_SITE_NAME} from '$env/static/public';
  import {Button} from '$lib/components/ui/button';
  import FollowingNavigation from './FollowingNavigation.svelte';
- import {signerIdentity} from '../local-library/publication';
- import {loadFollowedLists} from './list-follow-client';
+ import {Session} from '$lib/stores';
+ import {loadSessionFollowedLists as loadFollowedLists} from './session-list-follow-client';
  import type{PublicListView}from './public-lists';
+ let access=$state<NativeAccountIssue>();
  let reader:Awaited<ReturnType<typeof loadFollowedLists>>|undefined,epoch=0,disposed=false;
  let rows=$state<PublicListView[]>([]),pending=$state(false),error=$state(''),username=$state(''),offset=$state(0),total=$state(0),unavailable=$state(0);
- function clear(){epoch++;reader=undefined;rows=[];pending=false;error='';username='';offset=0;total=0;unavailable=0;}
- function guard(){const revision=epoch,owner=$signerIdentity.owner,generation=$signerIdentity.generation;return()=>{if(disposed||epoch!==revision||owner!==$signerIdentity.owner||generation!==$signerIdentity.generation)throw Error('The following account changed');};}
- async function load(start=0){if(pending||!$signerIdentity.owner)return;const assert=guard();pending=true;error='';rows=[];username='';unavailable=0;total=0;try{if(PUBLIC_MANGADEX_CATALOGUE!=='1')throw Error('Public-list following is unavailable in this catalogue.');const selected=reader??await loadFollowedLists(assert);assert();const result=await selected.page(start);assert();reader=selected;username=selected.username;rows=result.data;offset=result.offset;total=result.total;unavailable=result.unavailable;}catch(cause){try{assert();error=cause instanceof Error?cause.message:'Followed lists could not be loaded.';}catch{}}finally{try{assert();pending=false;}catch{}}}
- $effect(()=>{const owner=$signerIdentity.owner,generation=$signerIdentity.generation;untrack(()=>{clear();if(owner)void load();});});
- onDestroy(()=>{disposed=true;epoch++;});
+ function clear(){epoch++;reader?.dispose();reader=undefined;access=undefined;rows=[];pending=false;error='';username='';offset=0;total=0;unavailable=0;}
+ function guard(){const revision=epoch,session=$Session;return()=>{if(disposed||epoch!==revision||session!==$Session)throw Error('The following account changed');};}
+ async function load(start=0){if(pending||!$Session?.identity?.id)return;const assert=guard();pending=true;error='';access=undefined;rows=[];username='';unavailable=0;total=0;try{if(PUBLIC_MANGADEX_CATALOGUE!=='1')throw Error('Public-list following is unavailable in this catalogue.');const selected=reader??await loadFollowedLists($Session!.identity.id,assert);try{assert();}catch(cause){selected.dispose();throw cause;}reader=selected;const result=await selected.page(start);assert();reader=selected;username=selected.username;rows=result.data;offset=result.offset;total=result.total;unavailable=result.unavailable;}catch(cause){try{assert();access=nativeAccountIssue(cause);error=cause instanceof Error?cause.message:'Followed lists could not be loaded.';}catch{}}finally{try{assert();pending=false;}catch{}}}
+ $effect(()=>{const session=$Session;untrack(()=>{clear();if(session?.identity?.id)void load();});});
+ onDestroy(()=>{disposed=true;epoch++;reader?.dispose();});
 </script>
 <svelte:head><title>Followed lists - {PUBLIC_SITE_NAME}</title></svelte:head>
 <section class="space-y-5">
- <header class="space-y-3"><h1 class="text-xl font-semibold">Followed lists</h1><nav class="flex flex-wrap items-center gap-3"><a class="text-sm underline" href="/library">My library</a><Button variant="outline" disabled={pending||!$signerIdentity.owner} onclick={()=>{reader=undefined;void load();}}>Refresh</Button></nav></header>
+ <header class="space-y-3"><h1 class="text-xl font-semibold">Followed lists</h1><nav class="flex flex-wrap items-center gap-3"><a class="text-sm underline" href="/library">My library</a><Button variant="outline" disabled={pending||!$Session?.identity?.id} onclick={()=>{reader?.dispose();reader=undefined;void load();}}>Refresh</Button></nav></header>
  <FollowingNavigation active="list"/>
- <IdentityGate show={!$signerIdentity.owner} onfinish={() => { if ($signerIdentity.owner) void load(); }} />
- {#if !$signerIdentity.owner}<p class="text-muted-foreground">Connect your public identity to view account-followed lists on this instance.</p>{/if}
- {#if username}<p class="text-sm text-muted-foreground">Following as {username} on this instance.</p>{/if}
+ <AccountActionGate issue={access} onready={() => load()} />
+ {#if !$Session?.identity?.id}<p class="text-muted-foreground">Sign in to see the lists you follow.</p>{/if}
+ {#if username}<p class="text-sm text-muted-foreground">Following as {username}.</p>{/if}
  {#if pending}<p role="status" class="text-muted-foreground">Loading followed lists…</p>{/if}
  {#if error}<p role="alert" class="text-destructive">{error}</p>{:else if username&&!pending&&!rows.length}<p class="text-muted-foreground">{offset>0?'There are no available followed lists on this page.':'You have no available followed lists.'}</p>{/if}
  {#if unavailable}<p class="text-sm text-muted-foreground">{unavailable.toLocaleString()} saved {unavailable===1?'list is':'lists are'} currently unavailable.</p>{/if}

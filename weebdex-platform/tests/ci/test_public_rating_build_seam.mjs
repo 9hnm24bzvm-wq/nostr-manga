@@ -1,6 +1,6 @@
 // Execute the real production preparation/markup verifier against fresh copied
 // canonical source. No build, install, browser or original frontend write.
-import {assertDiscussionFeatures} from './native-discussion-overlay-fixture.mjs';
+import {assertDiscussionFeatures} from './fixpass-discussion-overlay-fixture.mjs';
 import fs from'node:fs';import os from'node:os';import path from'node:path';import{createHash}from'node:crypto';import{fileURLToPath}from'node:url';import test from'node:test';import assert from'node:assert/strict';
 import{frontendRouteAdditions}from'../../platform-integrations/frontend-route-additions.mjs';
 import{prepareFrontendIntegration}from'../../scripts/prepare-frontend-integration.mjs';

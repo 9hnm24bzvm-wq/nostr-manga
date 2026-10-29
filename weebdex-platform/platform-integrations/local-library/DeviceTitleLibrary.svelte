@@ -7,7 +7,8 @@
   import { Button } from '$lib/components/ui/button';
   import { Spinner } from '$lib/components/ui/spinner';
   import MangaSearchEntryCard from '$lib/components/MangaSearchEntryCard.svelte';
-  import { libraryViewKey, libraryIdentity, message } from './library';
+  import { libraryViewKey, libraryIdentity, localLibraryState, isCurrentCatalogueId, message } from './library';
+  import { libraryDiscovery, unfilteredLibraryHref } from './library-discovery';
   import { nativeAuthority } from '$platform/mutation-authority';
   import { captureNavigationEpoch } from '$platform/navigation-authority';
   import { openDeviceTitleFeed } from './title-feed';
@@ -15,6 +16,8 @@
   import { HistoryTransportUnsettled } from './history-pagination';
   let result = $state<TitlePage<Manga>>(), error = $state(''), stopped = $state(false), loading = $state(false), mounted = $state(false), target = $state(1);
   let pager: TitlePager<Manga> | undefined;
+  const selectedList = $derived(page.url.searchParams.get('list'));
+  const discovery = $derived(libraryDiscovery($localLibraryState.records, selectedList, isCurrentCatalogueId));
   let generation = 0, destroyed = false, ownedIdentity = '';
   const identity = () => JSON.stringify([$libraryViewKey, $libraryIdentity.accountId, $nativeAuthority, captureNavigationEpoch(), $prefs, page.url.href]);
   function assertOwner(epoch: number, key: string) { if (destroyed || epoch !== generation || key !== identity()) throw new TitleCancelled(); }
@@ -69,7 +72,20 @@
     {#each result.data as manga (manga.id)}<article><MangaSearchEntryCard {manga} isGrid={$mangaView === 'grid'} /></article>{/each}
   </Grid>
 {:else if result?.ready && !error}
-  <p role="status">{result.total === 0 ? 'No saved titles match your filters.' : 'There are no more saved titles.'}</p>
+  <div class="space-y-2" role="status">
+    {#if result.total !== 0}
+      <p>There are no more saved titles on this page.</p>
+    {:else if discovery.saved === 0}
+      <p>Your library is empty. Find a title you like, then choose “Add to Library” to save it here.</p>
+      <a class="inline-block rounded border px-4 py-2" href="/search">Discover titles</a>
+    {:else if selectedList && discovery.listName && discovery.listSaved === 0}
+      <p>No saved titles in “{discovery.listName}” yet. Add a saved title to this list from your library.</p>
+      <a class="underline" href="/library">Browse saved titles</a>
+    {:else}
+      <p>No saved titles match these filters. Your saved titles have not been removed.</p>
+      <a class="underline" href={unfilteredLibraryHref(selectedList)}>Clear filters</a>
+    {/if}
+  </div>
 {/if}
 {#if error}<p role="alert">{error}</p>{/if}
 {#if loading}

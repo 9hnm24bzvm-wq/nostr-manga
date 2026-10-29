@@ -127,7 +127,7 @@
     "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
     "count": 1,
     "before": "<a\r\n\t\t\t\t\t\tclass=\"hover:text-accent-foreground relative flex w-18 shrink-0 items-center gap-1.5\"\r\n\t\t\t\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\t\t\t\ttitle=\"Go to comments\"\r\n\t\t\t\t\t>\r\n\t\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t\t\t\t<span class=\"truncate\">{chapter.relationships.thread.relationships.stats.replies.short()}</span>\r\n\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t</a>",
-    "after": "{#if chapter.relationships.thread}<a\r\n\t\t\t\t\t\tclass=\"hover:text-accent-foreground relative flex w-18 shrink-0 items-center gap-1.5\"\r\n\t\t\t\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\t\t\t\ttitle=\"Go to comments\"\r\n\t\t\t\t\t>\r\n\t\t\t\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t\t\t\t<span class=\"truncate\">{chapter.relationships.thread.relationships.stats.replies.short()}</span>\r\n\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t</a>{:else}<span class=\"text-muted-foreground\">Comments unavailable</span>{/if}",
+    "after": "<FeedCommentsLink {chapter} {manga} />",
     "approved_public_availability_exception": "actual_native_forum_context_only"
   },
   {
@@ -135,7 +135,7 @@
     "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
     "count": 1,
     "before": "<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>",
-    "after": "{#if chapter.relationships.thread}<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>{:else}<span class=\"text-muted-foreground\">Comments unavailable</span>{/if}",
+    "after": "<FeedCommentsLink {chapter} {manga} />",
     "approved_public_availability_exception": "actual_native_forum_context_only"
   },
   {
@@ -280,16 +280,16 @@
     "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
     "count": 1,
     "before": "import { API, Permission } from \"$lib\";",
-    "after": "import { publicTitleRead } from \"$publicApi/title-client\";\nimport { API, Permission } from \"$lib\";",
-    "label": "Signed title editor loader imports the exact bound-account reader"
+    "after": "import { publicTitleRead } from \"$publicApi/session-title-route\";\nimport { API, Permission } from \"$lib\";",
+    "label": "Private title lookup uses the explicit native-session account adapter"
   },
   {
     "path": "src/routes/(app)/title/[id]/edit/+page.ts",
     "sha256": "b7afa5cd1115e3e43279c98da877ee6c7ae3a70b1019a6b7d2e0595cacd0ff0e",
     "count": 1,
     "before": "export const load = async ({ url, params }) => {",
-    "after": "export const load = async ({ url, params }) => {\n if (Boolean(true)) {\n  const response = await publicTitleRead(params.id);\n  if (response.status !== 200 || !response.body) error(response.status >= 400 ? response.status : 502);\n  return { id: params.id, manga: response.body as unknown as Manga };\n }\n",
-    "label": "Public editor requires genuine signed account read, without native cookie or invented manga placeholder"
+    "after": "export const load = async ({ url, params }) => {\n if (Boolean(true)) {\n  // Route identity only. The account editor owns its authenticated entity read.\n  return { id: params.id, manga: { id: params.id } };\n }\n",
+    "label": "Route identity only: mounted native account editor owns permission and typed entity lookup"
   },
   {
     "path": "src/routes/(app)/user/[id]/+layout.svelte",
@@ -403,10 +403,11 @@
     "path": "src/routes/(app)/library/+page.svelte",
     "sha256": "52caf35a0d725e0a5931814880b42a7e4cbc7a6db8f8afa53f51d1c1e9f03272",
     "count": 1,
-    "before": "<h2 class=\"text-xl font-medium\">My Library</h2>",
-    "after": "<div class=\"flex flex-wrap items-center justify-between gap-3\"><h2 class=\"text-xl font-medium\">My Library</h2><a class=\"text-sm underline\" href=\"/following/lists\">Followed lists</a></div>",
+    "before": "<h2 class=\"text-xl font-medium\">{selectedListName ? `${selectedListName} — My Library` : \"My Library\"}</h2>",
+    "after": "<div class=\"flex flex-wrap items-center justify-between gap-3\"><h2 class=\"text-xl font-medium\">{selectedListName ? `${selectedListName} — My Library` : \"My Library\"}</h2><a class=\"text-sm underline\" href=\"/following/lists\">Followed lists</a></div>",
     "approved_public_feature_exception": "public_uuid_followed_lists_library_link",
-    "label": "Account-followed public lists remain separate from the default device library"
+    "label": "Account-followed public lists remain separate from the default device library",
+    "composed_before": true
   },
   {
     "path": "src/routes/(app)/settings/preferences/+page.svelte",
@@ -430,7 +431,7 @@
     "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
     "count": 1,
     "before": "import { goto } from \"$app/navigation\";",
-    "after": "import AccountFollow from \"$publicApi/AccountFollow.svelte\";\r\n\timport { goto } from \"$app/navigation\";",
+    "after": "import { catalogueActionRequestedId } from \"$publicApi/catalogue-action-target\";\r\n\timport AccountFollow from \"$publicApi/SessionFollow.svelte\";\r\n\timport { goto } from \"$app/navigation\";",
     "label": "Native action row imports explicit request-bound account follow"
   },
   {
@@ -438,7 +439,7 @@
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "import { page } from \"$app/state\";",
-    "after": "import NativeProfileActions from \"$publicApi/NativeProfileActions.svelte\";\r\n\timport AccountFollow from \"$publicApi/AccountFollow.svelte\";\r\n\timport { page } from \"$app/state\";",
+    "after": "import { profileActionRequestedId } from \"$publicApi/profile-action-target\";\r\n\timport SessionProfileActions from \"$publicApi/SessionProfileActions.svelte\";\r\n\timport NativeProfileActions from \"$publicApi/NativeProfileActions.svelte\";\r\n\timport AccountFollow from \"$publicApi/SessionFollow.svelte\";\r\n\timport { page } from \"$app/state\";",
     "label": "Native action row imports explicit request-bound account follow"
   },
   {
@@ -446,7 +447,7 @@
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "import { page } from \"$app/state\";",
-    "after": "import AccountFollow from \"$publicApi/AccountFollow.svelte\";\r\n\timport { page } from \"$app/state\";",
+    "after": "import { catalogueActionRequestedId } from \"$publicApi/catalogue-action-target\";\r\n\timport AccountFollow from \"$publicApi/SessionFollow.svelte\";\r\n\timport { page } from \"$app/state\";",
     "label": "Native action row imports explicit request-bound account follow"
   },
   {
@@ -454,7 +455,7 @@
     "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
     "count": 1,
     "before": "\t<Button\r\n\t\tclass=\"border-none\"\r\n\t\ttype=\"button\"\r\n\t\tvariant=\"outline\"\r\n\t\tonclick={() => {\r\n\t\t\tReportDialog.set(manga, Constants.EntityType.Manga);",
-    "after": "\t{#if isPublished}<AccountFollow kind=\"manga\" targetId={manga.id} requestedId={page.params.id??\"\"}/>{/if}\r\n\t<Button\r\n\t\tclass=\"border-none\"\r\n\t\ttype=\"button\"\r\n\t\tvariant=\"outline\"\r\n\t\tonclick={() => {\r\n\t\t\tReportDialog.set(manga, Constants.EntityType.Manga);",
+    "after": "\t{#if isPublished}<AccountFollow kind=\"manga\" targetId={manga.id} requestedId={catalogueActionRequestedId(manga, \"manga\", page.params.id??\"\")}/>{/if}\r\n\t<Button\r\n\t\tclass=\"border-none\"\r\n\t\ttype=\"button\"\r\n\t\tvariant=\"outline\"\r\n\t\tonclick={() => {\r\n\t\t\tReportDialog.set(manga, Constants.EntityType.Manga);",
     "approved_public_feature_exception": "public_uuid_bound_account_manga_follow",
     "label": "Manga account following remains secondary to anonymous device-library controls"
   },
@@ -463,7 +464,7 @@
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">",
-    "after": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t\t\t{#if $user.public_account_follow_available}<AccountFollow kind=\"user\" targetId={$user.id} requestedId={page.params.id??\"\"}/>{/if}",
+    "after": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t\t\t{#if $user.public_account_follow_available}<AccountFollow kind=\"user\" targetId={$user.id} requestedId={profileActionRequestedId($user, page.params.id??\"\")}/>{/if}",
     "approved_public_feature_exception": "public_uuid_bound_account_user_follow",
     "label": "Supported user account following stays in the existing native action row"
   },
@@ -472,7 +473,7 @@
     "sha256": "f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd",
     "count": 1,
     "before": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">",
-    "after": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t\t\t<NativeProfileActions targetId={$user.id} requestedId={page.params.id??\"\"} nativeEligible={$user.public_profile_readonly === true && $user.public_account_follow_available === true}/>",
+    "after": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t\t\t<SessionProfileActions targetId={$user.id} requestedId={profileActionRequestedId($user, page.params.id??\"\")} nativeEligible={$user.public_profile_readonly === true && $user.public_account_follow_available === true}/>\r\n\t\t\t\t\t<details class=\"basis-full text-sm\"><summary class=\"cursor-pointer\">Advanced identity actions</summary><div class=\"mt-2\"><NativeProfileActions targetId={$user.id} requestedId={profileActionRequestedId($user, page.params.id??\"\")} nativeEligible={$user.public_profile_readonly === true && $user.public_account_follow_available === true}/></div></details>",
     "label": "Explicit signing-account Settings and Block use the existing native profile action row",
     "approved_public_feature_exception": "public_uuid_bound_account_profile_actions"
   },
@@ -481,7 +482,7 @@
     "sha256": "ece279c948c849fb298992cc883b3dbb4492e2d5748acdee430fed276ae3dfcc",
     "count": 1,
     "before": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">",
-    "after": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t\t\t<AccountFollow kind=\"group\" targetId={$group.id} requestedId={page.params.id??\"\"}/>",
+    "after": "<div class=\"flex shrink-0 flex-wrap items-center gap-1\">\r\n\t\t\t\t\t<AccountFollow kind=\"group\" targetId={$group.id} requestedId={catalogueActionRequestedId($group, \"group\", page.params.id??\"\")}/>",
     "approved_public_feature_exception": "public_uuid_bound_account_group_follow",
     "label": "Supported group account following stays in the existing native action row"
   },
@@ -507,16 +508,16 @@
     "sha256": "d89d59b462e22379cd4556cc11cbe1461984fc899764ba696fcf5de9a86e4f76",
     "count": 1,
     "before": "\tonMount(async () => {\r\n\t\tif ((page.state as any)?._$UserSearch_feed) {\r\n\t\t\tfeed = (page.state as any)._$UserSearch_feed as typeof feed;\r\n\t\t} else {\r\n\t\t\ttry {\r\n\t\t\t\tawait onSearch();\r\n\t\t\t} catch (e) {\r\n\t\t\t\tif (e instanceof Constants.Error.Error) error = e;\r\n\t\t\t\telse {\r\n\t\t\t\t\tconsole.error(e);\r\n\t\t\t\t\terror = Constants.Error.Unknown;\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t}\r\n\t\tisMounted = true;\r\n\t});",
-    "after": "\tlet directoryEpoch = 0, directoryDisposed = false;\r\n\tonDestroy(() => { directoryDisposed = true; directoryEpoch++; });\r\n\t$effect(() => {\r\n\t\tconst owner = $signerIdentity.owner, generation = $signerIdentity.generation;\r\n\t\tconst revision = ++directoryEpoch;\r\n\t\tfeed = undefined; error = undefined; isMounted = false;\r\n\t\tif (!owner) {\r\n\t\t\terror = new Constants.Error.Error(\"Connect your public identity\", \"This instance's user directory requires a connected identity bound to an account. Manage your public identity in Settings, then search again.\");\r\n\t\t\tisMounted = true; return;\r\n\t\t}\r\n\t\tvoid (async () => {\r\n\t\t\ttry { await onSearch(); }\r\n\t\t\tcatch (cause) {\r\n\t\t\t\tif (directoryDisposed || revision !== directoryEpoch) return;\r\n\t\t\t\terror = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown;\r\n\t\t\t}\r\n\t\t\tif (!directoryDisposed && revision === directoryEpoch) isMounted = true;\r\n\t\t})();\r\n\t});",
-    "label": "authenticated directory never reuses history-cache rows and clears on signer changes"
+    "after": "\tlet directoryEpoch = 0, directoryDisposed = false;\r\n\tonDestroy(() => { directoryDisposed = true; directoryEpoch++; });\r\n\t$effect(() => {\r\n\t\tconst session = $Session;\r\n\t\tconst revision = ++directoryEpoch;\r\n\t\tfeed = undefined; error = undefined; isMounted = false;\r\n\t\tif (!session?.identity?.id) {\r\n\t\t\terror = new Constants.Error.Error(\"Sign in to search readers\", \"Use your normal account to find other readers.\");\r\n\t\t\tisMounted = true; return;\r\n\t\t}\r\n\t\tvoid (async () => {\r\n\t\t\ttry { await onSearch(); }\r\n\t\t\tcatch (cause) {\r\n\t\t\t\tif (directoryDisposed || revision !== directoryEpoch || session !== $Session) return;\r\n\t\t\t\terror = cause instanceof Constants.Error.Error ? cause : Constants.Error.Unknown;\r\n\t\t\t}\r\n\t\t\tif (!directoryDisposed && revision === directoryEpoch && session === $Session) isMounted = true;\r\n\t\t})();\r\n\t});",
+    "label": "authenticated directory never reuses history-cache rows and clears on browser account changes"
   },
   {
     "path": "src/lib/components/UserSearch.svelte",
     "sha256": "d89d59b462e22379cd4556cc11cbe1461984fc899764ba696fcf5de9a86e4f76",
     "count": 1,
     "before": "\timport { onMount } from \"svelte\";",
-    "after": "\timport { onDestroy } from \"svelte\";\r\n\timport { signerIdentity } from \"$localLibrary/publication\";",
-    "label": "directory lifecycle uses the selected signing identity"
+    "after": "\timport { onDestroy } from \"svelte\";\r\n\timport { Session } from \"$lib/stores\";\r\n\timport AccountActionGate from \"$publicApi/AccountActionGate.svelte\";",
+    "label": "directory lifecycle uses the normal browser account"
   },
   {
     "path": "src/routes/(app)/users/+page.svelte",
@@ -647,7 +648,7 @@
     "sha256": "b64a8ac906f93b0d74cbf9a658933a52370b91d7a413c317585dda59f9d6dc90",
     "count": 1,
     "before": "import { API, Constants, Mutex, UserLink, Utils } from \"$lib\";",
-    "after": "import AccountProfileEditor from \"$publicApi/AccountProfileEditor.svelte\";\r\n\timport { normalizePublicUser } from \"$publicApi/user-profile\";\r\n\timport { API, Constants, Mutex, UserLink, Utils } from \"$lib\";",
+    "after": "import { page } from \"$app/state\";\r\n\timport AdvancedAccountProfileEditor from \"$publicApi/AdvancedAccountProfileEditor.svelte\";\r\n\timport AccountProfileEditor from \"$publicApi/AccountProfileEditor.svelte\";\r\n\timport { normalizePublicUser } from \"$publicApi/user-profile\";\r\n\timport { API, Constants, Mutex, UserLink, Utils } from \"$lib\";",
     "label": "Native user settings imports explicitly bound public profile consumer"
   },
   {
@@ -655,7 +656,7 @@
     "sha256": "b64a8ac906f93b0d74cbf9a658933a52370b91d7a413c317585dda59f9d6dc90",
     "count": 1,
     "before": "{#if draft}",
-    "after": "{#if $user.public_profile_readonly}\r\n\t<AccountProfileEditor targetId={$user.id} nativeEligible={$user.public_account_follow_available === true} onSaved={result => { if (result.resource) $user = normalizePublicUser(result.resource) as unknown as User; }} />\r\n{:else if draft}",
+    "after": "{#if $user.public_profile_readonly}\r\n  {#if page.url.searchParams.getAll(\"authority\").length === 1 && page.url.searchParams.get(\"authority\") === \"external\"}\r\n    <AdvancedAccountProfileEditor targetId={$user.id} nativeEligible={$user.public_account_follow_available === true} onSaved={result => { if (result.resource) $user = normalizePublicUser(result.resource) as unknown as User; }} />\r\n  {:else if page.url.searchParams.has(\"authority\")}<p role=\"alert\">Unknown account mode. Reopen your profile settings.</p>\r\n  {:else}\r\n    <AccountProfileEditor targetId={$user.id} nativeEligible={$user.public_account_follow_available === true} onSaved={result => { if (result.resource) $user = normalizePublicUser(result.resource) as unknown as User; }} />\r\n  {/if}\r\n{:else if draft}",
     "label": "Existing native biography route separates explicit bound profile edits from cookie-native form",
     "approved_public_feature_exception": "public_uuid_bound_account_profile_editor"
   },
@@ -690,19 +691,19 @@
     "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
     "count": 1,
     "before": "import { goto } from \"$app/navigation\";",
-    "after": "import { signerIdentity } from \"$localLibrary/publication\";\r\n\timport { goto } from \"$app/navigation\";",
+    "after": "import { goto } from \"$app/navigation\";",
     "composed_before": true,
-    "label": "Title editor discovery follows the selected public signer, never cookie grants"
+    "label": "Ordinary contribution discovery uses the already imported native Session"
   },
   {
     "path": "src/routes/(app)/title/MangaActions.svelte",
     "sha256": "a22bba60275a579d79c3850a90c98bef3db988774bf8081eb478b4ce012d058f",
     "count": 1,
     "before": "{#if $Session && Permission.Manga.canUpdate(manga)}",
-    "after": "{#if $signerIdentity.owner}",
+    "after": "{#if $Session?.identity?.id}",
     "composed_before": true,
     "approved_public_feature_exception": "public_uuid_signed_title_editor_link",
-    "label": "Selected signer may open the scoped editor; actual bound-account authority remains in signed loader, child and server"
+    "label": "Native-session contribution discovery; actual current permission and target admission remain in native client and server"
   },
   {
     "path": "src/routes/(app)/title/[id]/edit/+page.svelte",
@@ -727,19 +728,19 @@
     "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
     "count": 1,
     "before": "import { API, Constants, Locale, Permission, Utils } from \"$lib\";",
-    "after": "import { signerIdentity } from \"$localLibrary/publication\";\r\n\timport { API, Constants, Locale, Permission, Utils } from \"$lib\";",
+    "after": "import { API, Constants, Locale, Permission, Utils } from \"$lib\";",
     "composed_before": true,
-    "label": "Chapter editor discovery follows the selected public signer; it grants no write authority"
+    "label": "Ordinary contribution discovery uses the already imported native Session"
   },
   {
     "path": "src/lib/components/ChapterListEntry.svelte",
     "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
     "count": 1,
     "before": "{#if $Session && Permission.Chapter.canUpdate(chapter)}",
-    "after": "{#if $signerIdentity.owner}",
+    "after": "{#if $Session?.identity?.id}",
     "composed_before": true,
     "approved_public_feature_exception": "public_uuid_signed_chapter_editor_link",
-    "label": "Selected signer may open existing chapter metadata/claim/removal controls; immutable source and per-instance approval rules remain in the signed child and server"
+    "label": "Native-session contribution discovery; actual current permission and target admission remain in native client and server"
   },
   {
     "path": "src/lib/components/ReportDialog.svelte",
@@ -829,8 +830,8 @@
     "sha256": "f766c71a4ee390b02e835747361caf935a7170f20b457f09242b23f0ea1e0a05",
     "count": 1,
     "before": "import { API, Permission } from \"$lib\";",
-    "after": "import { publicTitleRead } from \"$publicApi/title-client\";\r\nimport { API, Permission } from \"$lib\";",
-    "label": "Private title preview uses exact signed draft read rather than cookie/private native-ID fallback"
+    "after": "import { publicTitleRead } from \"$publicApi/session-title-route\";\r\nimport { API, Permission } from \"$lib\";",
+    "label": "Private title lookup uses the explicit native-session account adapter"
   },
   {
     "path": "src/routes/(app)/title/[id]/+page.ts",
@@ -892,17 +893,19 @@
     "path": "src/lib/components/MangaSearchFilter.svelte",
     "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
     "count": 1,
-    "before": "\t\t\t<Combobox.Root type=\"multiple\" bind:value={search.availableTranslatedLang} disabled={!search.hasChapters}>\r\n\t\t\t\t<Combobox.Trigger class=\"flex w-0 min-w-50 flex-auto border-none\">\r\n\t\t\t\t\t{#if search.availableTranslatedLang?.length}\r\n\t\t\t\t\t\t<span class=\"flex w-0 flex-auto flex-nowrap items-center gap-1 overflow-hidden text-left\">\r\n\t\t\t\t\t\t\t{#if search.availableTranslatedLang.length > 1}\r\n\t\t\t\t\t\t\t\t{#each search.availableTranslatedLang as code}\r\n\t\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(code)}.svg\"\r\n\t\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(code)}\r\n\t\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{/each}\r\n\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(search.availableTranslatedLang[0])}.svg\"\r\n\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(search.availableTranslatedLang[0])}\r\n\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{Locale.toLanguage(search.availableTranslatedLang[0])}\r\n\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t<strong class=\"shrink-0 font-medium text-green-600\">+{search.availableTranslatedLang.length}</strong>\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tTranslated Languages\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</Combobox.Trigger>\r\n\t\t\t\t<Combobox.Content>\r\n\t\t\t\t\t{#each Object.entries(Locale.Languages) as [key, value]}\r\n\t\t\t\t\t\t<Combobox.Item value={key}>\r\n\t\t\t\t\t\t\t<span class=\"size-5 shrink-0\">\r\n\t\t\t\t\t\t\t\t<ImageLoader class=\"size-5\" src=\"/images/flags/{Locale.to3166(key)}.svg\" alt={value} />\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t{value}\r\n\t\t\t\t\t\t</Combobox.Item>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Combobox.Content>\r\n\t\t\t</Combobox.Root>",
+    "before": "\t\t\t<Combobox.Root type=\"multiple\" bind:value={search.availableTranslatedLang} disabled={!search.hasChapters}>\r\n\t\t\t\t<Combobox.Trigger class=\"flex w-0 min-w-50 flex-auto border-none\">\r\n\t\t\t\t\t{#if search.availableTranslatedLang?.length}\r\n\t\t\t\t\t\t<span class=\"flex w-0 flex-auto flex-nowrap items-center gap-1 overflow-hidden text-left\">\r\n\t\t\t\t\t\t\t{#if search.availableTranslatedLang.length > 1}\r\n\t\t\t\t\t\t\t\t{#each search.availableTranslatedLang as code}\r\n\t\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(code)}.svg\"\r\n\t\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(code)}\r\n\t\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{/each}\r\n\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(search.availableTranslatedLang[0])}.svg\"\r\n\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(search.availableTranslatedLang[0])}\r\n\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{Locale.toLanguage(search.availableTranslatedLang[0])}\r\n\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t<strong class=\"shrink-0 font-medium text-green-600\">{search.availableTranslatedLang.length} selected</strong>\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tTranslated Languages\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</Combobox.Trigger>\r\n\t\t\t\t<Combobox.Content>\r\n\t\t\t\t\t{#each Object.entries(Locale.Languages) as [key, value]}\r\n\t\t\t\t\t\t<Combobox.Item value={key}>\r\n\t\t\t\t\t\t\t<span class=\"size-5 shrink-0\">\r\n\t\t\t\t\t\t\t\t<ImageLoader class=\"size-5\" src=\"/images/flags/{Locale.to3166(key)}.svg\" alt={value} />\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t{value}\r\n\t\t\t\t\t\t</Combobox.Item>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Combobox.Content>\r\n\t\t\t</Combobox.Root>",
     "after": "\t\t\t<PublicLanguageFilter bind:value={search.availableTranslatedLang} label=\"Translated languages\" />",
-    "label": "Public-only translated languages code entry preserves the native selector when disabled"
+    "label": "Public-only translated languages code entry preserves the native selector when disabled",
+    "composed_before": true
   },
   {
     "path": "src/lib/components/MangaSearchFilter.svelte",
     "sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
     "count": 1,
-    "before": "\t\t\t<Combobox.Root type=\"multiple\" bind:value={search.lang}>\r\n\t\t\t\t<Combobox.Trigger class=\"flex w-0 min-w-50 flex-auto border-none\">\r\n\t\t\t\t\t{#if search.lang?.length}\r\n\t\t\t\t\t\t<span class=\"flex w-0 flex-auto flex-nowrap items-center gap-1 overflow-hidden text-left\">\r\n\t\t\t\t\t\t\t{#if search.lang.length > 1}\r\n\t\t\t\t\t\t\t\t{#each search.lang as code}\r\n\t\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(code)}.svg\"\r\n\t\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(code)}\r\n\t\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{/each}\r\n\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(search.lang[0])}.svg\"\r\n\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(search.lang[0])}\r\n\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{Locale.toLanguage(search.lang[0])}\r\n\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t<strong class=\"shrink-0 font-medium text-green-600\">+{search.lang.length}</strong>\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tOriginal Languages\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</Combobox.Trigger>\r\n\t\t\t\t<Combobox.Content side=\"bottom\">\r\n\t\t\t\t\t{#each Object.entries(Locale.Languages) as [key, value]}\r\n\t\t\t\t\t\t<Combobox.Item value={key}>\r\n\t\t\t\t\t\t\t<span class=\"size-5 shrink-0\">\r\n\t\t\t\t\t\t\t\t<ImageLoader class=\"size-5\" src=\"/images/flags/{Locale.to3166(key)}.svg\" alt={value} />\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t{value}\r\n\t\t\t\t\t\t</Combobox.Item>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Combobox.Content>\r\n\t\t\t</Combobox.Root>",
+    "before": "\t\t\t<Combobox.Root type=\"multiple\" bind:value={search.lang}>\r\n\t\t\t\t<Combobox.Trigger class=\"flex w-0 min-w-50 flex-auto border-none\">\r\n\t\t\t\t\t{#if search.lang?.length}\r\n\t\t\t\t\t\t<span class=\"flex w-0 flex-auto flex-nowrap items-center gap-1 overflow-hidden text-left\">\r\n\t\t\t\t\t\t\t{#if search.lang.length > 1}\r\n\t\t\t\t\t\t\t\t{#each search.lang as code}\r\n\t\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(code)}.svg\"\r\n\t\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(code)}\r\n\t\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{/each}\r\n\t\t\t\t\t\t\t{:else}\r\n\t\t\t\t\t\t\t\t<ImageLoader\r\n\t\t\t\t\t\t\t\t\tclass=\"size-5 shrink-0\"\r\n\t\t\t\t\t\t\t\t\tsrc=\"/images/flags/{Locale.to3166(search.lang[0])}.svg\"\r\n\t\t\t\t\t\t\t\t\talt={Locale.toLanguage(search.lang[0])}\r\n\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t{Locale.toLanguage(search.lang[0])}\r\n\t\t\t\t\t\t\t{/if}\r\n\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t<strong class=\"shrink-0 font-medium text-green-600\">{search.lang.length} selected</strong>\r\n\t\t\t\t\t{:else}\r\n\t\t\t\t\t\tOriginal Languages\r\n\t\t\t\t\t{/if}\r\n\t\t\t\t</Combobox.Trigger>\r\n\t\t\t\t<Combobox.Content side=\"bottom\">\r\n\t\t\t\t\t{#each Object.entries(Locale.Languages) as [key, value]}\r\n\t\t\t\t\t\t<Combobox.Item value={key}>\r\n\t\t\t\t\t\t\t<span class=\"size-5 shrink-0\">\r\n\t\t\t\t\t\t\t\t<ImageLoader class=\"size-5\" src=\"/images/flags/{Locale.to3166(key)}.svg\" alt={value} />\r\n\t\t\t\t\t\t\t</span>\r\n\t\t\t\t\t\t\t{value}\r\n\t\t\t\t\t\t</Combobox.Item>\r\n\t\t\t\t\t{/each}\r\n\t\t\t\t</Combobox.Content>\r\n\t\t\t</Combobox.Root>",
     "after": "\t\t\t<PublicLanguageFilter bind:value={search.lang} label=\"Original languages\" />\r\n\t\t\t<PublicLanguageFilter bind:value={search.langx} label=\"Excluded original languages\" />",
-    "label": "Public-only original languages code entry preserves the native selector when disabled"
+    "label": "Public-only original languages code entry preserves the native selector when disabled",
+    "composed_before": true
   },
   {
     "path": "src/lib/components/ChapterListFilter.svelte",
@@ -978,5 +981,54 @@
     "before": "\t\t<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>",
     "after": "{#if chapter.relationships.thread}\t\t<a\r\n\t\t\tclass=\"hover:text-accent-foreground relative flex shrink-0 items-center gap-1.5\"\r\n\t\t\thref=\"/forums/threads/{chapter.relationships.thread.id}\"\r\n\t\t\ttitle=\"Go to comments\"\r\n\t\t>\r\n\t\t\t<MessagesSquareIcon class=\"shrink-0\" size=\"16\" />\r\n\t\t\t{#if chapter.relationships.thread.relationships.stats.replies}\r\n\t\t\t\t{chapter.relationships.thread.relationships.stats.replies.short()}\r\n\t\t\t{/if}\r\n\t\t</a>{/if}",
     "approved_public_availability_exception": "actual_native_forum_context_only"
+  },
+  {
+    "path": "src/lib/components/ChapterListEntry.svelte",
+    "sha256": "cb8701ad0a233eb4ddea9940c9ca2c11cec221d847ee547f229fe6474ff30c4c",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport FeedCommentsLink from \"$publicApi/FeedCommentsLink.svelte\";",
+    "label": "Feed comments link uses only proven chapter context or known parent title"
+  },
+  {
+    "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+    "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+    "count": 1,
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport FeedCommentsLink from \"$publicApi/FeedCommentsLink.svelte\";",
+    "label": "Feed comments link uses only proven chapter context or known parent title"
+  },
+  {
+    "path": "src/routes/(app)/users/+page.svelte",
+    "sha256": "9cadc0f327f61a238358ae34e69a5d6a44623f3c8461d5f9a97522408adf5e2a",
+    "count": 1,
+    "before": "\timport { StatusCodes } from \"http-status-codes\";",
+    "after": "\timport { StatusCodes } from \"http-status-codes\";\r\n\timport { Session } from \"$lib/stores\";\r\n\timport { onDestroy } from \"svelte\";",
+    "label": "ordinary directory searches capture normal account lifecycle"
+  },
+  {
+    "path": "src/routes/(app)/users/+page.svelte",
+    "sha256": "9cadc0f327f61a238358ae34e69a5d6a44623f3c8461d5f9a97522408adf5e2a",
+    "count": 1,
+    "before": "\tconst onSearch = async () => {\r\n\t\tconst { href } = window.location;",
+    "after": "\tlet directoryRequest = 0, directoryClosed = false;\r\n\tonDestroy(() => { directoryClosed = true; directoryRequest++; });\r\n\tconst onSearch = async () => {\r\n\t\tconst { href } = window.location;\r\n\t\tconst session = $Session, request = ++directoryRequest;\r\n\t\tfeed = undefined;\r\n\t\tif (!session?.identity?.id) return;",
+    "label": "ordinary directory rejects stale or anonymous request owners"
+  },
+  {
+    "path": "src/routes/(app)/users/+page.svelte",
+    "sha256": "9cadc0f327f61a238358ae34e69a5d6a44623f3c8461d5f9a97522408adf5e2a",
+    "count": 1,
+    "before": "\t\tif (window.location.href !== href) {",
+    "after": "\t\tif (directoryClosed || request !== directoryRequest || session !== $Session || window.location.href !== href) {",
+    "label": "ordinary directory drops replaced account and superseded results synchronously"
+  },
+  {
+    "path": "src/lib/components/UserSearch.svelte",
+    "sha256": "d89d59b462e22379cd4556cc11cbe1461984fc899764ba696fcf5de9a86e4f76",
+    "count": 1,
+    "before": "</script>\r\n\r\n{#if error}",
+    "after": "</script>\r\n\r\n<AccountActionGate onready={() => {}} />\r\n{#if error}",
+    "label": "ordinary directory offers normal account continuation without key setup",
+    "approved_public_feature_exception": "public_uuid_native_directory_account_gate"
   }
 ]

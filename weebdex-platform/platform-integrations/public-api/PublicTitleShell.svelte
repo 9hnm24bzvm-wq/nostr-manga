@@ -1,7 +1,7 @@
 <script lang="ts">
  import type { Snippet } from 'svelte';
- // Build-local only for public title create/edit. Its signed loader/editor checks the selected
- // signer/account; native cookie flags never become public signing authority.
+ // Ordinary title creation and editing own their explicit native account check.
+ // This layout never grants authority or initializes a separate signing identity.
  let {children}:{children?:Snippet;isAllowed?:boolean}=$props();
 </script>
 {@render children?.()}

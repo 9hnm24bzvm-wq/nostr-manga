@@ -21,3 +21,25 @@ test('behavioral frozen-old-source control rejects legacy user and loses existin
 test('cancellation during namespace lookup never dispatches a legacy request',async()=>{let release;const calls=[],namespaceWait=new Promise(resolve=>release=resolve),client=new current.RetainedCatalogueClient(new current.PublicApiClient(async request=>{calls.push(request);throw Error('Unsent expected');}),()=>namespaceWait),controller=new AbortController(),pending=client.read('user.get',{id:legacy,signal:controller.signal});await Promise.resolve();controller.abort();release(namespace);await assert.rejects(()=>pending,error=>error.status===499);assert.equal(calls.length,0);});
 
 test('a mapped native legacy identity cannot be silently replaced by a different user or publisher profile',async()=>{for(const replacement of [resource(other),resource(id,'protocol_publisher')]){const f=fixture({transform:(response,request)=>request.path==='/user/'+id?{...response,body:{...response.body,data:replacement}}:response});await assert.rejects(()=>f.client.read('user.get',{id:legacy}),error=>error.status===409);assert.equal(f.calls.filter(row=>row.path==='/nostr/native-forum/contexts').length,0);}});
+
+test('fresh native RFCv4 identity keeps its canonical My Profile route and never enters legacy resolution',async()=>{
+ const fresh='154965c1-6a5d-4e15-9a87-b783db928ba5',calls=[];
+ // The unchanged server allocates RFCv4 account IDs and preserves them as the
+ // canonical public user ID. This source check is not a substitute for HTTP QA.
+ const crypto=fs.readFileSync(path.join(root,'backend/src/domains/auth/crypto.rs'),'utf8');
+ assert.match(crypto,/bytes\[6\] = \(bytes\[6\] & 0x0f\) \| 0x40/);
+ assert.match(crypto,/bytes\[8\] = \(bytes\[8\] & 0x3f\) \| 0x80/);
+ const mapping=fs.readFileSync(path.join(root,'backend/migrations/0089_public_resource_ids.sql'),'utf8');
+ assert.match(mapping,/IF resource_kind IN \('user','client'\) AND resource_native ~ '[^']*4\[0-9a-f\][^']*' THEN\s+alias := resource_native::UUID; alias_origin := 'account';/);
+ const client=new current.RetainedCatalogueClient(new current.PublicApiClient(async request=>{
+  calls.push(request.path);
+  if(request.path==='/user/'+fresh)return {status:200,body:{result:'ok',response:'entity',data:resource(fresh)}};
+  if(request.path==='/nostr/native-forum/contexts')return {status:200,body:{result:'ok',data:[{kind:'user',id:fresh,thread:null}],unavailable:[]}};
+  assert.fail('Fresh canonical profile must not resolve a legacy ID or select account authority');
+ }),()=>{assert.fail('Fresh profile must not request a legacy namespace');});
+ const response=await client.read('user.get',{id:fresh});
+ assert.equal(response.body.id,fresh);assert.equal(response.body.public_account_follow_available,true);
+ assert.deepEqual(plain(response.body.public_profile_route),{requestedId:fresh,canonicalId:fresh});
+ assert.equal(current.profileActionRequestedId(response.body,fresh),fresh);
+ assert.deepEqual(calls,['/user/'+fresh,'/nostr/native-forum/contexts']);
+});

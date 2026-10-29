@@ -1,4 +1,4 @@
-import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
+import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 import { restoreUploadFinalization } from './upload-finalization-source-association.mjs';
 // Finite actual-composition/source-extracted locator seams only. No browser,
 // Svelte runtime, signer, HTTP, database, dependency install or service is used.

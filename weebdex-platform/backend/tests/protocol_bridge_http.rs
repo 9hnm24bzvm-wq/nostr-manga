@@ -1481,6 +1481,35 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
         .unwrap()
         .get(0);
     let peer_page = public["data"][0]["name"].as_str().unwrap();
+    // A genuinely synchronized protocol title/chapter still uses its canonical
+    // catalogue identity and persisted site discussion for ordinary readers.
+    // Neither guest reading nor context selection requires a protocol signer.
+    {
+        use weebdex_platform::public_api::{PostgresPublicIdResolver, PublicIdResolver, PublicIdTarget, ResourceKind};
+        let db = peer.state.db.client().await.unwrap();
+        let parent: String = db.query_one("SELECT manga_id FROM platform.catalog_chapters WHERE id=$1 AND protocol_event_id=$2", &[&peer_cid,&event]).await.unwrap().get(0);
+        let resolver = PostgresPublicIdResolver::new(peer.state.db.clone());
+        let mut resources = vec![];
+        let mut expected = std::collections::BTreeMap::new();
+        for (name,kind,native) in [("manga",ResourceKind::Manga,&parent),("chapter",ResourceKind::Chapter,&peer_cid)] {
+            let canonical = resolver.preferred(kind,native).await.unwrap().unwrap();
+            assert_eq!(resolver.resolve(kind,&canonical).await.unwrap().unwrap().target,PublicIdTarget::NativeResource);
+            let thread: String = db.query_one("SELECT id FROM platform.catalog_threads WHERE entity_type=$1 AND entity_id=$2", &[&name,&native]).await.unwrap().get(0);
+            resources.push(json!({"kind":name,"id":canonical}));
+            expected.insert(canonical.to_string(),thread);
+        }
+        drop(db);
+        let contexts = api(&peer.app,Method::POST,"/api/v1/nostr/native-forum/contexts",None,Some(json!({"resources":resources})),StatusCode::OK).await;
+        assert_eq!(contexts["unavailable"],json!([]));
+        assert_eq!(contexts["data"].as_array().unwrap().len(),2);
+        for row in contexts["data"].as_array().unwrap() {
+            let thread = &expected[row["id"].as_str().unwrap()];
+            assert_eq!(row["thread"]["id"],*thread);
+            assert_ne!(thread,&series_event); assert_ne!(thread,&event);
+            let replies = api(&peer.app,Method::GET,&format!("/api/thread/{thread}/replies"),None,None,StatusCode::OK).await;
+            assert!(replies["data"].is_array());
+        }
+    }
     let peer_path = format!("/data/{peer_cid}/{peer_page}");
     assert_eq!(
         send(

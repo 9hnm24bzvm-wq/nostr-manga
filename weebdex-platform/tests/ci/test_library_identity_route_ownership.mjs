@@ -97,6 +97,7 @@ function environment({ missingThread = false, scopeStatus = 'verified', publicAc
   const chapter = { id: 'Chapter001', title: 'Chapter', chapter: '1', relationships: { thread, groups: [], manga: { id: 'TitleOne01', title: 'Title', relationships: {} } } };
   const nativeComments = () => { if (missingThread) throw Error('Native comments mounted without a native thread'); return Generic(...arguments); };
   const env = {
+    Session: writable(undefined),
     Button, Input, Textarea, ProtocolIdentityPanel: Identity, LibraryManagementTools: LibraryTools, Dialog: {Root: DialogRoot, Content: Generic, Header: Generic, Title: Generic, Description: Generic}, Panel: ReaderPanel, LastPage,
     publicUuidLibraryEnabled: false, publicAccountLibraryUnavailable, localLibraryState: state, libraryIdentity: writable({ canUse: scopeStatus === 'verified' }), signerIdentity,
     message: cause => cause instanceof Error ? cause.message : String(cause),
@@ -140,7 +141,7 @@ test('production native Settings tabs own management and preserve account/client
   for (const route of ['src/routes/(app)/+layout.svelte', 'src/routes/(app)/settings/preferences/+page.svelte']) assert.doesNotMatch(compose(route), /LocalLibraryPanel|ProtocolIdentityPanel|PublicIdentitySettings/);
   const settings = compose('src/routes/(app)/settings/+layout.svelte');
   assert.match(settings, /library: \{\s*name: "Library",\s*icon: LibraryIcon\s*\}/);
-  assert.match(settings, /identity: \{\s*name: "Public identity"/);
+  assert.match(settings, /identity: \{\s*name: "Advanced"/);
   assert.match(settings, /account: \{[\s\S]*?hidden: !\$Session/); assert.match(settings, /client: \{[\s\S]*?hidden: !\$Session/);
   assert.match(settings, /<nav aria-label="Settings"/); assert.match(settings, /aria-current=\{page.url.pathname === pathname \? "page" : undefined\}/);
   const page = compose('src/routes/(app)/settings/library/+page.svelte'); assert.equal((page.match(/<LocalLibraryPanel\s*\/>/g) ?? []).length, 1);
@@ -168,8 +169,9 @@ test('real native Settings pages retain failed-scope backups without accordions 
   const identity = await render(IdentitySettings, env);
   assert.equal(identity.target.querySelectorAll('section[data-protocol-identity-panel]').length, 1);
   assert.equal(identity.target.querySelectorAll('[data-source-conversation],input').length, 0);
-  assert.equal(button(identity.target, 'Connect a different identity').disabled, false);
+  assert.equal(button(identity.target, 'Use a different identity').disabled, false);
   assert(!identity.target.textContent.includes('b'.repeat(64)));
+  const advanced=identity.target.querySelector('[data-advanced-identity]');assert.equal(advanced.open,false);advanced.querySelector('summary').click();await settle();assert.equal(advanced.open,true);
   await click(identity.target, 'Edit public profile');
   assert.equal(identity.target.querySelectorAll('[data-public-identity-tool="profile"]').length, 1);
   assert(identity.target.querySelectorAll('input').length > 0);
@@ -198,7 +200,8 @@ test('home to title A to title B to reader keeps one context and clears drafts/r
   assert.equal(view.target.querySelectorAll('[data-local-library-panel], [data-protocol-identity-panel]').length, 0);
   assert.equal(view.target.querySelectorAll('[data-source-conversation]').length, 1);
   assert.equal(calls.opened, 1); assert.deepEqual(calls.mappings, []);
-  await click(view.target, 'Signed comments'); await selectRecipient(view.target); await click(view.target, 'Load verified public conversation');
+  await click(view.target, 'Comments from other sites'); await selectRecipient(view.target); await click(view.target, 'Load verified public conversation');
+  const publishing=view.target.querySelector('[data-source-publishing]');assert.equal(publishing.open,false);publishing.querySelector('summary').click();await settle();assert.equal(publishing.open,true);
   const comment = view.target.querySelector('textarea'); comment.value = 'Title A draft'; comment.dispatchEvent(new Event('input', { bubbles: true })); await settle();
   await click(view.target, 'Review public comment'); assert.match(view.target.textContent, /Title A draft/);
   const consent = view.target.querySelector('input[type="checkbox"]'); consent.checked = true; consent.dispatchEvent(new Event('change', { bubbles: true })); await settle();
@@ -219,10 +222,10 @@ test('home to title A to title B to reader keeps one context and clears drafts/r
 test('late source read cannot attach after target navigation or disclosure dismissal', async () => {
   for (const reason of ['target', 'dismiss', 'unmount']) {
     const { env } = environment(), gate = deferred(); env.readSocial = () => gate.promise;
-    const view = await render(Controller, env); await click(view.target, 'Signed comments'); await selectRecipient(view.target);
+    const view = await render(Controller, env); await click(view.target, 'Comments from other sites'); await selectRecipient(view.target);
     button(view.target, 'Load verified public conversation').click(); await settle();
     if (reason === 'target') { view.component.navigate('manga', 'TitleTwo02'); flushSync(); }
-    else if (reason === 'dismiss') { await click(view.target, 'Signed comments'); }
+    else if (reason === 'dismiss') { await click(view.target, 'Comments from other sites'); }
     else await view.close();
     gate.resolve([{ id: 'old-result', kind: 1111, content: 'Stale source text', pubkey: 'd'.repeat(64) }]); await settle();
     assert.doesNotMatch(view.target.textContent, /Stale source text/);
@@ -276,8 +279,12 @@ for(const reason of ['Close','Escape','route-owner'])test(`closed Lists held rea
 test('current metadata read remains inspectable while routine action rows hide raw proof', async()=>{
   const {env}=environment();
   env.readMetadata=async(_relay,_owner,kind)=>({head:{id:'c'.repeat(64),projected:true},event:{id:'c'.repeat(64),kind,pubkey:'b'.repeat(64),tags:[],content:kind===0?'Saved profile content':'',created_at:1}});
-  let view=await render(IdentitySettings,env);await click(view.target,'Edit public profile');await selectRecipient(view.target);await click(view.target,'Read verified current public metadata');
+  let view=await render(IdentitySettings,env);view.target.querySelector('[data-advanced-identity] summary').click();await settle();await click(view.target,'Edit public profile');await selectRecipient(view.target);await click(view.target,'Read verified current public metadata');
   assert(!view.target.textContent.includes('Saved profile content'));await click(view.target,'Inspect current data');assert(view.target.textContent.includes('Saved profile content'));await view.close();
   env.publicActionRecords=async()=>[{event:{id:'d'.repeat(64),kind:1111,pubkey:'b'.repeat(64),tags:[],content:'Reviewed comment',created_at:1},relay:recipient,state:'prepared',message:'Saved on this device',cancelled:false}];
-  view=await render(IdentitySettings,env);await click(view.target,'Saved public actions');const card=view.target.querySelector('[data-public-action-id]');assert.equal(card.dataset.publicActionId,'d'.repeat(64));assert.match(card.textContent,/Ready to send/);assert(!card.textContent.includes('d'.repeat(64)));await click(view.target,'Inspect saved action');assert(card.textContent.includes('Reviewed comment'));assert(card.textContent.includes('d'.repeat(64)));await view.close();
+  view=await render(IdentitySettings,env);view.target.querySelector('[data-advanced-identity] summary').click();await settle();await click(view.target,'Saved public actions');const card=view.target.querySelector('[data-public-action-id]');assert.equal(card.dataset.publicActionId,'d'.repeat(64));assert.match(card.textContent,/Ready to send/);assert(!card.textContent.includes('d'.repeat(64)));await click(view.target,'Inspect saved action');assert(card.textContent.includes('Reviewed comment'));assert(card.textContent.includes('d'.repeat(64)));await view.close();
 });
+
+test('external source comments can be read without a signer, with posting kept in an explicit advanced disclosure',async()=>{const{env,calls}=environment();env.signerIdentity.set({owner:null,generation:2});const view=await render(Controller,env);try{assert.equal(view.target.querySelector('textarea'),null);assert.equal(calls.social.length,0);await click(view.target,'Comments from other sites');await selectRecipient(view.target);await click(view.target,'Load verified public conversation');assert.match(view.target.textContent,/From TitleOne01/);assert.match(view.target.textContent,/separate from the conversation above/);assert.equal(view.target.querySelector('[data-source-publishing]').open,false);assert.equal(button(view.target,'Review public comment').disabled,true);assert.equal(button(view.target,'Review public reaction').disabled,true);assert.equal(calls.reviews.length,0);await click(view.target,'Comments from other sites');assert.equal(view.target.querySelector('textarea'),null);assert.equal(calls.reviews.length,0);}finally{await view.close();}});
+
+test('advanced identity page leads with the one site account and closing its disclosure dismisses signing tools',async()=>{const {env,calls}=environment();env.Session.set({identity:{id:'Reader1234',username:'Reader',is_verified:true}});const view=await render(IdentitySettings,env);try{assert.equal(view.target.querySelector('h1').textContent,'Account');assert.ok(view.target.querySelector('a[href="/settings/account"]'));assert.ok(view.target.querySelector('a[href="/user/Reader1234"]'));assert.ok(view.target.querySelector('a[href="/auth/logout"]'));const advanced=view.target.querySelector('[data-advanced-identity]');assert.equal(advanced.open,false);await click(view.target,'Edit public profile');assert.equal(view.target.querySelector('[role="dialog"]'),null);advanced.querySelector('summary').click();await settle();await click(view.target,'Edit public profile');assert.ok(view.target.querySelector('[role="dialog"]'));advanced.querySelector('summary').click();await settle();assert.equal(view.target.querySelector('[role="dialog"]'),null);assert.equal(calls.reviews.length,0);}finally{await view.close();}});

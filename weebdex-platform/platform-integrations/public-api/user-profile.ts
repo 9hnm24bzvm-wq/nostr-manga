@@ -13,8 +13,9 @@ export interface PublicUserView {
   public_profile_readonly: true;
   public_lists_available?: true;
   public_account_follow_available?: true;
+  public_profile_route?: { requestedId: string; canonicalId: string };
 }
-declare global { interface User { public_profile_readonly?: true; public_lists_available?: true; public_account_follow_available?: true; } }
+declare global { interface User { public_profile_route?: { requestedId: string; canonicalId: string }; public_profile_readonly?: true; public_lists_available?: true; public_account_follow_available?: true; } }
 export function normalizePublicUser(input: unknown): PublicUserView {
   const row = resource(input, 'user'), attrs = row.attributes;
   if (typeof attrs.username !== 'string' || !attrs.username || attrs.username.length > 256 || !Array.isArray(attrs.roles) || attrs.roles.length > 128 || attrs.roles.some(role => typeof role !== 'string' || !role || new TextEncoder().encode(role).byteLength > 128)) throw new PublicApiContractError('Invalid public user presentation');

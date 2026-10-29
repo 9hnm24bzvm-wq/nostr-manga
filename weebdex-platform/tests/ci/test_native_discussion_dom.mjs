@@ -1,4 +1,5 @@
-// Mounted pinned Svelte route/provider components and real signed controller,
+// Explicit advanced-mode assembly mounts pinned Svelte route/provider components and real signed controller; ordinary-mode cases use the actual ordinary wrapper.
+//
 // resolver, sanitizer and typography. Native cookie UI and reader chrome are
 // explicit stand-ins. No browser, real signer, HTTP, DB or deployment acceptance.
 import {createHash} from 'node:crypto';
@@ -63,7 +64,8 @@ const NativeProvider=await compiled('NativeProvider',composed('src/lib/component
 const integration=name=>fs.readFileSync(path.join(root,'platform-integrations',name),'utf8');
 const UnavailableContext=await compiled('UnavailableContext',integration('public-api/native-forum/UnavailableContext.svelte'));
 const Provider=await compiled('Provider',integration('public-api/native-forum/Provider.svelte'));
-const Discussion=await compiled('Discussion',integration('public-api/native-forum/Comments.svelte'));
+const Discussion=await compiled('Discussion',integration('public-api/native-forum/AdvancedComments.svelte'));
+const OrdinaryDiscussion=await compiled('OrdinaryDiscussion',integration('public-api/native-forum/Comments.svelte'));
 // Exact pre-change wrapper, pinned here rather than rewriting a historical baseline.
 const historicalWrapper=String.raw`<script lang="ts">
  import {Comments} from '$lib/components/comments';
@@ -142,7 +144,7 @@ async function ui(options={}){
   './context':contextModule,'./reader':{readNativeDiscussionTarget:readTarget},
   './signed-client':{createSignedNativeDiscussion:(kind,target,thread,check,_deps,signal)=>signedClient.createSignedNativeDiscussion(kind,target,thread,check,f.deps,signal)},
   './SignedDiscussion.svelte':{default:SignedDiscussion},'./UnavailableContext.svelte':{default:UnavailableContext},
-  '$publicApi/native-forum':{Provider,Comments:options.historical?HistoricalDiscussion:Discussion},'../public-api/native-forum':{Provider,Comments:options.historical?HistoricalDiscussion:Discussion},
+  '$publicApi/native-forum':{Provider,Comments:options.historical?HistoricalDiscussion:options.ordinary?OrdinaryDiscussion:Discussion},'../public-api/native-forum':{Provider,Comments:options.historical?HistoricalDiscussion:options.ordinary?OrdinaryDiscussion:Discussion},
   '../public-api/library-staging':{publicUuidLibraryEnabled:options.enabled!==false},
   './ProtocolIdentityPanel.svelte':{default:Empty},'$localLibrary/ProtocolIdentityPanel.svelte':{default:Empty},
   '$env/static/public':{PUBLIC_SITE_NAME:'Synthetic catalogue'},
@@ -248,3 +250,5 @@ for(const mode of ['uncertain','cancel'])test('mounted '+mode+' native report st
  }finally{gate.release();await f.dispose();}
 });
 test('delayed native report reasons discard navigation and unmount without a write',async()=>{const gate=deferred(),f=await ui({permissions:['report.create'],signedHandler:async request=>{if(request.url.includes('/reports/context')){await gate.promise;return reportResponse(request);}}});try{await f.signed();button(f.host,'Report discussion').click();await settle();const request=f.signedCalls.at(-1);f.env.setLocation('https://catalog.example/title/'+id+'?page=2');await settle();assert.equal(request.signal.aborted,true);gate.release();await settle();assert.equal(f.host.querySelector('[aria-label="Native discussion report"]'),null);assert.equal(posts(f).length,0);}finally{gate.release();await f.dispose();}});
+
+for(const surface of ['manga','chapter','group','forum'])test('ordinary '+surface+' comments open immediately with the regular account, without signer activity',async()=>{const f=await ui({surface,ordinary:true});try{assert.ok(f.host.querySelector('[data-browser-comments]'));assert.equal(f.env.browserMounts,1);assert.equal(f.host.querySelector('[aria-label="Discussion account"]'),null);assert.equal(f.host.querySelector('[data-identity-gate]'),null);assert.equal(f.signedCalls.length,0);assert.equal(f.contextCalls.length,0);assert.equal(f.env.nativeWrites.length,0);await click(f.host,'Browser comment action');assert.deepEqual(f.env.nativeWrites,[{account:'BrowserB',operation:'create'}]);assert.equal(f.signedCalls.length,0);}finally{await f.dispose();}});

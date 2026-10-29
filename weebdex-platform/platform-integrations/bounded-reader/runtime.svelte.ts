@@ -9,31 +9,36 @@ import { nativeAuthority, captureNativeAuthority } from '../frontend-behavior/mu
 import { captureNavigationEpoch } from '../frontend-behavior/navigation-authority';
 import { navigateReaderLastPage } from '../frontend-behavior/reader-navigation';
 import { BoundedReaderController, type CurrentIntent } from './controller';
-import { readerFilters, createReaderClient, type ReaderIdentity, type ReaderBudget } from './client';
+import { readerFilters, createReaderClient, ReaderResponseCancelled, type ReaderIdentity, type ReaderBudget } from './client';
 import { ReaderIdentityChanged } from './contract';
 import { readerEndpoint, identityChanged } from './endpoint';
 import { localHistoryAccess } from './history';
 import { createNativeHistoryAccess } from './native-history';
 import { createNativeContinueAccess } from './native-continue';
+import { createAccountReaderAccess } from './account-reader';
 import { titleReaderFilters } from './title-query';
 const endpoint = () => readerEndpoint(publicUuidLibraryEnabled, PUBLIC_API_URL, typeof window === 'undefined' ? 'https://reader.invalid/' : window.location.href);
 // One configured-source transport owner survives remount. Forum defaults are untouched.
 const client = createReaderClient({ origin: () => endpoint().origin }, endpoint);
-const nativeHistory = createNativeHistoryAccess(endpoint);
-const nativeContinue = createNativeContinueAccess(endpoint);
+const legacyHistory = createNativeHistoryAccess(endpoint);
+const legacyContinue = createNativeContinueAccess(endpoint);
+const accountReader = createAccountReaderAccess(endpoint);
+const nativeHistory = (manga: string, identity: ReaderIdentity | undefined) => publicUuidLibraryEnabled ? accountReader(manga, identity).history : legacyHistory(manga, identity);
+const nativeContinue = (manga: string, identity: ReaderIdentity | undefined) => publicUuidLibraryEnabled ? accountReader(manga, identity).continue : legacyContinue(manga, identity);
 // One-entry public identity handoff serializes simultaneous title/badge mounts.
 // It owns no transport slot: the original client and initiating budget still own
 // the request and unsettled cleanup. Each waiter retains its own cancellation,
 // authority checks, deadline and conservative request/byte accounting.
-let identityHandoff: { key: string; promise: Promise<{ identity: ReaderIdentity; bytes: number }> } | undefined;
-export async function verifyReaderIdentity(budget: ReaderBudget): Promise<ReaderIdentity> {
+let identityHandoff: { key: string; budget: ReaderBudget; promise: Promise<{ identity: ReaderIdentity; bytes: number }> } | undefined;
+export function verifyReaderIdentity(budget: ReaderBudget): Promise<ReaderIdentity> { return verifyIdentityAttempt(budget, true); }
+async function verifyIdentityAttempt(budget: ReaderBudget, recoverCancelledOwner: boolean): Promise<ReaderIdentity> {
   budget.check();
   const key = JSON.stringify([endpoint(), captureNavigationEpoch(), readerLibrarySource().observedCatalogue]);
   let handoff = identityHandoff; const initiator = !handoff || handoff.key !== key;
   if (initiator) {
     const initialBytes = budget.bytes;
     const promise = client.verifyIdentity(budget).then(identity => { budget.check(); return { identity, bytes: budget.bytes - initialBytes }; });
-    handoff = identityHandoff = { key, promise };
+    handoff = identityHandoff = { key, budget, promise };
     const clear = () => { if (identityHandoff === handoff) identityHandoff = undefined; };
     promise.then(clear, clear);
   } else budget.request();
@@ -46,6 +51,21 @@ export async function verifyReaderIdentity(budget: ReaderBudget): Promise<Reader
     if (key !== JSON.stringify([endpoint(), captureNavigationEpoch(), readerLibrarySource().observedCatalogue])) throw Error('Catalogue identity admission changed while waiting.');
     if (!initiator) budget.consume(value.bytes);
     return value.identity;
+  } catch (error) {
+    // A different consumer owns the shared request. Its cancellation must not
+    // permanently poison a still-current waiter (e.g. title/account hydration
+    // while chapter badges mount). The promise rejects only after owned cleanup
+    // settles. Only its explicit cancellation error qualifies: known HTTP/JSON
+    // failures and unconfirmed cleanup must never bypass that slot.
+    // Admit at most one fresh read, with this waiter's original budget/deadline;
+    // never retry its own cancellation, an ordinary failure or changed context.
+    if (!recoverCancelledOwner || initiator || !handoff!.budget.signal.aborted || !(error instanceof ReaderResponseCancelled)) throw error;
+    budget.check();
+    if (key !== JSON.stringify([endpoint(), captureNavigationEpoch(), readerLibrarySource().observedCatalogue])) throw error;
+    // Failed shared discovery may have consumed a partial response. Charge its
+    // full identity ceiling before recovery; no discarded bytes become free.
+    budget.consume(65536);
+    return verifyIdentityAttempt(budget, false);
   } finally { budget.signal.removeEventListener('abort', cancel); }
 }
 export const readerTransport = Object.freeze({ endpoint, verifyIdentity: verifyReaderIdentity, nativeHistory });
@@ -66,8 +86,9 @@ export function createBoundedReader(options: { manga: () => string; current?: ()
       nativeContinue: nativeContinue(options.manga(), scope),
       history: history.status === 'unavailable' || history.status === 'pending' || history.status === 'available-native' || matchedHistory ? history : { ...history, status: 'incomplete' as const, reason: 'Device history does not have the verified reader catalogue scope. No account/device or catalogue fallback was made.' } };
   };
-  const controller = new BoundedReaderController(context, async (row, lastPage) => {
-    const target = resolve(`/chapter/${encodeURIComponent(row.id)}/1`);
+  const controller = new BoundedReaderController(context, async (row, lastPage, pageNumber = 1) => {
+    if (!Number.isSafeInteger(pageNumber) || pageNumber < 1) throw Error('Invalid saved page destination');
+    const target = resolve(`/chapter/${encodeURIComponent(row.id)}/${pageNumber}`);
     if (lastPage) await navigateReaderLastPage(row.id, target); else await goto(target);
   }, async (destination, request, budget) => {
     if (catalogueChanged) throw new ReaderIdentityChanged('The catalogue namespace or service identity changed. Reload this page before navigating; saved history was not reinterpreted.');

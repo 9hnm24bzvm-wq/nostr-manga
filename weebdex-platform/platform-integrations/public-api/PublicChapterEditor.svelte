@@ -2,7 +2,10 @@
   import PublicChapterPagesEditor from './PublicChapterPagesEditor.svelte';
   import { chapterMetadataPatch } from './language';
   import { onDestroy, onMount, untrack } from 'svelte';
-  import { loadUploadAccount, publicUploadOwner, type PublicUploadOwner } from './upload-client';
+  import { Session } from '$lib/stores';
+  import AccountActionGate from './AccountActionGate.svelte';
+  import {nativeAccountIssue,type NativeAccountIssue} from './native-account-scope';
+  import { loadUploadAccount, publicUploadOwner, type PublicUploadOwner } from './native-upload-client';
   import { normalizeChapter } from './normalize';
   import { publicCatalogueRead } from './site-client';
   import type {ChapterEditAccess} from './chapter-access';
@@ -16,13 +19,18 @@
   let owner = $state.raw<PublicUploadOwner>(), pagesLocked = $state(true);
   let ready = $state(false), busy = $state(false), pending = $state(false), removed = $state(false), removalChoice = $state<'request-review' | 'approve-hide'>(), message = $state('');
   let access=$state<ChapterEditAccess>(),sourcePending=$state(false);
-  let disposed = false;
-  const current = () => { if (disposed || initial.id !== id) throw Error('The chapter editor changed. Reload the current chapter.'); };
+  let disposed = false,generation=0,capturedSession=untrack(()=>$Session),issue=$state<NativeAccountIssue>();
+  const current = () => { if (disposed || $Session!==capturedSession || initial.id !== id) throw Error('The chapter editor changed. Reload the current chapter.'); };
   onDestroy(() => { disposed = true; owner?.dispose(); });
-  onMount(() => { void (async () => {
-    try { const account = await loadUploadAccount(current); current(); owner = publicUploadOwner(() => initial.id, account, 'chapter', 'caller'); await refreshAccess(); current(); pending=owner.chapterPending();sourcePending=owner.chapterPendingPhase()==='local-review-accepted-source-unconfirmed'; ready = true; }
-    catch (error) { if (!disposed) message = error instanceof Error ? error.message : 'Select a signing identity in Settings and reload this editor.'; }
-  })(); });
+  async function initialize(){
+    if(disposed||!$Session?.identity?.id||busy)return;capturedSession=$Session;const session=capturedSession,token=generation;
+    const check=()=>{current();if(token!==generation||$Session!==session)throw Error('The chapter account changed.');};
+    busy=true;issue=undefined;
+    try{const account=await loadUploadAccount(check);check();owner=publicUploadOwner(()=>initial.id,account,'chapter','caller');await refreshAccess();check();pending=owner.chapterPending();sourcePending=false;ready=true;}
+    catch(error){if(!disposed&&token===generation){issue=nativeAccountIssue(error);message=error instanceof Error?error.message:'Your account could not be checked.';}}
+    finally{if(!disposed&&token===generation)busy=false;}
+  }
+  $effect(()=>{const session=$Session;untrack(()=>{generation++;owner?.dispose();owner=undefined;capturedSession=session;ready=false;busy=false;pending=false;removed=false;access=undefined;message='';issue=undefined;restore(captured);if(session?.identity?.id)void initialize();});});
   const metadataChanged = $derived(title !== (chapter.title ?? '') || volume !== (chapter.volume ?? '') || number !== (chapter.chapter ?? '') || language !== chapter.language || groups !== (chapter.relationships.groups ?? []).map(group => group.id).join(', '));
   const canUpdate = $derived(access?.canUpdate===true);
   const canClaim = $derived(access?.canClaim===true);
@@ -32,7 +40,7 @@
   function restore(value: Chapter) { chapter = value; title = value.title ?? ''; volume = value.volume ?? ''; number = value.chapter ?? ''; language = value.language; groups = (value.relationships.groups ?? []).map(group => group.id).join(', '); }
   async function command(action: 'update' | 'claim' | 'remove', removalMode?: 'request-review' | 'approve-hide') {
     if (!owner || !ready || busy || pagesLocked || pending || removed || action === 'remove' && !removalMode) return;
-    busy = true; message = ''; removalChoice = undefined;
+    const operationOwner=owner,token=generation;busy = true; message = ''; removalChoice = undefined;
     try {
       await refreshAccess();owner.assert();current();
       if(action==='update'?!canUpdate:action==='claim'?!canClaim:removalMode==='approve-hide'?!approvesHide:!canRemove){message=message||'The current account is not eligible for this chapter action.';return;}
@@ -41,7 +49,7 @@
       owner.assert(); current();
       if (response.status >= 400) { const errors = record(response.body).errors; throw Error(Array.isArray(errors) && typeof errors[0]?.detail === 'string' ? errors[0].detail : `Chapter operation refused (HTTP ${response.status})`); }
       if (action === 'remove') {
-        if (response.status === 202 && removalMode === 'request-review') { const receipt = record(response.body); message = `Removal request ${receipt.requestId} is awaiting instance moderator review. The chapter remains visible until approval. Original source request status: ${receipt.sourceDeletionStatus ?? 'unconfirmed'}.`; }
+        if (response.status === 202 && removalMode === 'request-review') { const receipt = record(response.body); message = `Removal request ${receipt.requestId} is awaiting instance moderator review. The chapter remains visible until approval. No original source deletion was requested.`; }
         else if (response.status === 204 && removalMode === 'approve-hide') { removed = true; message = 'A moderator approved hiding this chapter on this instance. Original source deletion and peer copies have separate policy.'; }
         else throw Error('Chapter removal outcome is unconfirmed.');
       } else {
@@ -52,22 +60,23 @@
         message = action === 'claim' ? 'Local catalogue ownership updated. Original signing authority is unchanged.' : 'Instance chapter metadata updated. Original signed metadata and image pages are unchanged.';
       }
     } catch (error) {
-      if (!disposed) { message = error instanceof Error ? error.message : 'Chapter operation failed.'; }
-    } finally { if (!disposed) {pending=owner.chapterPending();sourcePending=owner.chapterPendingPhase()==='local-review-accepted-source-unconfirmed';busy = false;} }
+      if (!disposed&&token===generation&&owner===operationOwner) { message = error instanceof Error ? error.message : 'Chapter operation failed.'; }
+    } finally { if (!disposed&&token===generation&&owner===operationOwner) {pending=owner.chapterPending();sourcePending=owner.chapterPendingPhase()==='local-review-accepted-source-unconfirmed';busy = false;} }
   }
   async function reload() {
     if (!owner || busy || pagesLocked || removed) return;
-    busy = true;
-    try { const response = await publicCatalogueRead<Chapter>('chapter.get', { id }); owner.assert(); current(); if (response.status !== 200 || !response.body || response.body.id !== id) throw Error('Current chapter is unavailable.'); restore(response.body); pending=owner.chapterPending();sourcePending=owner.chapterPendingPhase()==='local-review-accepted-source-unconfirmed'; await refreshAccess(); if(access)message = pending?'Current chapter reloaded. Its unconfirmed signed command remains fenced; detail is not a command receipt. No mutation was replayed.':'Current chapter reloaded. No mutation was replayed.'; }
-    catch (error) { if (!disposed) message = error instanceof Error ? error.message : 'Could not reload this chapter.'; }
-    finally { if (!disposed) busy = false; }
+    const operationOwner=owner,token=generation;busy = true;
+    try { const response = await publicCatalogueRead<Chapter>('chapter.get', { id }); owner.assert(); current(); if (response.status !== 200 || !response.body || response.body.id !== id) throw Error('Current chapter is unavailable.'); restore(response.body); pending=owner.chapterPending();sourcePending=owner.chapterPendingPhase()==='local-review-accepted-source-unconfirmed'; await refreshAccess(); if(access)message = pending?'Current chapter reloaded. Its unconfirmed command remains fenced; detail is not a command receipt. No mutation was replayed.':'Current chapter reloaded. No mutation was replayed.'; }
+    catch (error) { if (!disposed&&token===generation&&owner===operationOwner) message = error instanceof Error ? error.message : 'Could not reload this chapter.'; }
+    finally { if (!disposed&&token===generation&&owner===operationOwner) busy = false; }
   }
 </script>
 <section class="mx-auto max-w-270 space-y-4 p-5">
   <h2 class="text-xl font-medium">Edit chapter</h2>
   <p>Changes apply to this site. Original publications and their pages cannot be changed. Where page editing is available, prepare your changes privately below.</p>
   {#if message}<p role="status" class="rounded border p-3">{message}</p>{/if}
-  {#if !ready}<p>Select a signing identity in Settings and open this page again if account authorization is required.</p>{/if}
+  <AccountActionGate {issue} onready={initialize} />
+  {#if !ready&&$Session?.identity?.id}<button type="button" class="rounded border px-3 py-2" disabled={busy} onclick={initialize}>Check my access again</button>{/if}
   {#if sourcePending}<p>Your review request was accepted here, but its delivery to the original publisher is unconfirmed. Do not submit it again. Further changes are disabled; reloading cannot confirm delivery.</p>{:else if pending}<p>An earlier change could not be confirmed. Do not repeat it. Editing stays disabled even after reloading; contact support to check the result.</p>{/if}
   {#if ready&&!access}<p>Chapter eligibility could not be verified. Reload the current chapter before changing it.</p>{/if}
   {#if access&&!access.claimFactsAvailable}<p>We could not verify whether you can claim this chapter. Your access has not changed.</p>{/if}
@@ -79,7 +88,7 @@
       <label class="block">Language<input class="block w-full rounded border p-2" bind:value={language} /></label>
       <p class="text-sm">Use a language code, such as en for English or pt-br for Brazilian Portuguese. You can leave an existing value unchanged.</p>
       <label class="block">Group IDs, separated by commas<input class="block w-full rounded border p-2" bind:value={groups} /></label>
-      <button type="submit" class="rounded border px-4 py-2">Save instance metadata</button>
+      <button type="submit" class="rounded border px-4 py-2">Save changes</button>
     </fieldset>
   </form>
   <div class="flex flex-wrap gap-3">

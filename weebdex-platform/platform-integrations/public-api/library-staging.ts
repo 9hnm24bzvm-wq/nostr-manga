@@ -1,9 +1,10 @@
-// Compatible anonymous UUID device commands now own scope/owner/CAS admission.
-// Keep these old overlay names stable; account-cookie writes remain separate.
+// Guest UUID storage and ordinary cookie-account library are independent.
+// Native private account adapters own expected-account/revision authorization;
+// choosing account mode never copies or publishes guest records.
 import {PUBLIC_MANGADEX_CATALOGUE} from '$env/static/public';
 import {HTTPError} from '$lib/HTTP';
 export const publicUuidLibraryEnabled=PUBLIC_MANGADEX_CATALOGUE==='1';
-export const publicAccountLibraryUnavailable=publicUuidLibraryEnabled;
+export const publicAccountLibraryUnavailable=false;
 export const cataloguePreviewLibraryUnavailable=false;
 export const CATALOGUE_PREVIEW_LIBRARY_FENCE='Saved-library changes need compatible catalogue commands.';
 export function assertCataloguePreviewLibraryReady(){}

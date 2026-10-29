@@ -8,9 +8,9 @@ use std::{collections::BTreeSet,time::Duration};
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields,rename_all="camelCase")]
-struct Payload {settings:PreferencesPatch,updated_at:Option<String>,expected_account_id:Option<PublicUuid>,template:Option<PublicUuid>}
+pub(super) struct Payload {pub(super) settings:PreferencesPatch,pub(super) updated_at:Option<String>,pub(super) expected_account_id:Option<PublicUuid>,pub(super) template:Option<PublicUuid>}
 
-fn request_shape(value:&Value)->PublicApiResult<()> {
+pub(super) fn request_shape(value:&Value)->PublicApiResult<()> {
     let fields=value.as_object().ok_or_else(||PublicApiError::bad_request("Settings body must be an object"))?;
     let settings=value["settings"].as_object().ok_or_else(||PublicApiError::bad_request("settings must be an object"))?;
     if fields.values().any(Value::is_null) || settings.values().any(Value::is_null) {return Err(PublicApiError::bad_request("Settings fields cannot be null"));}
@@ -21,7 +21,7 @@ fn request_shape(value:&Value)->PublicApiResult<()> {
     Ok(())
 }
 
-fn expected_time(value:&str)->PublicApiResult<String> {
+pub(super) fn expected_time(value:&str)->PublicApiResult<String> {
     let value=value.strip_suffix('Z').or_else(||value.strip_suffix("+00:00")).unwrap_or(value);
     let (base,fraction)=value.split_once('.').unwrap_or((value,""));
     if !super::catalogue::valid_utc_datetime(base) || fraction.len()>6 || (!fraction.is_empty() && !fraction.bytes().all(|b|b.is_ascii_digit())) || value.ends_with('.') {return Err(PublicApiError::bad_request("updatedAt must be a UTC date/time from the settings preview"));}
@@ -29,7 +29,7 @@ fn expected_time(value:&str)->PublicApiResult<String> {
     while fraction.len()>3 && fraction.ends_with('0') {fraction.pop();}
     Ok(format!("{base}.{fraction}Z"))
 }
-async fn references(tx:&tokio_postgres::Transaction<'_>,p:&mut PreferencesPatch)->PublicApiResult<()> {
+pub(super) async fn references(tx:&tokio_postgres::Transaction<'_>,p:&mut PreferencesPatch)->PublicApiResult<()> {
     for (kind,values) in [(ResourceKind::Tag,p.tags.as_mut()),(ResourceKind::Group,p.groups.as_mut()),(ResourceKind::User,p.uploaders.as_mut())] {
         let Some(values)=values else{continue};
         if values.len()>100 {return Err(PublicApiError::bad_request("At most 100 filter references are supported"));}

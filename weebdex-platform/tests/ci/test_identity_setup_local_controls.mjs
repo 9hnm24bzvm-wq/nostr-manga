@@ -9,9 +9,9 @@ import test from 'node:test';
 import { stripTypeScriptTypes } from 'node:module';
 const source = fs.readFileSync(process.env.WEEBDEX_IDENTITY_SETUP_SOURCE ?? new URL('../../platform-integrations/local-library/IdentitySetup.svelte', import.meta.url), 'utf8');
 const script = source.match(/<script\b[^>]*>([\s\S]*?)<\/script>/)[1].replace(/^\s*import[^;]+;\s*$/gm, '');
-function fixture({ clipboardFails = false } = {}) {
+function fixture({ clipboardFails = false, connected = false, resumeSelected = false } = {}) {
   const calls = { copied: [], activated: 0, discarded: 0, network: 0, finished: 0, signers: 0 };
-  let selection = { owner: null, generation: 0, source: null };
+  let selection = connected ? { owner: 'existing-public-key', generation: 1, source: 'local' } : { owner: null, generation: 0, source: null };
   const publicKey = 'synthetic-public-key', npub = 'npub1synthetic-public-key';
   const destroys = [];
   let active = true;
@@ -19,7 +19,7 @@ function fixture({ clipboardFails = false } = {}) {
   const draft = () => ({ publicKey, npub, exportSecret() { throw Error('Private export was not requested'); }, async activate(assertCurrent) { current(); assertCurrent(); calls.activated++; selection = { owner: publicKey, generation: selection.generation + 1, source: 'local' }; }, discard() { calls.discarded++; } });
   const network = () => { calls.network++; throw Error('Service unavailable'); };
   const context = vm.createContext({ Error, Promise, Event,
-    $props: Object.assign(() => ({ onfinish() { calls.finished++; }, assertCurrent: current }), { id: () => 'local-controls' }),
+    $props: Object.assign(() => ({ onfinish() { calls.finished++; }, assertCurrent: current, resumeSelected }), { id: () => 'local-controls' }),
     $state: Object.assign(value => value, { raw: value => value }), $derived: value => value,
     onDestroy: fn => destroys.push(fn), tick: () => Promise.resolve(),
     generateLocalKeyDraft: draft, importLocalKeyDraft: draft,
@@ -60,7 +60,7 @@ test('backup step offers explicit local connection independently of instance rev
   assert.match(backup, /disabled=\{pending \|\| !backupAcknowledged\} onclick=\{connectSession\}>Use this key for this session/);
   assert.match(backup, /does not request admission or publish anything/);
   const connected = source.slice(source.indexOf("{:else if stage === 'connected'"), source.indexOf("{:else if stage === 'done'"));
-  assert.match(connected, /onclick=\{reviewInstance\}>Review joining this instance/);
+  assert.match(connected, /onclick=\{reviewInstance\}>Review joining this site/);
 });
 for (const keySource of ['generated', 'imported']) test('acknowledged ' + keySource + ' key connects locally without instance discovery', async () => {
   const f = fixture();
@@ -97,4 +97,8 @@ test('local setup cannot overwrite a newer signing selection or activate after c
     await f.api.connectSession(); assert.equal(f.selection(), before); assert.equal(f.calls.activated, 0);
     assert.equal(f.calls.network, 0); assert.notEqual(f.api.state().stage, 'connected'); f.close();
   }
+});
+
+test('advanced setup resumes the already selected identity without a second key or implicit request', async () => {
+ const f=fixture({connected:true,resumeSelected:true});assert.equal(f.api.state().stage,'connected');assert.equal(f.api.state().hasDraft,false);assert.equal(f.calls.activated,0);assert.equal(f.calls.network,0);assert.equal(f.calls.signers,0);await f.api.reviewInstance();assert.equal(f.calls.network,1);assert.equal(f.selection().owner,'existing-public-key');f.close();
 });

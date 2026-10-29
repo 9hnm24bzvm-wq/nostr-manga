@@ -1,3 +1,6 @@
+// Historical signed route regression; not current native UI qualification.
+import {historicalContributionSource,historicalContributionOverlayFactories} from './historical-contribution-ui-fixture.mjs';
+const {createFrontendOverlays,createReaderOverlays,createLocalLibraryOverlays,createPublicApiOverlays,createPublicUploadOverlays}=await historicalContributionOverlayFactories();
 // Actual composed preview loaders, route pages, and retained Manga tab markup.
 // Pinned Svelte/JSDOM execute the UI; history routing and signed transport are
 // finite stand-ins, not SvelteKit/browser/HTTP/signature/database acceptance.
@@ -9,11 +12,6 @@ import { pathToFileURL } from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { root, fixture, row, id, other, actor, entity, deferred, RequestFailure } from './report-draft-fixture.mjs';
-import { createFrontendOverlays } from '../../platform-integrations/frontend-overlays.mjs';
-import { createReaderOverlays } from '../../platform-integrations/frontend-reader-overlays.mjs';
-import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
-import { createPublicApiOverlays } from '../../platform-integrations/public-api/overlays.mjs';
-import { createPublicUploadOverlays } from '../../platform-integrations/public-api/upload-overlays.mjs';
 
 const dependencies = process.env.WEEBDEX_FRONTEND_ROOT;
 const require = createRequire(path.join(dependencies, 'package.json'));

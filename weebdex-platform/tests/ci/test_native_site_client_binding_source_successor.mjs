@@ -1,3 +1,4 @@
+import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 // Actual source-comparison helper controls. No runtime source normalization.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -5,7 +6,16 @@ import {createHash} from 'node:crypto';
 import test from 'node:test';
 import {nativeSiteClientBindingAssociationSha256,nativeSiteClientBindingStage,nativeSiteClientBindingPath,readNativeSiteClientBindingAssociation,restoreNativeSiteClientBindingSource,readNativeSourceAssociation,restoreNativeReadSource} from './reviewed-native-source-successors.mjs';
 const metadata = fs.readFileSync(new URL('../../docs/fixtures/native-site-client-binding-source-successor.json', import.meta.url));
-const physical = fs.readFileSync(new URL('../../../'+nativeSiteClientBindingPath, import.meta.url));
+const livePhysical = fs.readFileSync(new URL('../../../'+nativeSiteClientBindingPath, import.meta.url));
+// Source-only historical inputs: first undo the exact second pass, then the
+// exact published first pass where applicable. Runtime tests read live files.
+const firstReaderPaths = new Set(readReaderUxAssociation().rows.map(row => row.path));
+const secondReaderPaths = new Set(readReaderUxFixpassAssociation().rows.map(row => row.path));
+function beforeReaderUx(file, value) {
+ return firstReaderPaths.has(file) ? restoreReaderUxPredecessor(file, value)
+  : secondReaderPaths.has(file) ? restoreReaderUxFixpassPredecessor(file, value) : value;
+}
+const physical = beforeReaderUx(nativeSiteClientBindingPath, livePhysical);
 const hash = value => createHash('sha256').update(value).digest('hex');
 const data = readNativeSiteClientBindingAssociation();
 const restore = (source, bytes = metadata) => restoreNativeSiteClientBindingSource(nativeSiteClientBindingStage,nativeSiteClientBindingPath,source,bytes);
@@ -54,10 +64,11 @@ test('omitted, repeated and reversed comparison stages fail through actual helpe
  assert.throws(()=>restore(previous),'Binding layer cannot follow the historical native result');
  assert.throws(()=>restoreNativeReadSource(nativeSiteClientBindingPath,previous),'Native layer cannot be applied twice');
 });
-test('the physical current runtime retains chapterPage and is not replaced by comparison bytes',()=>{
+test('current runtime retains chapterPage while exact historical binding inputs are comparison-only',()=>{
  const previous=restore(physical),literal=data.literal_reversals[0];
  assert.equal(physical.toString().split(literal.current).length,2);assert.equal(previous.toString().split(literal.previous).length,2);
- assert.match(physical.toString(),/chapterPage:response\.body\.chapterPage/);assert.doesNotMatch(previous.toString(),/chapterPage:response\.body\.chapterPage/);
- assert.deepEqual(fs.readFileSync(new URL('../../../'+nativeSiteClientBindingPath,import.meta.url)),physical);
+ assert.match(livePhysical.toString(),/chapterPage:response\.body\.chapterPage/);assert.doesNotMatch(previous.toString(),/chapterPage:response\.body\.chapterPage/);
+ assert.deepEqual(fs.readFileSync(new URL('../../../'+nativeSiteClientBindingPath,import.meta.url)),livePhysical);
+ assert.throws(()=>beforeReaderUx(nativeSiteClientBindingPath,Buffer.concat([livePhysical,Buffer.from(' ')])));
  assert.equal(hash(physical),data.current_sha256);
 });

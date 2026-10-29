@@ -21,6 +21,8 @@ ${declaration(read('frontend/src/@types/MangaFollow.d.ts'),'MangaFollow')}
 ${declaration(actualResponse,'FeedResponse')}
 ${declaration(actualResponse,'MangaFollowFeedResponse')}
 declare function assertCataloguePreviewLibraryReady():void;
+declare const publicUuidLibraryEnabled:boolean;
+declare const uuidPattern:RegExp;
 declare function openLibrary():Promise<void>;
 declare function params(input:URLSearchParams):URLSearchParams;
 declare function captureLibraryContext():{mode:'account'|'device'};

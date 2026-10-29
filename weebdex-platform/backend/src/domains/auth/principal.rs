@@ -330,6 +330,55 @@ pub(crate) async fn require_native_library_principal_in(
     Ok(principal)
 }
 
+/// Explicit cookie-only canonical account adapters. Resolve and fence authority
+/// in the operation's transaction; never promote a signed proof, bearer, cached
+/// Session DTO or public UUID to browser authority. Native account -> session
+/// lock order agrees with password rotation and account disabling.
+pub(crate) async fn require_native_account_principal_in(
+    state: &AppState,
+    headers: &HeaderMap,
+    tx: &tokio_postgres::Transaction<'_>,
+    write: bool,
+) -> ApiResult<SessionPrincipal> {
+    for name in ["origin", "referer", "sec-fetch-site"] {
+        if headers.get_all(name).iter().count() > 1 {
+            return Err(ApiError::forbidden("Ambiguous browser request source"));
+        }
+    }
+    if headers.get("sec-fetch-site").is_some_and(|value| !value.to_str().is_ok_and(|value| matches!(value, "same-origin" | "same-site" | "none"))) {
+        return Err(ApiError::forbidden("Cross-site or invalid browser request source"));
+    }
+    let hash = crypto::digest(native_library_cookie(headers, &state.config.session_cookie_name)?);
+    let candidate = tx.query_opt("SELECT id,user_id FROM platform.sessions WHERE token_hash=$1", &[&hash])
+        .await.map_err(library_authority_error)?.ok_or_else(ApiError::unauthorized)?;
+    let session_id: String = candidate.get(0);
+    let user_id: String = candidate.get(1);
+    // Take the final write lock immediately, not a SHARE -> write upgrade.
+    let sql = if write {
+        "SELECT id,username,email,verified,roles,permissions FROM platform.users WHERE id=$1 AND NOT disabled FOR NO KEY UPDATE NOWAIT"
+    } else {
+        "SELECT id,username,email,verified,roles,permissions FROM platform.users WHERE id=$1 AND NOT disabled FOR SHARE NOWAIT"
+    };
+    let user = tx.query_opt(sql, &[&user_id]).await.map_err(library_authority_error)?
+        .ok_or_else(ApiError::unauthorized)?;
+    let session = tx.query_opt(
+        "SELECT id,GREATEST(0,EXTRACT(EPOCH FROM clock_timestamp()-authenticated_at)::BIGINT) FROM platform.sessions WHERE id=$1 AND user_id=$2 AND token_hash=$3 AND purpose='normal' AND revoked_at IS NULL AND expires_at>clock_timestamp() FOR SHARE NOWAIT",
+        &[&session_id, &user_id, &hash],
+    ).await.map_err(library_authority_error)?.ok_or_else(ApiError::unauthorized)?;
+    let principal = SessionPrincipal {
+        user_id: user.get(0), username: user.get(1), email: user.get(2), verified: user.get(3),
+        roles: serde_json::from_value(user.get(4)).map_err(|_| ApiError::unavailable())?,
+        permissions: serde_json::from_value(user.get(5)).map_err(|_| ApiError::unavailable())?,
+        session_id: session.get(0), is_api_client: false,
+        authenticated_age_seconds: session.get(1), recovery_session: false,
+    };
+    constrain_expected_account(headers, &principal)?;
+    if principal.roles.iter().any(|r| matches!(r.as_str(), "banned" | "restricted")) {
+        return Err(ApiError::forbidden("This account cannot perform that action"));
+    }
+    Ok(principal)
+}
+
 pub async fn require_library_principal(
     state: &AppState,
     headers: &HeaderMap,

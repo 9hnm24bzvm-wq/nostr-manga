@@ -1,4 +1,4 @@
-import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
+import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 // Source-extracted finalization and real observer state; fake signatures/events,
 // no browser, network, service, database, hosted execution or prior-run rewrite.
 import assert from 'node:assert/strict';

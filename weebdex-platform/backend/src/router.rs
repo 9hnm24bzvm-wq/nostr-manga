@@ -297,6 +297,7 @@ fn read_class(request: &Request) -> Class {
     let path=public.or_else(||path.strip_prefix("/api")).unwrap_or(path);
     let segments=path.split('/').filter(|s|!s.is_empty()).collect::<Vec<_>>();
     let private=path.starts_with("/user/history") || path.starts_with("/user/follows")
+        || public.is_some() && segment_prefix(path, "/account/library")
         || (public.is_some() && matches!(segments.as_slice(),["nostr","manga",_,"reading-status"] | ["nostr","user",_,"profile"]))
         || (public.is_some() && (path=="/manga/read" || path=="/manga/status"
             || matches!(segments.as_slice(),["manga",_,"read"|"status"])
@@ -587,7 +588,8 @@ fn account_closure_private(path:&str, method:&Method)->bool {
 }
 async fn response_headers(State(state): State<AppState>, request: Request, next: Next) -> Response {
     let service_worker = request.uri().path() == "/service-worker.js";
-    let native_account_reader = native_account_reader_path(original_path(&request));
+    let native_account_reader = native_account_reader_path(original_path(&request))
+        || segment_prefix(original_path(&request), "/api/v1/account");
     let closure_private=account_closure_private(original_path(&request),request.method());
     let signed_report_private = signed_native_user_report_private(original_path(&request), request.method())
         || segment_prefix(original_path(&request), "/api/v1/nostr/moderation/reports");

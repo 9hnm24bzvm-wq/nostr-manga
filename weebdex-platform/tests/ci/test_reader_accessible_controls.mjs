@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { createFrontendOverlays, frontendApprovedReaderControlExceptions } from '../../platform-integrations/frontend-overlays.mjs';
+import { createFrontendOverlays, frontendApprovedReaderControlExceptions, frontendApprovedReaderSimplicityExceptions } from '../../platform-integrations/frontend-overlays.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const frontend = path.join(root, 'frontend');
 const plugin = createFrontendOverlays(frontend);
@@ -29,7 +29,13 @@ test('reader accessibility and narrow-phone changes have exact bounded markup sc
     const patches = frontendApprovedReaderControlExceptions.filter(row => row.path === relative);
     assert.equal(patches.length, count, relative);
     const source = fs.readFileSync(path.join(frontend, relative), 'utf8');
-    const executed = transformed(relative);
+    let executed = transformed(relative);
+    // The separately pinned simplicity stage follows these original controls.
+    // Reverse only its exact declared overlapping markup, never unknown bytes.
+    for (const later of frontendApprovedReaderSimplicityExceptions.filter(row=>row.path===relative).reverse()) {
+      assert.equal(executed.split(later.after).length-1,later.count);
+      executed=executed.split(later.after).join(later.before);
+    }
     for (const patch of patches) {
       assert.equal(patch.count, 1);
       assert.equal(source.split(patch.before).length - 1, 1);

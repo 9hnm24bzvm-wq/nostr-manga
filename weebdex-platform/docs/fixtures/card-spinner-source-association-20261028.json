@@ -1,0 +1,464 @@
+{
+  "schema": "card-spinner-source-association-v1",
+  "predecessor_association_path": "weebdex-platform/docs/fixtures/reader-followup-source-association-20261028.json",
+  "predecessor_association_sha256": "a9b5812a039a91f31ad414be5f5e86ed6637c044eea6450589cd854ea9bcb6d1",
+  "scope": "Exact conditional card-spinner presentation correction and source comparison consumers. Previous55-row followup and all earlier qualifications remain immutable; no business/auth/backend or class changes. Source association does not inherit execution acceptance.",
+  "browser_executed": false,
+  "http_executed": false,
+  "rows": [
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/account-overlays.mjs",
+      "current_bytes": 7558,
+      "current_sha256": "99a677d2cbc3ad6a00db8ab4bc58eae9b76236ef66fe2999fd817fcce3c6e13d",
+      "added": false,
+      "previous_bytes": 7371,
+      "previous_sha256": "f5b7fd00dd6dfd05209b60a3db2f8195c7687ab0795e975ac9d211df3e50c945",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';\nimport {applyTitleSpinnerOutput,restoreTitleSpinnerOutput} from './title-spinner-overlays.mjs';\nimport {applyReadCompletionOutput,restoreReadCompletionOutput} from './reader-completion-overlays.mjs';\nimport {applyCardSpinnerOutput,restoreCardSpinnerOutput} from './card-spinner-overlays.mjs';\nimport {reportLifecycleManifest,applyReportLifecycleOutput,assertReportLifecycleScope} from './report-lifecycle-overlays.mjs';\nimport {profilePresentationManifest,applyProfilePresentationOutput,assertProfilePresentationScope} from './profile-presentation-overlays.mjs';\nimport {preferencesPresentationManifest,applyPreferencesPresentationOutput,assertPreferencesPresentationScope} from './preferences-presentation-overlays.mjs';\n",
+          "previous": "import fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';\nimport {applyTitleSpinnerOutput,restoreTitleSpinnerOutput} from './title-spinner-overlays.mjs';\nimport {applyReadCompletionOutput,restoreReadCompletionOutput} from './reader-completion-overlays.mjs';\nimport {reportLifecycleManifest,applyReportLifecycleOutput,assertReportLifecycleScope} from './report-lifecycle-overlays.mjs';\nimport {profilePresentationManifest,applyProfilePresentationOutput,assertProfilePresentationScope} from './profile-presentation-overlays.mjs';\nimport {preferencesPresentationManifest,applyPreferencesPresentationOutput,assertPreferencesPresentationScope} from './preferences-presentation-overlays.mjs';\n",
+          "current_sha256": "b17f821670a820d2896e97356a814ef227f2ca063f6e342e10fd282019ef5288",
+          "previous_sha256": "821aa7b65639ad4205643594bfdbf9db78f8c1f1d3a73be951563645100a4a1c"
+        },
+        {
+          "ordinal": 2,
+          "current": " if(hash(JSON.stringify(accountLibraryOverlayManifest))!=='346f878ef1ac6fa338b8c5b4fff739b0aa9d45c708739f92c47adb37d7c7785f')throw Error('Unreviewed account-library stage hashes');\n}\nexport function assertAccountLibraryOutput(input,output,relative){\n output=restoreCardSpinnerOutput(output,relative);\n output=restoreReadCompletionOutput(output,relative);\n output=restoreTitleSpinnerOutput(output,relative);\n const entry=accountLibraryOverlayManifest.find(row=>row.path===relative);if(!entry)throw Error('Unknown account-library stage target');\n",
+          "previous": " if(hash(JSON.stringify(accountLibraryOverlayManifest))!=='346f878ef1ac6fa338b8c5b4fff739b0aa9d45c708739f92c47adb37d7c7785f')throw Error('Unreviewed account-library stage hashes');\n}\nexport function assertAccountLibraryOutput(input,output,relative){\n output=restoreReadCompletionOutput(output,relative);\n output=restoreTitleSpinnerOutput(output,relative);\n const entry=accountLibraryOverlayManifest.find(row=>row.path===relative);if(!entry)throw Error('Unknown account-library stage target');\n",
+          "current_sha256": "24390885b48d463be82bbb2ee5d165f8721969dada08197cdc88c644fd2047c2",
+          "previous_sha256": "77e2d8f4863cccc7b82580952e5a1bff74943058712019c160644c72caddb218"
+        },
+        {
+          "ordinal": 3,
+          "current": "  let code=input;for(const patch of accountLibraryPatches.filter(row=>row.path===relative)){\n   if(code.split(patch.before).length-1!==patch.count)throw Error('Account-library exact anchor changed: '+patch.label);\n   code=code.split(patch.before).join(patch.after);\n  }code=applyTitleSpinnerOutput(code,relative);code=applyReadCompletionOutput(code,relative);code=applyCardSpinnerOutput(code,relative);assertAccountLibraryOutput(input,code,relative);return{code,map:null};\n }}};\n}\n",
+          "previous": "  let code=input;for(const patch of accountLibraryPatches.filter(row=>row.path===relative)){\n   if(code.split(patch.before).length-1!==patch.count)throw Error('Account-library exact anchor changed: '+patch.label);\n   code=code.split(patch.before).join(patch.after);\n  }code=applyTitleSpinnerOutput(code,relative);code=applyReadCompletionOutput(code,relative);assertAccountLibraryOutput(input,code,relative);return{code,map:null};\n }}};\n}\n",
+          "current_sha256": "12b29a36505af499800d1b50b26cc27a842f00c20607b328c733f6d17751e1f6",
+          "previous_sha256": "ff26855a8fa902ee0240a29fec6b8d05eb1bb66d643032d18face9a712213ef1"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/platform-integrations/local-library/card-spinner-overlays.mjs",
+      "current_bytes": 2492,
+      "current_sha256": "84ed5f383278e4716c994000d80bfd1ce3256210f68d1b65e362a1e55d5b4c50",
+      "added": true
+    },
+    {
+      "path": "weebdex-platform/scripts/build-frontend.mjs",
+      "current_bytes": 9445,
+      "current_sha256": "758654c6ea601c6da74b7422d2627aa33c78d91cab9f52b9c028d22c65106d14",
+      "added": false,
+      "previous_bytes": 9253,
+      "previous_sha256": "0831b22488e6e61a9ae790144e87f7512dc088febf4bebcc111ba33787149e50",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "  approved_registration_recovery_exceptions: integration.approved_registration_recovery_exceptions,\n  approved_reader_simplicity_exceptions: integration.approved_reader_simplicity_exceptions,\n  approved_discovery_copy_exceptions: integration.approved_discovery_copy_exceptions,\n  card_spinner_presentation_repairs: integration.card_spinner_presentation_repairs,\n  approved_card_spinner_presentation_exceptions: integration.approved_card_spinner_presentation_exceptions,\n  profile_presentation_repairs: integration.profile_presentation_repairs,\n  approved_profile_presentation_exceptions: integration.approved_profile_presentation_exceptions,\n  preferences_presentation_repairs: integration.preferences_presentation_repairs,\n",
+          "previous": "  approved_registration_recovery_exceptions: integration.approved_registration_recovery_exceptions,\n  approved_reader_simplicity_exceptions: integration.approved_reader_simplicity_exceptions,\n  approved_discovery_copy_exceptions: integration.approved_discovery_copy_exceptions,\n  profile_presentation_repairs: integration.profile_presentation_repairs,\n  approved_profile_presentation_exceptions: integration.approved_profile_presentation_exceptions,\n  preferences_presentation_repairs: integration.preferences_presentation_repairs,\n",
+          "current_sha256": "63302040dd76b6b3ea16408d203cfe60ea83a9780e5048a0e112d91b4b2b822e",
+          "previous_sha256": "9a8706cfa3fcd7d54b787a98261d99516b404e8566f45c4703971db76b70c357"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/scripts/prepare-frontend-integration.mjs",
+      "current_bytes": 39274,
+      "current_sha256": "d14f610b5174987b38d547749674dc579fb0149fa21356088feab3eb8b14249a",
+      "added": false,
+      "previous_bytes": 38985,
+      "previous_sha256": "8df89563cb0bbcc0866c595bb8a364ad6f93f3b0f6f89a839921274eee69304c",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import { createAccountLibraryOverlays, accountLibraryOverlayManifest, accountLibraryPatches } from '../platform-integrations/local-library/account-overlays.mjs';\nimport { titleSpinnerManifest, titleSpinnerPatches } from \"../platform-integrations/local-library/title-spinner-overlays.mjs\";\nimport { readCompletionManifest, readCompletionPatches } from \"../platform-integrations/local-library/reader-completion-overlays.mjs\";\nimport { cardSpinnerManifest, cardSpinnerPatches } from \"../platform-integrations/local-library/card-spinner-overlays.mjs\";\nimport { reportLifecycleManifest, reportLifecyclePatches } from \"../platform-integrations/local-library/report-lifecycle-overlays.mjs\";\nimport { profilePresentationManifest, profilePresentationPatches } from \"../platform-integrations/local-library/profile-presentation-overlays.mjs\";\nimport { preferencesPresentationManifest, preferencesPresentationPatches } from \"../platform-integrations/local-library/preferences-presentation-overlays.mjs\";\n",
+          "previous": "import { createAccountLibraryOverlays, accountLibraryOverlayManifest, accountLibraryPatches } from '../platform-integrations/local-library/account-overlays.mjs';\nimport { titleSpinnerManifest, titleSpinnerPatches } from \"../platform-integrations/local-library/title-spinner-overlays.mjs\";\nimport { readCompletionManifest, readCompletionPatches } from \"../platform-integrations/local-library/reader-completion-overlays.mjs\";\nimport { reportLifecycleManifest, reportLifecyclePatches } from \"../platform-integrations/local-library/report-lifecycle-overlays.mjs\";\nimport { profilePresentationManifest, profilePresentationPatches } from \"../platform-integrations/local-library/profile-presentation-overlays.mjs\";\nimport { preferencesPresentationManifest, preferencesPresentationPatches } from \"../platform-integrations/local-library/preferences-presentation-overlays.mjs\";\n",
+          "current_sha256": "2532d2eada26e3e7adf31837de9756c7f520f077cb7769679fa2995a45575cf3",
+          "previous_sha256": "896aff62c2e49dc50c6aa5b599dbdc094c4a5bae536dceaff264b2da262ec89c"
+        },
+        {
+          "ordinal": 2,
+          "current": "\tfunction inventory(directory) { for (const entry of fs.readdirSync(directory, { withFileTypes: true })) { const file = path.join(directory, entry.name); if (entry.isDirectory()) inventory(file); else if (entry.isFile()) { const bytes = fs.readFileSync(file); integrationSources.push({ path: path.relative(root, file), bytes: bytes.length, sha256: hash(bytes) }); } else throw new Error(`Nonregular integration source: ${file}`); } }\n\tinventory(path.join(root, \"platform-integrations\")); integrationSources.sort((a, b) => a.path.localeCompare(b.path));\n\tconst externalComponents = [\"bounded-reader/TitleReadingActions.svelte\", \"bounded-reader/ChapterSelector.svelte\", \"bounded-reader/EditionSelector.svelte\", \"bounded-reader/GroupPage.svelte\", \"bounded-reader/EditionPage.svelte\", \"bounded-reader/Status.svelte\", \"frontend-behavior/AccountClosure.svelte\", \"frontend-behavior/AccountOnboarding.svelte\", \"frontend-behavior/MangaEditBoundary.svelte\", \"frontend-behavior/RecoveryBoundary.svelte\", \"local-library/LocalLibraryPanel.svelte\", \"local-library/ProtocolIdentityPanel.svelte\", \"local-library/LibraryProtected.svelte\", \"local-library/LibraryRuntime.svelte\", \"local-library/MangaDiscussion.svelte\", \"local-library/LibraryManagementTools.svelte\", \"local-library/BackupReviewSummary.svelte\", \"local-library/PublicIdentitySettings.svelte\", \"local-library/IdentitySetup.svelte\", \"local-library/IdentityGate.svelte\", \"local-library/DeviceHistoryFeed.svelte\", \"local-library/DeviceTitleLibrary.svelte\", \"local-library/DeviceUpdatesFeed.svelte\", ...(publicApiGate ? [\"local-library/AccountListHeading.svelte\", \"local-library/AccountLibraryTools.svelte\", \"local-library/GuestAccountAdoption.svelte\", \"public-api/AdvancedAccountProfileEditor.svelte\", \"public-api/SessionProfileActions.svelte\", \"public-api/AccountActionGate.svelte\", \"public-api/SessionFollow.svelte\", \"public-api/FeedCommentsLink.svelte\", \"public-api/native-forum/AdvancedComments.svelte\", \"public-api/native-user-forum/AdvancedComments.svelte\", \"public-api/PublicLanguageFilter.svelte\", \"public-api/PublicTitleGroupFilter.svelte\", \"public-api/PublicTitleEditor.svelte\", \"public-api/PublicCoverEditor.svelte\", \"public-api/PublicTitleDisposition.svelte\", \"public-api/PublicRelationEditor.svelte\", \"public-api/PublicCreateGate.svelte\", \"public-api/PublicTitleShell.svelte\", \"public-api/PublicEntityPicker.svelte\", \"public-api/PublicReportForm.svelte\", \"public-api/PublicDraftRouteGate.svelte\", \"public-api/PublicDraftSearch.svelte\", \"public-api/PublicDraftFilter.svelte\", \"public-api/PublicDraftEntry.svelte\", \"public-api/AccountBlocklistEditor.svelte\", \"public-api/AccountProfileEditor.svelte\", \"public-api/NativeProfileActions.svelte\", \"public-api/SignedModeratorReports.svelte\", \"public-api/PublicEditorialTools.svelte\", \"public-api/PublicGroupClaimDialog.svelte\"] : [])].map(relative => ({ path: \"platform-integrations/\" + relative, sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations\", relative))), intentional_rendered_extension: true }));\n\tconst evidence = { card_spinner_presentation_repairs: publicApiGate ? cardSpinnerManifest : [], approved_card_spinner_presentation_exceptions: publicApiGate ? cardSpinnerPatches : [], profile_presentation_repairs: publicApiGate ? profilePresentationManifest : [], approved_profile_presentation_exceptions: publicApiGate ? profilePresentationPatches : [], preferences_presentation_repairs: publicApiGate ? preferencesPresentationManifest : [], approved_preferences_presentation_exceptions: publicApiGate ? preferencesPresentationPatches : [], report_lifecycle_repairs: publicApiGate ? reportLifecycleManifest : [], approved_report_lifecycle_exceptions: publicApiGate ? reportLifecyclePatches : [], read_completion_repairs: publicApiGate ? readCompletionManifest : [], approved_read_completion_exceptions: publicApiGate ? readCompletionPatches : [], title_spinner_presentation_repairs: publicApiGate ? titleSpinnerManifest : [], approved_title_spinner_presentation_exceptions: publicApiGate ? titleSpinnerPatches : [], account_library_repairs_qualification: \"Exact frozen account-library stage output; separately pinned title-spinner presentation and bounded read-state source-precedence successors follow it.\", native_account_upload_enabled: publicApiGate, native_account_upload_repairs: publicApiGate ? nativeUploadOverlayManifest : [], approved_native_account_upload_exceptions: publicApiGate ? nativeUploadOverlayPatches : [], public_signed_upload_qualification: \"Historical exact source stage only; a separately verified native-account successor follows it for ordinary upload screens. This field is not a claim of signer authentication in the final UI.\", account_library_enabled: publicApiGate, account_library_repairs: publicApiGate ? accountLibraryOverlayManifest : [], approved_account_library_exceptions: publicApiGate ? accountLibraryPatches : [], account_library_overlay_sha256: hash(fs.readFileSync(path.join(root, 'platform-integrations/local-library/account-overlays.mjs'))), bounded_reader_source_only: true, bounded_reader_exact_automatic_continue_parity: false, bounded_reader_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/bounded-reader/overlays.mjs\"))), bounded_reader_anchors_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/bounded-reader/anchors.json\"))), bounded_reader_repairs: boundedReaderOverlayManifest, approved_bounded_reader_extensions: boundedReaderApprovedMarkupExceptions,  public_signed_title_relations_enabled: publicApiGate, public_signed_relation_client_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/relation-client.ts\"))), public_signed_original_covers_enabled: publicApiGate, public_signed_cover_client_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/cover-client.ts\"))), public_signed_cover_multipart_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/cover-multipart.ts\"))), public_signed_title_metadata_enabled: publicApiGate, public_signed_title_client_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/title-client.ts\"))), native_account_contribution_enabled: publicApiGate, native_account_contribution_qualification: \"Ordinary title, draft, cover, editorial, chapter and upload screens use captured same-origin native-session adapters and existing permission/CAS cores. External signing is not an alternative login required by these screens. Source composition only, not browser or HTTP acceptance.\", public_signed_title_qualification: \"Preserved advanced signed client source only; final ordinary screens use separately qualified native account adapters, not these signed clients. Retained signed metadata create/edit, original-only cover upload/metadata/moderator removal, versioned instance lock/removal review, and draft review controls; versioned directional relation controls with lazy snapshot-bound byte-budgeted pages are included; legacy provider and raw/English link metadata and the separate bounded opaque officialLinks dictionary are supported; no provider identity/language/region registry is implied. This preparation is not browser or live HTTP acceptance.\", public_api_catalogue_enabled: publicApiGate, public_signed_upload_enabled: publicApiGate, public_signed_upload_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/upload-overlays.mjs\"))), public_signed_upload_anchors_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/upload-anchors.json\"))), approved_public_signed_upload_extensions: publicUploadRepairs, public_api_base: \"/api/v1\", public_api_reconstructed_unverified: true, public_api_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/overlays.mjs\"))), public_api_script_repairs: publicRepairs, approved_public_media_exceptions: publicMedia, approved_public_availability_exceptions: publicAvailability, approved_public_feature_exceptions: publicFeatures, approved_public_language_exceptions: publicLanguages, approved_public_filter_exceptions: publicFilters, anonymous_recovery_derivation: anonymousRecoveryDerivation, frontend: path.relative(root, frontend), original_files_written: false, integration_utility_sources: { method: \"build-local explicit Tailwind source declaration\", directory: \"platform-integrations\", original_stylesheet_unchanged: true }, reconstructed_routes: additions, integration_source_files: integrationSources, integration_source_inventory_sha256: hash(JSON.stringify(integrationSources)), external_component_extensions: externalComponents,\n\t\toverlay_module_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/frontend-overlays.mjs\"))),\n\t\tscript_repairs: [...frontendOverlayManifest, ...readerOverlayManifest, ...localLibraryOverlayManifest, ...publicRepairs], shared_script_repairs: frontendOverlayManifest, reader_script_repairs: readerOverlayManifest, reader_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/frontend-reader-overlays.mjs\"))), local_library_script_repairs: localLibraryOverlayManifest, local_library_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/local-library/overlays.mjs\"))),\n\t\tapproved_local_protocol_extensions: [...frontendApprovedPanelExceptions, ...localLibraryApprovedMarkupExceptions], approved_title_context_exceptions: frontendApprovedTitleContextExceptions, approved_discussion_context_exceptions: frontendApprovedDiscussionContextExceptions, approved_share_control_exceptions: frontendApprovedShareControlExceptions, approved_client_name_exceptions: frontendApprovedClientNameExceptions, approved_search_callback_exceptions: frontendApprovedSearchCallbackExceptions, approved_auth_flow_key_exceptions: frontendApprovedAuthFlowKeyExceptions, approved_create_recovery_exceptions: frontendApprovedCreateRecoveryExceptions, approved_follow_readiness_exceptions: frontendApprovedFollowReadinessExceptions, approved_registration_onboarding_exceptions: frontendApprovedRegistrationOnboardingExceptions, approved_reader_control_exceptions: frontendApprovedReaderControlExceptions, approved_reader_copy_exceptions: frontendApprovedReaderCopyExceptions, approved_read_toggle_exceptions: frontendApprovedReadToggleExceptions, approved_registration_recovery_exceptions: frontendApprovedRegistrationRecoveryExceptions, approved_reader_simplicity_exceptions: frontendApprovedReaderSimplicityExceptions, approved_discovery_copy_exceptions: frontendApprovedDiscoveryCopyExceptions, approved_history_continuation_exceptions: localLibraryApprovedHistoryContinuationExceptions, approved_title_continuation_exceptions: localLibraryApprovedTitleContinuationExceptions, approved_updates_continuation_exceptions: localLibraryApprovedUpdatesContinuationExceptions, approved_feed_pagination_exceptions: localLibraryApprovedFeedPaginationExceptions, approved_widget_error_exceptions: localLibraryApprovedWidgetErrorExceptions, approved_reader_selector_exceptions: localLibraryApprovedReaderSelectorExceptions, approved_recommendation_exceptions: localLibraryApprovedRecommendationExceptions, approved_search_pagination_exceptions: localLibraryApprovedSearchPaginationExceptions, approved_cover_read_exceptions: localLibraryApprovedCoverReadExceptions, approved_public_carousel_exceptions: localLibraryApprovedPublicCarouselExceptions, approved_upload_recovery_exceptions: frontendApprovedUploadRecoveryExceptions, approved_recovery_boundary_exceptions: frontendApprovedRecoveryBoundaryExceptions, approved_event_handler_exceptions: frontendApprovedEventHandlerExceptions, transformed_sources: transformed,\n",
+          "previous": "\tfunction inventory(directory) { for (const entry of fs.readdirSync(directory, { withFileTypes: true })) { const file = path.join(directory, entry.name); if (entry.isDirectory()) inventory(file); else if (entry.isFile()) { const bytes = fs.readFileSync(file); integrationSources.push({ path: path.relative(root, file), bytes: bytes.length, sha256: hash(bytes) }); } else throw new Error(`Nonregular integration source: ${file}`); } }\n\tinventory(path.join(root, \"platform-integrations\")); integrationSources.sort((a, b) => a.path.localeCompare(b.path));\n\tconst externalComponents = [\"bounded-reader/TitleReadingActions.svelte\", \"bounded-reader/ChapterSelector.svelte\", \"bounded-reader/EditionSelector.svelte\", \"bounded-reader/GroupPage.svelte\", \"bounded-reader/EditionPage.svelte\", \"bounded-reader/Status.svelte\", \"frontend-behavior/AccountClosure.svelte\", \"frontend-behavior/AccountOnboarding.svelte\", \"frontend-behavior/MangaEditBoundary.svelte\", \"frontend-behavior/RecoveryBoundary.svelte\", \"local-library/LocalLibraryPanel.svelte\", \"local-library/ProtocolIdentityPanel.svelte\", \"local-library/LibraryProtected.svelte\", \"local-library/LibraryRuntime.svelte\", \"local-library/MangaDiscussion.svelte\", \"local-library/LibraryManagementTools.svelte\", \"local-library/BackupReviewSummary.svelte\", \"local-library/PublicIdentitySettings.svelte\", \"local-library/IdentitySetup.svelte\", \"local-library/IdentityGate.svelte\", \"local-library/DeviceHistoryFeed.svelte\", \"local-library/DeviceTitleLibrary.svelte\", \"local-library/DeviceUpdatesFeed.svelte\", ...(publicApiGate ? [\"local-library/AccountListHeading.svelte\", \"local-library/AccountLibraryTools.svelte\", \"local-library/GuestAccountAdoption.svelte\", \"public-api/AdvancedAccountProfileEditor.svelte\", \"public-api/SessionProfileActions.svelte\", \"public-api/AccountActionGate.svelte\", \"public-api/SessionFollow.svelte\", \"public-api/FeedCommentsLink.svelte\", \"public-api/native-forum/AdvancedComments.svelte\", \"public-api/native-user-forum/AdvancedComments.svelte\", \"public-api/PublicLanguageFilter.svelte\", \"public-api/PublicTitleGroupFilter.svelte\", \"public-api/PublicTitleEditor.svelte\", \"public-api/PublicCoverEditor.svelte\", \"public-api/PublicTitleDisposition.svelte\", \"public-api/PublicRelationEditor.svelte\", \"public-api/PublicCreateGate.svelte\", \"public-api/PublicTitleShell.svelte\", \"public-api/PublicEntityPicker.svelte\", \"public-api/PublicReportForm.svelte\", \"public-api/PublicDraftRouteGate.svelte\", \"public-api/PublicDraftSearch.svelte\", \"public-api/PublicDraftFilter.svelte\", \"public-api/PublicDraftEntry.svelte\", \"public-api/AccountBlocklistEditor.svelte\", \"public-api/AccountProfileEditor.svelte\", \"public-api/NativeProfileActions.svelte\", \"public-api/SignedModeratorReports.svelte\", \"public-api/PublicEditorialTools.svelte\", \"public-api/PublicGroupClaimDialog.svelte\"] : [])].map(relative => ({ path: \"platform-integrations/\" + relative, sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations\", relative))), intentional_rendered_extension: true }));\n\tconst evidence = { profile_presentation_repairs: publicApiGate ? profilePresentationManifest : [], approved_profile_presentation_exceptions: publicApiGate ? profilePresentationPatches : [], preferences_presentation_repairs: publicApiGate ? preferencesPresentationManifest : [], approved_preferences_presentation_exceptions: publicApiGate ? preferencesPresentationPatches : [], report_lifecycle_repairs: publicApiGate ? reportLifecycleManifest : [], approved_report_lifecycle_exceptions: publicApiGate ? reportLifecyclePatches : [], read_completion_repairs: publicApiGate ? readCompletionManifest : [], approved_read_completion_exceptions: publicApiGate ? readCompletionPatches : [], title_spinner_presentation_repairs: publicApiGate ? titleSpinnerManifest : [], approved_title_spinner_presentation_exceptions: publicApiGate ? titleSpinnerPatches : [], account_library_repairs_qualification: \"Exact frozen account-library stage output; separately pinned title-spinner presentation and bounded read-state source-precedence successors follow it.\", native_account_upload_enabled: publicApiGate, native_account_upload_repairs: publicApiGate ? nativeUploadOverlayManifest : [], approved_native_account_upload_exceptions: publicApiGate ? nativeUploadOverlayPatches : [], public_signed_upload_qualification: \"Historical exact source stage only; a separately verified native-account successor follows it for ordinary upload screens. This field is not a claim of signer authentication in the final UI.\", account_library_enabled: publicApiGate, account_library_repairs: publicApiGate ? accountLibraryOverlayManifest : [], approved_account_library_exceptions: publicApiGate ? accountLibraryPatches : [], account_library_overlay_sha256: hash(fs.readFileSync(path.join(root, 'platform-integrations/local-library/account-overlays.mjs'))), bounded_reader_source_only: true, bounded_reader_exact_automatic_continue_parity: false, bounded_reader_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/bounded-reader/overlays.mjs\"))), bounded_reader_anchors_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/bounded-reader/anchors.json\"))), bounded_reader_repairs: boundedReaderOverlayManifest, approved_bounded_reader_extensions: boundedReaderApprovedMarkupExceptions,  public_signed_title_relations_enabled: publicApiGate, public_signed_relation_client_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/relation-client.ts\"))), public_signed_original_covers_enabled: publicApiGate, public_signed_cover_client_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/cover-client.ts\"))), public_signed_cover_multipart_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/cover-multipart.ts\"))), public_signed_title_metadata_enabled: publicApiGate, public_signed_title_client_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/title-client.ts\"))), native_account_contribution_enabled: publicApiGate, native_account_contribution_qualification: \"Ordinary title, draft, cover, editorial, chapter and upload screens use captured same-origin native-session adapters and existing permission/CAS cores. External signing is not an alternative login required by these screens. Source composition only, not browser or HTTP acceptance.\", public_signed_title_qualification: \"Preserved advanced signed client source only; final ordinary screens use separately qualified native account adapters, not these signed clients. Retained signed metadata create/edit, original-only cover upload/metadata/moderator removal, versioned instance lock/removal review, and draft review controls; versioned directional relation controls with lazy snapshot-bound byte-budgeted pages are included; legacy provider and raw/English link metadata and the separate bounded opaque officialLinks dictionary are supported; no provider identity/language/region registry is implied. This preparation is not browser or live HTTP acceptance.\", public_api_catalogue_enabled: publicApiGate, public_signed_upload_enabled: publicApiGate, public_signed_upload_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/upload-overlays.mjs\"))), public_signed_upload_anchors_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/upload-anchors.json\"))), approved_public_signed_upload_extensions: publicUploadRepairs, public_api_base: \"/api/v1\", public_api_reconstructed_unverified: true, public_api_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/public-api/overlays.mjs\"))), public_api_script_repairs: publicRepairs, approved_public_media_exceptions: publicMedia, approved_public_availability_exceptions: publicAvailability, approved_public_feature_exceptions: publicFeatures, approved_public_language_exceptions: publicLanguages, approved_public_filter_exceptions: publicFilters, anonymous_recovery_derivation: anonymousRecoveryDerivation, frontend: path.relative(root, frontend), original_files_written: false, integration_utility_sources: { method: \"build-local explicit Tailwind source declaration\", directory: \"platform-integrations\", original_stylesheet_unchanged: true }, reconstructed_routes: additions, integration_source_files: integrationSources, integration_source_inventory_sha256: hash(JSON.stringify(integrationSources)), external_component_extensions: externalComponents,\n\t\toverlay_module_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/frontend-overlays.mjs\"))),\n\t\tscript_repairs: [...frontendOverlayManifest, ...readerOverlayManifest, ...localLibraryOverlayManifest, ...publicRepairs], shared_script_repairs: frontendOverlayManifest, reader_script_repairs: readerOverlayManifest, reader_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/frontend-reader-overlays.mjs\"))), local_library_script_repairs: localLibraryOverlayManifest, local_library_overlay_sha256: hash(fs.readFileSync(path.join(root, \"platform-integrations/local-library/overlays.mjs\"))),\n\t\tapproved_local_protocol_extensions: [...frontendApprovedPanelExceptions, ...localLibraryApprovedMarkupExceptions], approved_title_context_exceptions: frontendApprovedTitleContextExceptions, approved_discussion_context_exceptions: frontendApprovedDiscussionContextExceptions, approved_share_control_exceptions: frontendApprovedShareControlExceptions, approved_client_name_exceptions: frontendApprovedClientNameExceptions, approved_search_callback_exceptions: frontendApprovedSearchCallbackExceptions, approved_auth_flow_key_exceptions: frontendApprovedAuthFlowKeyExceptions, approved_create_recovery_exceptions: frontendApprovedCreateRecoveryExceptions, approved_follow_readiness_exceptions: frontendApprovedFollowReadinessExceptions, approved_registration_onboarding_exceptions: frontendApprovedRegistrationOnboardingExceptions, approved_reader_control_exceptions: frontendApprovedReaderControlExceptions, approved_reader_copy_exceptions: frontendApprovedReaderCopyExceptions, approved_read_toggle_exceptions: frontendApprovedReadToggleExceptions, approved_registration_recovery_exceptions: frontendApprovedRegistrationRecoveryExceptions, approved_reader_simplicity_exceptions: frontendApprovedReaderSimplicityExceptions, approved_discovery_copy_exceptions: frontendApprovedDiscoveryCopyExceptions, approved_history_continuation_exceptions: localLibraryApprovedHistoryContinuationExceptions, approved_title_continuation_exceptions: localLibraryApprovedTitleContinuationExceptions, approved_updates_continuation_exceptions: localLibraryApprovedUpdatesContinuationExceptions, approved_feed_pagination_exceptions: localLibraryApprovedFeedPaginationExceptions, approved_widget_error_exceptions: localLibraryApprovedWidgetErrorExceptions, approved_reader_selector_exceptions: localLibraryApprovedReaderSelectorExceptions, approved_recommendation_exceptions: localLibraryApprovedRecommendationExceptions, approved_search_pagination_exceptions: localLibraryApprovedSearchPaginationExceptions, approved_cover_read_exceptions: localLibraryApprovedCoverReadExceptions, approved_public_carousel_exceptions: localLibraryApprovedPublicCarouselExceptions, approved_upload_recovery_exceptions: frontendApprovedUploadRecoveryExceptions, approved_recovery_boundary_exceptions: frontendApprovedRecoveryBoundaryExceptions, approved_event_handler_exceptions: frontendApprovedEventHandlerExceptions, transformed_sources: transformed,\n",
+          "current_sha256": "e5b1102e3bd6880b1fd3753a1146bea21e4072cab9c2f2051ed16ca0807d7d8a",
+          "previous_sha256": "8076eb3778db3ca7ed034b86743b4cc14d4ca60754a73f740d9b732e0208f660"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/fixpass-discussion-overlay-fixture.mjs",
+      "current_bytes": 2296,
+      "current_sha256": "e4ec2ec7ff70339bc730a9bd863073d247e9492c7abeb5f96f1c962497de454f",
+      "added": false,
+      "previous_bytes": 2299,
+      "previous_sha256": "bbecfd49599b1e2fb30fa0490ce8c93a7baffffa173224c7d246cd55dbc57ca4",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import assert from 'node:assert/strict';\nimport fs from 'node:fs';\nimport {createHash} from 'node:crypto';\nimport {restoreReaderUxFixpassPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport {assertDiscussionFeatures as assertPublishedFeatures} from './native-discussion-overlay-fixture.mjs';\nexport {assertDiscussionManifest,discussionFeatureRows,membershipFeatureRow} from './native-discussion-overlay-fixture.mjs';\nexport const profileActionsFeatureRow={\"path\":\"src/routes/(app)/user/[id]/User.svelte\",\"sha256\":\"f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd\",\"count\":1,\"before\":\"<div class=\\\"flex shrink-0 flex-wrap items-center gap-1\\\">\",\"after\":\"<div class=\\\"flex shrink-0 flex-wrap items-center gap-1\\\">\\r\\n\\t\\t\\t\\t\\t<SessionProfileActions targetId={$user.id} requestedId={profileActionRequestedId($user, page.params.id??\\\"\\\")} nativeEligible={$user.public_profile_readonly === true && $user.public_account_follow_available === true}/>\\r\\n\\t\\t\\t\\t\\t<details class=\\\"basis-full text-sm\\\"><summary class=\\\"cursor-pointer\\\">Advanced identity actions</summary><div class=\\\"mt-2\\\"><NativeProfileActions targetId={$user.id} requestedId={profileActionRequestedId($user, page.params.id??\\\"\\\")} nativeEligible={$user.public_profile_readonly === true && $user.public_account_follow_available === true}/></div></details>\",\"label\":\"Explicit signing-account Settings and Block use the existing native profile action row\",\"approved_public_feature_exception\":\"public_uuid_bound_account_profile_actions\"};\n",
+          "previous": "import assert from 'node:assert/strict';\nimport fs from 'node:fs';\nimport {createHash} from 'node:crypto';\nimport {restoreReaderUxFixpassPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport {assertDiscussionFeatures as assertPublishedFeatures} from './native-discussion-overlay-fixture.mjs';\nexport {assertDiscussionManifest,discussionFeatureRows,membershipFeatureRow} from './native-discussion-overlay-fixture.mjs';\nexport const profileActionsFeatureRow={\"path\":\"src/routes/(app)/user/[id]/User.svelte\",\"sha256\":\"f8232429c11dcc2dc08fb34f1c3fc31d262cc547b4becf485b884133ed6db0bd\",\"count\":1,\"before\":\"<div class=\\\"flex shrink-0 flex-wrap items-center gap-1\\\">\",\"after\":\"<div class=\\\"flex shrink-0 flex-wrap items-center gap-1\\\">\\r\\n\\t\\t\\t\\t\\t<SessionProfileActions targetId={$user.id} requestedId={profileActionRequestedId($user, page.params.id??\\\"\\\")} nativeEligible={$user.public_profile_readonly === true && $user.public_account_follow_available === true}/>\\r\\n\\t\\t\\t\\t\\t<details class=\\\"basis-full text-sm\\\"><summary class=\\\"cursor-pointer\\\">Advanced identity actions</summary><div class=\\\"mt-2\\\"><NativeProfileActions targetId={$user.id} requestedId={profileActionRequestedId($user, page.params.id??\\\"\\\")} nativeEligible={$user.public_profile_readonly === true && $user.public_account_follow_available === true}/></div></details>\",\"label\":\"Explicit signing-account Settings and Block use the existing native profile action row\",\"approved_public_feature_exception\":\"public_uuid_bound_account_profile_actions\"};\n",
+          "current_sha256": "e568111fc7e93088a16158918bd7079406e3aa022e51cd8cd41ef973229ace44",
+          "previous_sha256": "76d4cf2a03f6046748afb8c92a022ed5a2333211e1af7c52ac2952f66cbf47b9"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/historical-contribution-ui-fixture.mjs",
+      "current_bytes": 2748,
+      "current_sha256": "5967c1af4557b42c037ee76ef7fab7e330a6f88325cba18a83f819059d45bfba",
+      "added": false,
+      "previous_bytes": 2751,
+      "previous_sha256": "9fea62d02fc8b937e59c47d9e300b3dfb08595ddfb477872db00793dbae30705",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import path from 'node:path';\nimport vm from 'node:vm';\nimport {fileURLToPath,pathToFileURL} from 'node:url';\nimport {readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nconst root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');\nconst associated=new Set(readReaderUxFixpassAssociation().rows.map(row=>row.path));\nexport function historicalContributionSource(file,encoding='utf8'){\n",
+          "previous": "import path from 'node:path';\nimport vm from 'node:vm';\nimport {fileURLToPath,pathToFileURL} from 'node:url';\nimport {readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nconst root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');\nconst associated=new Set(readReaderUxFixpassAssociation().rows.map(row=>row.path));\nexport function historicalContributionSource(file,encoding='utf8'){\n",
+          "current_sha256": "ca260e8640ffb28c56256d6d7be7e25a6fc5a244e9eac753f5b80be0e7b21133",
+          "previous_sha256": "ae457389ef7d059d96dfa4ec4fbc57c557257fa2a6a96ab95ce9a4eab700e245"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_card_spinner_accessibility_dom.mjs",
+      "current_bytes": 11709,
+      "current_sha256": "e9d95d71f992dfca6c17a627da7e78ba6cbf3778936402274b8eb24a03c311a2",
+      "added": true
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_card_spinner_source_successor.mjs",
+      "current_bytes": 4401,
+      "current_sha256": "ce3d3f99f4023222fcf9a6cd1901c648a17786da62de7e54771217fc22f7809a",
+      "added": true
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_chrome157_runtime.mjs",
+      "current_bytes": 7188,
+      "current_sha256": "0f8efd20b70ad3f8193c890ac8a6488b8f2bdf3f120fd78353fe045929becdc3",
+      "added": false,
+      "previous_bytes": 7191,
+      "previous_sha256": "66024a101d75737dc98ddac34bac11eb90a0e2562e8600dde9f7b771b50ceebb",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport { restoreUploadFinalization } from './upload-finalization-source-association.mjs';\nimport { restoreCancellationObserver } from './upload-cancel-observer-association.mjs';\n// Finite source and injected filesystem tests. No package import or browser.\n",
+          "previous": "import {restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport { restoreUploadFinalization } from './upload-finalization-source-association.mjs';\nimport { restoreCancellationObserver } from './upload-cancel-observer-association.mjs';\n// Finite source and injected filesystem tests. No package import or browser.\n",
+          "current_sha256": "6fc33f345e20e885e4f5c26c25bb3eaa24df677243c406f464ca31dda71df851",
+          "previous_sha256": "f038f60bf580bc3ffadffc74cd2d9bb7a8797ab65c12d3d888b8418c173f51e3"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_moderator_account_observation.mjs",
+      "current_bytes": 4855,
+      "current_sha256": "530d61be94bbd9b1633cfe7aad2d48389e02b485fdc1d781f32680ee2a5fe5f0",
+      "added": false,
+      "previous_bytes": 4858,
+      "previous_sha256": "151e4004fad25d9b2f89f84ad468d948c71d54adb9a6e07379b6fd4debe32bbf",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\n// Exact retained predecessor and additive observed-account behavior. No Git,\n// production dependencies, signatures, HTTP, or external account mutations.\nimport test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';\n",
+          "previous": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\n// Exact retained predecessor and additive observed-account behavior. No Git,\n// production dependencies, signatures, HTTP, or external account mutations.\nimport test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';\n",
+          "current_sha256": "5c1930c2731c307e071dd7307e871f5d3098baaf7f23255b5538d4914b0cd941",
+          "previous_sha256": "3c90e04ce27bc0fb506ae4ee5ca2278ae99334aa458271573dcb33bf6cd04730"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_site_client_binding_source_successor.mjs",
+      "current_bytes": 7645,
+      "current_sha256": "c3687680287d8f21392ddaafb5367770a54d1e618240a9850e48248b55e2f0ad",
+      "added": false,
+      "previous_bytes": 7648,
+      "previous_sha256": "45fe54723cb95755ced2ea890bc4cbc22d74667225226c18ed358d3b5c0e9944",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\n// Actual source-comparison helper controls. No runtime source normalization.\nimport assert from 'node:assert/strict';\nimport fs from 'node:fs';\n",
+          "previous": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\n// Actual source-comparison helper controls. No runtime source normalization.\nimport assert from 'node:assert/strict';\nimport fs from 'node:fs';\n",
+          "current_sha256": "e1656a341b1891b4ba9610f763050c160efe415ed4961db51edf5097616275c5",
+          "previous_sha256": "8c35b3bc58acd6517085475d0cee6a6a90d4bbeff6c83b19d9f97019bf207dd6"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_native_upload_counterfactual.mjs",
+      "current_bytes": 49741,
+      "current_sha256": "059b8d45674b415892c95f9329cad2ef4d63b3594522d15d55be97ce4d35ae21",
+      "added": false,
+      "previous_bytes": 49744,
+      "previous_sha256": "04ab68160b129406a109c0884bcdd327a734e98ba8aba1baca162ebfdf874f39",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport { restoreCancellationObserver, restoreCancellationCounterfactualTest } from './upload-cancel-observer-association.mjs';\n// No browser, server, socket, dependency install, or external network is used.\nimport test from 'node:test';\n",
+          "previous": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport { restoreCancellationObserver, restoreCancellationCounterfactualTest } from './upload-cancel-observer-association.mjs';\n// No browser, server, socket, dependency install, or external network is used.\nimport test from 'node:test';\n",
+          "current_sha256": "02d47ccb2b6b441dc176167d58efe83a4b1cf3e93bd2316a3f31849c08cc900e",
+          "previous_sha256": "0a2d6d7c49ea55d39ddf11e19c99b44ce6f197b7395a74c06ba71cd3afac9c02"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_chapter_edit_route.mjs",
+      "current_bytes": 10325,
+      "current_sha256": "279bdee6fe69fdaf019e88dc92a8089689964147b0b9d6f1da4e128ed34e3a59",
+      "added": false,
+      "previous_bytes": 10328,
+      "previous_sha256": "12d9c5968a5c5e1024734329780b642fa3a12103109d3cfdb7bc18f05a62c878",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "// Historical signed route regression; not current native UI qualification.\nimport {historicalContributionSource,historicalContributionOverlayFactories} from './historical-contribution-ui-fixture.mjs';\nconst {createFrontendOverlays,createReaderOverlays,createLocalLibraryOverlays,createPublicApiOverlays,createPublicUploadOverlays}=await historicalContributionOverlayFactories();\nimport {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\n// Execute the actual five-stage route and Chapter API composition in Node VM.\n// Catalogue replies and native cookie/grant reads are explicit stand-ins. The\n// page/layout/editor associations are exact source checks, not a DOM/browser,\n",
+          "previous": "// Historical signed route regression; not current native UI qualification.\nimport {historicalContributionSource,historicalContributionOverlayFactories} from './historical-contribution-ui-fixture.mjs';\nconst {createFrontendOverlays,createReaderOverlays,createLocalLibraryOverlays,createPublicApiOverlays,createPublicUploadOverlays}=await historicalContributionOverlayFactories();\nimport {restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\n// Execute the actual five-stage route and Chapter API composition in Node VM.\n// Catalogue replies and native cookie/grant reads are explicit stand-ins. The\n// page/layout/editor associations are exact source checks, not a DOM/browser,\n",
+          "current_sha256": "f7056abdb36623f66847e795e1e098f355283836883c5f5d0c79ce103061888c",
+          "previous_sha256": "a0aaed24ed644f533d61ccff1e3f03459278a4fbd9b6d8add2c7a7051ef8dda7"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_title_commands.mjs",
+      "current_bytes": 46334,
+      "current_sha256": "9555d811b934ff69ef20cecc897212f7f4c5f774fc0de787551787327041f3ee",
+      "added": false,
+      "previous_bytes": 46337,
+      "previous_sha256": "616da6145f79d97fc08fe6de43d6247b85f2509d41405770797f0aa566bbce60",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport {restoreBundleSource} from './reviewed-bundle-source-successors.mjs';\nimport {restoreNativeProfileActionsSource} from './native-profile-actions-source-association.mjs';\n// Finite controller/transport stand-ins only. No browser, database, real signer,\n",
+          "previous": "import {restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport {restoreBundleSource} from './reviewed-bundle-source-successors.mjs';\nimport {restoreNativeProfileActionsSource} from './native-profile-actions-source-association.mjs';\n// Finite controller/transport stand-ins only. No browser, database, real signer,\n",
+          "current_sha256": "7fe9da4010507cfd55db57875d269cc3ce444b26e05690f4c1c9f9febe5cf169",
+          "previous_sha256": "51d3e4d551ac1f384554af1593731d5180b2b5893ced654da4adda9920cee314"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_finalization.mjs",
+      "current_bytes": 7859,
+      "current_sha256": "66d38e828d18e726902457dbcd828cb45b493d6f70fea22ca1f6ba6b8b7f78e6",
+      "added": false,
+      "previous_bytes": 7862,
+      "previous_sha256": "7aa5913a5fb2ae3ce7a7247e6f4da5f39a0410e198905eaf5b4e0f3a4a3757c3",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\n// Source-extracted finalization and real observer state; fake signatures/events,\n// no browser, network, service, database, hosted execution or prior-run rewrite.\nimport assert from 'node:assert/strict';\n",
+          "previous": "import {restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\n// Source-extracted finalization and real observer state; fake signatures/events,\n// no browser, network, service, database, hosted execution or prior-run rewrite.\nimport assert from 'node:assert/strict';\n",
+          "current_sha256": "70b24a67f0ab6b9d4d9040a1d6cd4fa43b0c48d13c8dfdfa33e4e1f9b5ef2b1a",
+          "previous_sha256": "dbe025e0889f1895e82de1afa7513b29e2c0506cfbf4b41445e9488dd1040435"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_language_controls.mjs",
+      "current_bytes": 9934,
+      "current_sha256": "fa58e0b61c2cc149e88bf9cc45f83029424451abc4c55c6076b5bb2eca00aaca",
+      "added": false,
+      "previous_bytes": 9937,
+      "previous_sha256": "3302b0f9aa5eb0df5440682567d549782fc1b92ff397b12aee5f8fcf9823cc7c",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport { restoreUploadFinalization } from './upload-finalization-source-association.mjs';\n// Finite actual-composition/source-extracted locator seams only. No browser,\n// Svelte runtime, signer, HTTP, database, dependency install or service is used.\n",
+          "previous": "import {restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport { restoreUploadFinalization } from './upload-finalization-source-association.mjs';\n// Finite actual-composition/source-extracted locator seams only. No browser,\n// Svelte runtime, signer, HTTP, database, dependency install or service is used.\n",
+          "current_sha256": "ab742b4b6889210f26597ccf51659bfbe580c8ff9868e42b727186dc52827a91",
+          "previous_sha256": "082b5e37c21204837def9577d1f510ba663ff90cd91e84179ee2d55aad3d466f"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_language_input_type.mjs",
+      "current_bytes": 12420,
+      "current_sha256": "22100dd23d46e61802b96da29abc208cdf46e8047f6fb69deeff4f7f7ed25680",
+      "added": false,
+      "previous_bytes": 12423,
+      "previous_sha256": "e5169a58d859e0f3a6211857641edc54ebc76f865a6a15b474c43bea8692092f",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\n// Finite actual-composition type regression, not a whole-application or DOM pass.\n// Uses existing pinned dependencies only; no writes, subprocesses or runtime Git.\nimport assert from 'node:assert/strict';\n",
+          "previous": "import {restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\n// Finite actual-composition type regression, not a whole-application or DOM pass.\n// Uses existing pinned dependencies only; no writes, subprocesses or runtime Git.\nimport assert from 'node:assert/strict';\n",
+          "current_sha256": "718ee0515c352ed00af630c1246b00910d3e444b845d399a932f87eaf762e359",
+          "previous_sha256": "d11f46f0993a79d2814c0d0b526df8d18ee38b4f66d90efc08f1524469b6fce5"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_upload_second_begin_readiness.mjs",
+      "current_bytes": 8689,
+      "current_sha256": "fcb13e926dda24d93b4270f76ed21a3f1693b030b747b6cda337683d8299b396",
+      "added": false,
+      "previous_bytes": 8692,
+      "previous_sha256": "be6321471528f859dcd3de2239566b9edf1f40ecc6c833af5aed9056e27257d0",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport { restoreUploadFinalization } from './upload-finalization-source-association.mjs';\n// Finite source-extracted harness control. No browser, signer, HTTP, fixture,\n// Svelte runtime, dependency install or backend is started by this file.\n",
+          "previous": "import {restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport { restoreUploadFinalization } from './upload-finalization-source-association.mjs';\n// Finite source-extracted harness control. No browser, signer, HTTP, fixture,\n// Svelte runtime, dependency install or backend is started by this file.\n",
+          "current_sha256": "774c514e253a9f4571a78ee7d40d345668c513b23094af35dcbf006bd094e0fa",
+          "previous_sha256": "5bd52a2324eea6bd36521f76321ca7743e936307f450f814a45523918a25e18a"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reader_followup_source_successor.mjs",
+      "current_bytes": 4224,
+      "current_sha256": "c870c72ba96657b818831a4fd703632c1a529039d84aa77dd21af317b1deaea8",
+      "added": false,
+      "previous_bytes": 4032,
+      "previous_sha256": "18cf2b04684fe43edde4e5303c6cee920d481bd860c36189fb9ba5f8d7ef689d",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import test from 'node:test';import assert from 'node:assert/strict';\nimport {readCompletionManifest,readCompletionPatches,applyReadCompletionOutput,restoreReadCompletionOutput,assertReadCompletionScope} from '../../platform-integrations/local-library/reader-completion-overlays.mjs';\nimport {readCardSpinnerSourceAssociation,restoreCardSpinnerSourcePredecessor,readReaderFollowupSourceAssociation,restoreReaderFollowupSourcePredecessor,readTitleSpinnerSourceAssociation,restoreTitleSpinnerSourcePredecessor,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport {composed} from './composed-account-library-fixture.mjs';\nconst root=fileURLToPath(new URL('../../../',import.meta.url)),hash=bytes=>createHash('sha256').update(bytes).digest('hex');\ntest('bounded badge state precedence changes one exact expression and preserves guarded fallback',async()=>{\n",
+          "previous": "import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import test from 'node:test';import assert from 'node:assert/strict';\nimport {readCompletionManifest,readCompletionPatches,applyReadCompletionOutput,restoreReadCompletionOutput,assertReadCompletionScope} from '../../platform-integrations/local-library/reader-completion-overlays.mjs';\nimport {readReaderFollowupSourceAssociation,restoreReaderFollowupSourcePredecessor,readTitleSpinnerSourceAssociation,restoreTitleSpinnerSourcePredecessor,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport {composed} from './composed-account-library-fixture.mjs';\nconst root=fileURLToPath(new URL('../../../',import.meta.url)),hash=bytes=>createHash('sha256').update(bytes).digest('hex');\ntest('bounded badge state precedence changes one exact expression and preserves guarded fallback',async()=>{\n",
+          "current_sha256": "f1168d1448b62bce4262bfcdb47189fb449b50909b8106633bab0b9990e13f9b",
+          "previous_sha256": "5418cf053e0ac1312ce9a739f2723bb9609e9f2a9a0bc4441e185fb86aded92e"
+        },
+        {
+          "ordinal": 2,
+          "current": "});\ntest('reader followup binds physical final sources and restores every immutable predecessor without inherited qualification',()=>{\n const a=readReaderFollowupSourceAssociation(),prior=readTitleSpinnerSourceAssociation();assert.equal(a.predecessor_association_sha256,'db72f81d232b9ab4da1a7f9b2f314bda81ac1ff95342e0d9bd36448ed8704979');assert.equal(prior.rows.length,25);assert.equal(readReaderUxFixpassAssociation().rows.length,157);assert.equal(a.browser_executed,false);assert.equal(a.http_executed,false);assert.equal(hash(fs.readFileSync(path.join(root,a.predecessor_association_path))),a.predecessor_association_sha256);\n for(const row of a.rows){const source=fs.readFileSync(path.join(root,row.path)),previous=restoreReaderFollowupSourcePredecessor(row.path,source);assert.equal(hash(readCardSpinnerSourceAssociation().rows.some(next=>next.path===row.path)?restoreCardSpinnerSourcePredecessor(row.path,source):source),row.current_sha256);if(row.added)assert.equal(previous,null);else{assert.equal(hash(previous),row.previous_sha256);const frozen=prior.rows.find(x=>x.path===row.path);if(frozen)assert.equal(hash(previous),frozen.current_sha256);}for(const bad of [source.subarray(1),Buffer.concat([source,Buffer.from(' ')]),null,{}])assert.throws(()=>restoreReaderFollowupSourcePredecessor(row.path,bad));}\n for(const row of prior.rows)restoreTitleSpinnerSourcePredecessor(row.path,fs.readFileSync(path.join(root,row.path)));\n for(const row of readReaderUxFixpassAssociation().rows)restoreReaderUxFixpassPredecessor(row.path,fs.readFileSync(path.join(root,row.path)));\n const changed=structuredClone(a);changed.rows.reverse();assert.throws(()=>readReaderFollowupSourceAssociation(Buffer.from(JSON.stringify(changed))));assert.throws(()=>restoreReaderFollowupSourcePredecessor('unknown',Buffer.from('x')));\n",
+          "previous": "});\ntest('reader followup binds physical final sources and restores every immutable predecessor without inherited qualification',()=>{\n const a=readReaderFollowupSourceAssociation(),prior=readTitleSpinnerSourceAssociation();assert.equal(a.predecessor_association_sha256,'db72f81d232b9ab4da1a7f9b2f314bda81ac1ff95342e0d9bd36448ed8704979');assert.equal(prior.rows.length,25);assert.equal(readReaderUxFixpassAssociation().rows.length,157);assert.equal(a.browser_executed,false);assert.equal(a.http_executed,false);assert.equal(hash(fs.readFileSync(path.join(root,a.predecessor_association_path))),a.predecessor_association_sha256);\n for(const row of a.rows){const source=fs.readFileSync(path.join(root,row.path)),previous=restoreReaderFollowupSourcePredecessor(row.path,source);assert.equal(hash(source),row.current_sha256);if(row.added)assert.equal(previous,null);else{assert.equal(hash(previous),row.previous_sha256);const frozen=prior.rows.find(x=>x.path===row.path);if(frozen)assert.equal(hash(previous),frozen.current_sha256);}for(const bad of [source.subarray(1),Buffer.concat([source,Buffer.from(' ')]),null,{}])assert.throws(()=>restoreReaderFollowupSourcePredecessor(row.path,bad));}\n for(const row of prior.rows)restoreTitleSpinnerSourcePredecessor(row.path,fs.readFileSync(path.join(root,row.path)));\n for(const row of readReaderUxFixpassAssociation().rows)restoreReaderUxFixpassPredecessor(row.path,fs.readFileSync(path.join(root,row.path)));\n const changed=structuredClone(a);changed.rows.reverse();assert.throws(()=>readReaderFollowupSourceAssociation(Buffer.from(JSON.stringify(changed))));assert.throws(()=>restoreReaderFollowupSourcePredecessor('unknown',Buffer.from('x')));\n",
+          "current_sha256": "940328d0067ece2718aa20eec0018e42149f3726c68f5b668db8578f67f3f111",
+          "previous_sha256": "404509d8359f8632d3aa9c73f15e2918e48374bc113ac05a3af0f6da28175e5c"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reviewed_bundle_source_successors.mjs",
+      "current_bytes": 21418,
+      "current_sha256": "57ed81a02d49631f1724325bf388ce54f6f03d2a911f879a06767b091b9faa2c",
+      "added": false,
+      "previous_bytes": 21421,
+      "previous_sha256": "ceb4e20f58d161d56f4843a58f7e5fe4ac3516468283e2b474b09759450802f8",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport {restoreHistorySource} from './reviewed-history-source-successors.mjs';\nimport {readBoundedReaderAssociation,restoreBoundedReaderSource,boundedReaderAssociationSha256,boundedReaderSuccessorPaths} from './reviewed-bounded-reader-source-successors.mjs';\n// Source-bound comparison controls. No build, browser, network, or historical execution claim.\n",
+          "previous": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport {restoreHistorySource} from './reviewed-history-source-successors.mjs';\nimport {readBoundedReaderAssociation,restoreBoundedReaderSource,boundedReaderAssociationSha256,boundedReaderSuccessorPaths} from './reviewed-bounded-reader-source-successors.mjs';\n// Source-bound comparison controls. No build, browser, network, or historical execution claim.\n",
+          "current_sha256": "0e60fd13a8431a0ad7d8b0168f80cfbfd55de2d94f1252cce83a4c5af8bf6395",
+          "previous_sha256": "70a7ec4940cdb82dcd00c47a5cf6daa2c886d49a1cc8010d15de7b12641aa5d9"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reviewed_integration_source_successors.mjs",
+      "current_bytes": 9910,
+      "current_sha256": "135b07d9978bfe9cf5e322b0ade943dc0f244f454d28e66ebcaf4f83e33946ff",
+      "added": false,
+      "previous_bytes": 9913,
+      "previous_sha256": "3aa49b43e2aa021a7de975c2ff2d0cb7079d211661dc97f79f66e6ecd898febc",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport {localPageDriverPath,restoreLocalPageDriverSource} from './reviewed-local-page-driver-source-successor.mjs';\nimport {updatesIntegrationPaths,restoreBundleSource} from './reviewed-bundle-source-successors.mjs';\nimport {nativeProfileActionsPaths,restoreNativeProfileActionsSource} from \"./native-profile-actions-source-association.mjs\";\n",
+          "previous": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport {localPageDriverPath,restoreLocalPageDriverSource} from './reviewed-local-page-driver-source-successor.mjs';\nimport {updatesIntegrationPaths,restoreBundleSource} from './reviewed-bundle-source-successors.mjs';\nimport {nativeProfileActionsPaths,restoreNativeProfileActionsSource} from \"./native-profile-actions-source-association.mjs\";\n",
+          "current_sha256": "82a5e0dd4a6239ba21e5719e09d8d50158cbd4f9a499e68c84134e952e83d9a2",
+          "previous_sha256": "0b0cc2e6576643a3d2c11dd72603339db03d08c34725f7f2bd772dca015994bf"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reviewed_local_page_source_successors.mjs",
+      "current_bytes": 27768,
+      "current_sha256": "23cc5fc9c15f14ca0e239abdaffd9bce10a7d874c00aec43df51deb062bd3ed1",
+      "added": false,
+      "previous_bytes": 27771,
+      "previous_sha256": "10fd078245d56bc06b544d5364da5999292c6e398b8a6cf33192ad6cb6ad9ee7",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport {localPageDriverPath,localPageDriverAssociationSha256,readLocalPageDriverAssociation,restoreLocalPageDriverSource} from './reviewed-local-page-driver-source-successor.mjs';\nimport {restoreIntegratedSource} from './reviewed-integration-source-successors.mjs';\nimport {restoreHistorySource} from './reviewed-history-source-successors.mjs';\n",
+          "previous": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport {localPageDriverPath,localPageDriverAssociationSha256,readLocalPageDriverAssociation,restoreLocalPageDriverSource} from './reviewed-local-page-driver-source-successor.mjs';\nimport {restoreIntegratedSource} from './reviewed-integration-source-successors.mjs';\nimport {restoreHistorySource} from './reviewed-history-source-successors.mjs';\n",
+          "current_sha256": "1834cdedb98a54c8cbb0ffc37827c760c77112bc23536722ff9decf1a239288e",
+          "previous_sha256": "d26d497eddf9939af1428d0657ca77d94893bad50caf923fc4d555eaf8157380"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reviewed_native_source_successors.mjs",
+      "current_bytes": 8107,
+      "current_sha256": "6e35c8d1515afe8d4d0059a8d7e4220bb54a4abc3bb3e48313250d6acc1b95d1",
+      "added": false,
+      "previous_bytes": 8110,
+      "previous_sha256": "ad115180991ef50394497236acc3a16092c64ef2e61de96cd6624740b191b9d1",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport {nativeSiteClientBindingStage,nativeSiteClientBindingPath,restoreNativeSiteClientBindingSource} from './reviewed-native-source-successors.mjs';\nimport {restoreBoundedReaderSource} from './reviewed-bounded-reader-source-successors.mjs';\nimport {restoreModeratorTransportSource} from './reviewed-moderator-transport-source-successors.mjs';\n",
+          "previous": "import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport {nativeSiteClientBindingStage,nativeSiteClientBindingPath,restoreNativeSiteClientBindingSource} from './reviewed-native-source-successors.mjs';\nimport {restoreBoundedReaderSource} from './reviewed-bounded-reader-source-successors.mjs';\nimport {restoreModeratorTransportSource} from './reviewed-moderator-transport-source-successors.mjs';\n",
+          "current_sha256": "1358755346f252454d9288ae031459e780ae24d2d593bfccbfc8f2363162b800",
+          "previous_sha256": "ce2ca2fa76169b3d8e3980e594e9ae8e01ab1c3d1262502e1f5bb00c68fe777f"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reviewed_reader_ux_fixpass_source_successor.mjs",
+      "current_bytes": 3899,
+      "current_sha256": "d6907e742effe51057a16ab6b4f5d3fb4b0b49a2cad013c0a7b97fd08fad8836",
+      "added": false,
+      "previous_bytes": 3902,
+      "previous_sha256": "d8ba39e0aab52dca3adc8cfaf21ab267f7ec5f4f10883d4fd1b83f3e89ce7cee",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {execFileSync} from 'node:child_process';\nimport assert from 'node:assert/strict';\nimport test from 'node:test';\nimport {readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor,readReaderUxAssociation} from './reviewed-card-spinner-source-successor.mjs';\nconst root=fileURLToPath(new URL('../../../',import.meta.url)),association=readReaderUxFixpassAssociation();\nconst hash=value=>createHash('sha256').update(value).digest('hex');\nconst git=file=>execFileSync('git',['show',association.predecessor_commit+':'+file],{cwd:root,maxBuffer:8*1024*1024,stdio:['ignore','pipe','pipe']});\n",
+          "previous": "import {execFileSync} from 'node:child_process';\nimport assert from 'node:assert/strict';\nimport test from 'node:test';\nimport {readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor,readReaderUxAssociation} from './reviewed-reader-followup-source-successor.mjs';\nconst root=fileURLToPath(new URL('../../../',import.meta.url)),association=readReaderUxFixpassAssociation();\nconst hash=value=>createHash('sha256').update(value).digest('hex');\nconst git=file=>execFileSync('git',['show',association.predecessor_commit+':'+file],{cwd:root,maxBuffer:8*1024*1024,stdio:['ignore','pipe','pipe']});\n",
+          "current_sha256": "2750313e54e192dea4a0350f29b4564a32f5fbd19a5d84c2605b510fc2fc005a",
+          "previous_sha256": "0afaf08969eaace8fdf5bc16ccd8abdd0f483eedad4e68dc068f3b5bc3c60756"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_reviewed_reader_ux_source_successor.mjs",
+      "current_bytes": 2428,
+      "current_sha256": "51ebe9d16ee03ce351a54f5d883f32002e288446183df07685525e9c74e2b53b",
+      "added": false,
+      "previous_bytes": 2431,
+      "previous_sha256": "63eabe94837a4e3add81f745e91060bd74b59126671a98df4f9d1a77e72ad389",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {execFileSync} from 'node:child_process';\nimport assert from 'node:assert/strict';\nimport test from 'node:test';\nimport {readReaderUxAssociation,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nconst root=fileURLToPath(new URL('../../../',import.meta.url)),association=readReaderUxAssociation();\nconst hash=value=>createHash('sha256').update(value).digest('hex');\ntest('reader UX association binds exact reviewed current source and immutable predecessor without inherited execution claims',()=>{\n",
+          "previous": "import {execFileSync} from 'node:child_process';\nimport assert from 'node:assert/strict';\nimport test from 'node:test';\nimport {readReaderUxAssociation,restoreReaderUxPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nconst root=fileURLToPath(new URL('../../../',import.meta.url)),association=readReaderUxAssociation();\nconst hash=value=>createHash('sha256').update(value).digest('hex');\ntest('reader UX association binds exact reviewed current source and immutable predecessor without inherited execution claims',()=>{\n",
+          "current_sha256": "66d82d8ce14ae7b245667c9cc346ec2efc354499da81704ea202df0a9140cb65",
+          "previous_sha256": "2db7340d60d4361cf5f2d9d210747c355c83cba4f7623edee7a506cb80197c5d"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_signed_report_inspection.mjs",
+      "current_bytes": 12827,
+      "current_sha256": "619b47b687356699919a366f67e2e31a7af98a86bd10dd91881ef25c5242525e",
+      "added": false,
+      "previous_bytes": 12830,
+      "previous_sha256": "fd7c92981c1d79485b93d16f4cb0bac72d74db7a3ff704343ed3ab5c801400c0",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import {restoreReaderUxFixpassPredecessor} from './reviewed-card-spinner-source-successor.mjs';\n// Actual TypeScript inspection/controller scope. Transport is finite and synthetic.\nimport test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';\nimport {inspection,fixture,id,other,actor,reason,collection,RequestFailure,deferred,plain,root} from './report-draft-fixture.mjs';\n",
+          "previous": "import {restoreReaderUxFixpassPredecessor} from './reviewed-reader-followup-source-successor.mjs';\n// Actual TypeScript inspection/controller scope. Transport is finite and synthetic.\nimport test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';\nimport {inspection,fixture,id,other,actor,reason,collection,RequestFailure,deferred,plain,root} from './report-draft-fixture.mjs';\n",
+          "current_sha256": "8cbb87468fc1de7a15615c98122bef1b43604535767596574fe9187d11d33023",
+          "previous_sha256": "ca461ecb80c9c8a4d33f00b69afc83837acc3a6cdca4b4207e849f4c44a5b9da"
+        }
+      ]
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_title_spinner_source_successor.mjs",
+      "current_bytes": 4052,
+      "current_sha256": "4ab057e5f0e890155716f89f64cade7f7cddab63649db8ff3eaae083c88fd8bd",
+      "added": false,
+      "previous_bytes": 4055,
+      "previous_sha256": "81858716b8631931d84f41d9a1af0f4f4fdd21d8b4bbdfb7526f278887326bfa",
+      "literal_reversals": [
+        {
+          "ordinal": 1,
+          "current": "import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import test from 'node:test';import assert from 'node:assert/strict';\nimport {titleSpinnerPatches,titleSpinnerManifest,assertTitleSpinnerScope,applyTitleSpinnerOutput,restoreTitleSpinnerOutput} from '../../platform-integrations/local-library/title-spinner-overlays.mjs';\nimport {readReaderFollowupSourceAssociation,restoreReaderFollowupSourcePredecessor,readTitleSpinnerSourceAssociation,restoreTitleSpinnerSourcePredecessor,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-card-spinner-source-successor.mjs';\nimport {composed} from './composed-account-library-fixture.mjs';\nconst root=fileURLToPath(new URL('../../../',import.meta.url)),hash=bytes=>createHash('sha256').update(bytes).digest('hex');\ntest('title spinner exact successor only wraps two pending statuses; every script and visual class stays identical',async()=>{\n",
+          "previous": "import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import test from 'node:test';import assert from 'node:assert/strict';\nimport {titleSpinnerPatches,titleSpinnerManifest,assertTitleSpinnerScope,applyTitleSpinnerOutput,restoreTitleSpinnerOutput} from '../../platform-integrations/local-library/title-spinner-overlays.mjs';\nimport {readReaderFollowupSourceAssociation,restoreReaderFollowupSourcePredecessor,readTitleSpinnerSourceAssociation,restoreTitleSpinnerSourcePredecessor,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-reader-followup-source-successor.mjs';\nimport {composed} from './composed-account-library-fixture.mjs';\nconst root=fileURLToPath(new URL('../../../',import.meta.url)),hash=bytes=>createHash('sha256').update(bytes).digest('hex');\ntest('title spinner exact successor only wraps two pending statuses; every script and visual class stays identical',async()=>{\n",
+          "current_sha256": "b1f807991217d4e644d7018682541bfcd322732357e7dba216eac60997d42bd8",
+          "previous_sha256": "938dc88a1f791a025b33e1c01bc5a4349796600c9a0ab119beb455a20ccd9f0b"
+        }
+      ]
+    }
+  ]
+}

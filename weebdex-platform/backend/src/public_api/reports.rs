@@ -41,7 +41,7 @@ pub fn router() -> Router<AppState> {
         .route("/report", get(list).post(create))
         .route("/report/reasons/{category}", get(reasons))
 }
-fn kind(category: &str) -> PublicApiResult<ResourceKind> {
+pub(super) fn kind(category: &str) -> PublicApiResult<ResourceKind> {
     match category {
         "manga" => Ok(ResourceKind::Manga),
         "chapter" => Ok(ResourceKind::Chapter),
@@ -93,20 +93,24 @@ async fn reasons(
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
     bound_account_read(&tx, &cap).await?;
+    let result = reasons_in(&tx, &category).await?;
+    tx.commit().await?;
+    Ok(Json(result))
+}
+pub(super) async fn reasons_in(tx: &tokio_postgres::Transaction<'_>, category: &str) -> PublicApiResult<CollectionResponse<Value>> {
     let rows = tx.query("SELECT a.public_id::text,r.reason,r.details_required,r.category,r.version FROM platform.report_reasons r LEFT JOIN platform.public_resource_ids a ON a.kind='report_reason' AND a.native_id=r.id AND a.preferred WHERE r.category=$1 AND r.enabled ORDER BY r.reason,r.id LIMIT 1001", &[&category]).await?;
     if rows.len() > 1000 {
         return Err(crate::error::ApiError::unavailable().into());
     }
     let data = rows.iter().map(|row| Ok(json!({"id":uuid(row.get(0))?,"type":"report_reason","attributes":reason_attributes(row.get(1),row.get(2),row.get(3),row.get(4))})))
         .collect::<PublicApiResult<Vec<_>>>()?;
-    tx.commit().await?;
     let count = data.len() as u32;
-    Ok(Json(CollectionResponse::new(
+    Ok(CollectionResponse::new(
         data,
         count,
         0,
         u64::from(count),
-    )))
+    ))
 }
 fn query(raw: Option<&str>) -> PublicApiResult<PublicQuery> {
     let mut query = PublicQuery::parse(raw, &QUERY)?;
@@ -257,18 +261,18 @@ async fn list(
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
-struct CreateReport {
-    category: String,
+pub(super) struct CreateReport {
+    pub(super) category: String,
     reason: PublicUuid,
     object_id: PublicUuid,
     #[serde(default)]
     details: String,
     #[serde(default,deserialize_with="super::uploads::deserialize_optional_account")]
-    expected_account_id: Option<PublicUuid>,
+    pub(super) expected_account_id: Option<PublicUuid>,
     // Optional compatibility extension. The signed UI always pins the exact
     // reason the user reviewed, not merely its stable public identifier.
     #[serde(default, deserialize_with="deserialize_reason_version")]
-    expected_reason_version: Option<i32>,
+    pub(super) expected_reason_version: Option<i32>,
 }
 fn deserialize_reason_version<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<Option<i32>, D::Error> {
     let version = i32::deserialize(deserializer)?;
@@ -317,7 +321,7 @@ async fn create(
             "A valid report object with category, reason UUID and objectId UUID is required",
         )
     })?;
-    let target_kind = kind(&payload.category)?;
+    kind(&payload.category)?;
     if payload.details.contains('\0') {
         return Err(PublicApiError::bad_request("Invalid report details"));
     }
@@ -326,9 +330,19 @@ async fn create(
     let actor = bound_account_write(&tx, &cap).await?;
     let expected=payload.expected_account_id.as_ref().map(|id|json!(id));
     super::editorial::expected_account(&tx,&actor,expected.as_ref()).await?;
+    create_in(&tx, &actor, &payload).await?;
+    tx.commit().await?;
+    Ok((StatusCode::CREATED, Json(json!({"result":"ok"}))))
+}
+/// Canonical target/reason resolution and moderation core are identical for
+/// native-browser and explicitly bound signed callers. Authentication stays in
+/// the separate transport; no identity is constructed from these UUIDs.
+pub(super) async fn create_in(tx: &tokio_postgres::Transaction<'_>, actor: &impl core::ReportMutationActor, payload: &CreateReport) -> PublicApiResult<()> {
+    let target_kind = kind(&payload.category)?;
+    if payload.details.contains('\0') { return Err(PublicApiError::bad_request("Invalid report details")); }
     actor.require_permission("report.create")?;
     let reason = PostgresPublicIdResolver::resolve_many_in(
-        &*tx,
+        tx,
         ResourceKind::ReportReason,
         std::slice::from_ref(&payload.reason),
     )
@@ -343,7 +357,7 @@ async fn create(
         check_reason_version(actual.get(0), expected)?;
     }
     let target = PostgresPublicIdResolver::resolve_many_in(
-        &*tx,
+        tx,
         target_kind,
         std::slice::from_ref(&payload.object_id),
     )
@@ -371,16 +385,15 @@ async fn create(
         }
     }
     core::create_report(
-        &tx,
-        &actor,
+        tx,
+        actor,
         &payload.category,
         &target.native_id,
         &reason.native_id,
         payload.details.trim(),
     )
     .await?;
-    tx.commit().await?;
-    Ok((StatusCode::CREATED, Json(json!({"result":"ok"}))))
+    Ok(())
 }
 
 #[cfg(test)]

@@ -1,3 +1,5 @@
+// Historical signed UI regression only; current native coverage is test_native_contribution_dom.mjs.
+import {historicalContributionSource} from './historical-contribution-ui-fixture.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
@@ -257,14 +259,8 @@ for (const mode of ['hash', 'mime', 'private', 'vary', 'nosniff'])
     await assert.rejects(() => c.preview(saved));
   });
 test('actual cover controls remain a dedicated original interface and title commands share pending guards', () => {
-  const cover = fs.readFileSync(
-      path.join(directory, 'PublicCoverEditor.svelte'),
-      'utf8',
-    ),
-    title = fs.readFileSync(
-      path.join(directory, 'PublicTitleEditor.svelte'),
-      'utf8',
-    );
+  const cover = historicalContributionSource(path.join(directory, 'PublicCoverEditor.svelte')),
+    title = historicalContributionSource(path.join(directory, 'PublicTitleEditor.svelte'));
   assert.match(cover, /createSignedCoverController/);
   assert.match(cover, /URL\.revokeObjectURL/);
   assert.match(cover, /Approve this instance-local cover removal now/);
@@ -481,14 +477,8 @@ test('no captured account exposes no cover command capability', () => {
   );
 });
 test('rendered cover controls use separate native capabilities and preserve shared command fences', () => {
-  const coverSource = fs.readFileSync(
-      path.join(directory, 'PublicCoverEditor.svelte'),
-      'utf8',
-    ),
-    titleSource = fs.readFileSync(
-      path.join(directory, 'PublicTitleEditor.svelte'),
-      'utf8',
-    ),
+  const coverSource = historicalContributionSource(path.join(directory, 'PublicCoverEditor.svelte')),
+    titleSource = historicalContributionSource(path.join(directory, 'PublicTitleEditor.svelte')),
     mount = titleSource.match(/<PublicCoverEditor\b[\s\S]*?\/>/)?.[0];
   assert.ok(mount);
   assert.doesNotMatch(mount, /!canWrite/);

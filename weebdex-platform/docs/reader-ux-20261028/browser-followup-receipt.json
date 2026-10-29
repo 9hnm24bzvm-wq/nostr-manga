@@ -1,0 +1,81 @@
+{
+  "schema": "reader-browser-followup-verification-v1",
+  "status": "source, strict checks, production build, CSS and applicable aggregate passed; guest browser smoke separately recorded",
+  "source_association": {
+    "path": "weebdex-platform/docs/fixtures/reader-followup-source-association-20261028.json",
+    "sha256": "a9b5812a039a91f31ad414be5f5e86ed6637c044eea6450589cd854ea9bcb6d1",
+    "rows": 55
+  },
+  "frontend": {
+    "path": "weebdex-platform/artifacts/frontend",
+    "manifest_path": "weebdex-platform/docs/reader-ux-20261028/browser-followup-frontend-manifest.json",
+    "manifest_sha256": "eec81c5156bd6801ec290d386f006911db5091799551dff2513cd721b985b4fe",
+    "index_sha256": "1f7f9343832e1d510cbbfcdc9d9355875510bce9c26d968983f969d35ad2c1e6",
+    "files": 475,
+    "bytes": 7740837
+  },
+  "backend": [
+    {
+      "path": "weebdex-platform/artifacts/backend/weebdex-platform",
+      "bytes": 55006656,
+      "sha256": "9b2ac39780cb10cbf27330942bcf52ea149776903d108b7a93c00af6a02fbb0f"
+    },
+    {
+      "path": "weebdex-platform/artifacts/backend/browser_fixture_provisioner",
+      "bytes": 33776904,
+      "sha256": "ab697338676d9eda3976b84e342ecd50c1caf4d347c63bde51aa45c9639a586f"
+    }
+  ],
+  "backend_source_files_unchanged": 348,
+  "semantic": {
+    "errors": 0,
+    "warnings": 21,
+    "canonical_unchanged": 679
+  },
+  "css": {
+    "passed": 1,
+    "failed": 0
+  },
+  "aggregate": {
+    "tests": 5646,
+    "pass": 5640,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 6,
+    "todo": 0,
+    "duration_ms": 426670.047844
+  },
+  "test_input_files_verified_unchanged": 903,
+  "historical_excluded_modules": [
+    "test_composed_semantic_projection.mjs",
+    "test_semantic_validation_fail_closed.mjs",
+    "test_frontend_generated_css.mjs",
+    "test_backup_svelte_identity.mjs",
+    "test_reviewed_language_source_successors.mjs"
+  ],
+  "qualified_test_dependencies": {
+    "jsdom": "27.0.1",
+    "fake-indexeddb": "6.2.4",
+    "new_transitive_integrity_lock": true,
+    "package_lock_path": "weebdex-platform/docs/fixtures/reader-test-dependencies-20261028/package-lock.json",
+    "package_lock_sha256": "2bd37bce08716decd41804dccf010a9bea42f6f698e7a5b47acadcefce5e7ac5",
+    "scripts_executed": false
+  },
+  "browser": {
+    "previous_authenticated_artifact_index_sha256": "8f3a8f810cd6a73c4334cea404bb119ca8d1e823b99172d75743ad9e96d2b9b3",
+    "previous_run_verification_precondition": "explicitly simulated verified ordinary account; browser email-link consumption not completed",
+    "successor_authenticated_retest": false,
+    "successor_guest_smoke": "pending separate report"
+  },
+  "limitations": [
+    "Account CSV/XML import/export unavailable; no legacy-identity fallback.",
+    "External-protocol advanced actions remain separate.",
+    "21 existing semantic warnings, six historical skips and five excluded standalone modules remain explicit.",
+    "No production deployment, privileged publication, real second-device or exhaustive mobile/accessibility qualification."
+  ],
+  "publication": {
+    "new_github_checkpoint": "pending approval; no commit or branch claimed",
+    "main_merge": false,
+    "actions_run": false
+  }
+}

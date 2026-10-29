@@ -87,7 +87,7 @@ test('actual composed keyboard semantic first/last retains RTL/LTR and modifier/
 test('owned title/group/edition UI binds one mode-specific primary, explicit Start and exact row choices', () => {
   const title = source('platform-integrations/bounded-reader/TitleReadingActions.svelte'), group = source('platform-integrations/bounded-reader/GroupPage.svelte'), editions = source('platform-integrations/bounded-reader/EditionPage.svelte');
   assert.match(title, /controller\.start\(\)/); assert.match(title, /controller\.continueNative\(\)/); assert.match(title, /devicePrimary\(!!blocked, prepareDevice\)/); assert.match(title, /<summary>More reading options<\/summary>/); assert.match(title, /Start from first chapter/); assert.doesNotMatch(title, /controller\.continueScan|controller\.openCandidate/);
-  assert.match(group, /controller\.chooseGroup\(row\)/); assert.match(group, /controller\.groups\(true\)/); assert.match(editions, /controller\.chooseEdition\(winner\)/); assert.match(editions, /controller\.chooseEdition\(row\)/); assert.match(editions, /controller\.editions\(undefined, true\)/);
+  assert.match(group, /controller\.chooseGroup\(row\)/); assert.match(group, /controller\.groups\(true\)/); assert.doesNotMatch(editions, /recommended|row\.id\.slice|groupIds\.map/); assert.match(editions, /editionChoices\(\$controller\.editions, Languages\)/); assert.match(editions, /controller\.chooseEdition\(row\)/); assert.match(editions, /controller\.editions\(undefined, true\)/);
 });
 test('actual semantic button owner suppresses modified and handled mouse actions', async () => {
   const f = await fixture(), { plainAction } = await f.module('platform-integrations/bounded-reader/presentation.ts'); await f.controller.refresh();

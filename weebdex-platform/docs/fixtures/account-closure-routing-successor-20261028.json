@@ -1,0 +1,28 @@
+{
+  "scope": "Additive source-only correction for the already implemented reversible account-disable challenge routes. The 2026-10-18 frozen compatibility snapshot is preserved byte-for-byte. This fixture qualifies only route admission, not successful disable acceptance or full upstream compatibility.",
+  "prior_snapshot_sha256": "b6710a5fcaed8cc48fe2238e15ce383451a945e55571feea543166f14feb6f3b",
+  "sources": {
+    "backend/src/public_api/account_closure.rs": "e0c5c780973debad7cb4f7df637dc37db7e181d6747d05e4b824e80c22b53657",
+    "backend/src/public_api/profiles.rs": "a9dde4d63f0b25f2c453934858d6cfc7cc9bef84aceb08f85843a25d742002ee"
+  },
+  "operations": [
+    {
+      "method": "DELETE",
+      "path": "/user/{id}",
+      "prior_status": "known_501_unimplemented",
+      "status": "source_routed_scoped_operation",
+      "module": "account_closure",
+      "unauthenticated_empty_request_status": 401,
+      "scope": "Request-bound Nostr proof and bound native account are mandatory before reversible disable preparation or confirmation."
+    },
+    {
+      "method": "POST",
+      "path": "/user/delete/{code}",
+      "prior_status": "known_501_unimplemented",
+      "status": "source_routed_scoped_operation",
+      "module": "account_closure",
+      "unauthenticated_empty_request_status": 401,
+      "scope": "Request-bound Nostr proof and bound native account are mandatory before reversible disable preparation or confirmation."
+    }
+  ]
+}

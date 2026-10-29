@@ -82,3 +82,17 @@ mod tests {
         assert_eq!(std::fs::read_dir(root.path().join("temporary")).unwrap().count(),0);
     }
 }
+
+/// Cookie-only intake is explicitly selected by the account route. It never
+/// calls or bypasses signed admission. Current owner/session/CSRF is checked
+/// before intake and again by the final transaction after bounded spooling.
+pub(super) async fn receive_native(state:&AppState,uri:&axum::http::Uri,headers:&HeaderMap,request:Request)
+ -> PublicApiResult<(super::native_uploads::NativeRequest,Multipart,OwnedSemaphorePermit)> {
+ let values=headers.get_all(header::CONTENT_TYPE).iter().collect::<Vec<_>>();
+ if values.len()!=1||values[0].to_str().ok().and_then(|v|v.split(';').next()).is_none_or(|v|!v.trim().eq_ignore_ascii_case("multipart/form-data")) {return Err(PublicApiError::new(StatusCode::UNSUPPORTED_MEDIA_TYPE,"Unsupported Media Type","Expected multipart/form-data"));}
+ let cap=super::native_uploads::authorize_headers(state,uri,headers,true).await?;
+ let permit=INTAKES.get_or_init(||Arc::new(Semaphore::new(2))).clone().try_acquire_owned().map_err(|_|PublicApiError::new(StatusCode::TOO_MANY_REQUESTS,"Too Many Requests","Upload intake capacity is busy"))?;
+ let (parts,body)=request.into_parts();let (file,_,_)=tokio::time::timeout(Duration::from_secs(state.config.upload_body_timeout_seconds),spool(&state.config.uploads_dir,body)).await.map_err(|_|PublicApiError::bad_request("Multipart request body timeout"))??;
+ let request=Request::from_parts(parts,Body::from_stream(ReaderStream::with_capacity(file,64*1024)));
+ let multipart=Multipart::from_request(request,state).await.map_err(|_|PublicApiError::bad_request("Invalid multipart boundary"))?;Ok((cap,multipart,permit))
+}

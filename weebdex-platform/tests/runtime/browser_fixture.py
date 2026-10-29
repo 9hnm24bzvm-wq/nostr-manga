@@ -55,6 +55,7 @@ SIGNED_FEATURE_CONTROLS={'signed-feature-account','signed-feature-snapshot'}
 PUBLIC_UPLOAD_CONTROLS={'upload-account','upload-snapshot'}
 UI_REGRESSION_CONTROLS={'ui-regressions-seed':120,'ui-regressions-readers':120,'ui-regressions-status':30,'ui-regressions-withdraw':30}
 PG_HOME_FAULT_CONTROLS={'pg-home-fault-begin','pg-home-fault-resume'}
+READER_VERIFICATION_EMAIL='synthetic-reader-final@example.invalid'
 
 
 def public_feature_command(phase, options, script, timeout, public_upload_controls):
@@ -84,6 +85,38 @@ def signed_feature_payload(action, payload):
             not isinstance(payload['pubkey'], str) or not re.fullmatch(r'[a-f0-9]{64}', payload['pubkey'])):
         raise ValueError('Only the fresh synthetic browser public key is allowed')
     return dict(payload)
+
+
+def reader_verification_payload(payload):
+    """One fixed disposable reader only; no normalization or extra authority."""
+    if type(payload) is not dict or set(payload)!={'email'} or payload['email']!=READER_VERIFICATION_EMAIL:
+        raise ValueError('Only the exact synthetic reader verification precondition is allowed')
+    return dict(payload)
+
+
+def reader_verification_sql(started):
+    # Only time from this supervisor is interpolated. No credential/session
+    # fields are selected; EXISTS establishes a real active native session.
+    if type(started) not in (int,float) or not 0<started<1e12:
+        raise ValueError('Invalid fixture start time')
+    return f"""BEGIN;
+SET LOCAL statement_timeout='3000ms';
+SET LOCAL lock_timeout='1000ms';
+WITH candidate AS (
+ SELECT u.id FROM platform.users u
+ WHERE current_database()='weebdex_browser_test' AND u.email='{READER_VERIFICATION_EMAIL}'
+ AND u.id ~ '^[a-f0-9]{{8}}-[a-f0-9]{{4}}-[a-f0-9]{{4}}-[a-f0-9]{{4}}-[a-f0-9]{{12}}$'
+ AND u.created_at >= to_timestamp({started:.6f})
+ AND NOT u.verified AND NOT u.disabled AND u.roles='["user"]'::jsonb
+ AND EXISTS (SELECT 1 FROM platform.sessions s WHERE s.user_id=u.id
+             AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp())
+ FOR UPDATE OF u
+), changed AS (
+ UPDATE platform.users u SET verified=TRUE,version=u.version+1
+ FROM candidate c WHERE u.id=c.id RETURNING u.id,u.verified
+)
+SELECT jsonb_build_object('id',id,'verified',verified) FROM changed;
+COMMIT;"""
 
 
 def free_port():
@@ -214,6 +247,7 @@ class Fixture:
         self.public_upload_controls=args.public_upload_controls;self.public_upload_actions=0
         self.signed_feature_controls=args.signed_feature_controls;self.signed_feature_actions=0
         self.pg_home_fault_controls=args.pg_home_fault_controls;self.pg_fault=None;self.browser_kind=None
+        self.reader_verification_control=args.reader_verification_control;self.reader_verification_attempts=0
         self.maintenance=threading.Event();self.controls_completed=set();self.generation=0;self.lifecycle_ever_forced=False
         self.ui_dir=self.run/'frontend-snapshot'
         self.children={}; self.logs={}; self.sink=None; self.sink_thread=None
@@ -229,7 +263,8 @@ class Fixture:
         self.receipt={'fixture_only':True,'production':False,'credentials_generated_by_supervisor':False,
                       'database':'weebdex_browser_test','run_directory':str(self.run),'started_unix':self.started,
                       'postgres_bin_root':str(PG_BIN),
-                      'platform_origin':self.origin,'mail_origin':self.mail_origin,'ids':IDS,'children':{},'listener_lifecycle':[]}
+                      'platform_origin':self.origin,'mail_origin':self.mail_origin,'ids':IDS,'children':{},'listener_lifecycle':[],
+                      'reader_verification':{'enabled':self.reader_verification_control,'simulated_test_precondition':True,'organic_email_verification_completed':False,'attempts':0}}
         write_json(self.run/'supervisor.json',self.receipt)
         write_json(self.run/'fixture-owned.json',{'fixture_only':True,'database':'weebdex_browser_test','pg_port':self.pg_port,'public_upload_controls':self.public_upload_controls,'signed_feature_controls':self.signed_feature_controls,'synthetic_images':not args.ubunchu_noncommercial})
     def environment(self):
@@ -349,6 +384,49 @@ class Fixture:
                 self.receipt['signed_features'].update(receipt)
                 write_json(self.run/'supervisor.json',self.receipt)
         return receipt
+    def reader_verification(self,payload):
+        reader_verification_payload(payload)
+        if self.reader_verification_control is not True or self.args.ubunchu_noncommercial:
+            raise ValueError('Synthetic reader verification fixture is disabled')
+        owned=json.loads((self.run/'fixture-owned.json').read_text())
+        if (owned.get('fixture_only') is not True or owned.get('database')!='weebdex_browser_test'
+                or owned.get('pg_port')!=self.pg_port or owned.get('synthetic_images') is not True
+                or self.receipt.get('production') is not False or self.receipt.get('database')!='weebdex_browser_test'):
+            raise ValueError('Owned synthetic database is required')
+        with self.lock:
+            if (self.stop.is_set() or self.maintenance.is_set() or not self.ready_at
+                    or self.receipt['deadline_unix']-time.time()<30):
+                raise ValueError('Fixture is not ready for the reader precondition')
+            if self.reader_verification_attempts!=0:
+                raise ValueError('Reader verification precondition was already attempted')
+            # Consume before SQL, including failures/uncertain responses. Never
+            # replay a mutation merely because a response was lost.
+            self.reader_verification_attempts=1
+            receipt={'fixture_only':True,'simulated_test_precondition':True,
+                     'organic_email_verification_completed':False,'attempts':1,'status':'attempt_reserved',
+                     'roles_changed':False,'permissions_changed':False,'groups_changed':False,
+                     'password_or_session_changed':False}
+            self.receipt['reader_verification']=dict(receipt,enabled=True)
+            write_json(self.run/'reader-verification.json',receipt)
+            write_json(self.run/'supervisor.json',self.receipt)
+        try:
+            lines=self.psql(reader_verification_sql(self.started)).splitlines()
+            if len(lines)!=1:raise RuntimeError('Exactly one eligible registered reader is required')
+            account=json.loads(lines[0])
+            if (type(account) is not dict or set(account)!={'id','verified'} or account['verified'] is not True
+                    or not re.fullmatch(r'[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}',str(account['id']))):
+                raise RuntimeError('Reader precondition outcome is unconfirmed')
+            receipt.update(status='verified_test_precondition',account_id=account['id'],verified=True)
+        except Exception:
+            receipt.update(status='refused_or_uncertain')
+            raise
+        finally:
+            with self.lock:
+                self.receipt['reader_verification']=dict(receipt,enabled=True)
+                write_json(self.run/'reader-verification.json',receipt)
+                write_json(self.run/'supervisor.json',self.receipt)
+        return receipt
+
     def protocol_setup(self):
         setup=self.provision_protocol('setup',{'ui_origin':self.origin,'protocol_origin':self.protocol_origin,
                         'backend_binary':str((ROOT.parent/'manga-protocol-lab/vendor/strfry/strfry').resolve())},timeout=90)
@@ -672,6 +750,12 @@ class Fixture:
                     try:receipt=fixture.signed_feature(action,value)
                     except ValueError:return self.respond(400,{'error':'bounded explicit signed feature fixture target required'})
                     except RuntimeError:return self.respond(503,{'error':'signed feature fixture action did not complete'})
+                    return self.respond(200,receipt)
+                if self.path=='/fixture/reader-verification':
+                    if not fixture.reader_verification_control:return self.respond(404,{'error':'reader verification fixture is disabled'})
+                    try:receipt=fixture.reader_verification(value)
+                    except ValueError:return self.respond(400,{'error':'bounded synthetic reader precondition refused'})
+                    except (RuntimeError,OSError):return self.respond(409,{'error':'reader precondition refused or outcome uncertain; do not retry'})
                     return self.respond(200,receipt)
                 if self.path=='/fixture/provision':
                     if set(value)-{'email','profile','join_seed_group'}: return self.respond(400,{'error':'unsupported provisioning field'})
@@ -1309,6 +1393,7 @@ class Fixture:
         receipt={'fixture_only':True,'status':'verified_stopped'if verified_stopped else'cleanup_unconfirmed',
                  'processes':results,'mail_sink_stopped':not self.sink_thread or not self.sink_thread.is_alive(),
                  'mail_links_persisted':False,'mail_accepted':self.mail_count,'provisions':self.provisions,
+                 'reader_verification':self.receipt['reader_verification'],
                  'synthetic_server_key_files_removed':removed_keys,'synthetic_server_keys_absent':keys_absent,
                  'browser_signer_secret_received':False,'protocol_enabled':self.protocol_enabled,'loopback_ports_closed':closed_ports,
                  'final_teardown_clean':final_teardown_clean,'lifecycle_clean':lifecycle_clean,'lifecycle_ever_forced':self.lifecycle_ever_forced,
@@ -1331,10 +1416,12 @@ def main():
     parser.add_argument('--public-upload-controls',action='store_true',help='Enable the bounded synthetic public signed upload actor/group fixture and exact owned-session observations')
     parser.add_argument('--signed-feature-controls',action='store_true',help='Enable bounded synthetic signed report/draft/chapter fixtures, separate from upload grants')
     parser.add_argument('--pg-home-fault-controls',action='store_true',help='Enable one named real fixed-cluster PG outage/restart for the reviewed homepage failure phase')
+    parser.add_argument('--reader-verification-control',action='store_true',help='Allow one explicitly simulated verification precondition for the fixed synthetic native reader; never organic email verification')
     parser.add_argument('--ubunchu-noncommercial',action='store_true',help='Use licensed originals only for a genuinely noncommercial local fixture; exclude artwork/screenshots from uploads')
     args=parser.parse_args()
     if not 600<=args.lifetime_seconds<=3600:parser.error('fixture lifetime must be600..3600seconds')
     if not args.frontend_artifact_manifest_sha256 or not args.frontend_index_sha256:parser.error('fixture requires exact complete frontend manifest and index hashes')
+    if args.reader_verification_control and args.ubunchu_noncommercial:parser.error('reader verification precondition requires the synthetic disposable fixture')
     if args.ubunchu_noncommercial and not args.protocol_provisioner:parser.error('Ubunchu input requires combined real-protocol fixture')
     if args.second_protocol_recipient and not args.protocol_provisioner:parser.error('second recipient requires combined real-protocol fixture')
     if args.ui_regression_controls and not args.protocol_provisioner:parser.error('native UI regression controls require the reviewed disposable fixture provisioner')

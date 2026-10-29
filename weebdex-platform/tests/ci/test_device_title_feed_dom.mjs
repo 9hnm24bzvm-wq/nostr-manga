@@ -4,11 +4,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { createRequire } from 'node:module';
+import { createRequire, stripTypeScriptTypes } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import test, { after } from 'node:test';
 import { createLocalLibraryOverlays } from '../../platform-integrations/local-library/overlays.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const { libraryDiscovery, unfilteredLibraryHref } = await import('data:text/javascript;base64,' + Buffer.from(stripTypeScriptTypes(fs.readFileSync(path.join(root, 'platform-integrations/local-library/library-discovery.ts'), 'utf8'), { mode: 'transform' })).toString('base64'));
 const dependencies = process.env.WEEBDEX_FRONTEND_ROOT, domRoot = process.env.WEEBDEX_BROWSER_DOM_NODE_MODULES;
 assert(dependencies && domRoot, 'Use existing exact-lock dependency roots');
 const require = createRequire(path.join(dependencies, 'package.json')), { compile } = require('svelte/compiler'), ts = require('typescript');
@@ -47,10 +48,10 @@ const deferred = () => { let resolve, reject; const promise = new Promise((yes,n
 const data = id => ({ id, title: 'Title-'+id });
 const result = (extra = {}) => ({ page:1,limit:20,data:[],total:null,scanned:100,candidates:301,indexed:false,ready:false,started:'2026-10-22T00:00:00Z', ...extra });
 const settle = async () => { for(let i=0;i<8;i++){await Promise.resolve();flushSync();} };
-async function fixture(load, {opening, disposal, query = ''} = {}) {
+async function fixture(load, {opening, disposal, query = '', records = []} = {}) {
   const prefs=writable({items_per_page:'42',version:0}), views=writable('device:0:verified'), identity=writable({accountId:null}), authority=writable({epoch:0}), mangaView=writable('grid');
   const calls=[], opened=[], releases=[];let disposed=0,cancelled=0,navigation=0;
-  globalThis.__titleFixture={prefs,mangaView,libraryViewKey:views,libraryIdentity:identity,nativeAuthority:authority,captureNavigationEpoch:()=>navigation,page:{url:new URL('https://title.fixture/library'+query)},Constants:{MangaGridBreakpoints:{}},Grid:Generic,Button,Spinner:Generic,MangaSearchEntryCard:Entry,message:error=>error.message,TitleCancelled:class extends Error {constructor(){super('cancelled');}},TitleIndexStopped:class extends Error{},HistoryTransportUnsettled:class extends Error{},async openDeviceTitleFeed(query,assertOwner){opened.push({query,assertOwner});if(opening)await opening.promise;return{async load(page){calls.push(page);return load(page,opened.length);},async dispose(){disposed++;if(disposal)await disposal.promise;},releaseDisplayedPage(){releases.push(document.body.textContent);},cancel(){cancelled++;}};}};
+  globalThis.__titleFixture={libraryDiscovery,unfilteredLibraryHref,localLibraryState:writable({records,ready:true,mode:'device'}),isCurrentCatalogueId:id=>typeof id==='string',prefs,mangaView,libraryViewKey:views,libraryIdentity:identity,nativeAuthority:authority,captureNavigationEpoch:()=>navigation,page:{url:new URL('https://title.fixture/library'+query)},Constants:{MangaGridBreakpoints:{}},Grid:Generic,Button,Spinner:Generic,MangaSearchEntryCard:Entry,message:error=>error.message,TitleCancelled:class extends Error {constructor(){super('cancelled');}},TitleIndexStopped:class extends Error{},HistoryTransportUnsettled:class extends Error{},async openDeviceTitleFeed(query,assertOwner){opened.push({query,assertOwner});if(opening)await opening.promise;return{async load(page){calls.push(page);return load(page,opened.length);},async dispose(){disposed++;if(disposal)await disposal.promise;},releaseDisplayedPage(){releases.push(document.body.textContent);},cancel(){cancelled++;}};}};
   const component=mount(Feed,{target:document.querySelector('main')});await settle();
   return{prefs,views,identity,authority,calls,opened,releases,disposed:()=>disposed,cancelled:()=>cancelled,navigate(){navigation++;},async close(){await unmount(component);await settle();},async click(text){const button=[...document.querySelectorAll('button')].find(row=>row.textContent===text);assert(button,`Missing button ${text}: ${document.body.textContent}`);button.click();await settle();}};
 }
@@ -91,3 +92,23 @@ test('exact original route remains account-capable; only two device title markup
 
 test('followedAt unknown-total page is usable without forcing complete indexing',async()=>{const f=await fixture(async n=>result({page:n,localOrder:true,ready:true,data:[data(String(n))]}));try{assert.match(document.body.textContent,/Title-1/);assert.match(document.body.textContent,/Checked 100 of 301 saved titles/);assert.match(document.body.textContent,/Refresh to check for changes/);assert.doesNotMatch(document.body.textContent,/Continue loading/);await f.click('Next page');assert.match(document.body.textContent,/Title-2/);}finally{await f.close();}});
 test('rebuild waits for old index disposal and visibly stops on unconfirmed cleanup',async()=>{const disposal=deferred(),f=await fixture(async()=>result(),{disposal});try{await f.click('Refresh library');assert.equal(f.opened.length,1);disposal.reject(new globalThis.__titleFixture.TitleIndexStopped('Temporary title storage cleanup is unconfirmed'));await settle();assert.match(document.body.textContent,/cleanup is unconfirmed/);assert.equal(f.opened.length,1);}finally{await f.close();}});
+
+
+test('virgin library offers discovery rather than claiming an intentional filter mismatch', async () => {
+ const f=await fixture(async()=>result({total:0,candidates:0,scanned:0,indexed:true,ready:true}));
+ try { assert.match(document.body.textContent,/Your library is empty/); assert.match(document.body.textContent,/Add to Library/); assert.equal(document.querySelector('a').getAttribute('href'),'/search'); assert.doesNotMatch(document.body.textContent,/match these filters/); } finally { await f.close(); }
+});
+test('filtered empty library preserves saved titles and selected list on Clear filters', async () => {
+ const list='a'.repeat(32), records=[{family:'series',id:'title'},{family:'lists',id:list,name:'Weekend reads'},{family:'members',list,series:'title'}];
+ const f=await fixture(async()=>result({total:0,candidates:0,scanned:0,indexed:true,ready:true}),{query:'?list='+list+'&reading_status=completed',records});
+ try { assert.match(document.body.textContent,/No saved titles match these filters/); assert.match(document.body.textContent,/have not been removed/); assert.equal(document.querySelector('a').getAttribute('href'),'/library?list='+list); assert.doesNotMatch(document.body.textContent,/Your library is empty/); } finally { await f.close(); }
+});
+test('empty selected list uses its actual name and opens the rest of the library', async () => {
+ const list='b'.repeat(32), records=[{family:'series',id:'title'},{family:'lists',id:list,name:'Weekend & <reads>'}];
+ const f=await fixture(async()=>result({total:0,candidates:0,scanned:0,indexed:true,ready:true}),{query:'?list='+list,records});
+ try { assert.match(document.body.textContent,/No saved titles in “Weekend & <reads>” yet/); assert.equal(document.querySelector('a').getAttribute('href'),'/library'); assert.equal(document.querySelector('reads'),null); assert.doesNotMatch(document.body.textContent,/match these filters|Your library is empty/); } finally { await f.close(); }
+});
+test('empty-state discovery is not shown for an unfinished or failed library scan', async () => {
+ const pending=deferred(), f=await fixture(()=>pending.promise);
+ try { assert.equal(document.querySelector('a[href="/search"]'),null); pending.reject(Error('Unavailable')); await settle(); assert.equal(document.querySelector('a[href="/search"]'),null); assert.match(document.body.textContent,/Unavailable/); } finally { await f.close(); }
+});

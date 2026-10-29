@@ -1,3 +1,5 @@
+// Historical signed UI regression only; current native coverage is test_native_contribution_dom.mjs.
+import {historicalContributionSource} from './historical-contribution-ui-fixture.mjs';
 // Finite seams from the actual recovered composition and snapshot/persist bodies.
 // Response/save objects below are explicit inputs, not backend or E2E evidence.
 import test from 'node:test';
@@ -5,7 +7,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 const root=new URL('../../',import.meta.url),read=path=>fs.readFileSync(new URL(path,root),'utf8');
-const raw=read('platform-integrations/frontend-overlays.mjs'),start=raw.indexOf('const patches = ')+16,end=raw.indexOf('\n];\nconst hash',start)+2;
+const raw=historicalContributionSource(new URL('platform-integrations/frontend-overlays.mjs',root)),start=raw.indexOf('const patches = ')+16,end=raw.indexOf('\n];\nconst hash',start)+2;
 assert.ok(start>=16&&end>start);const patches=JSON.parse(raw.slice(start,end));
 const helper=read('platform-integrations/frontend-behavior/upload-resume.ts');
 const snapshots=helper.slice(helper.indexOf('export const snapshot ='),helper.indexOf('const sameDraft ='))

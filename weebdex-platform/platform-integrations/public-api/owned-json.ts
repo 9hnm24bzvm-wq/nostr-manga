@@ -202,3 +202,26 @@ export function createNativeContinueJsonReader(endpoint: () => NativeCompletionE
     check(); if (options.signal?.aborted) throw Error('Native Continue cancelled'); return response;
   };
 }
+
+// Ordinary-account reader authority is fixed to these three private routes.
+// It shares unsettled transport ownership with native completion/Continue.
+export type AccountReaderInput = Readonly<{ accountId: string; operation: 'me' | 'continue' | 'completion' | 'progress'; mangaId?: string; chapterId?: string; filters?: string; ids?: readonly string[] }>;
+export function createAccountLibraryJsonReader(endpoint: () => NativeCompletionEndpoint, injected: Partial<NativeCompletionDependencies> = {}) {
+  const deps = { fetch: injected.fetch ?? defaults.fetch, setTimer: injected.setTimer ?? defaults.setTimer, clearTimer: injected.clearTimer ?? defaults.clearTimer };
+  const approvedEndpoint = () => { const value = endpoint(); if (value.profile !== 'public-retained-v1' || value.base !== '/api/v1' || new URL(value.origin).origin !== value.origin || !/^https?:/.test(value.origin)) throw Error('Account reader requires the configured public endpoint'); return Object.freeze({ ...value }); };
+  const uuid = (value: unknown) => { if (typeof value !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value)) throw Error('Invalid account reader ID'); return value; };
+  return async (input: AccountReaderInput, options: { signal?: AbortSignal; assertCurrent(): void; consume?(bytes: number): void }) => {
+    options.assertCurrent(); const approved = approvedEndpoint(), account = nativeId(input.accountId); let path: string, query = new URLSearchParams();
+    if (input.operation !== 'progress' && input.chapterId !== undefined) throw Error('Unexpected account reader chapter');
+    if (input.operation === 'me') { if (input.mangaId !== undefined || input.filters !== undefined || input.ids !== undefined) throw Error('Invalid account identity selection'); path = '/account/me'; }
+    else if (input.operation === 'continue') { if (input.ids !== undefined || typeof input.filters !== 'string' || input.filters.length > 16384) throw Error('Invalid account Continue filter budget'); path = '/account/library/continue/' + uuid(input.mangaId); query = new URLSearchParams(input.filters); }
+    else if (input.operation === 'completion') { if (input.filters !== undefined || !Array.isArray(input.ids) || input.ids.length < 1 || input.ids.length > 50 || new Set(input.ids).size !== input.ids.length) throw Error('Choose 1 to 50 distinct account chapters'); uuid(input.mangaId); path = '/account/library/history/state'; query.set('page', '1'); query.set('limit', '100'); for (const id of input.ids) query.append('ids[]', uuid(id)); }
+    else if (input.operation === 'progress') { if (input.filters !== undefined || input.ids !== undefined) throw Error('Invalid account progress selection'); uuid(input.mangaId); path = '/account/library/progress/' + uuid(input.chapterId); }
+    else throw Error('Unsupported account reader operation');
+    const url = new URL(approved.base + path, approved.origin); url.search = query.toString().replace(/^\?/, '');
+    if (url.href.length > 24576) throw Error('Account reader query budget exceeded');
+    const check = () => { options.assertCurrent(); const now = approvedEndpoint(); if (now.origin !== approved.origin || now.base !== approved.base || now.profile !== approved.profile) throw Error('Account reader endpoint changed'); };
+    const read = createJsonOwner(NATIVE_CONTINUE_LIMITS, { ...deps, origin: () => approved.origin }, defaultErrors, undefined, nativeCompletionOwnership, account);
+    const response = await read(url.href, { credentials: 'omit', signal: options.signal, assertCurrent: check, consume: options.consume }); check(); return response;
+  };
+}

@@ -6,10 +6,10 @@
  import Button from '$lib/components/ui/button/button.svelte';
  import { Label } from '$lib/components/ui/label';
  import { ExternalLinkIcon, Link, Pencil, SendIcon, TrashIcon } from '@lucide/svelte';
- import { draftGrants, openDraftCommand } from './draft-client';
+ import { draftGrants, openSessionDraftCommand } from './session-draft-client';
  import type { MangaView } from './types';
  import type { SignedTitleController, TitleAccount } from './title-client';
- let {manga,account,assertCurrent,onChanged}:{manga:MangaView;account:TitleAccount;assertCurrent:()=>void;onChanged:(value:MangaView|undefined)=>void}=$props();
+ let {nativeAccount,manga,account,assertCurrent,onChanged}:{nativeAccount:string;manga:MangaView;account:TitleAccount;assertCurrent:()=>void;onChanged:(value:MangaView|undefined)=>void}=$props();
  let disposed=false,busy=$state(false),pending=$state(false),removalQueued=$state(false),message=$state(''),controller:SignedTitleController|undefined;
  const grants=$derived(draftGrants(account,manga));
  const creator=$derived(manga.public_api.resource.relationships.find(row=>row.type==='creator'&&typeof row.attributes?.username==='string'));
@@ -21,7 +21,7 @@
   if(remove?!grants.remove:!grants.submit||!['draft','rejected'].includes(state))return;
   const check=()=>{assertCurrent();if(disposed||manga.id!==target||manga.version!==version||manga.state!==state||window.location.href!==href)throw Error('The draft card or route changed. No stale command was continued.');};
   busy=true;message='';
-  try{controller=await openDraftCommand(manga,account,check);check();pending=controller.pending();
+  try{controller=await openSessionDraftCommand(nativeAccount,manga,account,check);check();pending=controller.pending();
    if(remove){const receipt=await controller.disposition('remove',mode);check();if(receipt.status===204){message='Draft soft-hidden on this instance. Original events and bytes are unchanged.';onChanged(undefined);}else if(receipt.status===202){removalQueued=true;message='Removal review queued: '+receipt.requestId+'. The draft remains here until approved.';}else throw Error('Draft removal was not confirmed.');}
    else{const receipt=await controller.mutate('submit');check();if(receipt.status!==201||!receipt.body)throw Error('Draft submission refused (HTTP '+receipt.status+'). Reload before trying again.');message='Draft submitted for review.';onChanged(receipt.body);}
   }catch(error){if(!disposed)message=error instanceof Error?error.message:'The draft action was not confirmed.';}

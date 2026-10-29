@@ -93,9 +93,10 @@ test('failed links and evaluations stay rejected while unrelated roots remain us
 });
 
 test('actual public modules share the language/query diamond across repeated concurrent roots', async () => {
-  const denied = Error('Finite account boundary');
+  const denied = Error('Finite native-session directory boundary');
   let access = 0;
-  const loader = createPublicApiModuleLoader({context: makeContext(), boundAccountAccess() { access++; throw denied; }});
+  const selected = new URLSearchParams({ name: 'Reader', limit: '20' }), controller = new AbortController();
+  const loader = createPublicApiModuleLoader({context: makeContext(), boundAccountAccess() { assert.fail('Ordinary directory must not use a signing account'); }, sessionUserDirectory(query, signal) { access++; assert.equal(query, selected); assert.equal(signal, controller.signal); throw denied; }});
   const pending = loader.evaluate('site-client');
   assert.equal(loader.evaluate('site-client'), pending);
   const [site, query, language, popularity, directoryModule, repeated] = await Promise.all([
@@ -113,8 +114,8 @@ test('actual public modules share the language/query diamond across repeated con
   assert.equal(popularity.namespace.popularityQuery('manga', new URLSearchParams({lang: 'ta'})).query.get('originalLanguage[]'), 'ta');
   assert.throws(() => popularity.namespace.popularityQuery('manga', new URLSearchParams({lang: 'ta!'})), error => error.status === 422);
   const bridge = new site.namespace.RetainedCatalogueClient(new Proxy({}, {get() { throw Error('Unexpected anonymous HTTP'); }}));
-  await assert.rejects(() => bridge.read('user.search'), error => error === denied);
-  assert.equal(access, 1, 'the actual dynamic directory import reaches only the explicit finite account seam');
+  await assert.rejects(() => bridge.read('user.search', { query: selected, signal: controller.signal }), error => error === denied);
+  assert.equal(access, 1, 'the actual dynamic directory import reaches only the explicit finite native-session seam');
 });
 
 test('public fixture refuses unknown imports, path escapes and unstubbed account dependencies', async () => {
@@ -124,6 +125,7 @@ test('public fixture refuses unknown imports, path escapes and unstubbed account
   }
   await assert.rejects(loader.load('missing-fixture-module'), error => error.code === 'ENOENT');
   await assert.rejects(loader.evaluate('bound-account-request'), /Unexpected public API fixture import: \.\.\/local-library\/publication/);
+  await assert.rejects(loader.evaluate('session-user-directory'), /Unexpected public API fixture import: svelte\/store/);
   assert.equal((await loader.namespace('language')).publicWriteLanguage('ta'), 'ta');
 });
 

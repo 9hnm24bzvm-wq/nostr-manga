@@ -1,4 +1,4 @@
-import {restoreReaderUxPredecessor} from './reviewed-reader-ux-source-successor.mjs';
+import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 import { restoreUploadFinalization } from './upload-finalization-source-association.mjs';
 import { restoreCancellationObserver } from './upload-cancel-observer-association.mjs';
 // Finite source and injected filesystem tests. No package import or browser.

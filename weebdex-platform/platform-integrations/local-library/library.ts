@@ -10,17 +10,19 @@ import { LocalLibrary } from './protocol/store.js';
 import type { MigrationReview } from '../public-api/device-id-migration';
 import type { DeviceListNameReview } from './device-list-name';
 export type { DeviceListNameReview } from './device-list-name';
-import { captureNativeAuthority, sameNativeReadAuthority } from '$platform/mutation-authority';
+import { captureNativeAuthority, nativeAuthority, sameNativeReadAuthority } from '$platform/mutation-authority';
+import { nativeAccountProgressRevision, nativeAccountLibraryState, applyNativeAccountFollow, readNativeLibrary, mutateNativeLibrary } from './native-account-library';
 export type Mode = 'device' | 'account';
 export type ScopeStatus = 'pending' | 'verified' | 'offline' | 'origin_only' | 'migration_required';
 export type LibraryState = { scopeStatus: ScopeStatus; scopeReason?: string; cachedScopeReady?: boolean; ready: boolean; mode: Mode; revision: number; accountRevision: number; records: DeviceRecord[]; error?: string };
 export const localLibraryState = writable<LibraryState>({ scopeStatus: 'pending', ready: false, mode: 'device', revision: 0, accountRevision: 0, records: [] });
+nativeAccountProgressRevision.subscribe(revision => { if (revision) localLibraryState.update(state => ({ ...state, accountRevision: state.accountRevision + 1 })); });
 // Unresolved legacy rows remain in backups/recovery, never in UUID catalogue reads.
 export const isCurrentCatalogueId=(id:unknown)=>typeof id==='string'&&(!publicUuidLibraryEnabled||uuidPattern.test(id));
-export const libraryIdentity = derived([localLibraryState, Session], ([local, account]) => ({
+export const libraryIdentity = derived([localLibraryState, Session, nativeAccountLibraryState, nativeAuthority], ([local, account, nativeLibrary, authority]) => ({
   ready: local.ready, mode: local.mode, accountId: account?.identity.id ?? null, canUse: !cataloguePreviewLibraryUnavailable && local.ready && (local.mode === 'account' ? !publicAccountLibraryUnavailable && !!account : local.scopeStatus === 'verified'),
   // This is library availability, never an account Session or permission identity.
-  follows: cataloguePreviewLibraryUnavailable ? {} : local.mode === 'device' ? (local.scopeStatus !== 'verified' ? {} : Object.fromEntries(local.records.filter(row => row.family === 'series' && isCurrentCatalogueId(row.id)).map(row => [row.id!, [row.status!, row.notification ? 1 : 0]]))) : (publicAccountLibraryUnavailable ? {} : account?.follows ?? {})
+  follows: cataloguePreviewLibraryUnavailable ? {} : local.mode === 'device' ? (local.scopeStatus !== 'verified' ? {} : Object.fromEntries(local.records.filter(row => row.family === 'series' && isCurrentCatalogueId(row.id)).map(row => [row.id!, [row.status!, row.notification ? 1 : 0]]))) : (publicAccountLibraryUnavailable ? {} : publicUuidLibraryEnabled ? nativeLibrary.owner === account?.identity.id && nativeLibrary.epoch === authority.epoch ? nativeLibrary.follows : {} : account?.follows ?? {})
 }));
 export const libraryViewKey = derived([localLibraryState, libraryIdentity], ([local, identity]) => identity.mode === 'device' ? `device:${local.revision}:${local.scopeStatus}` : `account:${identity.accountId ?? 'none'}:${local.accountRevision}`);
 export const captureLibraryView = () => get(libraryViewKey);
@@ -31,7 +33,16 @@ export function assertLibraryView(expected: string) {
 // same-ID permission/follow refreshes and A -> B -> A switches. This is not a
 // login authority; it only prevents old responses restoring newer store state.
 let sessionWriteGeneration = 0;
-Session.subscribe(() => { sessionWriteGeneration++; });
+// Explicit guest-device choices are confined to the current native account.
+// Signing in never adopts, uploads or deletes this browser's guest records.
+const accountLibraryChoices = new Map<string, Mode>();
+Session.subscribe(account => {
+  sessionWriteGeneration++;
+  if (publicUuidLibraryEnabled && !publicAccountLibraryUnavailable) {
+    const id = account?.identity.id, mode = id ? accountLibraryChoices.get(id) ?? 'account' : 'device';
+    localLibraryState.update(state => state.mode === mode ? state : { ...state, mode });
+  }
+});
 let importContextGeneration = 0, importContextKey = '';
 derived([localLibraryState, Session], ([local, account]) => JSON.stringify([local.mode, local.scopeStatus, account?.identity.id ?? null])).subscribe(key => {
   if (key !== importContextKey) { importContextKey = key; importContextGeneration++; }
@@ -66,7 +77,9 @@ export function assertImportContext(context: LibraryImportContext, scope: Instan
   assertCurrentCatalogueScopeValue(scope);
 }
 let device: DeviceStore, protocol: LocalLibrary, opening: Promise<void> | undefined, refreshGeneration = 0;
+let deviceStorageFailure: string | undefined;
 export function openLibrary(): Promise<void> {
+  if (deviceStorageFailure && publicUuidLibraryEnabled && !publicAccountLibraryUnavailable && get(localLibraryState).mode === 'account' && get(Session)?.identity.id) { localLibraryState.update(state => ({ ...state, ready: true })); return Promise.resolve(); }
   return opening ??= (async () => {
     try {
       const apiOrigin = new URL(PUBLIC_API_URL || '/api', window.location.href).origin;
@@ -75,13 +88,16 @@ export function openLibrary(): Promise<void> {
       device = await DeviceStore.open({ origin: apiOrigin, serviceKey: null, catalogNamespace: null }, () => { void refreshLibrary().catch(() => {}); }, () => localLibraryState.update(state => ({ ...state, ready: false, error: 'Local database changed in another tab. Reload before saving.' })), {idFormat:publicUuidLibraryEnabled?'public_uuid-v2':'native-v1'});
       protocol = await LocalLibrary.open('weebdex-protocol-library-v1');
       const preference = await protocol.getMeta('weebdexLibraryMode');
-      localLibraryState.update(state => ({ ...state, mode: preference === 'account' ? 'account' : 'device' }));
+      const actor = get(Session)?.identity.id;
+      localLibraryState.update(state => ({ ...state, mode: publicUuidLibraryEnabled && !publicAccountLibraryUnavailable ? actor ? accountLibraryChoices.get(actor) ?? 'account' : 'device' : preference === 'account' ? 'account' : 'device' }));
       await refreshLibrary();
       void verifyCatalogueScope();
       window.addEventListener('online', () => { void verifyCatalogueScope(); });
     } catch (error) {
-      localLibraryState.update(state => ({ ...state, ready: false, error: `Cannot open durable local storage: ${message(error)}. No server fallback was used.` }));
-      throw error;
+      deviceStorageFailure = `On-device storage is unavailable: ${message(error)}. Your account library remains separate; no guest data was uploaded.`;
+      const accountReady = publicUuidLibraryEnabled && !publicAccountLibraryUnavailable && get(localLibraryState).mode === 'account' && !!get(Session)?.identity.id;
+      localLibraryState.update(state => ({ ...state, ready: accountReady, error: deviceStorageFailure }));
+      if (!accountReady) throw error;
     }
   })();
 }
@@ -130,7 +146,7 @@ export async function refreshLibrary() {
   const snapshot = await device.snapshot();
   if (generation === refreshGeneration) localLibraryState.update(state => ({ ...state, ready: true, revision: snapshot.revision, records: snapshot.records, error: undefined, ...(cataloguePreviewLibraryUnavailable ? { scopeStatus: 'migration_required' as const, scopeReason: CATALOGUE_PREVIEW_LIBRARY_FENCE } : {}), ...(snapshot.version === 2 && !publicUuidLibraryEnabled || snapshot.migration_reason ? { scopeStatus: 'migration_required' as const, scopeReason: snapshot.migration_reason ?? PUBLIC_DEVICE_FORMAT_FENCE, cachedScopeReady:false } : {}) }));
 }
-export async function stores() { await openLibrary(); return { device, protocol }; }
+export async function stores() { await openLibrary(); if (deviceStorageFailure) throw Error(deviceStorageFailure); return { device, protocol }; }
 export async function useMode(mode: Mode) {
   if (!['device', 'account'].includes(mode)) throw Error('Unknown library mode');
   if (mode === 'account') assertAccountLibraryReady();
@@ -138,8 +154,16 @@ export async function useMode(mode: Mode) {
   readerSelectionState.set({ epoch: selection, pending: true });
   try {
     await openLibrary();
+    if (mode === 'device' && deviceStorageFailure) throw Error(deviceStorageFailure);
     if (mode === 'account' && !(await Session.isValid())) throw Error('Sign into a WeebDex account before choosing account-library mode');
     if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action');
+    if (publicUuidLibraryEnabled && !publicAccountLibraryUnavailable) {
+      const actor = get(Session)?.identity.id;
+      if (selection !== selectionEpoch) return;
+      if (actor) accountLibraryChoices.set(actor, mode);
+      localLibraryState.update(state => ({ ...state, mode }));
+      return;
+    }
     const { transaction } = await import('./protocol/indexeddb.js');
     if (selection !== selectionEpoch) throw new HTTPError(409, 'A newer library selection superseded this action before storage dispatch');
     await transaction(protocol.db, 'meta', 'readwrite', (tx: IDBTransaction) => { tx.objectStore('meta').put(mode, 'weebdexLibraryMode'); });
@@ -160,7 +184,7 @@ export async function localAction<T>(operation: () => Promise<T>): Promise<T> {
     throw error instanceof HTTPError ? error : new HTTPError(507, text, 'Local storage failed');
   }
 }
-export async function currentDeviceSnapshot() { await openLibrary(); return device.snapshot(); }
+export async function currentDeviceSnapshot() { await openLibrary(); if (deviceStorageFailure) throw Error(deviceStorageFailure); return device.snapshot(); }
 export async function saveSeries(id: string, status: string, notification = true, assertContext: () => void = () => {}) { assertCataloguePreviewLibraryReady();
   catalogueId(id);
   return localAction(async () => {
@@ -229,6 +253,11 @@ export const params = (input: URLSearchParams) => new URLSearchParams(input.toSt
 export async function apiRead<T>(path: string, query?: URLSearchParams, account = false, expectedAccount?: string): Promise<T> {
   if (/^\/(?:manga|chapter|cover|author|group|tag)(?:\/|$)|^\/user\/(?:history|follows)(?:\/|$)/.test(path)) assertCataloguePreviewLibraryReady();
   if (account) assertAccountLibraryReady();
+  if (account && publicUuidLibraryEnabled && /^\/user\/(?:history|follows)(?:\/|$)/.test(path)) {
+    const context = captureLibraryContext(), authority = captureNativeAuthority(), expected = expectedAccount ?? context.accountId;
+    const check = () => { assertLibraryContext(context); if (!expected || expected !== get(Session)?.identity.id || !sameNativeReadAuthority(authority)) throw new HTTPError(409, 'Your account changed. Reload this library view.'); };
+    check(); const result = await readNativeLibrary(path, params(query ?? new URLSearchParams()), check); check(); return result as T;
+  }
   if (publicUuidLibraryEnabled && /^\/(?:manga|chapter|cover|author|group|tag)(?:\/|$)|^\/user\/(?:history|follows)(?:\/|$)/.test(path)) throw new HTTPError(501,'This catalogue read requires its UUID adapter. No native request was sent.');
   const encoded = query ? encodeParams(params(query)) : '';
   const suffix = encoded ? '?' + encoded : '';
@@ -250,6 +279,11 @@ export async function accountRequest<T>(path: string, method: string, payload?: 
   if (!(await Session.isValid())) throw new HTTPError(401, 'Sign into the selected account library');
   if (!expectedId) throw new HTTPError(401, 'No selected account identity');
   assertCurrentAccount();
+  if (publicUuidLibraryEnabled) {
+    const result = await mutateNativeLibrary(path, method, payload, assertCurrentAccount); assertCurrentAccount();
+    localLibraryState.update(state => ({ ...state, accountRevision: state.accountRevision + 1 }));
+    return result as { status: number; body?: T };
+  }
   try {
     const response = await fetch(PUBLIC_API_URL.replace(/\/$/, '') + path, { method, credentials: 'include', redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(30000), headers: payload === undefined ? { 'X-WeebDex-Expected-Account': expectedId } : { 'Content-Type': 'application/json', 'X-WeebDex-Expected-Account': expectedId }, body: payload === undefined ? undefined : JSON.stringify(payload) });
     if (!response.ok) { let body: T | undefined; try { body = await response.json(); } catch {} assertCurrentAccount(); return { status: response.status, body }; }
@@ -363,6 +397,7 @@ export function downloadBlob(blob: Blob, filename: string) {
   anchor.href = url; anchor.download = filename; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 export async function previewAccountImport(): Promise<ImportReview> {
+  if (publicUuidLibraryEnabled) throw Error('This legacy account-to-device import is not compatible with this catalogue. No account or device data was changed.');
   await assertCatalogueScope();
   if (!(await Session.isValid())) throw Error('Sign into the account you want to import');
   const accountId = get(Session)?.identity.id;
@@ -406,6 +441,10 @@ export function applyAccountFollow(context: ReturnType<typeof captureLibraryCont
   assertLibraryContext(context);
   if (context.mode !== 'account') return;
   const account = get(Session); if (!account || account.identity.id !== context.accountId) throw new HTTPError(409, 'The account changed; no follow flag was applied to another account', 'Account changed');
+  if (publicUuidLibraryEnabled) {
+    applyNativeAccountFollow({ mangaId: id, saved: !!value, ...(value ? { status: value[0] as import('./native-account-library-client').AccountReadingStatus, notification: value[1] === 1 } : {}) });
+    return;
+  }
   const follows = { ...(account.follows ?? {}) };
   if (value) follows[id] = value as typeof follows[string]; else delete follows[id];
   Session.set({ ...account, follows });

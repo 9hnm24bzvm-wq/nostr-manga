@@ -6,6 +6,7 @@ import { createNostrUploadRequest, PublicUploadRequestError } from './nostr-uplo
 import type { TitleAccount, TitleDependencies } from './title-client';
 import type { PublicUploadResponse } from './nostr-upload-request';
 import { publicUuid, record, PublicApiContractError } from './validation';
+import { accountAccessError } from './account-access';
 const defaults:TitleDependencies={capabilities,selectedSigner,proveService,publicOrigin:()=>window.location.origin,createRequest:createNostrUploadRequest,fences:{get:key=>sessionStorage.getItem(key),set:(key,value)=>sessionStorage.setItem(key,value),delete:key=>sessionStorage.removeItem(key)}};
 function fail(message:string,status=502):never{throw new PublicApiContractError(message,status);}
 export async function createSignedAccountScope(assertCurrent:()=>void,injected:Partial<TitleDependencies>={},signal?:AbortSignal) {
@@ -26,7 +27,7 @@ export async function createSignedAccountScope(assertCurrent:()=>void,injected:P
   async function refresh(){check();if(JSON.stringify(scope(await deps.capabilities()))!==JSON.stringify(captured))fail('The account service or catalogue changed',409);check();}
   const request=deps.createRequest({scope:captured,identity,assertCurrent:check,beforeSend:async requestSignal=>{if(requestSignal.aborted)fail('Account request cancelled',409);await refresh();}});
   function facts(response:PublicUploadResponse):TitleAccount {
-   if(response.status!==200)fail(`Signed account authorization refused (HTTP ${response.status})`,response.status);
+   if(response.status!==200)throw accountAccessError(response.status,response.body);
    const body=record(response.body),user=record(body.user),nostr=record(body.nostr);
    if(body.result!=='ok'||nostr.pubkey!==identity.owner||nostr.serviceKey!==captured.serviceKey||publicUuid(nostr.catalogNamespace)!==captured.catalogNamespace||nostr.authentication!=='NIP-98'||nostr.requestScoped!==true||nostr.nativeSessionAuthority!==false||nostr.catalogueScope!=='instance-local')fail('The bound account does not match this exact signer/service/catalogue');
    if(typeof user.username!=='string'||!user.username||user.username.length>500||!Number.isSafeInteger(user.version)||Number(user.version)<1)fail('Invalid current bound account');

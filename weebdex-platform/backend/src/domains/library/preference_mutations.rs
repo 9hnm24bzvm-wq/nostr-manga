@@ -7,7 +7,7 @@ use std::collections::BTreeSet;
 use tokio_postgres::Transaction;
 
 #[derive(Clone,Copy,PartialEq,Eq)]
-pub(crate) enum Mode {NativeLegacy,PublicPreserving}
+pub(crate) enum Mode {NativeLegacy,PublicPreserving,NativePreserving,NativeBarrier}
 pub(crate) fn patch(p:PreferencesPatch)->ApiResult<(i32,Value)> {
     if p.version<1 {return Err(ApiError::bad_request("A positive preferences version is required"));}
     let mut patch=json!({});
@@ -50,11 +50,14 @@ pub(crate) async fn update_in(tx:&Transaction<'_>,actor:&impl CatalogMutationAct
         let mut ids:Vec<String>=serde_json::from_value(values.clone()).map_err(|_|ApiError::bad_request("Invalid preference identifiers"))?;
         let visible=tx.query(&format!("SELECT r.id FROM {table} WHERE r.id=ANY($1::text[]) AND {visibility}"),&[&ids]).await?.into_iter().map(|r|r.get::<_,String>(0)).collect::<BTreeSet<_>>();
         if visible.len()!=ids.len() {return Err(ApiError::bad_request(format!("Unknown {key} preference")));}
-        if mode==Mode::PublicPreserving {
+        if mode!=Mode::NativeLegacy {
             if let Some(stored)=current.get(key) {
                 let old:Vec<String>=serde_json::from_value(stored.clone()).map_err(|_|ApiError::unavailable())?;
                 if old.len()>100 || old.iter().any(|s|s.is_empty() || s.len()>128 || s.contains('\0')) {return Err(ApiError::unavailable());}
-                let visible_old=tx.query(&format!("SELECT r.id FROM {table} WHERE r.id=ANY($1::text[]) AND {visibility}"),&[&old]).await?.into_iter().map(|r|r.get::<_,String>(0)).collect::<BTreeSet<_>>();
+                // Native public-UUID clients cannot see unmapped values; preserve them too.
+                let kind=match key {"tags"=>"tag","groups"=>"group",_=>"user"};
+                let mapped=if mode==Mode::NativePreserving {format!(" AND EXISTS(SELECT 1 FROM platform.public_resource_ids p WHERE p.kind='{kind}' AND p.native_id=r.id AND p.preferred)")} else {String::new()};
+                let visible_old=tx.query(&format!("SELECT r.id FROM {table} WHERE r.id=ANY($1::text[]) AND {visibility}{mapped}"),&[&old]).await?.into_iter().map(|r|r.get::<_,String>(0)).collect::<BTreeSet<_>>();
                 for value in old {if !visible_old.contains(&value) && !ids.contains(&value) {ids.push(value);}}
                 if ids.len()>100 {return Err(ApiError::bad_request(format!("{key} plus preserved unavailable filters exceed 100 entries")));}
                 patch[key]=json!(ids);
@@ -62,7 +65,7 @@ pub(crate) async fn update_in(tx:&Transaction<'_>,actor:&impl CatalogMutationAct
         }
     }
     let fields=patch.as_object().ok_or_else(ApiError::unavailable)?;
-    let changed=!fields.is_empty() && (mode==Mode::NativeLegacy || fields.iter().any(|(key,value)|current.get(key)!=Some(value)));
+    let changed=mode==Mode::NativeBarrier || !fields.is_empty() && (mode==Mode::NativeLegacy || fields.iter().any(|(key,value)|current.get(key)!=Some(value)));
     if changed {
         patch["version"]=json!(version.checked_add(1).ok_or_else(||ApiError::conflict("Preference version limit reached"))?);
         tx.execute("UPDATE platform.users SET preferences=preferences || $2,updated_at=clock_timestamp() WHERE id=$1",&[&actor.user_id(),&patch]).await?;

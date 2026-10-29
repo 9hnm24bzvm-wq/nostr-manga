@@ -13,7 +13,7 @@ const source = fs.readFileSync(new URL('../../scripts/browser-signed-journeys.mj
 const panel = name => fs.readFileSync(new URL('../../platform-integrations/local-library/' + name + '.svelte', import.meta.url), 'utf8');
 const libraryMarkup = panel('LibraryManagementTools'), identityMarkup = panel('ProtocolIdentityPanel');
 const calls = [...source.matchAll(/nativeSelectForLabel\((library\(\)|identity\(\)|surface), ("[^"]*"(?: \+ manga)?)\)\.selectOption\(([^;\n]+?)\)/g)];
-assert.equal(calls.length, 8, 'Every signed native select call must use the reviewed helper');
+assert.equal(calls.length, 7, 'Every signed native select call must use the reviewed helper');
 assert.doesNotMatch(source, /getByLabel\([^;\n]+?\)\.selectOption\(/, 'Exact descendant-contaminated native labels must not remain');
 const expected = [
   ['identity()', 'Verified recipient', 'protocol'],
@@ -23,7 +23,6 @@ const expected = [
   ['identity()', 'Verified recipient', 'second.origin'],
   ['identity()', 'Verified recipient', 'protocol'],
   ['identity()', 'Verified recipient', 'second.origin'],
-  ['library()', 'Status for saved Synthetic1', '"completed"'],
 ];
 
 test('all actual signed native-select calls retain their exact scope, label and option value', async () => {
@@ -43,13 +42,13 @@ test('all actual signed native-select calls retain their exact scope, label and 
       identity: () => call[1] === 'identity()' ? scope : otherScope, surface: call[1] === 'surface' ? scope : otherScope, protocol, second, manga, deviceList, kind };
     await vm.runInNewContext('(async () => ' + call[0] + ')()', context);
   }
-  assert.equal(selected.length, 8);
+  assert.equal(selected.length, 7);
   assert.equal(selected.filter(([label]) => label === 'Verified recipient').length, 5);
 });
 
 test('actual panel markup uses implicit labels that also contain native option text', () => {
   for (const label of ['List', 'Title']) assert.match(libraryMarkup, new RegExp('<label>' + label + ' <select[^>]+>[\\s\\S]*?<option'));
-  assert.match(libraryMarkup, /<label>Status for saved \{row.id\}<select[^>]+>[\s\S]*?<option/);
+  assert.match(libraryMarkup, /<label>Status for saved title \{i \+ 1\}<select[^>]+>[\s\S]*?<option/);
   for (const label of ['Verified recipient']) assert.match(identityMarkup, new RegExp('<label>' + label + ' <select[^>]+>[\\s\\S]*?<option'));
 });
 
@@ -68,4 +67,12 @@ test('native select helper retains strict selection for missing or duplicate sig
     await assert.rejects(nativeSelectForLabel(scope, 'Verified recipient').selectOption('http://127.0.0.1:4101'), /strict native recipient control/);
     assert.equal(mutations, 0);
   }
+});
+
+test('saved recovery status is scoped to one exact support reference rather than assuming the visible row number',()=>{
+ assert.match(source,/const savedStatus = library\(\)\.locator\('div:has\(> details > p:text-is\('/);
+ assert.match(source,/JSON\.stringify\(manga\)/);
+ assert.match(source,/insist\(await savedStatus\.count\(\) === 1/);
+ assert.match(source,/await savedStatus\.selectOption\("completed"\)/);
+ assert.match(libraryMarkup,/<details><summary>Title reference for support<\/summary><p[^>]*>\{row.id\}<\/p><\/details>/);
 });

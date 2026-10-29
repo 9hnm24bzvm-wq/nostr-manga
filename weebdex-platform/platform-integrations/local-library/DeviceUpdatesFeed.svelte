@@ -12,7 +12,8 @@
   import Carousel from '$lib/components/ui/Carousel.svelte';
   import LatestUpdatesGridEntry from '$lib/components/LatestUpdatesGridEntry.svelte';
   import MangaSearchEntryCard from '$lib/components/MangaSearchEntryCard.svelte';
-  import { libraryViewKey, libraryIdentity, localLibraryState, message } from './library';
+  import { libraryViewKey, libraryIdentity, localLibraryState, isCurrentCatalogueId, message } from './library';
+  import { libraryDiscovery } from './library-discovery';
   import { nativeAuthority } from '$platform/mutation-authority';
   import { captureNavigationEpoch } from '$platform/navigation-authority';
   import { openDeviceUpdatesFeed } from './updates-feed';
@@ -25,6 +26,7 @@
   import { HistoryTransportUnsettled } from './history-pagination';
   let result = $state<UpdatePage<Chapter & UpdateRow>>(), error = $state(''), stopped = $state(false), loading = $state(false), mounted = $state(false), target = $state(1);
   let pager: UpdatesPager<Chapter & UpdateRow> | undefined;
+  const discovery = $derived(libraryDiscovery($localLibraryState.records, null, isCurrentCatalogueId));
   let generation = 0, destroyed = false, ownedIdentity = '';
   const identity = () => JSON.stringify([$libraryViewKey, $libraryIdentity.accountId, $nativeAuthority, captureNavigationEpoch(), $prefs, page.url.href, latestOnly]);
   function assertOwner(epoch: number, key: string) { if (destroyed || epoch !== generation || key !== identity()) throw new UpdatesCancelled(); }
@@ -92,7 +94,20 @@
     </Grid>
   {/if}
 {:else if result?.ready && !error}
-  <p role="status">{result.total === 0 ? 'No new chapters found for your followed titles.' : 'There are no more updates on this page.'}</p>
+  <div class="space-y-2" role="status">
+    {#if result.total !== 0}
+      <p>There are no more updates on this page.</p>
+    {:else if result.parents === 0 && discovery.saved === 0}
+      <p>Save your first title to see its chapter updates here. Open a title, choose “Add to Library”, and leave chapter updates on.</p>
+      <a class="inline-block rounded border px-4 py-2" href="/search">Discover titles</a>
+    {:else if result.parents === 0}
+      <p>Chapter updates are off for your saved titles. Turn them on for a title in your library to see its updates here.</p>
+      <a class="underline" href="/library">Open My Library</a>
+    {:else}
+      <p>No chapters found for your followed titles with your current preferences.</p>
+      <a class="underline" href="/settings/preferences">Check language and content preferences</a>
+    {/if}
+  </div>
 {/if}
 {#if error}<p role="alert">{error}</p>{/if}
 {#if loading}

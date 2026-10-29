@@ -36,7 +36,7 @@ fn primary(value: &Value, language: &str) -> String {
     value.get(language).or_else(||value.get("en")).or_else(||value.as_object().and_then(|m|m.values().next()))
         .and_then(Value::as_str).unwrap_or("").to_owned()
 }
-fn normalize(input: Value, edit: bool, language: &str) -> PublicApiResult<(Value,Value)> {
+pub(super) fn normalize(input: Value, edit: bool, language: &str) -> PublicApiResult<(Value,Value)> {
     v::allowed(&input,&["title","altTitles","description","authors","artists","links","originalLanguage",
         "lastVolume","lastChapter","publicationDemographic","status","year","contentRating",
         "chapterNumbersResetOnNewVolume","tags","version","officialLinks","primaryCover"])?;
@@ -111,7 +111,7 @@ fn normalize(input: Value, edit: bool, language: &str) -> PublicApiResult<(Value
     }
     Ok((native,metadata))
 }
-async fn ids(tx:&Transaction<'_>, native:&mut Value) -> PublicApiResult<()> {
+pub(super) async fn ids(tx:&Transaction<'_>, native:&mut Value) -> PublicApiResult<()> {
     if let Some(cover)=native.get("primary_cover").filter(|v|!v.is_null()) {
         native["primary_cover"]=json!(resolve(tx,ResourceKind::Cover,&PublicUuid::parse(cover.as_str().unwrap())?).await?);
     }
@@ -124,7 +124,7 @@ async fn ids(tx:&Transaction<'_>, native:&mut Value) -> PublicApiResult<()> {
     }
     Ok(())
 }
-async fn resource(tx:&Transaction<'_>,native:Value)->PublicApiResult<Json<EntityResponse<Resource>>> {
+pub(super) async fn resource(tx:&Transaction<'_>,native:Value)->PublicApiResult<Json<EntityResponse<Resource>>> {
     let aliases=AliasIndex::load_in(tx,&[(ResourceKind::Manga,native.clone())]).await?;
     let includes=["author","artist","tag","creator","cover_art"].into_iter().map(str::to_owned).collect();
     Ok(Json(EntityResponse::new(aliases.resource(ResourceKind::Manga,&native,&includes)?)))

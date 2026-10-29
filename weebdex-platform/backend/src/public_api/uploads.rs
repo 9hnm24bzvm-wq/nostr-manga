@@ -114,7 +114,7 @@ pub(super) async fn preferred(tx: &Transaction<'_>, kind: ResourceKind, native: 
         .ok_or_else(PublicApiError::unavailable)?;
     PublicUuid::parse(row.get::<_, &str>(0)).map_err(|_| PublicApiError::unavailable())
 }
-async fn session_resource(tx: &Transaction<'_>, native: &Value) -> PublicApiResult<Value> {
+pub(super) async fn session_resource(tx: &Transaction<'_>, native: &Value) -> PublicApiResult<Value> {
     let id = native["id"].as_str().ok_or_else(PublicApiError::unavailable)?;
     Ok(json!({"id":preferred(tx, ResourceKind::UploadSession, id).await?,"type":"upload_session","attributes":{
         "isCommitted":native["is_committed"],"isProcessed":native["is_processed"],"isDeleted":native["is_deleted"],
@@ -454,7 +454,10 @@ mod tests {
     #[test]
     fn exact_transport_names_and_unsupported_features_are_explicit() {
         assert!(parse::<Begin>(br#"{"manga":"11111111-1111-8111-8111-111111111111"}"#).is_err());
-        assert!(parse::<Edit>(br#"{"version":1,"replace":true}"#).is_err());
+        assert!(parse::<Edit>(br#"{"version":1,"replace":true}"#).unwrap().replace);
+        assert!(!parse::<Edit>(br#"{"version":1,"replace":false}"#).unwrap().replace);
+        assert!(parse::<Edit>(br#"{"version":1,"replace":true,"unknown":true}"#).is_err());
+        assert!(parse::<Edit>(br#"{"version":1,"replace":"true"}"#).is_err());
         assert!(parse::<Commit>(br#"{"draft":{},"page_order":[]}"#).is_err());
         for key in ["externalUrl"] {
             let mut value=json!({"volume":null,"chapter":null,"title":null,"translatedLanguage":"en"});

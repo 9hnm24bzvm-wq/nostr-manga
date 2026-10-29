@@ -56,7 +56,9 @@ fn scalars(value: &Value) -> PublicApiResult<Map<String, Value>> {
     Ok(settings)
 }
 
-pub(super) async fn read_in(tx: &Transaction<'_>, owner: &str) -> PublicApiResult<Value> {
+pub(super) async fn read_in(tx: &Transaction<'_>, owner: &str) -> PublicApiResult<Value> { read_projection_in(tx,owner,false).await }
+pub(super) async fn read_native_in(tx: &Transaction<'_>, owner: &str) -> PublicApiResult<Value> { read_projection_in(tx,owner,true).await }
+async fn read_projection_in(tx: &Transaction<'_>, owner: &str, preserve_unmapped:bool) -> PublicApiResult<Value> {
     let row = tx.query_opt("SELECT preferences,platform.catalog_timestamp(updated_at) FROM platform.users WHERE id=$1 AND NOT disabled", &[&owner]).await?
         .ok_or_else(PublicApiError::not_found)?;
     let source: Value = row.get(0);
@@ -74,6 +76,7 @@ pub(super) async fn read_in(tx: &Transaction<'_>, owner: &str) -> PublicApiResul
         let mut mapped = BTreeMap::new();
         for row in rows {
             let id: Option<&str> = row.get(1);
+            if preserve_unmapped && id.is_none() {continue;}
             let id = PublicUuid::parse(id.ok_or_else(PublicApiError::unavailable)?)
                 .map_err(|_| PublicApiError::unavailable())?;
             mapped.insert(row.get::<_, String>(0), id);

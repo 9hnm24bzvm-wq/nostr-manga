@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';
+import { createAccountLibraryOverlays } from '../platform-integrations/local-library/account-overlays.mjs';
 // Materialize the actual production transforms in an ignored, local-only tree.
 // This command never starts the application, a browser, or a database.
 import fs from 'node:fs';
@@ -12,8 +13,8 @@ import { frontendRouteAdditions } from '../platform-integrations/frontend-route-
 import { createFrontendOverlays } from '../platform-integrations/frontend-overlays.mjs';
 import { createReaderOverlays } from '../platform-integrations/frontend-reader-overlays.mjs';
 import { createPublicApiOverlays } from '../platform-integrations/public-api/overlays.mjs';
-import { createPublicUploadOverlays } from '../platform-integrations/public-api/upload-overlays.mjs';
-import { associateSupersededUploadRecipe } from './composed-upload-provenance.mjs';
+import { createPublicUploadOverlays, createNativeUploadOverlays } from '../platform-integrations/public-api/upload-overlays.mjs';
+import { associateCurrentUploadRecipe as associateSupersededUploadRecipe } from './composed-native-upload-provenance.mjs';
 import { productionAliasName, resolveProductionAlias, describeProductionAlias } from './composed-production-aliases.mjs';
 import { createLocalLibraryOverlays } from '../platform-integrations/local-library/overlays.mjs';
 
@@ -102,7 +103,7 @@ for (const name of ['@lucide/svelte', 'svelte-sonner', 'axios', 'http-status-cod
   aliasesForCheck[name] = [path.join(dependencies, name, typeEntry)];
   packageTypeAliases.push({ name, production_entry: aliases.find(alias => productionAliasName(alias.find) === name)?.replacement, same_package_declaration: aliasesForCheck[name][0], declaration_sha256: hash(fs.readFileSync(aliasesForCheck[name][0])) });
 }
-const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input), createPublicUploadOverlays(input), createBoundedReaderOverlays(input)];
+const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input), createPublicUploadOverlays(input), createNativeUploadOverlays(input), createBoundedReaderOverlays(input), createAccountLibraryOverlays(input)];
 const manifest = [], rewrites = [], maps = new Map(), graph = [], reachable = new Set(), workerTypeBindings = [];
 const projectedSourceRoots = ['src', 'platform-integrations'].map(name => path.join(project, name) + path.sep);
 function isProjectedSource(file) {

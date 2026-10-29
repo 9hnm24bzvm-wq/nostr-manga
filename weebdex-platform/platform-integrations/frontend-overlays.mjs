@@ -2,6 +2,9 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { registrationRecoveryPatches } from './frontend-registration-recovery-overlays.mjs';
+import { readerSimplicityPatches } from './frontend-reader-simplicity-overlays.mjs';
+import { discoveryCopyPatches } from './frontend-discovery-copy-overlays.mjs';
 const patches = [
   {
     "path": "src/routes/(app)/settings/library/+page.svelte",
@@ -3403,7 +3406,7 @@ const patches = [
   "sha256": "59ebe00598167420b7b5ecea5f36214373f06e436e263f7aa7015f11b268574a",
   "count": 1,
   "before": "\t\tlibrary: {\r\n\t\t\tname: \"Library\",\r\n\t\t\ticon: LibraryIcon,\r\n\t\t\thidden: !$Session\r\n\t\t},",
-  "after": "\t\tlibrary: {\r\n\t\t\tname: \"Library\",\r\n\t\t\ticon: LibraryIcon\r\n\t\t},\r\n\t\tidentity: {\r\n\t\t\tname: \"Public identity\",\r\n\t\t\ticon: SettingsIcon\r\n\t\t},"
+  "after": "\t\tlibrary: {\r\n\t\t\tname: \"Library\",\r\n\t\t\ticon: LibraryIcon\r\n\t\t},\r\n\t\tidentity: {\r\n\t\t\tname: \"Advanced\",\r\n\t\t\ticon: SettingsIcon\r\n\t\t},"
 },
   {
   "path": "src/routes/(app)/settings/+layout.svelte",
@@ -4018,6 +4021,16 @@ const patches = [
   "before": "<strong class=\"text-muted-foreground truncate font-medium\">@{$group.id}</strong>",
   "after": "<span class=\"sr-only\">Group</span>"
 }
+, {
+  "path": "src/lib/components/ChapterFeedChapterEntry.svelte",
+  "label": "read toggle labels describe the action for the current chapter state",
+  "sha256": "30214055c6cb02bb5ffcded9c16234ed50fc69dbda8766a6cd1e9fe52f7e45ad",
+  "count": 1,
+  "before": "title={isRead ? \"Mark as unread\" : \"Mark as unread\"}",
+  "after": "title={isRead ? \"Mark as unread\" : \"Mark as read\"}\r\n                    aria-label={isRead ? \"Mark as unread\" : \"Mark as read\"}",
+  "approved_read_toggle_exception": "chapter_feed_read_toggle_name"
+}
+, ...registrationRecoveryPatches, ...readerSimplicityPatches, ...discoveryCopyPatches
 ];
 const hash = value => createHash('sha256').update(value).digest('hex');
 export function createFrontendOverlays(frontendRoot) {
@@ -4074,3 +4087,10 @@ export const frontendApprovedRegistrationOnboardingExceptions = patches.filter(p
 export const frontendApprovedReaderControlExceptions = patches.filter(patch => patch.approved_reader_control_exception).map(({ path, sha256, count, before, after, approved_reader_control_exception }) => ({ path, sha256, count, before, after, approved_reader_control_exception }));
 
 export const frontendApprovedReaderCopyExceptions = patches.filter(patch => patch.approved_reader_copy_exception).map(({ path, sha256, count, before, after, approved_reader_copy_exception }) => ({ path, sha256, count, before, after, approved_reader_copy_exception }));
+
+export const frontendApprovedRegistrationRecoveryExceptions = patches.filter(patch => patch.approved_registration_recovery_exception).map(({ path, sha256, count, before, after, approved_registration_recovery_exception }) => ({ path, sha256, count, before, after, approved_registration_recovery_exception }));
+export const frontendApprovedReaderSimplicityExceptions = patches.filter(patch => patch.approved_reader_simplicity_exception).map(({ path, sha256, count, before, after, approved_reader_simplicity_exception, composed_before }) => ({ path, sha256, count, before, after, approved_reader_simplicity_exception, ...(composed_before === undefined ? {} : { composed_before }) }));
+
+export const frontendApprovedReadToggleExceptions = patches.filter(patch => patch.approved_read_toggle_exception).map(({ path, sha256, count, before, after, approved_read_toggle_exception }) => ({ path, sha256, count, before, after, approved_read_toggle_exception }));
+
+export const frontendApprovedDiscoveryCopyExceptions = patches.filter(patch => patch.approved_discovery_copy_exception).map(({ path, sha256, count, before, after, approved_discovery_copy_exception }) => ({ path, sha256, count, before, after, approved_discovery_copy_exception }));

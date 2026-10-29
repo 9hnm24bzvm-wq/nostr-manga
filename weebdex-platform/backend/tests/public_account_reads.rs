@@ -416,7 +416,21 @@ async fn signed_account_reads_scope_native_follows_and_never_disclose_other_priv
 // request has a cookie, key or proof; mutation bodies are deliberately empty.
 async fn exercise_inventory_routing(client:&reqwest::Client,origin:&str,runtime:&std::path::Path) {
     let inventory:Value=serde_json::from_str(include_str!("../../contracts/mangadex-5.13.1-inventory.json")).unwrap();
-    let snapshot:Value=serde_json::from_str(include_str!("../../docs/mangadex-operation-compatibility-snapshot.json")).unwrap();
+    let prior_snapshot=include_bytes!("../../docs/mangadex-operation-compatibility-snapshot.json");
+    let successor:Value=serde_json::from_str(include_str!("../../docs/fixtures/account-closure-routing-successor-20261028.json")).unwrap();
+    assert_eq!(auth::hash(prior_snapshot),successor["prior_snapshot_sha256"].as_str().unwrap(),"historical routing qualification remains immutable");
+    for (source,bytes) in [
+        ("backend/src/public_api/account_closure.rs",include_bytes!("../src/public_api/account_closure.rs").as_slice()),
+        ("backend/src/public_api/profiles.rs",include_bytes!("../src/public_api/profiles.rs").as_slice()),
+    ] { assert_eq!(auth::hash(bytes),successor["sources"][source].as_str().unwrap(),"reviewed closure successor source changed"); }
+    let mut snapshot:Value=serde_json::from_slice(prior_snapshot).unwrap();
+    let corrections=successor["operations"].as_array().unwrap();assert_eq!(corrections.len(),2);
+    for correction in corrections {
+        let matching=snapshot["operations"].as_array_mut().unwrap().iter_mut().filter(|row|row["method"]==correction["method"]&&row["path"]==correction["path"]).collect::<Vec<_>>();
+        assert_eq!(matching.len(),1,"exact predecessor operation required");
+        let row=matching.into_iter().next().unwrap();assert_eq!(row["status"],correction["prior_status"]);
+        row["status"]=correction["status"].clone();row["module"]=correction["module"].clone();
+    }
     assert_eq!(inventory["source_sha256"],snapshot["inventory_source_sha256"]);
     let declared=snapshot["operations"].as_array().unwrap();
     let unknown=client.get(format!("{origin}/api/v1/__inventory_probe_unknown")).send().await.unwrap();
@@ -439,6 +453,7 @@ async fn exercise_inventory_routing(client:&reqwest::Client,origin:&str,runtime:
         if method!="GET" {request=request.header("content-type","application/json").body("{}");}
         let response=request.send().await.unwrap();
         let status=response.status().as_u16();
+        if let Some(correction)=corrections.iter().find(|row|row["method"]==method&&row["path"]==pattern) { assert_eq!(status,correction["unauthenticated_empty_request_status"].as_u64().unwrap() as u16,"closure never bypasses proof admission"); }
         let bytes=response.bytes().await.unwrap();
         assert!(bytes.len()<=1024*1024,"bounded response: {method} {pattern}");
         let unsupported=row["status"].as_str().unwrap().contains("501");
@@ -455,7 +470,7 @@ async fn exercise_inventory_routing(client:&reqwest::Client,origin:&str,runtime:
         observations.push(json!({"method":method,"path":pattern,"operation_id":operation["operation_id"],"classification":row["status"],"http_status":status,"response_bytes":bytes.len(),"response_sha256":auth::hash(&bytes)}));
     }
     assert_eq!(seen.len(),113);assert_eq!(declared.len(),113);
-    let result=json!({"source_baseline":snapshot["source_baseline"],"inventory_sha256":inventory["source_sha256"],"operation_count":113,"scope":"actual unauthenticated routing/auth/validation only; no successful mutation or full compatibility claim","fallback_controls":{"unknown_path":404,"wrong_method":405,"generic_unknown_route_detail_rejected":true},"observations":observations});
+    let result=json!({"source_baseline":snapshot["source_baseline"],"additive_routing_successor":successor,"inventory_sha256":inventory["source_sha256"],"operation_count":113,"scope":"actual unauthenticated routing/auth/validation only; no successful mutation or full compatibility claim","fallback_controls":{"unknown_path":404,"wrong_method":405,"generic_unknown_route_detail_rejected":true},"observations":observations});
     let bytes=serde_json::to_vec_pretty(&result).unwrap();
     std::fs::write(runtime.join("mangadex-operation-routing-probe.json"),&bytes).unwrap();
     println!("113-operation routing probe passed; sha256={}",auth::hash(&bytes));

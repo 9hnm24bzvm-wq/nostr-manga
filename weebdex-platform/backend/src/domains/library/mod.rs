@@ -12,10 +12,10 @@ pub(crate) mod preference_mutations;
 mod progress;
 pub(crate) mod ratings;
 mod query;
-mod repository;
+pub(crate) mod repository;
 mod users;
 pub(crate) mod profile_mutations;
-mod validation;
+pub(crate) mod validation;
 use crate::{db::Migration, state::AppState};
 use axum::{
     extract::Request,

@@ -109,7 +109,7 @@ async fn read(state: AppState, id: String, raw: Option<String>) -> PublicApiResu
 /// includes, caller ordering and a second parent scope are not reader filters.
 /// The canonical wire describes the effective filters, including reader
 /// defaults, so equivalent spelling/order cannot silently change cursor scope.
-fn reader_filters(raw: &str) -> PublicApiResult<(PublicQuery, String)> {
+pub(super) fn reader_filters(raw: &str) -> PublicApiResult<(PublicQuery, String)> {
     let mut schema = catalogue::schema(ResourceKind::Chapter);
     schema.includes = &[];
     schema.order = &[];

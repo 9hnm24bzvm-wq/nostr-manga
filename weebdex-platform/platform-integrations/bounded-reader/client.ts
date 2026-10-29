@@ -1,5 +1,5 @@
 import { publicQuery } from '../public-api/query';
-import { createOwnedJsonReader, type OwnedJsonDependencies } from '../public-api/owned-json';
+import { createOwnedJsonReader, JsonOwnerUnsettled, type OwnedJsonDependencies } from '../public-api/owned-json';
 import { reference, selectorPage, type Destination, type Profile, type Request, type SelectorPage } from './contract';
 export const READER_LIMITS = Object.freeze({ bytes: 256 * 1024, fragments: 16384, emptyFragments: 128, deadlineMs: 10000, cleanupMs: 250, requests: 8, rows: 400, actionBytes: 1024 * 1024, page: 50, recentKeys: 100 });
 const controls = new Set(['operation', 'limit', 'direction', 'current', 'groupChapter', 'after']);
@@ -35,9 +35,15 @@ export class ReaderBudget {
 export type ReaderRead = (destination: Destination, request: Request, budget: ReaderBudget) => Promise<SelectorPage>;
 export type ReaderEndpoint = Readonly<{ origin: string; base: string; profile: Profile }>;
 export type ReaderIdentity = Readonly<{ origin: string; catalogNamespace: string; serviceKey: string | null }>;
+// Exact owned-transport cancellation provenance; callers must not infer it from
+// a subsequently aborted consumer or an arbitrary error message.
+export class ReaderResponseCancelled extends Error {}
 export function createReaderClient(deps: Partial<OwnedJsonDependencies> = {}, endpoint?: () => ReaderEndpoint) {
   // One slot survives disposal and remount, including unsettled cleanup.
-  const read = createOwnedJsonReader(READER_LIMITS, deps);
+  const read = createOwnedJsonReader(READER_LIMITS, deps, {
+    unsettled: () => new JsonOwnerUnsettled(),
+    failure: (message, status) => status === 499 ? new ReaderResponseCancelled(message) : Error(message)
+  });
   const readSelector: ReaderRead = async (destination, request, budget) => {
     budget.request(); reference(destination.mangaId, destination.profile);
     if (!Number.isSafeInteger(request.limit) || request.limit < 1 || request.limit > 100) throw Error('Invalid reader page size');

@@ -406,11 +406,14 @@ pub(crate) fn native_continue_database_error(error: tokio_postgres::Error) -> Ap
 }
 
 fn native_continue_statement(sql: &mut Sql, account: &str) -> String {
+    account_continue_statement(sql, account, Profile::Native)
+}
+fn account_continue_statement(sql: &mut Sql, account: &str, profile: Profile) -> String {
     let account = sql.bind(account.to_owned());
     let predicate = sql.predicate();
-    let oldest = reader_order::group_order(Profile::Native, "g", true);
-    let newest = reader_order::group_order(Profile::Native, "g", false);
-    let editions = reader_order::edition_order(Profile::Native, "c");
+    let oldest = reader_order::group_order(profile, "g", true);
+    let newest = reader_order::group_order(profile, "g", false);
+    let editions = reader_order::edition_order(profile, "c");
     let same_group = group_equal("c", "g");
     let probe_group = group_equal("e", "g");
     // eligible is the COMPLETE eligible chapter set. History membership of ANY
@@ -431,7 +434,7 @@ fn native_continue_statement(sql: &mut Sql, account: &str) -> String {
             (SELECT count(*)>1 FROM (SELECT 1 FROM eligible e WHERE {probe_group} LIMIT 2) probe) \
         FROM selected g CROSS JOIN LATERAL \
             (SELECT c.* FROM eligible c WHERE {same_group} ORDER BY {editions} LIMIT 1)c",
-        projection(Profile::Native, "0"))
+        projection(profile, "0"))
 }
 
 const MAX_CONTINUE_RESPONSE_BYTES: usize = 32 * 1024;
@@ -484,6 +487,36 @@ pub(crate) async fn native_continue(
         None => (None, false, false),
     };
     continue_envelope(identity, parent, account, epoch, request_id, filters, winner.as_ref(), all_completed, multiple)
+}
+
+/// The ordinary UUID reader uses its existing public ordering and visibility
+/// filters, but only genuine private native history supplies completion.
+/// Reuse the exact complete-set grouped selection; never page through history.
+pub(crate) async fn public_account_continue(
+    tx: &Transaction<'_>, account: &str, sql: &mut Sql,
+) -> ApiResult<Value> {
+    let checkpoint = sql.parameters.len();
+    let statement = account_continue_statement(sql, account, Profile::Public);
+    let row = tx.query_opt(&statement, &sql.params()).await;
+    sql.parameters.truncate(checkpoint);
+    let row = row.map_err(native_continue_database_error)?;
+    let (winner, all_completed, multiple) = match row {
+        Some(row) => {
+            let all_completed: bool = row.get(9);
+            let multiple: bool = row.get(10);
+            (Some(chapter(row, Profile::Public)?), all_completed, multiple)
+        }
+        None => (None, false, false),
+    };
+    let value = json!({"orderingProfile":"public-retained-v1",
+        "state":if winner.is_some(){"ready"}else{"boundary"},
+        "reason":if winner.is_none(){"empty"}else if all_completed{"all-completed-newest"}else{"oldest-unread"},
+        "winner":winner.map(|chapter|chapter.dto()),"hasMultipleEditions":multiple,
+        "continueProof":"native-account-snapshot-v1","crossRequestSnapshot":false});
+    if serde_json::to_vec(&value).map_err(|_|ApiError::unavailable())?.len()>MAX_CONTINUE_RESPONSE_BYTES {
+        return Err(ApiError::unavailable());
+    }
+    Ok(value)
 }
 
 pub async fn native(State(state): State<AppState>,Path(id): Path<String>,RawQuery(raw): RawQuery) -> ApiResult<(HeaderMap,Json<Value>)> {

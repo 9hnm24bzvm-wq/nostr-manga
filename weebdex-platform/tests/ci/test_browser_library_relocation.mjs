@@ -69,17 +69,17 @@ async function probe(fault, { initialReaderOpen } = {}) {
       async waitFor(options) { assert.deepEqual(options, { state: 'visible' }); events.push(['conversation', kind, id, viewport.width]); await visible(bound); },
       getByRole(role, options) {
         assert.equal(options.exact, true);
-        if (role === 'button' && options.name === 'Signed comments') return {
+        if (role === 'button' && options.name === 'Comments from other sites') return {
           async getAttribute(name) { assert.equal(name, 'aria-expanded'); assert(bound()); return expanded && fault !== 'context-not-expanded' || fault === 'expanded-comments' ? 'true' : 'false'; },
           async click() { assert(bound()); expanded = true; events.push(['signed-comments', kind, viewport.width]); },
         };
-        assert.equal(role, 'link'); assert.equal(options.name, 'Manage public identity');
+        assert.equal(role, 'button'); assert.equal(options.name, 'Load verified public conversation');
         return {
-          async getAttribute(name) {
-            assert.equal(name, 'href'); assert(bound() && expanded);
-            if (fault === 'missing-prompt') throw original;
-            events.push(['identity-prompt', kind, viewport.width]);
-            return fault === 'wrong-identity-link' ? '/auth/login' : '/settings/identity';
+          async count() {
+            assert(bound() && expanded);
+            if (fault === 'source-loader-driver') throw original;
+            events.push(['source-loader', kind, viewport.width]);
+            return fault === 'missing-source-loader' ? 0 : 1;
           },
           async scrollIntoViewIfNeeded() { assert(bound() && expanded); events.push(['scroll-context', kind, viewport.width]); },
           async evaluate(operation) { assert(bound() && expanded); return evaluateBox(operation, 'context', kind); },
@@ -239,7 +239,7 @@ test('actual step visits both native layouts, bound expanded contexts, native di
     assert.deepEqual(value.events.filter(row => row[0] === 'tab-click' && row[2] === width).map(row => row[1]), ['Public identity', 'Library', 'Preferences']);
   }
   assert.equal(value.events.filter(row => row[0] === 'manage-link').length, 2);
-  assert.equal(value.events.filter(row => row[0] === 'identity-prompt').length, 4);
+  assert.equal(value.events.filter(row => row[0] === 'source-loader').length, 4);
   assert.equal(value.events.filter(row => row[0] === 'reload').length, 2);
   assert.equal(value.events.filter(row => row[0] === 'auth').length, 7);
   assert.equal(value.events.filter(row => row[0] === 'target-input-check').length, 8);
@@ -282,8 +282,8 @@ for (const [fault, message] of [
   ['authenticated', /requires an anonymous browser/], ['unsafe-run-id', /Unsafe relocation evidence/],
   ['global-mount', /remain mounted outside Settings/], ['overflow', /overflows the viewport/],
   ['undecoded-image', /did not decode genuine local media/], ['offscreen-image', /outside the initial unobstructed viewport/],
-  ['expanded-comments', /expanded before a contextual user action/], ['context-not-expanded', /did not expand/], ['wrong-identity-link', /no anonymous signer Settings path/],
-  ['generic-target-input', /editing a different resource target/], ['offscreen-context', /expanded signed controls is outside/],
+  ['expanded-comments', /expanded before a contextual user action/], ['context-not-expanded', /did not expand/], ['missing-source-loader', /no read-only loading control/],
+  ['generic-target-input', /editing a different resource target/], ['offscreen-context', /source comment controls is outside/],
   ['wrong-manage-href', /Reader Manage library link missed its native/], ['wrong-library-manage-href', /Manage library does not point to its native Settings tab/],
   ['duplicate-library', /exactly one route-specific management surface/], ['missing-identity', /exactly one route-specific management surface/],
   ['cross-mounted-panel', /exactly one route-specific management surface/], ['preferences-panel', /exactly one route-specific management surface/],
@@ -321,6 +321,6 @@ test('actual reload waits for the real Library owner rather than accepting a dif
   const value = await probe('reload-route'); assert.equal(value.error, value.original); assert.equal(value.result, undefined);
 });
 
-for (const fault of ['wrong-chapter', 'wrong-manga', 'missing-prompt', 'missing-manage-link', 'reader-toggle-driver', 'reader-close-driver', 'capture-failure']) test('actual step preserves original driver error for ' + fault, async () => {
+for (const fault of ['wrong-chapter', 'wrong-manga', 'source-loader-driver', 'missing-manage-link', 'reader-toggle-driver', 'reader-close-driver', 'capture-failure']) test('actual step preserves original driver error for ' + fault, async () => {
   const value = await probe(fault); assert.equal(value.error, value.original); assert.equal(value.result, undefined);
 });

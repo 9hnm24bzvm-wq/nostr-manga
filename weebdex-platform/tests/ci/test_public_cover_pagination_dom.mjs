@@ -1,3 +1,5 @@
+// Historical signed UI regression only; current native coverage is test_native_contribution_dom.mjs.
+import {historicalContributionSource} from './historical-contribution-ui-fixture.mjs';
 // Actual mounted Svelte cover editor + actual reader/controller + signed request
 // transport. JSDOM/HTTP/signatures and image URL rendering are explicit stand-ins.
 import fs from 'node:fs';import path from 'node:path';import {createRequire}from'node:module';import{pathToFileURL}from'node:url';import test from'node:test';import assert from'node:assert/strict';
@@ -9,7 +11,7 @@ for(const key of['window','document','Node','Element','HTMLElement','HTMLInputEl
 const svelte=pathToFileURL(path.join(dependencies,'node_modules/svelte/src/index-client.js')).href,{mount,unmount,flushSync}=await import(svelte);
 fs.mkdirSync(path.join(root,'.build'),{recursive:true});const generation=fs.mkdtempSync(path.join(root,'.build/cover-pagination-dom-'));fs.symlinkSync(path.join(dependencies,'node_modules'),path.join(generation,'node_modules'));
 const sourceRoot=process.env.WEEBDEX_COVER_PAGINATION_CONTROL_SOURCE??path.join(root,'platform-integrations/public-api');
-const source=fs.readFileSync(path.join(sourceRoot,'PublicCoverEditor.svelte'),'utf8').replace("from 'svelte'",'from '+JSON.stringify(svelte)).replace(/ import \{ createSignedCoverController,[^\n]+from '\.\/cover-client';/," const { createSignedCoverController, coverCommandCapabilities }=globalThis.__coverPaginationEnvironment;");
+const source=historicalContributionSource(path.join(sourceRoot,'PublicCoverEditor.svelte')).replace("from 'svelte'",'from '+JSON.stringify(svelte)).replace(/ import \{ createSignedCoverController,[^\n]+from '\.\/cover-client';/," const { createSignedCoverController, coverCommandCapabilities }=globalThis.__coverPaginationEnvironment;");
 const file=path.join(generation,'PublicCoverEditor.mjs');fs.writeFileSync(file,compile(source,{filename:'PublicCoverEditor.svelte',generate:'client',runes:true}).js.code);const Editor=(await import(pathToFileURL(file))).default;
 // Exact one-expression integration counterfactual: nullable selection already
 // renders empty, but the old dirty comparator still substitutes title.language.

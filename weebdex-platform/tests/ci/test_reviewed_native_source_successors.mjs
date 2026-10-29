@@ -1,3 +1,4 @@
+import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 import {nativeSiteClientBindingStage,nativeSiteClientBindingPath,restoreNativeSiteClientBindingSource} from './reviewed-native-source-successors.mjs';
 import {restoreBoundedReaderSource} from './reviewed-bounded-reader-source-successors.mjs';
 import {restoreModeratorTransportSource} from './reviewed-moderator-transport-source-successors.mjs';
@@ -18,7 +19,15 @@ const bytes=fs.readFileSync(new URL('../../docs/fixtures/native-catalogue-source
 const association=readNativeSourceAssociation(bytes);
 const hash=value=>createHash('sha256').update(value).digest('hex');
 // Historical comparisons only. Runtime composition elsewhere reads physical current bytes.
-const source=file=>{const physical=fs.readFileSync(path.join(root,file),'utf8');return file===nativeSiteClientBindingPath?restoreNativeSiteClientBindingSource(nativeSiteClientBindingStage,file,physical):file==='weebdex-platform/platform-integrations/local-library/library.ts'?restoreBoundedReaderSource('bounded-reader-to-frozen-main:platform-integrations/local-library/library.ts',file,physical):file===readReportTransportAssociation().path?restoreReportTransportSource(file,restoreModeratorTransportSource(file,physical,'raw'),'raw'):integrationSuccessorPaths.includes(file)?restoreIntegratedSource(file,physical):physical;};
+// Source-only historical inputs: first undo the exact second pass, then the
+// exact published first pass where applicable. Runtime tests read live files.
+const firstReaderPaths = new Set(readReaderUxAssociation().rows.map(row => row.path));
+const secondReaderPaths = new Set(readReaderUxFixpassAssociation().rows.map(row => row.path));
+function beforeReaderUx(file, value) {
+ return firstReaderPaths.has(file) ? restoreReaderUxPredecessor(file, value)
+  : secondReaderPaths.has(file) ? restoreReaderUxFixpassPredecessor(file, value) : value;
+}
+const source=file=>{const live=fs.readFileSync(path.join(root,file),'utf8'),physical=beforeReaderUx(file,live);return file===nativeSiteClientBindingPath?restoreNativeSiteClientBindingSource(nativeSiteClientBindingStage,file,physical):file==='weebdex-platform/platform-integrations/local-library/library.ts'?restoreBoundedReaderSource('bounded-reader-to-frozen-main:platform-integrations/local-library/library.ts',file,physical):file===readReportTransportAssociation().path?restoreReportTransportSource(file,restoreModeratorTransportSource(file,physical,'raw'),'raw'):integrationSuccessorPaths.includes(file)?restoreIntegratedSource(file,physical):physical;};
 const encoded=value=>Buffer.from(JSON.stringify(value,null,2)+'\n');
 
 test('exact six native/catalogue read rows preserve the immutable40 historical association and scope',()=>{

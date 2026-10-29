@@ -1,8 +1,8 @@
 // RECONSTRUCTED implementation: original full validation source was unavailable.
 import type { PublicUuid, Resource, ResourceType } from './types';
-export const uuidPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export const uuidPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?![\s\S])/i;
 export class PublicApiContractError extends Error { constructor(message:string,public readonly status=502){super(message);this.name='PublicApiContractError';} }
-export function publicUuid(value:unknown):PublicUuid { if(typeof value!=='string'||!uuidPattern.test(value))throw new PublicApiContractError('Expected a public resource UUID');return value.toLowerCase() as PublicUuid; }
+export function publicUuid(value:unknown):PublicUuid { if(typeof value!=='string'||value.length!==36||!uuidPattern.test(value))throw new PublicApiContractError('Expected a public resource UUID');return value.toLowerCase() as PublicUuid; }
 export function record(value:unknown,label='object'):Record<string,unknown>{if(!value||typeof value!=='object'||Array.isArray(value))throw new PublicApiContractError(`Invalid ${label}`);return value as Record<string,unknown>;}
 export function string(value:unknown,fallback=''):string{return typeof value==='string'?value:fallback;}
 export function nullable(value:unknown):string|null{return typeof value==='string'?value:null;}

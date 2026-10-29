@@ -15,7 +15,7 @@
   let showScope = $state(false), showAdoption = $state(false), showCanonical = $state(false), showKnownKey = $state(false), inspectedRelay = $state(''), inspectedJob = $state('');
   let titleNames = $state<Record<string,string>>({}), titlePage = $state(0), titlesLoading = $state(false), titleError = $state('');
   let titleEpoch = 0;
-  const savedTitle = (id: string | undefined) => id && titleNames[id] || 'Unavailable title · ' + (id ?? 'missing reference');
+  const savedTitle = (id: string | undefined) => id && titleNames[id] || 'Unavailable title';
   async function loadTitleNames(page = 0) {
     const epoch = ++titleEpoch, context = captureLibraryContext();
     titlePage = page; titlesLoading = true; titleError = '';
@@ -207,7 +207,7 @@
         <Button disabled={!!pending || !$signerIdentity.owner} onclick={() => run('publish-preview', async () => { publicConsent = false; await installCanonicalReview(previewPublication(), review => { publication = review; }); })}>Preview public snapshot</Button>
         {#if publication}
           <div class="rounded border p-2">
-            <p>This copy includes {publication.graph.records} saved entries. {publication.excluded.length} entries cannot be shared because they are site-only, hidden, or could not be matched.</p>
+            <p>This copy includes {publication.graph.records} saved library items. {publication.excluded.length} entries cannot be shared because they are site-only, hidden, or could not be matched.</p>
             <p class="break-all">Destinations: {publication.recipients.map(row => row.origin).join(', ')}</p>
             {#if publication.excluded.length}<details><summary>Unshared entry references for support</summary><p class="break-all text-xs">{publication.excluded.slice(0, 30).join(', ')}{publication.excluded.length > 30 ? '…' : ''}</p></details>{/if}
             <label><input type="checkbox" bind:checked={publicConsent} /> I understand that this reviewed snapshot becomes public at these recipients.</label>
@@ -245,7 +245,7 @@
         {/each}
 
 {:else}
-<div class="space-y-3"><strong class="block font-semibold">Check this library</strong><p class="text-muted-foreground text-sm">Use these tools if saved titles are missing, a backup belongs to another site, or support asks you to check the library identity.</p><p role="status">Scope verification: {$localLibraryState.scopeStatus}. {$localLibraryState.scopeReason ?? ''}</p><Button variant="outline" disabled={!!pending} onclick={() => run('verify-scope', async () => { await verifyCatalogueScope(); })}>Verify current catalogue scope</Button><Button variant="ghost" onclick={() => { showScope = !showScope; }}>View saved catalogue details</Button>{#if showScope}<p class="break-all text-xs">{scopeText}</p>{/if}</div>
+<div class="space-y-3"><strong class="block font-semibold">Check this library</strong><p class="text-muted-foreground text-sm">Use these tools if saved titles are missing, a backup belongs to another site, or support asks you to check the library identity.</p><p role="status">{$localLibraryState.scopeStatus === 'verified' ? 'This library matches the current catalogue.' : 'Check this library before recovering saved titles. Your saved data is kept unchanged.'}</p><Button variant="outline" disabled={!!pending} onclick={() => run('verify-scope', async () => { await verifyCatalogueScope(); })}>Verify current catalogue scope</Button><Button variant="ghost" onclick={() => { showScope = !showScope; }}>View saved catalogue details</Button>{#if showScope}<p class="break-all text-xs">{scopeText}</p><p class="text-xs">{$localLibraryState.scopeStatus}. {$localLibraryState.scopeReason ?? ''}</p>{/if}</div>
 <section class="space-y-3 border-t pt-4"><strong class="block font-semibold">Review source identity</strong>        {#if policy?.service_key && ($localLibraryState.scopeStatus === 'origin_only' || scopeText.includes('origin-only'))}
           <Button variant="outline" disabled={!!pending} onclick={() => run('adoption-preview', async () => { adoption = await previewServiceAdoption(); adoptionPage = 0; })}>Preview source identity adoption</Button>
         {/if}
@@ -264,12 +264,12 @@
           </div>
         {/if}
 </section>
-<section class="space-y-3 border-t pt-4"><strong class="block font-semibold">Recover saved titles</strong>      <p class="text-sm">These IDs remain in the displayed saved-device scope. No current title is looked up or rebound.</p>
-      {#each series as row}
+<section class="space-y-3 border-t pt-4"><strong class="block font-semibold">Recover saved titles</strong>      <p class="text-sm">These are saved entries from this library’s original catalogue. Changing them here does not match them to a different title or publish anything.</p>
+      {#each series as row, i}
         <div class="flex flex-wrap items-center gap-2">
-          <span>{row.id}</span><label>Status for saved {row.id}<select disabled={!!pending} value={row.status} onchange={event => run('saved-status', async () => { await saveSavedSeries(row.id!, (event.target as HTMLSelectElement).value, !!row.notification); notice = 'Existing saved-device status changed locally.'; })}>{#each statuses as status}<option value={status}>{status}</option>{/each}</select></label>
-          <label><input type="checkbox" checked={row.notification} disabled={!!pending} onchange={event => run('saved-notification', async () => { await saveSavedSeries(row.id!, row.status!, (event.target as HTMLInputElement).checked); })} /> Updates for saved {row.id}</label>
-          <Button variant="ghost" disabled={!!pending} onclick={() => run('saved-remove', async () => { await removeLocalRecord('series', row.key); })}>Remove saved {row.id}</Button>
+          <span>Saved title {i + 1}</span><label>Status for saved title {i + 1}<select disabled={!!pending} value={row.status} onchange={event => run('saved-status', async () => { await saveSavedSeries(row.id!, (event.target as HTMLSelectElement).value, !!row.notification); notice = 'Existing saved-device status changed locally.'; })}>{#each statuses as status}<option value={status}>{status.replaceAll('_', ' ')}</option>{/each}</select></label>
+          <label><input type="checkbox" checked={row.notification} disabled={!!pending} onchange={event => run('saved-notification', async () => { await saveSavedSeries(row.id!, row.status!, (event.target as HTMLInputElement).checked); })} /> Updates for saved title {i + 1}</label>
+          <Button variant="ghost" disabled={!!pending} onclick={() => run('saved-remove', async () => { await removeLocalRecord('series', row.key); })}>Remove saved title {i + 1}</Button><details><summary>Title reference for support</summary><p class="break-all text-xs">{row.id}</p></details>
         </div>
       {/each}
 </section>
@@ -294,7 +294,7 @@
         </div>{/if}
 </section>
 {/if}
-{#if pending}<p role="status">Working: {pending.replaceAll('-', ' ')}…</p>{/if}
+{#if pending}<p role="status">Updating your library…</p>{/if}
 <p role="status">{notice}</p>
 {#if error || $localLibraryState.error}<p role="alert" class="text-destructive">{error || $localLibraryState.error}</p>{/if}
 </section>

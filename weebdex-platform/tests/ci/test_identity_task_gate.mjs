@@ -31,8 +31,8 @@ test('upload stays in task and retries only account lookup on finish',()=>{
  assert.match(gate,/<IdentityGate[^>]+show=\{!\$signerIdentity.owner\}/);assert.ok(gate.indexOf('<IdentityGate')<gate.indexOf('{#if !$signerIdentity.owner}'));
  assert.match(gate,/onfinish=\{\(\) => setupRevision\+\+\}/);assert.doesNotMatch(gate,/href="\/settings"/);
 });
-test('signup prioritizes verification and continuing reading over optional setup',()=>{
- const source=read('frontend-behavior/AccountOnboarding.svelte');assert.ok(source.indexOf('Verify email</a>')<source.indexOf('<IdentitySetup'));assert.ok(source.indexOf('Continue reading</Button>')<source.indexOf('<IdentitySetup'));assert.match(source,/<details>[\s\S]*<IdentitySetup/);
+test('signup keeps ordinary reading and verification separate from advanced signing setup',()=>{
+ const source=read('frontend-behavior/AccountOnboarding.svelte');assert.match(source,/Verify email<\/a>/);assert.match(source,/Continue reading<\/Button>/);assert.doesNotMatch(source,/<IdentitySetup/);
 });
 
 // Actual DOM focus targets with the production handler. Modal stacking, Escape

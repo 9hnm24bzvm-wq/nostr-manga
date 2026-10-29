@@ -1,3 +1,4 @@
+import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 import {localPageDriverPath,localPageDriverAssociationSha256,readLocalPageDriverAssociation,restoreLocalPageDriverSource} from './reviewed-local-page-driver-source-successor.mjs';
 import {restoreIntegratedSource} from './reviewed-integration-source-successors.mjs';
 import {restoreHistorySource} from './reviewed-history-source-successors.mjs';
@@ -14,12 +15,49 @@ import {localPageAssociationSha256, readLocalPageSourceAssociation, restoreLocal
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const project = path.join(root, 'weebdex-platform');
 const digest = value => createHash('sha256').update(value).digest('hex');
+// Source-only historical inputs: first undo the exact second pass, then the
+// exact published first pass where applicable. Runtime tests read live files.
+const firstReaderPaths = new Set(readReaderUxAssociation().rows.map(row => row.path));
+const secondReaderPaths = new Set(readReaderUxFixpassAssociation().rows.map(row => row.path));
+// This test was already published in e3a8ca8 but was not a product row in the
+// first-pass association. Preserve the frozen graph pin via its exact three
+// copy-assertion reversals; never substitute it for current test execution.
+const publishedRemovalTest='weebdex-platform/tests/ci/test_public_chapter_removal_dom.mjs';
+function publishedRemovalPredecessor(value){
+ assert.ok(typeof value==='string'||Buffer.isBuffer(value));
+ const bytes=Buffer.from(value);
+ assert.equal(bytes.length,6439);
+ assert.equal(digest(bytes),'a46063b36faaf3a592d9671d4c50162306d05e277d7e8ae2ccc0a21eee9022b2');
+ let text=bytes.toString('utf8');
+ for(const [current,previous]of [
+  [
+    "  assert.match(f.host.querySelector('[role=alertdialog]').textContent,/(?:stays|remains) visible until approval/);",
+    "  assert.match(f.host.querySelector('[role=alertdialog]').textContent,/remains visible until approval/);"
+  ],
+  [
+    "  assert.match(f.host.textContent,/(?:stays|remains) visible until approval/);assert.doesNotMatch(f.host.textContent,/approved hiding/);",
+    "  assert.match(f.host.textContent,/remains visible until approval/);assert.doesNotMatch(f.host.textContent,/approved hiding/);"
+  ],
+  [
+    "  assert.match(f.host.querySelector('[role=alertdialog]').textContent,/site now/);",
+    "  assert.match(f.host.querySelector('[role=alertdialog]').textContent,/immediately/);"
+  ]
+]){assert.equal(text.split(current).length,2);text=text.replace(current,()=>previous);}
+ assert.equal(Buffer.byteLength(text),6422);
+ assert.equal(digest(text),'a83700de6b6ab556c3f9ad1c6109307caf83199003bb2bdeb6c35fa239d77a52');
+ return typeof value==='string'?text:Buffer.from(text);
+}
+function beforeReaderUx(file, value) {
+ if(file===publishedRemovalTest)return publishedRemovalPredecessor(value);
+ return firstReaderPaths.has(file) ? restoreReaderUxPredecessor(file, value)
+  : secondReaderPaths.has(file) ? restoreReaderUxFixpassPredecessor(file, value) : value;
+}
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const metadata = fs.readFileSync(path.join(project, 'docs/fixtures/signed-local-page-source-associations.json'));
 const data = readLocalPageSourceAssociation();
 const encoded = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
 function actual(row) {
-  let value = read(row.path);
+  let value = beforeReaderUx(row.path, read(row.path));
   if (row.kind === 'adapterFixturePrefix') {
     const start = value.indexOf('const context ='), end = value.indexOf('async function ready(');
     assert.ok(start > 0 && end > start);
@@ -28,7 +66,7 @@ function actual(row) {
   return value;
 }
 function exactFile(row) {
-  const bytes = fs.readFileSync(path.join(root, row.path));
+  const bytes = beforeReaderUx(row.path, fs.readFileSync(path.join(root, row.path)));
   assert.equal(bytes.length, row.bytes, row.path);
   assert.equal(digest(bytes), row.sha256, row.path);
   return bytes.toString('utf8');
@@ -54,12 +92,25 @@ const currentSourceSuccessors = Object.freeze([
   }
 ].map(row => Object.freeze(row)));
 function exactCurrentFile(row) {
+  const live = read(row.path), comparison = beforeReaderUx(row.path, live);
   const successor = currentSourceSuccessors.find(value => value.path === row.path);
-  if (!successor) return exactFile(row);
-  assert.equal(row.bytes, successor.previousBytes, row.path + ' historical length');
-  assert.equal(row.sha256, successor.previousSha256, row.path + ' historical digest');
-  return exactFile({...row, bytes: successor.currentBytes, sha256: successor.currentSha256});
+  const pin = successor ? {...row, bytes: successor.currentBytes, sha256: successor.currentSha256} : row;
+  if (successor) {
+    assert.equal(row.bytes, successor.previousBytes, row.path + ' historical length');
+    assert.equal(row.sha256, successor.previousSha256, row.path + ' historical digest');
+  }
+  assert.equal(Buffer.byteLength(comparison), pin.bytes, row.path + ' associated predecessor length');
+  assert.equal(digest(comparison), pin.sha256, row.path + ' associated predecessor digest');
+  if (firstReaderPaths.has(row.path)||secondReaderPaths.has(row.path)||row.path===publishedRemovalTest) assert.throws(()=>beforeReaderUx(row.path,live+' '));
+  // Actual graph/eligibility checks below parse current code, never restored code.
+  return live;
 }
+
+test('published removal-copy comparison rejects modified and already-restored source',()=>{
+ const live=read(publishedRemovalTest),previous=publishedRemovalPredecessor(live);
+ for(const bad of [live+' ',live.slice(1),previous,null,{}])assert.throws(()=>publishedRemovalPredecessor(bad));
+ assert.equal(read(publishedRemovalTest),live);
+});
 
 test('immutable local-page association declares three complete identities and all 21 exact seams', () => {
   assert.equal(digest(metadata), localPageAssociationSha256);
@@ -138,27 +189,57 @@ test('historical helper bytes, full metadata and 40-file historical pinset remai
 test('bounded current graph uses actual parsed imports, not reconstructed comparison or mounted stubs', () => {
   const require = createRequire(path.join(process.env.WEEBDEX_FRONTEND_ROOT ?? path.join(project, 'frontend'), 'package.json'));
   const ts = require('typescript');
-  assert.equal(data.bounded_current_source_graph.length, 9);
-  for (const row of data.bounded_current_source_graph) {
-    let source = exactCurrentFile(row);
-    if (row.path.endsWith('.svelte')) {
-      const scripts = [...source.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)];
-      assert.equal(scripts.length, 1); source = scripts[0][1];
+  const api='weebdex-platform/platform-integrations/public-api/';
+  // These are explicit current dependency successors, not edits to the frozen
+  // nine-row historical graph. Exact full-source association precedes parsing.
+  const currentImports=new Map([
+    [api+'PublicChapterEditor.svelte', ['./PublicChapterPagesEditor.svelte','./language','svelte','$lib/stores','./AccountActionGate.svelte','./native-account-scope','./native-upload-client','./normalize','./site-client','./chapter-access','./validation','./types']],
+    [api+'PublicChapterPagesEditor.svelte', ['$app/navigation','svelte','$lib','$lib/Context','$lib/components/upload/UploadChapterPages.svelte','./native-upload-client','./native-chapter-pages-controller','./chapter-access']],
+    ['weebdex-platform/tests/ci/signed-chapter-route-fixture.mjs', ['./historical-contribution-ui-fixture.mjs','node:assert/strict','node:crypto','node:fs','node:path','node:vm','node:module','node:url','node:test']],
+  ]);
+  const addedImports=new Map([
+    [api+'native-upload-client.ts', ['./upload-schedules','./language','svelte','$lib/constants/Error','svelte/store','$lib/stores','./native-contribution-scope','./nostr-upload-request','./upload-multipart','./site-client','./chapter-access','./native-chapter-command-fence','./types','./validation']],
+    [api+'native-chapter-pages-controller.ts', ['./native-upload-client']],
+    [api+'native-account-scope.ts', ['./validation']],
+    [api+'AccountActionGate.svelte', ['svelte','$lib','$lib/stores','$lib/components/ui/button','./native-account-scope']],
+  ]);
+  function parsedImports(file,source){
+    if(file.endsWith('.svelte')){
+      const scripts=[...source.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)];
+      assert.equal(scripts.length,1);source=scripts[0][1];
     }
-    const tree = ts.createSourceFile(row.path, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-    assert.deepEqual(tree.parseDiagnostics, []);
-    const imports = tree.statements.filter(ts.isImportDeclaration).map(node => node.moduleSpecifier.text);
-    assert.deepEqual(imports, row.imports, row.path);
+    const tree=ts.createSourceFile(file,source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TS);
+    assert.deepEqual(tree.parseDiagnostics,[]);
+    return tree.statements.filter(ts.isImportDeclaration).map(node=>node.moduleSpecifier.text);
   }
-  const byName = name => data.bounded_current_source_graph.find(row => row.path.endsWith('/' + name));
-  for (const [name, dependencies] of [
-    ['PublicChapterEditor.svelte', ['./PublicChapterPagesEditor.svelte', './upload-client', './normalize', './chapter-access', './types']],
-    ['PublicChapterPagesEditor.svelte', ['./chapter-pages-controller', './upload-client', './chapter-access', '$lib/Context', '$lib', '$app/navigation', 'svelte', '$lib/components/upload/UploadChapterPages.svelte']],
-    ['chapter-pages-controller.ts', ['./upload-client']], ['chapter-access.ts', ['./types']],
-    ['normalize.ts', ['./types', './validation']], ['test_public_chapter_removal_dom.mjs', ['./signed-chapter-route-fixture.mjs']],
-  ]) for (const dependency of dependencies) assert.ok(byName(name).imports.includes(dependency), name + ' -> ' + dependency);
-  assert.equal(data.native_page_boundary.specifier, '$lib/components/upload/UploadChapterPages.svelte');
-  assert.match(data.native_page_boundary.qualification, /require separate strict\/browser qualification/);
+  const actualImports=new Map();
+  assert.equal(data.bounded_current_source_graph.length,9);
+  for(const row of data.bounded_current_source_graph){
+    const live=exactCurrentFile(row),imports=parsedImports(row.path,live);
+    // Historical graph identity is a source-only comparison, never the graph
+    // used to assert today's dependency edges below.
+    assert.deepEqual(parsedImports(row.path,beforeReaderUx(row.path,live)),row.imports,row.path+' historical graph');
+    assert.deepEqual(imports,currentImports.get(row.path)??row.imports,row.path+' current graph');
+    actualImports.set(row.path,imports);
+  }
+  for(const [file,expected]of addedImports){
+    const live=read(file);
+    assert.ok(secondReaderPaths.has(file));
+    assert.equal(restoreReaderUxFixpassPredecessor(file,live),null,'New dependency has no invented historical source');
+    assert.throws(()=>restoreReaderUxFixpassPredecessor(file,live+' '));
+    const imports=parsedImports(file,live);assert.deepEqual(imports,expected,file);
+    actualImports.set(file,imports);assert.equal(read(file),live);
+  }
+  assert.equal(actualImports.size,13);
+  const byName=name=>[...actualImports].find(([file])=>file.endsWith('/'+name))?.[1];
+  for(const [name,dependencies]of [
+    ['PublicChapterEditor.svelte',['./PublicChapterPagesEditor.svelte','./native-upload-client','./AccountActionGate.svelte','./native-account-scope','./normalize','./chapter-access','./types']],
+    ['PublicChapterPagesEditor.svelte',['./native-chapter-pages-controller','./native-upload-client','./chapter-access','$lib/Context','$lib','$app/navigation','svelte','$lib/components/upload/UploadChapterPages.svelte']],
+    ['native-chapter-pages-controller.ts',['./native-upload-client']],['chapter-pages-controller.ts',['./upload-client']],['chapter-access.ts',['./types']],
+    ['normalize.ts',['./types','./validation']],['test_public_chapter_removal_dom.mjs',['./signed-chapter-route-fixture.mjs']],
+  ])for(const dependency of dependencies)assert.ok(byName(name).includes(dependency),name+' -> '+dependency);
+  assert.equal(data.native_page_boundary.specifier,'$lib/components/upload/UploadChapterPages.svelte');
+  assert.match(data.native_page_boundary.qualification,/require separate strict\/browser qualification/);
 });
 test('source-bound local eligibility is distinct from immutable protocol originals and is not full write authority', () => {
   for (const row of data.backend_source_bindings) exactCurrentFile(row);

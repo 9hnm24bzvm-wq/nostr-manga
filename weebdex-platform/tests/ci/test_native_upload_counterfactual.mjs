@@ -1,3 +1,4 @@
+import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
 import { restoreCancellationObserver, restoreCancellationCounterfactualTest } from './upload-cancel-observer-association.mjs';
 // No browser, server, socket, dependency install, or external network is used.
 import test from 'node:test';
@@ -15,9 +16,18 @@ import {crc32c} from '../../scripts/ci/acquire-native-upload-browsers.mjs';
 import {createOwnedWork,disposeLateLauncher} from '../../scripts/ci/native-upload-owned-work.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),repo=path.dirname(root);
 const source=process.env.COUNTERFACTUAL_SOURCE_ROOT?path.resolve(process.env.COUNTERFACTUAL_SOURCE_ROOT):root;
+// Exact source association applies only to comparison inputs. browserModules
+// continues to load the current physical application and executable graph.
+const firstReaderPaths=new Set(readReaderUxAssociation().rows.map(row=>row.path));
+const secondReaderPaths=new Set(readReaderUxFixpassAssociation().rows.map(row=>row.path));
+function beforeReaderUx(file,value){
+ return firstReaderPaths.has(file)?restoreReaderUxPredecessor(file,value)
+  :secondReaderPaths.has(file)?restoreReaderUxFixpassPredecessor(file,value):value;
+}
 test('six finite cases and fixed18-byte synthetic payload',()=>{assert.equal(CASES.length*VERSIONS.length,6);assert.equal(Buffer.byteLength(BODY),18);assert.deepEqual(CASES,['complete-eof','truncated-valid-json','owner-dispose-checkpoint']);});
 test('CRC32C implementation matches standard finite vector',()=>{assert.equal((crc32c(Buffer.from('123456789'))^0xffffffff)>>>0,0xe3069283);});
-// A comparison-only temporary tree restores the exact prior observer bytes.
+// A comparison-only temporary tree first restores exact published UX inputs,
+// then restores the exact prior observer and self-test bytes.
 // The executable source verifier still refuses the changed live tree.
 function historicalFreezeComparison() {
  const location=path.join(repo,'.ci/native-upload-counterfactual/source-freeze-current.json');
@@ -25,7 +35,7 @@ function historicalFreezeComparison() {
  try {
   for(const row of manifest.files){
    const base=row.origin==='payload'?repo:path.dirname(source);
-   let data=fs.readFileSync(path.join(base,row.path));
+   let data=beforeReaderUx(row.path,fs.readFileSync(path.join(base,row.path)));
    if(row.path==='weebdex-platform/scripts/public-upload-recovery-observer.mjs')data=Buffer.from(restoreCancellationObserver(data.toString('utf8')));
    if(row.path==='weebdex-platform/tests/ci/test_native_upload_counterfactual.mjs')data=Buffer.from(restoreCancellationCounterfactualTest(data.toString('utf8')));
    const target=path.join(temporary,row.path);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,data);
@@ -34,7 +44,7 @@ function historicalFreezeComparison() {
   return verifySources(temporary,target);
  } finally {fs.rmSync(temporary,{recursive:true,force:true});}
 }
-test('historical frozen files match through only the exact cancellation observer association',()=>{assert.match(historicalFreezeComparison(),/^[0-9a-f]{64}$/);assert.throws(()=>verifySources(path.dirname(source),path.join(repo,'.ci/native-upload-counterfactual/source-freeze-current.json')),/Counterfactual contract failed/);});
+test('historical frozen files match through exact UX and cancellation observer associations',()=>{assert.match(historicalFreezeComparison(),/^[0-9a-f]{64}$/);assert.throws(()=>verifySources(path.dirname(source),path.join(repo,'.ci/native-upload-counterfactual/source-freeze-current.json')),/Counterfactual contract failed/);});
 test('current actual closed browser graph links without fabricated application exports',async()=>{const assets=await browserModules(source);const context=vm.createContext({});const modules=new Map();for(const [name,code]of assets)modules.set(name,new vm.SourceTextModule(code,{context,identifier:name}));await modules.get('/entry.js').link(specifier=>{assert.ok(modules.has(specifier),specifier);return modules.get(specifier);});assert.equal(modules.get('/entry.js').status,'linked');assert.ok(assets.has('/modules/schedules.js'));});
 test('sanitized report fails closed on raw fields or forged qualification',()=>{const row=emptyReport();assert.ok(Buffer.byteLength(canonicalReport(row))<65536);assert.throws(()=>canonicalReport({...row,url:'not allowed'}));row.qualified=true;assert.throws(()=>canonicalReport(row));});
 function ready(version,kind){return {...emptyCase(version,kind),infrastructure:true,cleanup:true,correlated:true,account_finished:true,observer_valid:true,server_terminal_before_cleanup:true,phases:2,server_finish:true};}
@@ -173,9 +183,21 @@ test('current source freeze preserves historical manifest and binds all four cha
  for(const row of current.files.filter(row=>row.origin==='input')){
   const before=previous.files.find(old=>old.path===row.path);
   assert.equal(row.sha256,expected[row.path]??before.sha256);
-  const bytes=fs.readFileSync(path.join(path.dirname(source),row.path));
+  const bytes=beforeReaderUx(row.path,fs.readFileSync(path.join(path.dirname(source),row.path)));
   assert.equal(hash(row.path.endsWith('/public-upload-recovery-observer.mjs')?restoreCancellationObserver(bytes.toString('utf8')):bytes),row.sha256);
  }
  assert.equal(historicalFreezeComparison(),hash(currentBytes));
  assert.throws(()=>verifySources(path.dirname(source),path.join(repo,'.ci/native-upload-counterfactual/source-freeze.json')),/Counterfactual contract failed/);
+});
+
+test('source-only UX layer refuses edited and already-restored inputs without rewriting files',()=>{
+ const manifest=JSON.parse(fs.readFileSync(path.join(repo,'.ci/native-upload-counterfactual/source-freeze-current.json')));
+ for(const row of manifest.files){
+  if(!firstReaderPaths.has(row.path)&&!secondReaderPaths.has(row.path))continue;
+  const base=row.origin==='payload'?repo:path.dirname(source),file=path.join(base,row.path),live=fs.readFileSync(file),previous=beforeReaderUx(row.path,live);
+  assert.notEqual(previous,null);
+  assert.throws(()=>beforeReaderUx(row.path,Buffer.concat([live,Buffer.from(' ')])));
+  assert.throws(()=>beforeReaderUx(row.path,previous));
+  assert.deepEqual(fs.readFileSync(file),live);
+ }
 });

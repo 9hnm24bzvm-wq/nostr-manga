@@ -31,7 +31,6 @@ export function createVisibleChapterBadges(options: { manga(): string; href(): s
     const source = readerLibrarySource(), endpoint = readerTransport.endpoint();
     assertLibraryAdmission(source.admission); budget.check();
     if (source.selectionPending) throw Error('A library selection is pending. No account or device fallback was used.');
-    if (source.mode === 'account' && endpoint.profile !== 'native-aggregate-v1') throw Error('This catalogue has no native-cookie badge source. Select device history explicitly.');
     const identity = await readerTransport.verifyIdentity(budget); budget.check();
     assertLibraryAdmission(source.admission);
     if (verified && JSON.stringify(identity) !== JSON.stringify(verified) || identityChanged(endpoint, identity, readerLibrarySource().observedCatalogue)) { catalogueChanged = true; throw new ReaderIdentityChanged('The catalogue identity changed. Reload before checking read status.'); }

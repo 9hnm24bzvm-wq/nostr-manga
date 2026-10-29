@@ -11,13 +11,13 @@ const script = source.match(/<script[^>]*>([\s\S]*?)<\/script>/)[1].replace(/^\s
 const nav = source.match(/\{#if ([^}]+)\}<nav[^>]*aria-label="Followed list pages"/)[1];
 const previous = source.match(/<Button[^>]*disabled=\{([^}]+)\}[^>]*onclick=\{\(\)=>load\(Math\.max\(0,offset-20\)\)\}>Previous/)[1];
 const next = source.match(/<Button[^>]*disabled=\{([^}]+)\}[^>]*onclick=\{\(\)=>load\(offset\+20\)\}>Next/)[1];
-const refresh = source.match(/onclick=\{(\(\)=>\{reader=undefined;void load\(\);\})\}/)[1];
+const refresh = source.match(/onclick=\{(\(\)=>\{reader\?\.dispose\(\);reader=undefined;void load\(\);\})\}/)[1];
 function fixture() {
   let bound = 'First account', total = 45, failure = false, gate;
   const calls = [], captures = [];
-  const loadFollowedLists = async check => {
+  const loadFollowedLists = async (_nativeAccount,check) => {
     const account = bound; captures.push(account);
-    return {username: account, async page(offset) {
+    return {dispose(){},username: account, async page(offset) {
       check(); calls.push({account, offset}); if (gate) await gate;
       check(); if (bound !== account) throw Error('Account binding changed');
       if (failure) throw Error('Private page unavailable');
@@ -26,7 +26,7 @@ function fixture() {
   };
   const ui = vm.runInNewContext('(function(){' + stripTypeScriptTypes(script, {mode: 'transform'}) + ';return{load,refresh:' + refresh + ',state:()=>({rows,pending,error,username,offset,total,navVisible:' + nav + ',previousDisabled:' + previous + ',nextDisabled:' + next + '})};})()', {
     Error, $state: value => value, $effect() {}, untrack: fn => fn(), onDestroy() {},
-    $signerIdentity: {owner: 'a'.repeat(64), generation: 1}, PUBLIC_MANGADEX_CATALOGUE: '1', loadFollowedLists
+    $Session: {identity:{id:'Reader1234'}}, nativeAccountIssue:()=>undefined, PUBLIC_MANGADEX_CATALOGUE: '1', loadFollowedLists
   });
   return {ui, calls, captures, shrink(value) { total = value; }, fail(value = true) { failure = value; }, rebind() { bound = 'Second account'; }, hold(value) { gate = value; }};
 }

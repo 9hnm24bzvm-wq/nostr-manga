@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { registrationContinuationHref } from './account-onboarding';
-  import IdentitySetup from '$localLibrary/IdentitySetup.svelte';
   import { Button } from '$lib/components/ui/button';
   import * as Card from '$lib/components/ui/card';
 
@@ -24,7 +23,7 @@
       {accountCurrent ? 'Your account is ready' : 'Your session changed'}
     </h1>
     <Card.Description role="status">
-      {accountCurrent ? 'You can start reading now. Set up an optional public identity below for ratings, uploads and some public actions.' : 'Your account was created. Sign in again to use it.'}
+      {accountCurrent ? 'You are signed in. Keep reading, save your favorites, and join the conversation.' : 'Your account was created. Sign in again to use it.'}
     </Card.Description>
   </Card.Header>
   <Card.Content class="space-y-5">
@@ -32,14 +31,12 @@
       {#if needsVerification}
         <section class="space-y-1 border-t pt-4 text-sm">
           <h2 class="font-semibold">Verify your site email</h2>
-          <p class="text-muted-foreground">Check your inbox to finish verifying your email login. Public identity setup is separate.</p>
+          <p class="text-muted-foreground">Check your inbox to verify your email and help keep your account secure.</p>
           <a href={verificationHref} class="inline-flex min-h-11 items-center text-primary underline underline-offset-4">Verify email</a>
         </section>
       {/if}
       <Button class="min-h-11 w-full" onclick={oncontinue}>Continue reading</Button>
-      <details><summary class="cursor-pointer text-sm">Optional: set up public identity</summary><div class="mt-4">
-      <IdentitySetup onfinish={oncontinue} assertCurrent={() => { if (!current()) throw Error('This signup is no longer current'); }} />
-      </div></details>
+
     {:else}
       <Button class="min-h-11 w-full" href={loginHref}>Sign in</Button>
       <a href={returnTo} class="flex min-h-11 items-center justify-center text-sm underline underline-offset-4">Continue browsing</a>

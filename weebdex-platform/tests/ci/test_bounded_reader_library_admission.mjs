@@ -18,6 +18,8 @@ async function fixture({ initialMode = 'device', heldOpen = false } = {}) {
   const indexed = { request: query => Promise.resolve(query), transaction: async (_db, _stores, _mode, work) => { work({ objectStore: () => ({ put(value, key) { writes.push({ value, key }); } }) }); } };
   const no = () => {}; class HTTPError extends Error { constructor(status, message) { super(message); this.status = status; this.error = message; } }
   const stubs = new Map([
+    // Account HTTP/state has its own executable suite; this fixture isolates selection admission.
+    ['platform-integrations/local-library/native-account-library.ts', { nativeAccountProgressRevision: writable(0), nativeAccountLibraryState: writable({ follows: {}, known: {} }), applyNativeAccountFollow: no, readNativeLibrary: no, mutateNativeLibrary: no }],
     ['svelte/store', { writable, derived, get }], ['$lib/stores/Session', { default: Session }], ['$env/static/public', { PUBLIC_API_URL: '/api' }], ['$lib/HTTP', { HTTPError }],
     ['platform-integrations/public-api/library-staging.ts', { cataloguePreviewLibraryUnavailable: false, CATALOGUE_PREVIEW_LIBRARY_FENCE: '', assertCataloguePreviewLibraryReady: no, publicUuidLibraryEnabled: false, publicAccountLibraryUnavailable: false, assertAccountLibraryReady: no }],
     ['platform-integrations/local-library/device-store.ts', { DeviceStore: { open: async () => { if (heldOpen) await open.promise; return device; } }, PUBLIC_DEVICE_FORMAT_FENCE: '', catalogueId: value => value, normalizeDevice: value => value, validateSnapshot: no, sameScope: () => true }],

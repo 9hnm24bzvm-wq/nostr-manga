@@ -180,9 +180,11 @@ test('composition: native Settings tasks use dialogs and identity hides only adv
   assert.match(tools, /view === 'destinations'[\s\S]*>Back to public sync<\/Button>[\s\S]*>Connect external browser signer<\/Button>/);
   assert.match(identity, /<section\b[^>]*data-protocol-identity-panel/); assert.match(identity, /<Dialog\.Root \{open\}/); assert.match(identity, /<ProtocolIdentityPanel\b[^>]*settingsView=\{view\}/);
   assert.doesNotMatch(panel, /<(?:details|summary)\b/);
-  assert.equal((tools.match(/<details>/g) ?? []).length, 1);
+  assert.equal((tools.match(/<details>/g) ?? []).length, 2);
   assert.match(tools, /<summary>Unshared entry references for support<\/summary>/);
-  assert.equal((identity.match(/<details>/g) ?? []).length, 1);
+  assert.match(tools, /<summary>Title reference for support<\/summary>/);
+  assert.equal((identity.match(/<details\b/g) ?? []).length, 2);
+  assert.match(identity, /<details[^>]*data-advanced-identity[\s\S]*<summary[^>]*>Advanced identity tools<\/summary>/);
   assert.match(identity, /<summary[^>]*>Advanced connection options<\/summary>/);
   assert.match(identity, /onclick=\{\(\) => edit\('keys'\)\}/);
   assert.match(source, /await openIdentityTool\("connections"\)/);

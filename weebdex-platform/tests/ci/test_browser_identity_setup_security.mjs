@@ -213,7 +213,7 @@ test('closed enrollment review remains local and never offers implicit admission
     w.api.acknowledge(); await w.api.reviewInstance();
     assert.equal(w.api.state().stage, 'review'); assert.equal(w.api.state().enrollmentOpen, false);
     await w.api.join(); assert.equal(w.calls.admissions, 0); assert.equal(w.identity().owner, null);
-    assert.match(source, /This instance needs operator approval/);
+    assert.match(source, /This site needs approval from its team/);
     assert.match(source, /already-approved key can still connect/);
   } finally { await w.dispose(); }
 });
@@ -233,7 +233,7 @@ test('closed instance explicitly connects a reviewed key for this session withou
     assert.equal(w.api.state().stage, 'connected'); assert.equal(w.identity().source, 'local');
     assert.equal(w.identity().owner, w.api.publicIdentity().publicKey);
     assert.equal(w.calls.admissions, 0); assert.equal(w.calls.signedProofs, 0); assert.equal(w.f.calls.posts, 0);
-    assert.match(source, /Instance approval has not been confirmed/);
+    assert.match(source, /site access has not been checked/);
     const old = w.f.publication.selectedSigner(); w.f.publication.disconnectSigner(); assert.throws(old.check, /identity changed/);
     w.api.startAgain(); w.api.openImport(); w.input.value = syntheticPrivate; w.api.importKey();
     w.api.acknowledge(); await w.api.reviewInstance(); await w.api.connectSession(); assert.equal(w.api.state().stage, 'connected');

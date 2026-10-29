@@ -16,6 +16,7 @@ pub use principal::{
     require_principal, validate_mutation,
 };
 pub(crate) use principal::require_native_library_principal_in;
+pub(crate) use principal::require_native_account_principal_in;
 
 pub const MIGRATIONS: &[Migration] = &[
     Migration {

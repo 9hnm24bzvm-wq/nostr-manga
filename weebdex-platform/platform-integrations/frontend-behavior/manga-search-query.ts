@@ -33,7 +33,7 @@ function mode(key: 'tmod' | 'txmod', value: string): string {
   if (upper !== 'AND' && upper !== 'OR') return invalid(key);
   return upper === (key === 'tmod' ? 'AND' : 'OR') ? '0' : '1';
 }
-export function parseMangaSearchQuery(defaults: SearchMangaRequest, query: URLSearchParams, library: boolean, acceptsLanguage: (value:string)=>boolean = value => searchLanguages.has(value)): ParsedMangaSearch {
+export function parseMangaSearchQuery(defaults: SearchMangaRequest, query: URLSearchParams, library: boolean, acceptsLanguage: (value:string)=>boolean = value => searchLanguages.has(value), acceptsList: (value:string)=>boolean = value => /^[0-9a-f]{32}$/.test(value)): ParsedMangaSearch {
   const search: MangaFilterRequest = structuredClone(defaults), passthrough = new URLSearchParams(), issues: SearchIssue[] = [];
   const values = new Map<string, string[]>();
   for (const [rawKey, value] of query) {
@@ -100,7 +100,7 @@ export function parseMangaSearchQuery(defaults: SearchMangaRequest, query: URLSe
         case 'tmod': case 'txmod': search[key] = mode(key, value); break;
         case 'order': search.order = choice(key, value, ['asc', 'desc']); break;
         case 'sort': search.sort = library ? choice(key, value, Object.values(MangaFollow.SortBy)) : choice(key, value, Object.values(Manga.SortBy)); break;
-        case 'list': if (!library || !/^[0-9a-f]{32}$/.test(value)) invalid(key); search.list = value; break;
+        case 'list': if (!library || !acceptsList(value)) invalid(key); search.list = value; break;
       }
     });
   }
@@ -110,8 +110,8 @@ export function parseMangaSearchQuery(defaults: SearchMangaRequest, query: URLSe
 export function searchValidationError(issues: readonly SearchIssue[]): SearchError | undefined {
   return issues.length ? new SearchError('Invalid search filters', [...new Set(issues.map(issue => issue.message))].join('. ') + '. Correct the filters or use Reset. No replacement results were loaded.') : undefined;
 }
-export function validateMangaSearchQuery(query: URLSearchParams, library: boolean, acceptsLanguage?: (value:string)=>boolean): SearchError | undefined {
-  return searchValidationError(parseMangaSearchQuery({ limit: 20, sort: library ? MangaFollow.SortBy.FollowedAt : Manga.SortBy.LastUploadedChapterAt, order: 'desc' }, query, library, acceptsLanguage).issues);
+export function validateMangaSearchQuery(query: URLSearchParams, library: boolean, acceptsLanguage?: (value:string)=>boolean, acceptsList?: (value:string)=>boolean): SearchError | undefined {
+  return searchValidationError(parseMangaSearchQuery({ limit: 20, sort: library ? MangaFollow.SortBy.FollowedAt : Manga.SortBy.LastUploadedChapterAt, order: 'desc' }, query, library, acceptsLanguage, acceptsList).issues);
 }
 export function unresolvedSearchIssues(issues: readonly SearchIssue[], initial: MangaFilterRequest, edited: MangaFilterRequest): SearchIssue[] {
   return issues.filter(issue => !issue.fields.length || issue.fields.every(field => JSON.stringify(initial[field]) === JSON.stringify(edited[field])));
@@ -138,8 +138,8 @@ export function serializeMangaSearchQuery(search: MangaFilterRequest, passthroug
 // Initial reads use the same accepted query values as Apply, before preference
 // defaults are added. Only explicitly present fields are emitted; pagination is
 // validated separately and retained here, while Apply always starts a new page.
-export function mangaSearchReadQuery(input: URLSearchParams, library: boolean, acceptsLanguage?: (value:string)=>boolean): { query: URLSearchParams; error?: SearchError } {
-  const parsed = parseMangaSearchQuery({ limit: 20, sort: library ? MangaFollow.SortBy.FollowedAt : Manga.SortBy.LastUploadedChapterAt, order: 'desc' }, input, library, acceptsLanguage);
+export function mangaSearchReadQuery(input: URLSearchParams, library: boolean, acceptsLanguage?: (value:string)=>boolean, acceptsList?: (value:string)=>boolean): { query: URLSearchParams; error?: SearchError } {
+  const parsed = parseMangaSearchQuery({ limit: 20, sort: library ? MangaFollow.SortBy.FollowedAt : Manga.SortBy.LastUploadedChapterAt, order: 'desc' }, input, library, acceptsLanguage, acceptsList);
   const query = serializeMangaSearchQuery(parsed.search, parsed.passthrough, parsed.explicitHasChapters, parsed.explicitEmptyRating);
   const present = new Set([...input.keys()].map(key => key.endsWith('[]') ? key.slice(0, -2) : key));
   for (const key of [...arrayKeys, ...scalarKeys]) if (!present.has(key)) query.delete(key);
@@ -149,10 +149,10 @@ export function mangaSearchReadQuery(input: URLSearchParams, library: boolean, a
 
 // Cache admission and the actual API read must validate the same final wire,
 // including preference rows and the default limit appended by the route.
-export function effectiveMangaSearchReadQuery(input: URLSearchParams, library: boolean, preferences: { applyMangaPreferences(query: URLSearchParams): void }, defaultLimit: string, acceptsLanguage?: (value:string)=>boolean): { query: URLSearchParams; error?: SearchError } {
-  const admitted = mangaSearchReadQuery(input, library, acceptsLanguage);
+export function effectiveMangaSearchReadQuery(input: URLSearchParams, library: boolean, preferences: { applyMangaPreferences(query: URLSearchParams): void }, defaultLimit: string, acceptsLanguage?: (value:string)=>boolean, acceptsList?: (value:string)=>boolean): { query: URLSearchParams; error?: SearchError } {
+  const admitted = mangaSearchReadQuery(input, library, acceptsLanguage, acceptsList);
   if (admitted.error) return admitted;
   if (!library) preferences.applyMangaPreferences(admitted.query);
   if (!admitted.query.has('limit')) admitted.query.set('limit', defaultLimit);
-  return { query: admitted.query, error: validateMangaSearchQuery(admitted.query, library, acceptsLanguage) };
+  return { query: admitted.query, error: validateMangaSearchQuery(admitted.query, library, acceptsLanguage, acceptsList) };
 }

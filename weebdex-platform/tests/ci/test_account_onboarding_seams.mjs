@@ -79,7 +79,8 @@ async function registration({ route = registerRoute, signedIn = false, url = 'ht
     async updateRegistrationFlow(request) { writes.push(clone(request)); return writeGate.promise; },
   };
   class Query extends URLSearchParams { toString() { const value = super.toString(); return value ? '?' + value : ''; } }
-  const context = vm.createContext({ console: { error() {} }, URL, URLSearchParams: Query, Error, Promise, structuredClone, setTimeout, clearTimeout, AbortController,
+  class FormInput { constructor(value) { this.value = value; } }
+  const context = vm.createContext({ HTMLInputElement: FormInput, console: { error() {} }, URL, URLSearchParams: Query, Error, Promise, structuredClone, setTimeout, clearTimeout, AbortController,
     window: locationWindow, location, page, Session, Kratos, AxiosError, writable, get, derived,
     ErrorSessionAlreadyAvailable: 'session_already_available', Constants: { Error: { Error: PublicError, Unknown: unknown } },
     StatusCodes: { OK: 200, BAD_REQUEST: 400, GONE: 410, UNAUTHORIZED: 401, FORBIDDEN: 403 },
@@ -93,6 +94,21 @@ async function registration({ route = registerRoute, signedIn = false, url = 'ht
     toast: Object.fromEntries(['success', 'info', 'error'].map(level => [level, (...args) => notices.push([level, ...args])])),
     localStorage: storage, sessionStorage: storage, indexedDB: { open: tripwire('IndexedDB open'), deleteDatabase: tripwire('database removal') },
     fetch: tripwire('network publication'), navigator: { clipboard: { writeText: tripwire('key clipboard') } },
+  });
+  // The current library module observes account-library stores even in this
+  // native-mode registration fixture. Supply only inert state; registration is
+  // still forbidden from reading, importing or mutating either library.
+  const nativeAuthority = writable({ actor: get(Session)?.identity?.id ?? null, epoch: 0 });
+  Session.subscribe(account => nativeAuthority.update(current => ({ actor: account?.identity?.id ?? null, epoch: current.epoch + 1 })));
+  Object.assign(context, {
+    nativeAccountProgressRevision: writable(0),
+    nativeAccountLibraryState: writable({ owner: null, epoch: 0, follows: {}, known: {} }),
+    nativeAuthority,
+    captureNativeAuthority: () => get(nativeAuthority),
+    sameNativeReadAuthority: captured => captured === get(nativeAuthority),
+    applyNativeAccountFollow: tripwire('account library follow application'),
+    readNativeLibrary: tripwire('account library read'),
+    mutateNativeLibrary: tripwire('account library mutation'),
   });
   for (const file of ['navigation-authority.ts', 'auth-form-owner.ts']) vm.runInContext(transform(withoutImports(fs.readFileSync(path.join(behavior, file), 'utf8')).replace(/^export /gm, '')), context, { filename: file });
   context.Mutex = vm.runInContext(transform('(function(){' + withoutImports(compose('src/lib/Mutex.ts')).replace('export default Mutex;', 'return Mutex;') + '})()'), context);
@@ -116,7 +132,7 @@ async function registration({ route = registerRoute, signedIn = false, url = 'ht
   }
   let script = source.match(/<script\b[^>]*>([\s\S]*?)<\/script>/)[1];
   const api = vm.runInContext('(function(){' + transform(withoutImports(script)) + '\nreturn { submit: ' + form[1] + ', bindForm: value => { ' + form[2] + ' = value; }, guide: () => (' + (guide?.[1] ?? 'false') + '), guideProps: () => ({' + [...(guide?.[2] ?? '').matchAll(/\b(\w+)=\{([^}]+)\}/g)].map(match => JSON.stringify(match[1]) + ': (' + match[2] + ')').join(',') + '}) }; })()', context);
-  const fields = Object.fromEntries(Object.entries({ email: 'reader@example.invalid', username: 'ReaderExample', password: 'Synthetic!234', csrf_token: 'synthetic-csrf' }).map(([name, value]) => [name, { value }]));
+  const fields = Object.fromEntries(Object.entries({ email: 'reader@example.invalid', username: 'ReaderExample', password: 'Synthetic!234', csrf_token: 'synthetic-csrf' }).map(([name, value]) => [name, new FormInput(value)]));
   api.bindForm(Object.assign({ elements: { namedItem: name => fields[name] } }, fields));
   const runEffects = () => { preEffects.forEach(fn => fn()); effects.forEach(fn => fn()); };
   runEffects();
@@ -328,22 +344,23 @@ function guideControls({ accountCurrent = true, needsVerification = true, return
   const heading = source.match(/<h1\b[^>]*bind:this=\{([^}]+)\}[^>]*>/);
   const verification = source.match(/<a\b[^>]*href=\{([^}]+)\}[^>]*>Verify email<\/a>/);
   const signin = source.match(/<Button\b[^>]*href=\{([^}]+)\}[^>]*>Sign in<\/Button>/);
-  const primary = source.match(/<IdentitySetup\b[^>]*onfinish=\{([^}]+)\}/);
+  const primary = source.match(/<Button\b[^>]*onclick=\{([^}]+)\}[^>]*>Continue reading<\/Button>/);
   assert.ok(heading && verification && signin && primary, 'exercise the actual guide controls');
   const api = vm.runInContext('(function(){' + transform(withoutImports(script)) + '\nreturn { heading: node => { ' + heading[1] + ' = node; }, verificationHref: () => (' + verification[1] + '), loginHref: () => (' + signin[1] + '), primary: () => (' + primary[1] + ') }; })()', context);
   return { source, api, mounts, props, helper, context };
 }
 
-test('welcome mounts the explicit identity wizard and preserves native focus and optional site links', () => {
+test('welcome presents one ordinary signed-in account and preserves focus, verification and reading', () => {
   const value = guideControls();
   assert.match(value.source, /aria-labelledby="account-welcome-title"/);
   assert.match(value.source, /<h1\b[^>]*id="account-welcome-title"[^>]*tabindex="-1"/);
   const focused = []; value.api.heading({ focus: options => focused.push(clone(options)) }); value.mounts.forEach(fn => fn());
   assert.deepEqual(focused, [{ preventScroll: true }]);
   assert.equal(value.api.primary(), value.props.oncontinue);
-  assert.match(value.source, /<IdentitySetup\b[^>]*onfinish=\{oncontinue\}/);
+  assert.doesNotMatch(value.source, /IdentitySetup|public identity|recovery key/);
+  assert.match(value.source, /You are signed in/);
   assert.match(value.source, /\{#if needsVerification\}[\s\S]*?<a\b[^>]*min-h-11[^>]*>Verify email<\/a>/);
-  assert.match(value.source, /\{#if accountCurrent\}[\s\S]*?<IdentitySetup[\s\S]*?\{:else\}[\s\S]*?>Sign in<\/Button>/);
+  assert.match(value.source, /\{#if accountCurrent\}[\s\S]*?>Continue reading<\/Button>[\s\S]*?\{:else\}[\s\S]*?>Sign in<\/Button>/);
   assert.doesNotMatch(value.source, /onkeydown|onkeyup|role="dialog"|position:\s*fixed|\$protocol|signEvent|connectSigner|publishEvent|localStorage|sessionStorage/);
   const button = fs.readFileSync(path.join(frontend, 'src/lib/components/ui/button/button.svelte'), 'utf8');
   assert.match(button, /type = "button"/); assert.match(button, /<button\s/);

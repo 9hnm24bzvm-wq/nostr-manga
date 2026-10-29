@@ -1,3 +1,5 @@
+// Historical signed UI regression only; current native coverage is test_native_contribution_dom.mjs.
+import {historicalContributionSource} from './historical-contribution-ui-fixture.mjs';
 // Source-only reconstruction seams. No Svelte runtime, signer, HTTP, socket or DB.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -12,7 +14,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const frontend = path.join(root, 'frontend');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const spec = JSON.parse(fs.readFileSync(path.join(root, 'platform-integrations/public-api/upload-anchors.json'), 'utf8'));
-const nativeText = fs.readFileSync(path.join(root, 'platform-integrations/frontend-overlays.mjs'), 'utf8');
+const nativeText = historicalContributionSource(path.join(root, 'platform-integrations/frontend-overlays.mjs'));
 const native = JSON.parse(nativeText.slice(nativeText.indexOf('const patches = [') + 'const patches = '.length, nativeText.indexOf('\n];\nconst hash') + 2));
 function compose(relative) {
   let code = fs.readFileSync(path.join(frontend, relative), 'utf8');
@@ -236,7 +238,7 @@ test('changed confirmed bytes update the existing keyed card for its hash-keyed 
   assert.equal(fixture.old.thumbnail,undefined);assert.equal(fixture.context.pages[1],fixture.neighbour);assert.deepEqual(fixture.calls.created,[]);
 });
 test('signed chapter editor keeps local annotations, exact owner and distinct moderator confirmation', () => {
-  const source = fs.readFileSync(path.join(root, 'platform-integrations/public-api/PublicChapterEditor.svelte'), 'utf8');
+  const source = historicalContributionSource(path.join(root, 'platform-integrations/public-api/PublicChapterEditor.svelte'));
   assert.match(source, /loadUploadAccount\(current\)/);
   assert.match(source, /publicUploadOwner\(\(\) => initial.id, account, 'chapter', 'caller'\)/);
   assert.match(source, /approvesHide = \$derived\(access\?\.approvesHide===true\)/);

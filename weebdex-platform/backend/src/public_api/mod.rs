@@ -21,6 +21,19 @@ pub mod routes;
 pub fn router() -> axum::Router<crate::AppState> {
     routes::router()
         .merge(auth::router())
+        .merge(native_account::router())
+        .merge(native_account_profile_settings::router())
+        .merge(native_contributions::router())
+        .merge(native_drafts::router())
+        .merge(native_uploads::router())
+        .merge(scheduled_uploads::native_router())
+        .merge(native_upload_extensions::router())
+        .merge(native_cover_writes::router())
+        .merge(native_editorial::router())
+        .merge(native_relation_writes::router())
+        .merge(native_title_disposition::router())
+        .merge(native_chapter_writes::router())
+        .merge(native_account_library::router())
         .merge(library::router())
         .merge(lists::router())
         .merge(profiles::router())
@@ -31,8 +44,10 @@ pub fn router() -> axum::Router<crate::AppState> {
         .merge(reader_selector::router())
         .merge(catalogue_edges::router())
         .merge(account_reads::router())
+        .merge(account_reads::native_router())
         .merge(ratings::router())
         .merge(list_follows::router())
+        .merge(list_follows::native_router())
         .merge(follow_writes::router())
         .merge(native_reading_status::router())
         .merge(native_profile::router())
@@ -63,6 +78,19 @@ pub fn router() -> axum::Router<crate::AppState> {
 }
 
 pub mod auth;
+mod native_account;
+mod native_account_profile_settings;
+mod native_contributions;
+mod native_json;
+mod native_drafts;
+mod native_uploads;
+mod native_upload_extensions;
+mod native_cover_writes;
+mod native_editorial;
+mod native_relation_writes;
+mod native_title_disposition;
+mod native_chapter_writes;
+mod native_account_library;
 
 pub mod catalogue_dto;
 

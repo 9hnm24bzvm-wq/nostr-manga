@@ -499,14 +499,14 @@ export async function runJourneys(h) {
 				insist(await page.locator('[data-library-tool], [data-public-identity-tool]').count() === 0 && await page.getByRole('dialog').count() === 0, 'Technical tools mounted before an explicit native action');
 			};
 			const contextControls = async (conversation, label) => {
-				const signed = conversation.getByRole('button', { name: 'Signed comments', exact: true });
+				const signed = conversation.getByRole('button', { name: 'Comments from other sites', exact: true });
 				insist(await signed.getAttribute('aria-expanded') === 'false', 'Technical signed controls were expanded before a contextual user action');
 				await signed.click();
-				insist(await signed.getAttribute('aria-expanded') === 'true', 'Contextual Signed comments did not expand');
-				const manage = conversation.getByRole('link', { name: 'Manage public identity', exact: true });
-				insist(await manage.getAttribute('href') === '/settings/identity', 'Disconnected contextual action has no anonymous signer Settings path');
+				insist(await signed.getAttribute('aria-expanded') === 'true', 'Contextual Comments from other sites did not expand');
+				const sourceLoader = conversation.getByRole('button', { name: 'Load verified public conversation', exact: true });
+				insist(await sourceLoader.count() === 1, 'External source comments have no read-only loading control');
 				insist(await conversation.getByLabel('Current instance catalogue ID', { exact: true }).count() === 0 && await conversation.getByLabel('Target type', { exact: true }).count() === 0, 'Contextual comments permit editing a different resource target');
-				await manage.scrollIntoViewIfNeeded(); await framed(manage, label + ' expanded signed controls');
+				await sourceLoader.scrollIntoViewIfNeeded(); await framed(sourceLoader, label + ' source comment controls');
 			};
 			const tools = async (owner, definitions) => {
 				const scope = owner === 'library' ? panel() : identityPanel();
@@ -639,7 +639,7 @@ export async function runJourneys(h) {
 			await selectTitleLibraryStatus(page, 'Plan to Read', { check, prefix: 'local-library-account-follow' });
 			const accountFollow = await inspect('account-status-durable', () => until(() => api(`/user/follows/manga?limit=100`), value => value.status === 200 && value.body?.data?.some(row => row.id === manga && row.reading_status === 'plan_to_read'), 'Explicit account follow did not persist'));
 			await inspect('account-device-preserved', async () => { const preserved = await device(); insist(JSON.stringify(preserved.records) === JSON.stringify(before.records), 'Account mode silently overwrote device records'); });
-			await inspect('account-import-reviewed', async () => { await openLibraryManagement(); await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); const review = page.getByRole('dialog', { name: 'Review library import', exact: true }); await review.waitFor({ state: 'visible' }); await review.getByText('Import preview: Explicit account-library import', { exact: false }).waitFor({ state: 'visible' }); await review.getByRole('button', { name: 'Merge reviewed import', exact: true }).click(); await review.waitFor({ state: 'hidden' }); await panel().getByText('Backup merged locally.', { exact: true }).waitFor({ state: 'visible' });
+			await inspect('account-import-reviewed', async () => { await openLibraryManagement(); await panel().getByRole('button', { name: 'Preview account import to device', exact: true }).click(); const review = page.getByRole('dialog', { name: 'Review library import', exact: true }); await review.waitFor({ state: 'visible' }); await review.getByText('Explicit account-library import', { exact: true }).waitFor({ state: 'visible' }); await review.getByRole('button', { name: 'Merge reviewed import', exact: true }).click(); await review.waitFor({ state: 'hidden' }); await panel().getByText('Backup merged locally.', { exact: true }).waitFor({ state: 'visible' });
 				await panel().getByRole('button', { name: 'Use device library', exact: true }).click(); await panel().getByText('Library source: this browser device.', { exact: false }).waitFor({ state: 'visible' }); await until(device, value => value?.records.some(row => row.family === 'series' && row.id === manga), 'Reviewed account import lost local series'); });
 			return { account_follow_confirmed: accountFollow.status, explicit_mode_only: true, device_unchanged_before_reviewed_import: true, reviewed_merge_control_used: true };
 		});
