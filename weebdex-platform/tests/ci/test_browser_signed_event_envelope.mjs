@@ -71,8 +71,24 @@ test('missing, unknown and malformed fields cannot be silently projected away', 
 
 test('raw request byte ownership is retained separately from stable signed-envelope equality', () => {
   const source = read('../../scripts/browser-signed-journeys.mjs');
-  assert.match(source, /exactRequestBytes = digest\(JSON.stringify\(saved.event\)\)/);
+  const expression = source.match(/exactRequestBytes = (digest\(JSON.stringify\(\{ \.\.\.saved\.event, expectedHead: saved\.expectedHead \}\)\))/)?.[1];
+  assert(expression, 'Actual retry must bind raw bytes of the saved immutable head envelope');
+  const actualDigest = new Function('saved', 'digest', 'return ' + expression);
+  const guard = source.match(/insist\((Object\.hasOwn\(saved, 'expectedHead'\) && \(saved\.expectedHead === null \|\| identifier\(saved\.expectedHead\)\)), "Saved metadata retry must retain an explicit immutable expected head"\)/)?.[1];
+  assert(guard, 'An omitted legacy expectation must never become an unguarded retry');
+  const actualGuard = new Function('saved', 'identifier', 'return ' + guard), identifier = value => typeof value === 'string' && /^[0-9a-f]{64}$/.test(value);
+  for (const expectedHead of [null, 'a'.repeat(64), 'b'.repeat(64)]) {
+    const saved = {event: structuredClone(nodeEvent), expectedHead}, before = signedEventDigest(saved.event);
+    assert.equal(actualGuard(saved, identifier), true);
+    assert.equal(actualDigest(saved, hash), hash(JSON.stringify({...nodeEvent, expectedHead})));
+    assert.notEqual(actualDigest(saved, hash), hash(JSON.stringify(nodeEvent)));
+    assert.equal(signedEventDigest(saved.event), before); assert(verify(saved.event), 'Envelope expectation is not a signed-event field');
+  }
+  assert.notEqual(actualDigest({event: nodeEvent, expectedHead: null}, hash), actualDigest({event: nodeEvent, expectedHead: 'a'.repeat(64)}, hash));
+  for (const saved of [{event: nodeEvent}, {event: nodeEvent, expectedHead: undefined}, {event: nodeEvent, expectedHead: []}, Object.assign(Object.create({expectedHead: null}), {event: nodeEvent})]) assert.equal(actualGuard(saved, identifier), false);
   assert.match(source, /row.bodyDigest === exactRequestBytes/);
+  assert.match(source, /Object\.hasOwn\(done, 'expectedHead'\) && done.expectedHead === saved.expectedHead/);
+  assert.match(source, /exact_body_digest: exactRequestBytes, signed_event_digest: exact/);
   assert.match(source, /verify\(value.body\)/);
   assert.match(source, /signedCounts.get\(0\) === signed && posts.length === 2 && posts.every\(row => row.origin === protocol\)/);
 });

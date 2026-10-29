@@ -1581,7 +1581,13 @@ async fn native_duplicate_originals_and_webp_remain_readable_in_exact_page_order
         assert_eq!(response.status().as_u16(),200);assert_eq!(response.headers()["content-type"],mime);assert_eq!(response.bytes().await.unwrap().as_ref(),bytes.as_slice());
     }
     let native=f.native(ResourceKind::Chapter,chapter).await;let db=f.state.db.client().await.unwrap();
-    let sizes=db.query_one("SELECT count(*),count(DISTINCT p.object_id),sum(o.bytes)::bigint FROM platform.chapter_pages p JOIN platform.media_objects o ON o.id=p.object_id WHERE p.chapter_id=$1",&[&native]).await.unwrap();
-    assert_eq!(sizes.get::<_,i64>(0),3);assert_eq!(sizes.get::<_,i64>(1),2);assert_eq!(sizes.get::<_,i64>(2),(png.len()*2+webp.len()) as i64);
-    let unique:i64=db.query_one("SELECT sum(bytes)::bigint FROM platform.media_objects WHERE id IN (SELECT object_id FROM platform.chapter_pages WHERE chapter_id=$1)",&[&native]).await.unwrap().get(0);assert_eq!(unique,(png.len()+webp.len()) as i64);
+    // Local upload objects preserve each file/position. Source storage and the
+    // unique-byte budget identify repeated content by digest, not local object ID.
+    let sizes=db.query_one("SELECT count(*),count(DISTINCT p.object_id),sum(o.bytes)::bigint,count(DISTINCT o.digest) FROM platform.chapter_pages p JOIN platform.media_objects o ON o.id=p.object_id WHERE p.chapter_id=$1",&[&native]).await.unwrap();
+    assert_eq!(sizes.get::<_,i64>(0),3);assert_eq!(sizes.get::<_,i64>(1),3);assert_eq!(sizes.get::<_,i64>(2),(png.len()*2+webp.len()) as i64);assert_eq!(sizes.get::<_,i64>(3),2);
+    let unique=db.query_one("SELECT sum(bytes)::bigint,bool_and(bytes=min_bytes) FROM (SELECT o.digest,max(o.bytes) AS bytes,min(o.bytes) AS min_bytes FROM platform.chapter_pages p JOIN platform.media_objects o ON o.id=p.object_id WHERE p.chapter_id=$1 GROUP BY o.digest) content",&[&native]).await.unwrap();
+    assert_eq!(unique.get::<_,i64>(0),(png.len()+webp.len()) as i64);assert!(unique.get::<_,bool>(1),"identical content digests must have identical byte sizes");
+    let source_hashes=entry.metadata["pages"].as_array().unwrap().iter().map(|page|page["sha256"].as_str().unwrap()).collect::<Vec<_>>();
+    assert_eq!(source_hashes,vec![png_hash.as_str(),webp_hash.as_str(),png_hash.as_str()]);
+    assert_eq!(source_hashes.iter().collect::<std::collections::BTreeSet<_>>().len(),2);
 }

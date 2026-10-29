@@ -70,14 +70,14 @@ test('proved old waiter crash is handled after the repaired click failure', () =
   assert.equal(repaired.error, undefined); assert.equal(repaired.status, 0, repaired.stderr);
 });
 
-function journeyStandIns({ failSeed = false } = {}) {
+function journeyStandIns({ failSeed = false, onboardingIdentityCount = 0 } = {}) {
   const origin = 'http://127.0.0.1:1', report = { steps: [] }, inputs = {}, calls = [];
   const device = { records: [{ family: 'series', id: 'SeedManga1', status: 'reading' }] };
   let welcome = false;
   let session = 'none', initialPassword, currentPassword, verified = false, responseWaits = 0;
   const response = (status, body) => ({ status: () => status, ok: () => status >= 200 && status < 300, json: async () => body, headers: () => ({ 'content-type': 'application/json' }) });
   const locator = selector => ({
-    fill: async value => { inputs[selector] = value; }, count: async () => 0,
+    fill: async value => { inputs[selector] = value; }, count: async () => selector === '[data-account-onboarding] [data-identity-setup]' ? onboardingIdentityCount : 0,
     filter({ hasText }) { assert(hasText.test('Add to Library')); return { click: async () => { if (failSeed) throw Error('synthetic title control unavailable'); calls.push('title-trigger'); } }; },
     first() { return this; }, waitFor: async () => {},
   });
@@ -88,7 +88,7 @@ function journeyStandIns({ failSeed = false } = {}) {
     click: async () => {
       calls.push(options.name);
       if (options.name === 'Create Account') { welcome = true; session = 'normal'; initialPassword = currentPassword = inputs['input[name="password"]']; }
-      if (options.name === 'Finish later') { assert.equal(welcome, true); welcome = false; page.current = origin + '/'; }
+      if (options.name === 'Continue reading') { assert.equal(welcome, true); welcome = false; page.current = origin + '/'; }
       if (options.name === 'Logout') session = 'none';
       if (options.name === 'Reset Password') { currentPassword = inputs['input[name="password"]']; session = 'normal'; }
       if (options.name === 'Sign in') session = inputs['input[name="password"]'] === currentPassword ? 'normal' : 'none';
@@ -141,8 +141,10 @@ test('actual journey keeps every recovery assertion and all eighteen checkpoints
   assert.deepEqual(value.report.account_recovery_checks.map(row => row.check_id), [...accountRecoveryCheckIds]);
   assert.ok(value.report.account_recovery_checks.every(row => row.status === 'passed'));
   assert.equal(value.responseWaits(), 1);
-  assert.equal(value.calls.filter(name => name === 'Finish later').length, 1);
-  assert.ok(value.calls.indexOf('Create Account') < value.calls.indexOf('Finish later'));
+  assert.equal(value.calls.filter(name => name === 'Continue reading').length, 1);
+  assert.ok(value.calls.indexOf('Create Account') < value.calls.indexOf('Continue reading'));
   assert.notEqual(...value.passwords());
   assert.doesNotMatch(JSON.stringify(value.report.account_recovery_checks), /private-fixture-token|browser_|Fixture!|Recovered!/);
 });
+
+test('ordinary signup refuses a regressed portable setup instead of exercising or skipping it',async()=>{const value=journeyStandIns({onboardingIdentityCount:1});await runJourneys(value.h);assert.equal(value.report.steps[0].status,'failed');assert.match(value.report.steps[0].error,/must not require portable identity setup/);assert.equal(value.calls.includes('Continue reading'),false);assert.equal(value.calls.some(name=>/public identity|private key|browser signer/.test(name)),false);});

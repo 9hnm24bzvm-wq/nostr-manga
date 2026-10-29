@@ -43,10 +43,14 @@ verify terminal cleanup before another runtime process starts.
    `Selected: no`. In the controls tab release the held reply and refresh: the
    actual socket must close (`activeConnections: 0`) and selection must remain
    absent. Reconnecting requires filling/reviewing/consenting again.
+   Repeat the same held case using Escape instead of the Cancel button; the
+   top Dialog must close without closing the lower one, with the same safe
+   same-account focus restoration and late-reply refusal.
 5. Repeat a held connection, then use the separate controls tab's **Switch
    synthetic native account**. The top Dialog closes, no identity is installed,
    and releasing the late reply cannot change that. Refresh observations to
    verify transport closure; the page's synthetic account label changes.
+   Old-account focus restoration must not move focus after this account switch.
 6. Repeat a held connection, choose **Change synthetic linked revision**, then
    **Release held reply**. The actual coordinator's final native read must refuse
    the stale link, close the socket and leave no selected identity. The allowed

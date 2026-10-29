@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createRemoteSignerBrowserFixture } from './fixture.mjs';
 export async function runOwnedRemoteSignerBrowserChecks(browser, options) {
   const report = { scope: 'isolated-current-components-real-dialog-and-owned-NIP44-transport', status: 'pending', cases: [], limitations: ['Finite native-account/publication-selection seams; not a full deployed Account journey.', 'Fixture CSS geometry; no production pixel-parity claim.', 'No real user, external signer, application-event signing or native authority change.'] };
-  for (const scenario of ['cancel-late-handshake', 'account-switch-late-handshake', 'link-change-late-handshake', 'successful-connect-account-disconnect']) {
+  for (const scenario of ['cancel-late-handshake', 'escape-late-handshake', 'account-switch-late-handshake', 'link-change-late-handshake', 'successful-connect-account-disconnect']) {
     const row = { scenario, status: 'pending', phase: 'fixture', cleanup: false }; report.cases.push(row);
     let fixture, context;
     try {
@@ -33,8 +33,9 @@ export async function runOwnedRemoteSignerBrowserChecks(browser, options) {
       const deadline = Date.now() + 4000; while (fixture.snapshot().pending !== 1 && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 10));
       assert.equal(fixture.snapshot().pending, 1, 'Expected one held authenticated public-key reply.');
       row.phase = scenario;
-      if (scenario === 'cancel-late-handshake') {
-        await status.getByRole('button', { name: 'Cancel signer request and disconnect', exact: true }).click();
+      if (scenario === 'cancel-late-handshake' || scenario === 'escape-late-handshake') {
+        if (scenario === 'escape-late-handshake') await page.keyboard.press('Escape');
+        else await status.getByRole('button', { name: 'Cancel signer request and disconnect', exact: true }).click();
         await status.waitFor({ state: 'hidden' }); fixture.release();
       } else if (scenario === 'account-switch-late-handshake') {
         fixture.switchAccount(); await page.getByText('Account: SyntheticAccountB', { exact: true }).waitFor();
@@ -55,7 +56,8 @@ export async function runOwnedRemoteSignerBrowserChecks(browser, options) {
       if (scenario !== 'successful-connect-account-disconnect') {
         await parent.getByRole('alert').waitFor();
         await page.getByText('Selected: no', { exact: true }).waitFor();
-        await page.waitForFunction(() => !!document.activeElement?.closest('[data-remote-parent-dialog]'));
+        // Account replacement must not run old-account focus restoration.
+        if (scenario !== 'account-switch-late-handshake') await page.waitForFunction(() => !!document.activeElement?.closest('[data-remote-parent-dialog]'));
         assert.equal(fixture.snapshot().requests, scenario === 'link-change-late-handshake' ? 3 : 2, 'Handshake must not retry or sign an application event.');
       }
       const closeDeadline = Date.now() + 4000; while (fixture.snapshot().activeConnections !== 0 && Date.now() < closeDeadline) await new Promise(resolve => setTimeout(resolve, 10));

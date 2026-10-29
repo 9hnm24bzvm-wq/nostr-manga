@@ -17,8 +17,9 @@ The review identifies exact target ID, username, current authority revision,
 selected named bundles, local effect, reason, and the fact that no source service
 changes. A command carries a unique request ID and that target revision. Receipts
 are bound to actor and full canonical body. A lost response is reconciled by exact
-receipt; no fresh command is automatically sent. Reauthentication preserves an
-account/site-bound intent for read-only resume, then requires a new review.
+receipt; no fresh command is automatically sent. Private fields remain in memory only. Reauthentication or leaving the view discards
+them; only an account/site-bound request ID and command fingerprint survive for
+uncertain-result recovery, followed by a fresh explicit review.
 
 ## Serialization and last administrator
 
@@ -96,11 +97,14 @@ capability is invented. Public instance policy/contact is configuration-owned.
 ### Uncertain-result barrier
 
 An absent receipt or equal authority revision never unlocks a pending command.
-The client persists the exact account/site/body/request ID before dispatch and
-blocks new security reviews while uncertain. Read-only reconciliation, explicit
-exact-ID/body retry, and an explicit cancellation barrier are separate actions.
+Before dispatch the client durably saves and reads back only a format-versioned
+request ID and command hash under an account/site-scoped key. No reason, target,
+role selection, token or command body is stored. It blocks new security reviews
+while uncertain. Read-only reconciliation, an in-memory-only exact retry, and an
+explicit cancellation barrier are separate actions.
 The barrier takes the same global try-lock, proves current normal-cookie actor
-ownership of the original review/body, and either returns the applied receipt or
+ownership of the original review/fingerprint, derives target/operation/revision
+from that stored record, and either returns the applied receipt or
 inserts an immutable no-effect cancellation receipt. A late original request
 therefore cannot apply, including when its desired state is a no-op. Cancellation
 of an already applied action is not an undo. Demoted/restricted ordinary actors
@@ -111,3 +115,27 @@ actor authority revision, current exact role/grant, fresh session, target CAS,
 and unchanged body. Expired review cleanup is indexed and batch-bounded (1,000),
 and converts records to cancellation receipts before deletion. The security audit
 and command receipts remain append-only. No expired review is silently forgotten.
+
+### Recovery privacy and legacy conversion
+
+The review response supplies the server-canonical SHA-256 command fingerprint.
+Check validates actor/request/fingerprint; settle accepts only the fingerprint,
+not a target or private command. This hash is not an authentication capability.
+The ordinary native cookie and exact record ownership are always required.
+
+Leaving, logout, account change or remount discards private fields and the optional
+exact-retry body. A remounted view offers only Check / Cancel if unapplied; after
+settlement the operator chooses the account and enters a fresh review. This
+privacy tradeoff deliberately replaces cross-navigation saved free-text intent.
+An unsent review may be discarded because business dispatch cannot begin until
+the pending marker has been durably saved and read back. Storage refusal or
+silent write loss prevents dispatch. Cleanup compares the current exact marker
+so a late response cannot erase a replacement fence.
+
+On encountering an old full-command pending marker, its private bytes are removed
+and only its validated request ID remains with a null fingerprint. Explicit
+Check may recover the hash only from that same actor's exact server record. An
+absent record does not clear the fence. A damaged marker becomes a redacted
+blocked sentinel: no fabricated request, retry or automatic discard is allowed.
+The operator must inspect the original server history before recovery. Legacy
+unsent intent is removed; no credentials or proof material enters any marker.

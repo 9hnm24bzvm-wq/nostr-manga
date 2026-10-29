@@ -139,7 +139,7 @@ function fixture({ failAt, failOccurrence = 1, duplicates = 1, panelDuplicates =
     openTool: vm.runInContext('openLibraryTool', scope), closeTools: vm.runInContext('closeTools', scope) };
 }
 
-test('composition: dedicated native Settings tabs own management and root retains renderless lifecycle', async () => {
+test('composition: native Settings tabs own management; root owns lifecycle plus one pending-only signer approval', async () => {
   const frontend = path.join(productRoot, 'frontend');
   const { createFrontendOverlays } = await import(pathToFileURL(path.join(productRoot, 'platform-integrations/frontend-overlays.mjs')).href);
   const plugin = createFrontendOverlays(frontend);
@@ -166,7 +166,13 @@ test('composition: dedicated native Settings tabs own management and root retain
   assert.match(compose('src/routes/(app)/library/+layout.svelte'), /<Button\b[^>]*href="\/settings\/library"[^>]*>Manage library<\/Button>\s*<\/div>\s*<Protected>/);
   const runtime = fs.readFileSync(path.join(productRoot, 'platform-integrations/local-library/LibraryRuntime.svelte'), 'utf8');
   assert.match(runtime, /void openLibrary\(\)/); assert.match(runtime, /window\.addEventListener\('weebdex-library-error', reportError\)/); assert.match(runtime, /window\.removeEventListener\('weebdex-library-error', reportError\)/);
-  assert.doesNotMatch(runtime.replace(/<script\b[^>]*>[\s\S]*?<\/script>/, ''), /\S/, 'persistent lifecycle has no visible management chrome');
+  assert.equal(runtime.replace(/<script\b[^>]*>[\s\S]*?<\/script>/, '').trim(), '<RemoteSignerStatus />', 'Only the globally accessible pending signer approval may render outside native Settings');
+  assert.equal((runtime.match(/import RemoteSignerStatus from '\.\/RemoteSignerStatus\.svelte'/g) ?? []).length, 1);
+  const status = fs.readFileSync(path.join(productRoot, 'platform-integrations/local-library/RemoteSignerStatus.svelte'), 'utf8');
+  assert.match(status, /<Dialog\.Root open=\{\$remoteSignerStatus\.pending\}/);
+  assert.match(status, /onOpenChange=\{\(value\) => \{ if \(!value\) cancelRemoteSigner\(\); \}\}/);
+  assert.match(status, /onOpenAutoFocus=\{rememberFocus\} onCloseAutoFocus=\{restoreFocus\}/);
+  for (const current of [runtime, status]) assert.doesNotMatch(current, /(?:import|<)(?:\s+)?(?:LocalLibraryPanel|ProtocolIdentityPanel|PublicIdentitySettings|IdentitySetup|RemoteSignerPanel)/);
 });
 
 test('composition: native Settings tasks use dialogs and identity hides only advanced connection options', () => {

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { createIntegrationUtilitySources } from '../../platform-integrations/integration-utility-sources.mjs';
 import { frontendRouteAdditions } from '../../platform-integrations/frontend-route-additions.mjs';
+import { sixPersonaRouteAdditions } from '../../platform-integrations/six-persona/overlays.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 test('utility scan includes the reviewed external integrations without rewriting original CSS', () => {
@@ -48,5 +49,19 @@ test('additive route membership is the exact reviewed moderation/reports/closure
   assert.deepEqual(frontendRouteAdditions[2], {source:'platform-integrations/frontend-reconstruction/account/closure/+page.svelte',target:'src/routes/(app)/account/closure/+page.svelte',reconstruction:false,additive_account_disable_route:true});
   for (const addition of frontendRouteAdditions) assert(fs.statSync(path.join(root, addition.source)).isFile());
   assert.equal(frontendRouteAdditions.at(-1).additive_settings_route, true);
-  for (const script of ['prepare-frontend-integration.mjs', 'check-composed-frontend.mjs']) assert.match(fs.readFileSync(path.join(root, 'scripts', script), 'utf8'), /for \(const addition of frontendRouteAdditions\)/);
+  for (const script of ['prepare-frontend-integration.mjs', 'check-composed-frontend.mjs']) assert.match(fs.readFileSync(path.join(root, 'scripts', script), 'utf8'), /for \(const addition of \[\.\.\.frontendRouteAdditions,\s*\.\.\.sixPersonaRouteAdditions\]\)/);
+});
+
+test('current seven additive workflow routes are regular sources and do not replace the eighteen historical additions', () => {
+  assert.deepEqual(sixPersonaRouteAdditions.map(row => row.target), [
+    'src/routes/(app)/staff/+page.svelte', 'src/routes/(app)/staff/reports/+page.svelte',
+    'src/routes/(app)/staff/operations/+page.svelte', 'src/routes/(app)/staff/users/+page.svelte',
+    'src/routes/(app)/staff/users/[id]/profile/+page.svelte',
+    'src/routes/(app)/upload/+page.svelte', 'src/routes/(app)/teams/+page.svelte'
+  ]);
+  assert.equal(new Set([...frontendRouteAdditions, ...sixPersonaRouteAdditions].map(row => row.target)).size, 25);
+  for (const addition of sixPersonaRouteAdditions) {
+    assert.equal(addition.reconstruction, false); assert.equal(addition.additive_six_persona_route, true);
+    assert(fs.lstatSync(path.join(root, addition.source)).isFile());
+  }
 });

@@ -995,12 +995,18 @@ async fn native_team_feedback_and_credits_keep_narrow_authority() {
     assert!(!edited.to_string().contains("Author-only historical explanation"));
     // A metadata-only staff grant also does not become a private-review grant.
     let db=f.state.db.client().await.unwrap();db.batch_execute("UPDATE platform.users SET roles='[\"moderator\"]'::jsonb WHERE id='NativeNoPerm'").await.unwrap();drop(db);
+    let staff_public_edit=f.call("PUT",&format!("/api/v1/account/manga/{public}"),Some("NativeNoPerm"),Some(json!({"version":4,"description":{"en":"Metadata-only staff public correction"},"expectedAccountId":outsider})),200).await;
+    assert_eq!(staff_public_edit["data"]["attributes"]["version"],5);
+    assert!(staff_public_edit["data"]["attributes"].get("reviewTimeline").is_none());
+    assert!(!staff_public_edit.to_string().contains("Author-only historical explanation"));
     let private_edit=f.call("PUT",&format!("/api/v1/account/manga/{title}"),Some("NativeNoPerm"),Some(json!({"version":history["data"]["attributes"]["version"],"description":{"en":"Metadata-only staff correction"},"expectedAccountId":outsider})),200).await;
     assert!(private_edit["data"]["attributes"].get("reviewTimeline").is_none());
     assert!(!private_edit.to_string().contains("Second revision required"));
     f.call("GET",&draft,Some("NativeNoPerm"),None,403).await;
     let owner_feedback=f.call("GET",&draft,Some("NativeActor"),None,200).await;
     assert_eq!(owner_feedback["data"]["attributes"]["reviewTimeline"]["events"][3]["reason"],"Second revision required");
+    let reviewer_feedback=f.call("GET",&draft,Some("NativeOther"),None,200).await;
+    assert_eq!(reviewer_feedback["data"]["attributes"]["reviewTimeline"]["events"][3]["reason"],"Second revision required");
     let db=f.state.db.client().await.unwrap();let after_history:Value=db.query_one("SELECT to_jsonb(r) FROM platform.native_draft_reviews r WHERE manga_id='FeedbackScopeTitle' AND version=2",&[]).await.unwrap().get(0);assert_eq!(before_history,after_history);drop(db);
 
     assert_eq!(before.2, f.counts().await.2);

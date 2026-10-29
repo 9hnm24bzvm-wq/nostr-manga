@@ -1,4 +1,4 @@
-import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
+import {readSixPersonaSourceAssociation,restoreSixPersonaSourcePredecessor,readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 import { restoreCancellationObserver, restoreCancellationCounterfactualTest } from './upload-cancel-observer-association.mjs';
 // No browser, server, socket, dependency install, or external network is used.
 import test from 'node:test';
@@ -20,9 +20,11 @@ const source=process.env.COUNTERFACTUAL_SOURCE_ROOT?path.resolve(process.env.COU
 // continues to load the current physical application and executable graph.
 const firstReaderPaths=new Set(readReaderUxAssociation().rows.map(row=>row.path));
 const secondReaderPaths=new Set(readReaderUxFixpassAssociation().rows.map(row=>row.path));
+const sixPersonaPaths=new Set(readSixPersonaSourceAssociation().rows.map(row=>row.path));
 function beforeReaderUx(file,value){
  return firstReaderPaths.has(file)?restoreReaderUxPredecessor(file,value)
-  :secondReaderPaths.has(file)?restoreReaderUxFixpassPredecessor(file,value):value;
+  :secondReaderPaths.has(file)?restoreReaderUxFixpassPredecessor(file,value)
+  :sixPersonaPaths.has(file)?restoreSixPersonaSourcePredecessor(file,value):value;
 }
 test('six finite cases and fixed18-byte synthetic payload',()=>{assert.equal(CASES.length*VERSIONS.length,6);assert.equal(Buffer.byteLength(BODY),18);assert.deepEqual(CASES,['complete-eof','truncated-valid-json','owner-dispose-checkpoint']);});
 test('CRC32C implementation matches standard finite vector',()=>{assert.equal((crc32c(Buffer.from('123456789'))^0xffffffff)>>>0,0xe3069283);});
@@ -193,7 +195,7 @@ test('current source freeze preserves historical manifest and binds all four cha
 test('source-only UX layer refuses edited and already-restored inputs without rewriting files',()=>{
  const manifest=JSON.parse(fs.readFileSync(path.join(repo,'.ci/native-upload-counterfactual/source-freeze-current.json')));
  for(const row of manifest.files){
-  if(!firstReaderPaths.has(row.path)&&!secondReaderPaths.has(row.path))continue;
+  if(!firstReaderPaths.has(row.path)&&!secondReaderPaths.has(row.path)&&!sixPersonaPaths.has(row.path))continue;
   const base=row.origin==='payload'?repo:path.dirname(source),file=path.join(base,row.path),live=fs.readFileSync(file),previous=beforeReaderUx(row.path,live);
   assert.notEqual(previous,null);
   assert.throws(()=>beforeReaderUx(row.path,Buffer.concat([live,Buffer.from(' ')])));

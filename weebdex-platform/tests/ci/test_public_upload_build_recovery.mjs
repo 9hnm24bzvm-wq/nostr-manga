@@ -11,10 +11,16 @@ import { applyPublicUploadOverlay, applyNativeUploadOverlay, nativeUploadOverlay
 import { createBoundedReaderOverlays, boundedReaderOverlayManifest, boundedReaderApprovedMarkupExceptions, assertBoundedReaderExceptionScope } from '../../platform-integrations/bounded-reader/overlays.mjs';
 import { assertBadgeExceptionScope } from '../../platform-integrations/bounded-reader/badge-overlays.mjs';
 import { restoreBoundedReaderSource } from './reviewed-bounded-reader-source-successors.mjs';
+import { readReaderUxAssociation, restoreReaderUxPredecessor, restoreReaderUxFixpassPredecessor } from './reviewed-six-persona-source-successor.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const hash=value=>createHash('sha256').update(value).digest('hex');
-const historical=relative=>restoreBoundedReaderSource('bounded-reader-to-frozen-main:'+relative,'weebdex-platform/'+relative,read(relative));
+const firstReaderPaths=new Set(readReaderUxAssociation().rows.map(row=>row.path));
+const historical=relative=>{
+ const file='weebdex-platform/'+relative,current=read(relative);
+ const exactPreReader=firstReaderPaths.has(file)?restoreReaderUxPredecessor(file,current):restoreReaderUxFixpassPredecessor(file,current);
+ return restoreBoundedReaderSource('bounded-reader-to-frozen-main:'+relative,file,exactPreReader);
+};
 const shared=createFrontendOverlays(path.join(root,'frontend'));
 const spec=JSON.parse(read('platform-integrations/public-api/upload-anchors.json'));
 const readerPatches=JSON.parse(read('platform-integrations/bounded-reader/anchors.json'));
@@ -31,18 +37,18 @@ test('historical comparison alone retains the old upload-last association',()=>{
   assert.ok(!historical('scripts/vite.platform.config.mjs').includes('$boundedReader'));
 });
 
-test('physical checker, compiler and Vite keep the actual eight-stage production order',()=>{
+test('physical checker, compiler and Vite keep the actual nine-stage production order',()=>{
   for(const name of ['check-composed-frontend','compile-frontend-source']){
     const source=read(`scripts/${name}.mjs`);
     assert.match(source,/import \{ createBoundedReaderOverlays \} from '..\/platform-integrations\/bounded-reader\/overlays.mjs'/);
-    assert.match(source,/const plugins = \[createFrontendOverlays\((input|frontend)\), createReaderOverlays\(\1\), createLocalLibraryOverlays\(\1\), createPublicApiOverlays\(\1\), createPublicUploadOverlays\(\1\), createNativeUploadOverlays\(\1\), createBoundedReaderOverlays\(\1\), createAccountLibraryOverlays\(\1\)\];/);
+    assert.match(source,/const plugins = \[createFrontendOverlays\((input|frontend)\), createReaderOverlays\(\1\), createLocalLibraryOverlays\(\1\), createPublicApiOverlays\(\1\), createPublicUploadOverlays\(\1\), createNativeUploadOverlays\(\1\), createBoundedReaderOverlays\(\1\), createAccountLibraryOverlays\(\1\), createSixPersonaOverlays\(\1\)\];/);
   }
   const vite=read('scripts/vite.platform.config.mjs');
-  assert.match(vite,/createFrontendOverlays\(frontend\), createReaderOverlays\(frontend\), createLocalLibraryOverlays\(frontend\), createPublicApiOverlays\(frontend\), createPublicUploadOverlays\(frontend\), createNativeUploadOverlays\(frontend\), createBoundedReaderOverlays\(frontend\), createAccountLibraryOverlays\(frontend\), createLocalLibraryResolver/);
+  assert.match(vite,/createFrontendOverlays\(frontend\), createReaderOverlays\(frontend\), createLocalLibraryOverlays\(frontend\), createPublicApiOverlays\(frontend\), createPublicUploadOverlays\(frontend\), createNativeUploadOverlays\(frontend\), createBoundedReaderOverlays\(frontend\), createAccountLibraryOverlays\(frontend\), createSixPersonaOverlays\(frontend\), createLocalLibraryResolver/);
   assert.match(vite,/"\$boundedReader": path.join\(root, "platform-integrations\/bounded-reader"\)/);
 });
 
-test('preparer keeps the exact preceding upload stage and records the real native upload, bounded reader and final account library stages',()=>{
+test('preparer keeps the exact preceding upload stage and records the real native upload, bounded reader and account library and final six-persona stages',()=>{
   const source=read('scripts/prepare-frontend-integration.mjs');
   assert.match(source,/const publicPlugin = createPublicApiOverlays\(frontend, \{ enabled: publicApiGate \}\)/);
   assert.match(source,/const shared = plugin.transform.handler\(original, file\)/);
@@ -52,7 +58,7 @@ test('preparer keeps the exact preceding upload stage and records the real nativ
   assert.match(source,/const publicResult = publicPlugin.transform.handler\(prePublic, file\)/);
   assert.match(source,/const uploadPlugin = createPublicUploadOverlays\(frontend, \{ enabled: publicApiGate \}\)/);
   assert.match(source,/const boundedReaderPlugin = createBoundedReaderOverlays\(frontend\)/);
-  assert.match(source,/\.\.\.frontendOverlayManifest, \.\.\.readerOverlayManifest, \.\.\.localLibraryOverlayManifest, \.\.\.publicRepairs, \.\.\.publicUploadRepairs, \.\.\.boundedReaderOverlayManifest\]\.map/);
+  assert.match(source,/\.\.\.frontendOverlayManifest, \.\.\.readerOverlayManifest, \.\.\.localLibraryOverlayManifest, \.\.\.publicRepairs, \.\.\.publicUploadRepairs, \.\.\.boundedReaderOverlayManifest, \.\.\.\(publicApiGate \? sixPersonaOverlayManifest : \[\]\)\]\.map/);
   assert.match(source,/const preUpload = publicResult\?\.code \?\? prePublic/);
   assert.match(source,/const uploadResult = uploadPlugin.transform.handler\(preUpload, file\)/);
   assert.match(source,/const preNativeUpload = uploadResult\?\.code \?\? preUpload/);
@@ -61,7 +67,10 @@ test('preparer keeps the exact preceding upload stage and records the real nativ
   assert.match(source,/const boundedReaderResult = boundedReaderPlugin.transform.handler\(preBoundedReader, file\)/);
   assert.match(source,/const preAccountLibrary = boundedReaderResult\?\.code \?\? preBoundedReader/);
   assert.match(source,/const accountLibraryResult = accountLibraryPlugin.transform.handler\(preAccountLibrary, file\)/);
-  assert.match(source,/const result = accountLibraryResult \?\? boundedReaderResult \?\? nativeUploadResult \?\? uploadResult \?\? publicResult \?\? local \?\? reader \?\? shared/);
+  assert.match(source,/const result = sixPersonaResult \?\? accountLibraryResult \?\? boundedReaderResult \?\? nativeUploadResult \?\? uploadResult \?\? publicResult \?\? local \?\? reader \?\? shared/);
+  assert.match(source,/const preSixPersona = accountLibraryResult\?\.code \?\? preAccountLibrary/);
+  assert.match(source,/const sixPersonaResult = sixPersonaPlugin.transform.handler\(preSixPersona, file\)/);
+  assert.match(source,/explicit_six_persona_extension: !!sixPersonaResult, six_persona_previous_sha256: hash\(preSixPersona\)/);
   assert.match(source,/let normalizedResult = preUpload/);
   assert.match(source,/if \(retainedMarkup\(original\) !== retainedMarkup\(normalizedResult\)\) throw/);
   assert.match(source,/explicit_public_signed_upload_extension: !!uploadResult/);

@@ -4,7 +4,6 @@ import { randomBytes } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
 import { createAccountRecoveryChecks, submitRecoveryPassword } from "./browser-account-recovery.mjs";
-import { exerciseGeneratedKeyBackup } from "./browser-identity-key-controls.mjs";
 import { exerciseDeviceContinuity } from "./browser-device-continuity.mjs";
 import { exerciseReaderContinuation } from "./browser-reader-continuation.mjs";
 import { selectTitleLibraryStatus, titleLibraryTrigger, titleFollowCheckSuffixes, nativeSelectForLabel, selectListboxTrigger, clickListboxOption, setListboxOptions, searchRatingTrigger } from "./browser-select-controls.mjs";
@@ -65,8 +64,8 @@ export async function runJourneys(h) {
 		await page.getByRole("button", { name: "Create Account", exact: true }).click();
 		await until(() => api("/auth/check"), value => value.status === 200 && value.body?.identity?.username === username, "Registration did not establish a real session");
 		await page.getByRole("heading", { name: "Your account is ready", exact: true }).waitFor({ state: "visible" });
-		const keyBackup = phase === 'account' ? await exerciseGeneratedKeyBackup({page, context, origin, redactions}) : undefined;
-		await page.getByRole("button", { name: "Finish later", exact: true }).click();
+		insist(await page.locator('[data-account-onboarding] [data-identity-setup]').count() === 0, "Ordinary account signup must not require portable identity setup");
+		await page.getByRole("button", { name: "Continue reading", exact: true }).click();
 		await page.waitForURL(url => url.pathname === "/" && url.search === "" && url.hash === "");
 		const provision = await control("/fixture/provision", { email, profile, join_seed_group: true });
 		insist(provision.status() === 200, "Fixture could not provision synthetic account permissions");
@@ -80,7 +79,7 @@ export async function runJourneys(h) {
 		await page.goto(link.href, { waitUntil: "domcontentloaded" });
 		await until(() => api("/auth/check"), value => value.status === 200 && (value.body?.identity?.is_verified || value.body?.roles?.includes("verified")), "One-time verification link did not verify account");
 		await open("/");
-		return { registered_by_ui: true, welcome_completed_by_ui: true, public_identity_deferred_by_ui: true, ...(keyBackup ? {key_backup: keyBackup} : {}), verified_by_one_time_local_mail: true, profile, session_cookie_present: (await context.cookies()).some(cookie => /session/i.test(cookie.name)) };
+		return { registered_by_ui: true, welcome_completed_by_ui: true, portable_identity_not_required: true, verified_by_one_time_local_mail: true, profile, session_cookie_present: (await context.cookies()).some(cookie => /session/i.test(cookie.name)) };
 	};
 	const logout = async () => {
 		await open("/");

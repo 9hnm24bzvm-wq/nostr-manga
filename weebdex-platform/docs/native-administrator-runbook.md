@@ -87,8 +87,9 @@ or revision changed before confirmation, start a new explicit review.
    and grant additions/removals. Legacy/custom authority requires explicit
    acknowledgement before replacement; it is never silently merged or removed.
 5. If prompted, use **Sign in again**. The ordinary login form requires the native
-   password. Returning restores saved fields for read-only inspection, **not** an
-   automatic write. Review the current account again and confirm explicitly.
+   password. Private fields are kept only in the current view and are discarded
+   when leaving to sign in. Any uncertain request marker survives; check or cancel
+   it first, then select the account, enter a fresh review and confirm explicitly.
 6. Have the successor sign in separately and verify their own actual authority.
    Only then deliberately remove the predecessor's access if appropriate.
 
@@ -122,16 +123,29 @@ they do not require removing verification or management authority.
 
 A missing receipt, equal authority revision, reload, Back, Close or expired login
 is **not proof that an earlier request cannot apply**. The workspace preserves
-an account/site-bound exact command fence and blocks a replacement review.
+an account/site-bound request-ID/fingerprint fence and blocks a replacement
+review. No free-text reason, target, role selection or full command is saved in
+browser storage. Private fields stay in memory only until leaving or signing out.
 
 - **Check exact receipt** is read-only. If committed, it displays the original
   receipt without repeating the operation.
-- **Retry only this unchanged command** is an explicit resend of the identical
-  actor/body/request ID. A committed command returns its original receipt; it
-  cannot duplicate the effect. Expired reviews/current authority still fail safe.
+- **Retry only this unchanged command** is available only while the original
+  private command remains in this view’s memory. It explicitly resends the same
+  actor/body/request ID. It is unavailable after remount or logout. A committed
+  command returns its original receipt; expired reviews/current authority fail safe.
 - **Cancel only if not already applied** takes the global authority lock. It either
   returns the already applied receipt, without undoing it, or installs a durable
-  no-effect tombstone that prevents a late original request from applying.
+  no-effect tombstone that prevents a late original request from applying. Only
+  the fingerprint is sent; target, operation and revision come from the actor-owned
+  stored record, not from browser-supplied authority fields.
+
+After reload, use Check or Cancel before making a fresh review; the old private
+reason cannot be restored or fabricated. An older valid pending marker is
+redacted to its ID until an explicit Check obtains its actor-owned fingerprint.
+Missing records never mean safe-to-repeat. A damaged marker is redacted but
+remains blocked; ask an administrator to inspect the original server history.
+Do not clear browser storage to evade an uncertain result. If marker persistence
+or readback fails, the browser refuses to dispatch a business command.
 
 Even a demoted or locally restricted actor with a normal native cookie can read
 or settle their own exact receipt; that grants no new security authority. If the

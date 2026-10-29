@@ -4,15 +4,19 @@ This checkpoint preserves implementation and regression work for the 21 findings
 
 ## Verified so far
 
-- Current frontend semantic check: **0 errors**, with **21 retained historical warnings**.
-- Current combined integration-focused checks: **139 passed**, none skipped. These include the retained application's query-string override, native account clients, source composition and dependency-integrity checks.
-- A candidate static frontend build completed successfully: **487 files, 7,893,201 bytes**. Its 369 integration source inputs matched their pre-build inventory afterward. The emitted CSS check passed.
-- Separate owned HTTP/database tests have exercised native identity association, administrator controls and bootstrap, moderation, contributor consent, signed metadata compare-and-swap, authentication and existing compatibility paths. These scoped results do not substitute the final combined-source rerun.
-- The optional remote signer passed **41 focused cases**: 24 owned loopback WebSocket/cryptographic cases, 13 finite native-account coordinator cases and four mounted component cases. The latter use finite dialog primitives and are not real-browser focus evidence. A separate fixture using actual dialog components passed build/start/stop checks; real-browser acceptance is recorded separately.
+- Frontend semantic check: **0 errors**, with **21 retained historical warnings**.
+- Combined integration-focused checks: **139 passed**, none skipped, including the retained query-string override, native account clients, source composition and dependency-integrity checks.
+- The latest static frontend candidate built successfully: **487 files, 7,894,884 bytes**. Its integration inputs matched the captured source; the emitted CSS check passed. A later, narrowly scoped administrator privacy improvement still requires a fresh build.
+- An exact backend checkpoint passed **227 normal unit cases**, **all three owned database unit cases**, and **47 actual HTTP scenarios**. It covers identity association, administrator bootstrap and role boundaries, moderation, contributor consent, signed metadata concurrency, authentication and upload/readback boundaries. The later administrator privacy change does not inherit this qualification.
+- The optional remote signer passed **49 focused cases**: 24 owned loopback WebSocket/cryptographic cases, 13 finite native-account coordinator cases and 12 mounted component cases. Separate actual-dialog browser checks passed Cancel/Escape focus restoration and stale-account/late-response controls, with clean teardown. The test used an explicitly finite native-account boundary, not an external relay or a real user's key.
+- The first full applicable frontend aggregate completed with **5,847 passed, 18 failed and six historical skips**. The failures were traced to outdated test composition/source comparisons. All affected corrected suites then passed **162/162**, without changing historical pins or adding exclusions. This focused result is not a replacement for a full final-source aggregate.
+- Optimized server, administrator CLI and browser-fixture provisioner binaries built successfully from the captured backend checkpoint. The separately locked standalone node build requires missing checksum-bound dependencies; it has not been qualified.
+
+- The bounded administrator privacy successor now passes **29 focused client/mounted cases**. Persisted recovery markers contain only request identifiers/fingerprints; full private command fields remain in the current view. Exact backend/HTTP, rebuild and full aggregate checks are still required for this successor.
 
 ## Still required
 
-Final backend boundary corrections, the full applicable frontend aggregate, the final combined HTTP/database rerun, rebuilt release executables, and browser acceptance against exact final artifacts remain qualification gates. Unfinished or failed checks are not counted as passing. Later checkpoints may supersede this status.
+The bounded administrator recovery-marker privacy successor, its affected backend/frontend checks, a fresh full applicable aggregate, corresponding rebuilt release artifacts, and main-account browser acceptance remain qualification gates. Unfinished or failed checks are not counted as passing. Later checkpoints may supersede this status.
 
 No production deployment, main-branch merge, automated CI run, real-user grant, external signer connection or real publication is implied by this source backup. Synthetic test setup and finite test boundaries must remain distinguishable from organic user flows.
 

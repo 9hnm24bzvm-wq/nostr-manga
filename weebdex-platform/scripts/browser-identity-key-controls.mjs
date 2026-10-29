@@ -1,12 +1,22 @@
 // Genuine UI controls for a fresh synthetic browser context. Never return a key.
 import assert from 'node:assert/strict';
+import { expandDetailsPanel } from './browser-details-controls.mjs';
 
-export async function exerciseGeneratedKeyBackup({page, context, origin, redactions}) {
+export async function exerciseGeneratedKeyBackup({page, context, origin, redactions, syntheticKeyExerciseApproved = false}) {
+  assert.equal(syntheticKeyExerciseApproved, true, 'Explicit approval for this synthetic advanced-key exercise is required');
   const target = new URL(origin);
   assert.ok(target.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(target.hostname) && target.origin === origin, 'Exact owned loopback origin required');
   assert.ok(redactions instanceof Set, 'The final browser error serializer must retain synthetic-key redactions');
-  const setup = page.locator('[data-account-onboarding] [data-identity-setup]');
-  assert.equal(await setup.count(), 1, 'Expected exactly one signup-owned identity setup');
+  assert.equal(new URL(page.url()).origin, origin, 'Advanced-key exercise must remain on the owned site');
+  assert.equal(new URL(page.url()).pathname, '/settings/identity', 'Advanced-key exercise belongs only to Account settings');
+  assert.equal(await page.locator('[data-account-settings]').count(), 1, 'Expected exactly one Account settings surface');
+  const setup = page.locator('[role="dialog"] [data-identity-setup]');
+  assert.equal(await setup.count(), 1, 'Expected exactly one explicitly opened advanced identity dialog');
+  const openDetails = async label => {
+    const details = setup.locator('details').filter({has: page.getByText(label, {exact: true})});
+    assert.equal(await details.count(), 1, 'Expected exactly one named advanced disclosure');
+    await expandDetailsPanel(details);
+  };
   let permissionAttempted = false, permission = false, creationAttempted = false, primary, secret = '', publicKey = '', result;
   const cleanupErrors = [];
   let mutations = 0;
@@ -17,11 +27,13 @@ export async function exerciseGeneratedKeyBackup({page, context, origin, redacti
     await context.grantPermissions(['clipboard-read', 'clipboard-write'], {origin});
     permission = true;
     await page.evaluate(() => navigator.clipboard.writeText(''));
+    await openDetails('Advanced: create or import a private key');
     creationAttempted = true;
-    await setup.getByRole('button', {name: 'Create my public identity', exact: true}).click();
+    await setup.getByRole('button', {name: 'Create a new public identity', exact: true}).click();
     await setup.getByRole('heading', {name: 'Keep your key safe', exact: true}).waitFor({state: 'visible'});
     assert.equal(await setup.getByLabel('Private key for backup', {exact: true}).count(), 0, 'Generated private key must start concealed');
-    assert.ok(await setup.getByRole('button', {name: 'Review public identity', exact: true}).isDisabled(), 'Backup acknowledgement must precede admission review');
+    assert.ok(await setup.getByRole('button', {name: 'Continue to site access', exact: true}).isDisabled(), 'Backup acknowledgement must precede admission review');
+    await openDetails('Public identity details');
     publicKey = await setup.getByLabel('Your public key', {exact: true}).inputValue();
     assert.ok(/^npub1[023456789acdefghjklmnpqrstuvwxyz]{58}$/.test(publicKey), 'Generated public key must use npub encoding');
     await setup.getByRole('button', {name: 'Copy public key', exact: true}).click();
