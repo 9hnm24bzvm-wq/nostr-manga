@@ -9,7 +9,7 @@
  let operation=$state<AdminCommand['operation']>('roles'),bundles=$state<string[]>([]),reason=$state(''),replaceCustom=$state(false),ownerRequested=$state(false),ack=$state(false);
  let retryAvailable=$state(false);
  let unsubscribe=()=>{};
- function clear(){epoch++;busy=false;client?.dispose();client=undefined;context=undefined;rows=[];target=undefined;history=[];review=undefined;receipt=undefined;pending=undefined;saved=undefined;retryAvailable=false;reason='';bundles=[];error='';notice='';needsLogin=false;}
+ function clear(){epoch++;busy=false;client?.dispose();client=undefined;context=undefined;rows=[];target=undefined;history=[];review=undefined;receipt=undefined;pending=undefined;saved=undefined;retryAvailable=false;search='';next='';historyNext='';ack=false;replaceCustom=false;ownerRequested=false;operation='roles';reason='';bundles=[];error='';notice='';needsLogin=false;}
  function sync(){if(client){pending=client.pending();saved=client.intent();retryAvailable=client.canRetry();}}
  function fail(e:unknown){error=e instanceof Error?e.message:'This security action could not be completed.';needsLogin=e instanceof AdminError&&(e.code==='session_refresh_required'||e.status===401);try{sync();}catch{error+=' Recovery storage is unavailable; do not repeat the action.';}}
  async function task(fn:()=>Promise<void>){if(busy)return;const mine=epoch;busy=true;error='';try{await fn();}catch(e){if(epoch===mine)fail(e);}finally{if(epoch===mine)busy=false;}}

@@ -2543,8 +2543,8 @@
     },
     {
       "path": "weebdex-platform/platform-integrations/staff-workspace/StaffAdministration.svelte",
-      "current_bytes": 15741,
-      "current_sha256": "192c2dd48c2de144a9f4e5dc5cb4a049d4b9a1dfe1f1d3b8782843a228501d83",
+      "current_bytes": 15843,
+      "current_sha256": "c4069763a633736de3792fc06d3ac7937519c30b030db9e957a3ea47d85dfbdf",
       "added": true
     },
     {
@@ -3180,8 +3180,8 @@
     },
     {
       "path": "weebdex-platform/tests/ci/test_admin_authority_dom.mjs",
-      "current_bytes": 14771,
-      "current_sha256": "0079d0e759035129363332347a6b3765673bf6be69a021423efce56e3d2ce8ce",
+      "current_bytes": 17255,
+      "current_sha256": "506e932cc661ac4911a948b63bea20efd9261be21f4d5898b97f82d5fb68f32a",
       "added": true
     },
     {
