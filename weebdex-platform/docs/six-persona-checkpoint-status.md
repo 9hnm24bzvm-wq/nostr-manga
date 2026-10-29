@@ -1,33 +1,26 @@
-# Six-persona source checkpoint — work in progress
+# Six-persona source checkpoint — browser acceptance pending
 
-This checkpoint preserves implementation and regression work for the 21 findings in the six-persona audit. It is **not a release approval** and does not replace the preceding qualified build.
+This checkpoint preserves the implementation and non-browser qualification work for the 21 six-persona audit findings. It is **not a release approval**. The main authenticated browser acceptance run remains pending; no claim that all 94 acceptance criteria have passed is implied.
 
-## Qualified predecessor
+## Qualified current code
 
-The results below describe the preserved checkpoint before the new history-filter/export successor. They are not inherited passes for later source changes.
+- Full applicable frontend aggregate: **5,896 passed, zero failed and six unchanged historical skips** (5,902 total). All 1,725 captured inputs remained unchanged. No exclusion or historical source pin was weakened.
+- Strict composed frontend: **zero errors and 21 retained warnings**. The 679 canonical frontend files remained unchanged; 285 integration files were checked.
+- Static frontend: **487 files, 7,905,047 bytes**. The build's 1,174 captured inputs were unchanged, its process group closed, and emitted-CSS/source-association checks passed.
+- Backend: **227 normal unit cases**, **three explicitly executed owned-database library cases**, and **47 actual HTTP scenarios** passed. The final matrix explicitly combines unchanged tested executables with the corrected staff test and a diagnostic auth retry; every current source/binary relationship is recorded.
+- All four optimized Linux x86-64 binaries built successfully: server, administrator CLI, browser-fixture provisioner and standalone node. All 388 captured backend/protocol inputs were unchanged. Dependency versions and lockfiles were not changed.
+- Administrator privacy/account-switch hygiene passed 30 independently rerun client/mounted cases and actual HTTP/CLI authorization, recovery and concurrency checks. Persistent recovery markers contain identifiers/fingerprints only; private command fields remain in the active view.
+- Moderation history date/operation filtering and the explicitly reviewed CSV download passed 35 client/mounted cases and actual HTTP/SQL tests, including authorization loss, UTC boundaries, formula/control sanitization and whole-row export limits.
+- Optional remote signing passed 49 focused cases: 24 owned loopback WebSocket/cryptographic, 13 finite native-account coordinator and 12 mounted component cases. Separate actual-dialog browser tests passed Cancel/Escape focus restoration and stale-account/late-response fences with clean teardown. These are not a full-account or external-signer browser claim.
 
-- Frontend semantic check: **0 errors**, with **21 retained historical warnings**.
-- Combined integration-focused checks: **139 passed**, none skipped, including the retained query-string override, native account clients, source composition and dependency-integrity checks.
-- The latest static frontend candidate built successfully: **487 files, 7,899,421 bytes**. Its integration inputs matched the captured source; the emitted CSS check passed. This build includes the final administrator privacy and account-switch hygiene corrections.
-- An exact backend checkpoint passed **227 normal unit cases**, **all three owned database unit cases**, and **47 actual HTTP scenarios**. It covers identity association, administrator bootstrap and role boundaries, moderation, contributor consent, signed metadata concurrency, authentication and upload/readback boundaries. The privacy successor was rebuilt and rerun against the same complete matrix. One initial schema-migration timeout was retained and passed an unchanged-source diagnostic retry after disposing of only proven-passed, stopped synthetic database data.
-- The optional remote signer passed **49 focused cases**: 24 owned loopback WebSocket/cryptographic cases, 13 finite native-account coordinator cases and 12 mounted component cases. Separate actual-dialog browser checks passed Cancel/Escape focus restoration and stale-account/late-response controls, with clean teardown. The test used an explicitly finite native-account boundary, not an external relay or a real user's key.
-- The final full applicable frontend aggregate passed **5,885 tests, zero failures and six unchanged historical skips** (5,891 total). All 1,725 captured inputs remained unchanged. The earlier failed aggregate is preserved; all affected harness/source-comparison repairs also passed 162 focused cases. No historical pins or exclusions were weakened.
-- All four optimized binaries—the server, administrator CLI, browser-fixture provisioner and standalone node—built successfully from unchanged captured sources. Its 20 previously absent standalone dependencies were downloaded from the official registry with explicit approval, matched every existing lockfile checksum, and did not change versions or execute package hooks.
+The original failed attempts remain preserved. A query-schema negative test was corrected to assert the framework's exact plaintext400 contract rather than decode it as JSON. An existing auth race exceeded its unchanged lock timeout while deliberately holding a throttle row; one quiet retry passed with the same binary, assertions and timeouts. These are explicitly recorded, not hidden passes.
 
-- The bounded administrator privacy and account-switch hygiene successor now passes **30 independently rerun client/mounted cases**. Persisted recovery markers contain only request identifiers/fingerprints; full private command fields remain in the current view. Its actual HTTP/CLI authorization, recovery and concurrency scenario, strict check, frontend build and full aggregate also passed.
+## Remaining gate and limits
 
-## Current bounded successor
+The main account/browser journeys—including actual filtered CSV download delivery—must still be checked against these exact artifacts. Synthetic verification or role setup must be labeled; it is not organic email-verification evidence.
 
-The remaining moderation-history acceptance clause is being implemented: inclusive UTC date and operation filters plus an explicitly reviewed, same-authority CSV download capped at 250 rows and 256 KiB. The export excludes raw private effects and neutralizes spreadsheet formulas. Its 35 focused client/mounted cases and actual HTTP/SQL scenario passed. Strict checking reports zero errors and 21 retained warnings; the refreshed static build passed with 487 files and 7,905,047 bytes. Final full aggregate and optimized successor binaries remain in progress. This is not ordinary account-library CSV/XML export.
+Ordinary account paths use native site login. Advanced external identity and remote-signing actions remain optional and separate; linking an identity does not grant publishing authority. Account-library CSV/XML import/export remains unavailable, with no legacy identity fallback. The new **staff-only moderation-history CSV** is a different, explicitly reviewed private download capped at 250 rows and 256KiB.
 
-## Still required
+Unknown team/credit write outcomes remain blocked, with read-only inspection or support-assisted recovery rather than unsafe automatic replay. Six historical skips, 21 frontend warnings and retained Rust warnings remain disclosed.
 
-Qualification of the history-filter/export successor and main-account browser acceptance against its exact artifacts remain gates. Unfinished or failed checks are not counted as passing. Later checkpoints may supersede this status.
-
-No production deployment, main-branch merge, automated CI run, real-user grant, external signer connection or real publication is implied by this source backup. Synthetic test setup and finite test boundaries must remain distinguishable from organic user flows.
-
-## Scope and recovery
-
-Ordinary account paths use the site's native account. Advanced external protocol identity and remote-signing actions remain explicit, optional and separately authorized. Account CSV/XML import and export are unavailable; there is no fallback to an unrelated legacy identity. Local backups and explicitly reviewed device-to-account adoption remain separate operations.
-
-See [source provenance](six-persona-source-provenance.md), [administrator runbook](native-administrator-runbook.md), and the included audit documents. Dependencies, build caches, credentials, private keys, runtime databases and private browser evidence are not included in the source checkpoint. The previous qualified encrypted recovery archive and its separate password are not a claim that this newer WIP build is qualified.
+No production deployment, main-branch merge, automated CI run, real-user privilege change, external credential use or real publication is implied. Credentials, private keys, runtime databases and private browser evidence are excluded from source backups. See [verification details](six-persona-verification-summary.md), [source provenance](six-persona-source-provenance.md) and the [administrator runbook](native-administrator-runbook.md).

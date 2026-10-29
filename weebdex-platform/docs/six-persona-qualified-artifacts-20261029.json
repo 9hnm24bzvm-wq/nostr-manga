@@ -1,0 +1,72 @@
+{
+  "status": "non-browser-qualified-main-browser-pending",
+  "qualified_code_local_commit": "5dfeb5d36c6165018494d5717a9b410fa791098e",
+  "qualified_code_remote_commit": "8c5f6bcf9d968dc4750d8b5dc3a09f020d7d839c",
+  "qualified_code_tree": "539e33fb193601c1e90bdedecb012b67efe9c9f6",
+  "frontend": {
+    "directory": "weebdex-platform/artifacts/frontend",
+    "manifest_sha256": "dcd08134139f72f56a159f25619af4dba58373815e50b02a5051a92bffbda0cb",
+    "file_count": 487,
+    "bytes": 7905047,
+    "index_sha256": "2c1a9c2aa8ef3093d60a1bc673e7f5f450fcfa3f4fdb2392f11eb851fb600ca8",
+    "bootstrap_csp_hashes": [
+      "'sha256-+IiURYyKgUxCMlhPZJJr/tNcqQGJ65N10Y27GT+d+U4='"
+    ]
+  },
+  "binaries": [
+    {
+      "path": "weebdex-platform/artifacts/bin/weebdex-platform",
+      "bytes": 55689392,
+      "sha256": "0f03853a57e48bb09caf98efd0a151f7727871e120ebdd4ccbe80b3c3fa020c3"
+    },
+    {
+      "path": "weebdex-platform/artifacts/bin/weebdex-admin",
+      "bytes": 8918904,
+      "sha256": "5305fb88612dcc94a05f6db3212c3db7b72f6dc73bf7f96a24f8f8a48efd26ba"
+    },
+    {
+      "path": "weebdex-platform/artifacts/bin/browser_fixture_provisioner",
+      "bytes": 33191024,
+      "sha256": "dd9490b8a0bc953d693581cabe6c3843d7f8433167afe9a723873aa9bc5da732"
+    },
+    {
+      "path": "weebdex-platform/artifacts/bin/manga-node",
+      "bytes": 27728728,
+      "sha256": "44112d36d6e7938e41d6f8de3203506f0b657367bdc0607e1da0314fe3903d7e"
+    }
+  ],
+  "qualification": {
+    "frontend_aggregate": {
+      "tests": 5902,
+      "pass": 5896,
+      "fail": 0,
+      "unchanged_historical_skips": 6,
+      "unchanged_inputs": 1725
+    },
+    "strict": {
+      "errors": 0,
+      "retained_warnings": 21
+    },
+    "backend": {
+      "normal_unit_cases": 227,
+      "owned_database_library_cases": 3,
+      "actual_http_scenarios": 47,
+      "successful_invocations": 51,
+      "explicit_final_source_union": true
+    },
+    "source_association_rows": 204,
+    "source_association_sha256": "514b5f661408a9ac60ce67ff5a3dced059acc714eaba8c04b8bcd0f3317117e1",
+    "all_frontend_members_and_binaries_rehashed": true,
+    "optimized_build_source_inputs_unchanged": 388
+  },
+  "limits": [
+    "Main-account browser acceptance pending; no fixture launched by this handoff.",
+    "Six historical Node skips and21 retained frontend warnings remain; retained Rust warnings also remain.",
+    "Account-library CSV/XML import/export unavailable; new staff-only history CSV is a separate explicit private download.",
+    "Advanced external identity/remote signing is optional and separate.",
+    "Unknown team/credit outcomes stay blocked pending read-only/support-assisted recovery.",
+    "Original staff query-schema test failure retained; exact plaintext400 fixture assertion now passes.",
+    "Original auth held-lock timeout retained; one quiet unchanged-binary/assertion/timeout diagnostic retry passes."
+  ],
+  "source_and_evidence_boundary": "Sanitized artifact receipt. Raw runtime, personal data, credentials and private browser evidence are not included. A separate main-browser result is still required."
+}
