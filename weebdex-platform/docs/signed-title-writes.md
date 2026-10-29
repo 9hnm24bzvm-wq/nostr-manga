@@ -36,3 +36,25 @@ Pinned upstream schema: `contracts/mangadex-5.13.1-inventory.json`, source SHA-2
 ## Captured account intent
 
 Dedicated signed title clients include `expectedAccountId` in the exact JSON proof body for create, update and all review transitions. The adapter removes this compatibility extension before native metadata parsing and compares its typed User UUID to the actual native actor inside the final `bound_account_write` transaction. A different currently eligible account returns409 before any catalogue mutation, even when both accounts have colliding create grants. Legacy writes not carrying `officialLinks` may omit the extension and retain existing current-binding semantics; omission does not assert captured-account intent. Client preflight reads remain useful UI checks but are not the transaction-level guarantee.
+
+## Contributor review compatibility update (2026-10-29)
+
+Every local rejection transport now requires an explicit author-facing `reason`
+(nonblank, at most 2,000 Unicode characters). This includes the canonical native
+`/api/v1/account/manga/draft/{uuid}/reject`, legacy native
+`/api/manga/draft/{native-id}/reject`, and signed local
+`/api/v1/manga/draft/{uuid}/reject` routes. A version-only rejection returns a
+validation error; callers must not invent placeholder reasons. The optional
+`affectedFields` array accepts at most 16 distinct known fields: `title`,
+`description`, `language`, `cover`, `authors`, `artists`, `tags`, `relations`,
+`links`, `rating`, `status`, `year`, or `other`.
+
+Submit/resubmit and publish retain their version-only review command payloads
+(with their existing account-capture fields where applicable). Each route keeps
+its original native-session/CSRF or signature/admission boundary and current
+owner/reviewer checks. Review feedback is not a private staff note. The shared
+catalogue transaction records the transition, reason, selected fields, actor and
+resulting version atomically. Native and signed private draft reads provide the authorized author/reviewer
+with a bounded timeline (list cards include only the latest event); resubmission reuses the same draft and does not replace its
+cover or related-title records. This contract update is not evidence of release
+qualification; use the checkpoint's exact-source test receipts.

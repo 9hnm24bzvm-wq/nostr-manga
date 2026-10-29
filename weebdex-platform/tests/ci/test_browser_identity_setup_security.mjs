@@ -36,7 +36,7 @@ async function wizard({ downloadFails = false, changeOnDownloadUrl = false, clip
     document: { body: { appendChild() {} }, createElement(tag) { assert.equal(tag, 'a'); return { href: '', download: '', hidden: false, click() { if (downloadFails) throw Error('Synthetic download refusal'); downloads.clicked++; downloads.filename = this.download; downloads.href = this.href; }, remove() { downloads.removed++; } }; } },
     console: { error() { throw Error('Unexpected wizard logging'); } },
     $props: props, $state: localState, $derived: value => value, get,
-    onDestroy: fn => destroyers.push(fn), tick: () => Promise.resolve(),
+    onDestroy: fn => destroyers.push(fn), tick: () => Promise.resolve(), untrack: fn => fn(),
     ...keys, signerIdentity: f.publication.signerIdentity,
     connectSigner: f.publication.connectSigner, assertAllowedRelay: f.publication.assertAllowedRelay,
     relayPreferences: async () => { await waitAt('preferences'); return f.publication.relayPreferences(); },

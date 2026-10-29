@@ -32,7 +32,7 @@
   {/if}
   {#if review}
     <div class="space-y-2 border-t pt-3"><p class="font-medium">{review.action === 'link' ? 'Connect this identity to your account?' : 'Disconnect this identity from your account?'}</p><p class="break-all text-xs">{encodePublicKey(review.publicKey)}</p>
-    <p class="text-sm">{review.action === 'link' ? 'Your signer will approve one private proof shared only with this site and that signer. The proof includes your site account identifier. Nothing is sent to a relay or merged with another account.' : 'You can do this even if you lost the signing key. Your public posts are not deleted. Operator-granted publication permissions are separate; ask the site team to revoke those if needed.'}</p>
+    <p class="text-sm">{review.action === 'link' ? 'Your signer approves a private, account-bound proof—not a public post. It sees this site’s URL and a challenge hash. A remote signer uses the encrypted relay connection you reviewed. Your email, password and library are not sent, and accounts are not merged.' : 'You can do this even if you lost the signing key. Your public posts are not deleted. Operator-granted publication permissions are separate; ask the site team to revoke those if needed.'}</p>
     <label class="block text-sm"><input type="checkbox" bind:checked={approved} disabled={pending} /> I approve this exact {review.action === 'link' ? 'connection' : 'disconnect'}.</label>
     <Button disabled={pending || !approved} onclick={() => run(confirm)}>{review.action === 'link' ? 'Approve and connect' : 'Disconnect identity'}</Button><Button variant="ghost" onclick={cancel}>Cancel</Button></div>
   {/if}

@@ -55,7 +55,7 @@ impl Fixture {
         let origin = format!("http://{}", listener.local_addr().unwrap());
         let state = AppState::connect(
             Config {
-                public_origin: origin.clone(),
+                public_origin: format!("{origin}/"),
                 database_plaintext_local: true,
                 database_connections: 8,
                 uploads_dir: runtime.join("media"),
@@ -209,6 +209,15 @@ async fn private_identity_link_http_dual_proof_conflict_recovery_and_races() {
     let baseline=f.state.db.client().await.unwrap().query_one("SELECT (SELECT count(*) FROM platform.protocol_identity_bindings),(SELECT count(*) FROM account_permissions),(SELECT count(*) FROM events)",&[]).await.unwrap();
     let baseline: (i64, i64, i64) = (baseline.get(0), baseline.get(1), baseline.get(2));
     let a = f.prepare(0, &key, 0).await;
+    let payload: Value = serde_json::from_str(a["payload"].as_str().unwrap()).unwrap();
+    assert_eq!(
+        payload["origin"], f.origin,
+        "configured trailing slash is canonicalized for browser review"
+    );
+    assert_eq!(
+        a["proofUrl"],
+        format!("{}/api/v1/account/identity-link/confirm", f.origin)
+    );
     let confirm = f.confirmation(0, &a, 73);
     f.response(
         f.request("/confirm", "LinkUserA-other-session", Some(confirm.clone())),

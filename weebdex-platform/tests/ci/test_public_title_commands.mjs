@@ -1,4 +1,4 @@
-import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 import {restoreBundleSource} from './reviewed-bundle-source-successors.mjs';
 import {restoreNativeProfileActionsSource} from './native-profile-actions-source-association.mjs';
 // Finite controller/transport stand-ins only. No browser, database, real signer,

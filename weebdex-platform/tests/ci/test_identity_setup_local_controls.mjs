@@ -21,7 +21,7 @@ function fixture({ clipboardFails = false, connected = false, resumeSelected = f
   const context = vm.createContext({ Error, Promise, Event,
     $props: Object.assign(() => ({ onfinish() { calls.finished++; }, assertCurrent: current, resumeSelected }), { id: () => 'local-controls' }),
     $state: Object.assign(value => value, { raw: value => value }), $derived: value => value,
-    onDestroy: fn => destroys.push(fn), tick: () => Promise.resolve(),
+    onDestroy: fn => destroys.push(fn), tick: () => Promise.resolve(), untrack: fn => fn(),
     generateLocalKeyDraft: draft, importLocalKeyDraft: draft,
     signerIdentity: {}, get: () => selection, encodePublicKey: owner => 'npub1' + owner,
     async connectSigner(assertCurrent) { assertCurrent(); calls.signers++; selection = { owner: 'external-public-key', generation: selection.generation + 1, source: 'external' }; }, capabilities: network, proveService: network, enrollmentPolicy: network, admitAccount: network,

@@ -148,11 +148,13 @@ async fn context(
     tx.commit().await?;
     Ok(Json(value))
 }
-async fn project(tx: &Transaction<'_>, native: Value, account: &str) -> PublicApiResult<Value> {
+async fn project(tx: &Transaction<'_>, native: Value, account: &str, include_feedback: bool) -> PublicApiResult<Value> {
     let native_id = native["id"].as_str().ok_or_else(PublicApiError::unavailable)?.to_owned();
     let mut value = serde_json::to_value(manga_writes::resource(tx, native).await?.0)
         .map_err(|_| PublicApiError::unavailable())?;
-    value["data"]["attributes"]["reviewTimeline"] = super::native_draft_reviews::timeline(tx, &native_id).await?;
+    if include_feedback {
+        value["data"]["attributes"]["reviewTimeline"] = super::native_draft_reviews::timeline(tx, &native_id).await?;
+    }
     account::provenance(&mut value, account);
     Ok(value)
 }
@@ -176,6 +178,7 @@ async fn create(
         &tx,
         core::manga_create_in(&tx, &actor, &native, &metadata).await?,
         &account,
+        true, // Creation already authorized this draft's owner.
     )
     .await?;
     tx.commit().await?;
@@ -198,13 +201,18 @@ async fn update(
     let actor = actor(&state, &headers, &tx, true).await?;
     let account = capture(&tx, &actor, &mut input).await?;
     let native = resolve(&tx, ResourceKind::Manga, &id).await?;
-    let language:String=tx.query_opt("SELECT language FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id)",&[&native]).await?.ok_or_else(PublicApiError::not_found)?.get(0);
+    let row=tx.query_opt("SELECT language,owner_id FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id)",&[&native]).await?.ok_or_else(PublicApiError::not_found)?;
+    let language: String = row.get(0);
+    // Editing catalogue metadata does not confer private review visibility.
+    // Reuse the exact author/reviewer rule applied to private draft reads.
+    let include_feedback = actor.require_draft_owner(row.get::<_, &str>(1)).is_ok();
     let (mut patch, metadata) = manga_writes::normalize(input, true, &language)?;
     manga_writes::ids(&tx, &mut patch).await?;
     let result = project(
         &tx,
         core::manga_update_in(&tx, &actor, &native, &patch, &metadata).await?,
         &account,
+        include_feedback,
     )
     .await?;
     tx.commit().await?;
@@ -273,7 +281,7 @@ async fn transition(
     // Native owner submission and moderator review retain their exact gates. A
     // review action still cannot borrow the configured source publisher identity.
     let native = core::manga_transition_in(&state, &tx, &actor, &id, &input, next, true).await?;
-    let result = project(&tx, native, &account).await?;
+    let result = project(&tx, native, &account, true).await?;
     tx.commit().await?;
     Ok(Json(result))
 }

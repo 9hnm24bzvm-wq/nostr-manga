@@ -618,6 +618,22 @@ mod tests {
         assert!(load_signer(&path, &"00".repeat(32)).is_err());
         assert!(load_signer(&path, &public).is_ok());
     }
+    #[test]
+    fn native_unique_byte_boundary_and_duplicate_descriptors_are_exact() {
+        let page = |index: u64| NativeOriginal { hash: format!("{index:064x}"), mime: "image/png".into(), bytes: 8 * 1024 * 1024, width: 1, height: 1, storage_key: format!("{index:064x}") };
+        let mut pages: Vec<_> = (0..32).map(page).collect();
+        assert_eq!(validate_native_originals(&pages,8*1024*1024).unwrap(),256*1024*1024);
+        pages.extend((0..30).map(page));
+        assert_eq!(validate_native_originals(&pages,8*1024*1024).unwrap(),256*1024*1024,"repeated positions count once toward unique bytes");
+        pages.push(NativeOriginal{bytes:1,..page(32)});
+        assert!(validate_native_originals(&pages,8*1024*1024).unwrap_err().message.contains("256 MiB"));
+        let mut conflict=page(0);conflict.bytes-=1;
+        assert!(validate_native_originals(&[page(0),conflict],8*1024*1024).unwrap_err().message.contains("Conflicting descriptors"));
+        assert!(validate_native_originals(&[page(0)],8*1024*1024-1).is_err());
+        assert!(validate_native_originals(&[NativeOriginal{mime:"image/gif".into(),..page(0)}],8*1024*1024).is_err());
+        assert!(validate_native_originals(&[NativeOriginal{bytes:u64::MAX,..page(0)},NativeOriginal{bytes:1,..page(1)}],u64::MAX).unwrap_err().message.contains("overflow"));
+    }
+
 }
 
 #[derive(Clone, Debug)]
@@ -722,6 +738,48 @@ async fn prepared_input(
 const NATIVE_UPLOAD_SOURCE_FORMATS: &[&str] = &["image/jpeg", "image/png", "image/webp"];
 const NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES: u64 = 256 * 1024 * 1024;
 
+// Pure descriptor admission shared by the real commit path and exact boundary tests.
+// Duplicate pages retain their order later; only original storage bytes are deduplicated.
+fn validate_native_originals(files: &[NativeOriginal], max_blob_bytes: u64) -> ApiResult<u64> {
+    let mut unique = BTreeMap::new();
+    for file in files {
+        if !auth::valid_hash(&file.hash)
+            || !NATIVE_UPLOAD_SOURCE_FORMATS.contains(&file.mime.as_str())
+            || file.bytes == 0
+            || file.bytes > max_blob_bytes
+            || file.width == 0
+            || file.height == 0
+            || u64::from(file.width) * u64::from(file.height) > 40_000_000
+        {
+            return Err(ApiError::bad_request(
+                "This original cannot be published by the configured protocol; native-only GIF support is unchanged",
+            ));
+        }
+        if let Some(previous) = unique.insert(file.hash.clone(), file) {
+            let previous: &NativeOriginal = previous;
+            if previous.bytes != file.bytes
+                || previous.mime != file.mime
+                || previous.width != file.width
+                || previous.height != file.height
+            {
+                return Err(ApiError::bad_request(
+                    "Conflicting descriptors for a repeated original",
+                ));
+            }
+        }
+    }
+    let total = unique
+        .values()
+        .try_fold(0u64, |sum, file| sum.checked_add(file.bytes))
+        .ok_or_else(|| ApiError::bad_request("Original byte total overflow"))?;
+    if total > NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES {
+        return Err(ApiError::bad_request(
+            "Configured protocol publication supports at most 256 MiB of unique original bytes",
+        ));
+    }
+    Ok(total)
+}
+
 /// Read-only eligibility: uses the same current binding/admission/group gates as
 /// command publication, without allocating a command, signing, or granting access.
 pub(crate) async fn native_upload_preflight(
@@ -734,7 +792,7 @@ pub(crate) async fn native_upload_preflight(
     let configured = state.config.protocol_publication.is_some();
     let mut limits = serde_json::json!({"maxFiles":storage::MAX_FILES,"maxFilesPerRequest":5,"maxFileBytes":storage::MAX_FILE_BYTES.min(25*1024*1024),"maxSessionBytes":storage::MAX_SESSION_BYTES,"maxUniqueBytes":storage::MAX_SESSION_BYTES,"maxPixels":storage::MAX_PIXELS,"maxDimension":storage::MAX_DIMENSION});
     let formats = if configured { NATIVE_UPLOAD_SOURCE_FORMATS.to_vec() } else { vec!["image/jpeg","image/png","image/webp","image/gif"] };
-    if configured { limits["maxUniqueBytes"] = serde_json::json!(NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES); limits["maxSessionBytes"] = serde_json::json!(NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES); }
+    if configured { limits["maxUniqueBytes"] = serde_json::json!(NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES); }
     let eligibility: ApiResult<()> = async {
         actor.require_permission("chapter.create")?;
         actor.require_permission("self.chapter.update")?;
@@ -1163,42 +1221,7 @@ pub(crate) async fn publish_native_upload_fenced(
     .map_err(|_| ApiError::busy())?
     .map_err(|_| ApiError::unavailable())?;
     // Reject unsupported source capabilities before buffers or any signed series.
-    let mut unique = BTreeMap::new();
-    for file in files {
-        if !auth::valid_hash(&file.hash)
-            || !NATIVE_UPLOAD_SOURCE_FORMATS.contains(&file.mime.as_str())
-            || file.bytes == 0
-            || file.bytes > runtime.storage.max_blob_bytes
-            || file.width == 0
-            || file.height == 0
-            || u64::from(file.width) * u64::from(file.height) > 40_000_000
-        {
-            return Err(ApiError::bad_request(
-                "This original cannot be published by the configured protocol; native-only GIF support is unchanged",
-            ));
-        }
-        if let Some(previous) = unique.insert(file.hash.clone(), file) {
-            let previous: &NativeOriginal = previous;
-            if previous.bytes != file.bytes
-                || previous.mime != file.mime
-                || previous.width != file.width
-                || previous.height != file.height
-            {
-                return Err(ApiError::bad_request(
-                    "Conflicting descriptors for a repeated original",
-                ));
-            }
-        }
-    }
-    let total = unique
-        .values()
-        .try_fold(0u64, |sum, file| sum.checked_add(file.bytes))
-        .ok_or_else(|| ApiError::bad_request("Original byte total overflow"))?;
-    if total > NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES {
-        return Err(ApiError::bad_request(
-            "Configured protocol publication supports at most 256 MiB of unique original bytes",
-        ));
-    }
+    validate_native_originals(files, runtime.storage.max_blob_bytes)?;
 
     let groups = tx
         .query(

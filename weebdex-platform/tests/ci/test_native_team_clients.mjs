@@ -1,3 +1,6 @@
+import {after} from 'node:test';
+import {installRetainedQueryOverride,assertCanonicalQuery} from './retained-query-override-fixture.mjs';
+const restoreRetainedQuery=installRetainedQueryOverride();after(restoreRetainedQuery);
 import test from'node:test';import assert from'node:assert/strict';
 import{fixture,api,USER,SECOND_FILE,FILE,NATIVE,MANGA,entity,response,refusal,deferred}from'./native-contribution-fixture.mjs';
 const teams=await api('native-team-client'),feedback=await api('draft-feedback'),credits=await api('chapter-credits-client');
@@ -8,3 +11,15 @@ test('late account switch and role-loss refusal never claim team success or sile
 test('wrong decision receipt stays fenced instead of falsely accepting another request',async()=>{const f=fixture({request:(r,next)=>r.route.endsWith('/decision')?response({result:'ok',id:MANGA,version:2,status:'accepted',role:'member'}):next(r)}),c=await teams.createNativeTeamController(NATIVE,f.check,f.deps);try{await assert.rejects(c.decide(item,'accept'),/changed the requested action/);assert.equal(c.pending(SECOND_FILE),true);}finally{c.dispose();}});
 test('review feedback rejects missing reason and private fields before a request',()=>{for(const input of [{},{reason:' '},{reason:'x',privateNotes:'hidden'},{reason:'x',affectedFields:['privateNotes']}])assert.throws(()=>feedback.rejectionFeedback(input));assert.deepEqual(JSON.parse(JSON.stringify(feedback.rejectionFeedback({reason:' Revise title ',affectedFields:['title']}))),{reason:'Revise title',affectedFields:['title']});});
 test('credits are bounded escaped display data, not account or role grants',()=>{for(const input of [[{role:'publisher',name:'A'}],[{role:'editor',name:'A',permissions:['all']}],[{role:'translator',name:' '}],Array.from({length:31},()=>({role:'editor',name:'A'}))])assert.throws(()=>teams.creditList(input));assert.equal(teams.creditList([{role:'typesetter',name:'<b>not HTML</b>'}])[0].name,'<b>not HTML</b>');});
+
+test('uncertain invitation fences do not persist the private message text',async()=>{const f=fixture({request:(r,next)=>{if(r.route.endsWith('/requests'))throw Error('Synthetic unknown receipt');return next(r);}}),c=await teams.createNativeTeamController(NATIVE,f.check,f.deps);try{await assert.rejects(c.invite(SECOND_FILE,1,USER,'Private note must remain out of storage'));assert.equal(c.pending(SECOND_FILE),true);assert.ok(![...f.storage.values()].some(value=>String(value).includes('Private note')));}finally{c.dispose();}});
+
+test('team directory search and pagination keep exact query keys under the actual retained layout hook',async()=>{
+ const f=fixture({request:(r,next)=>{
+  assertCanonicalQuery(assert,r.url);
+  if(r.route==='/user'){assert.deepEqual([...r.url.searchParams.keys()].sort(),['limit','username']);assert.equal(r.url.searchParams.get('username'),'A & B?');assert.equal(r.url.searchParams.get('limit'),'25');return response({result:'ok',response:'collection',data:[],total:0,offset:0,limit:25});}
+  if(r.route===`/group/${SECOND_FILE}/team`){assert.deepEqual([...r.url.searchParams.keys()],['offset']);assert.equal(r.url.searchParams.get('offset'),'100');return response({result:'ok',group:{id:SECOND_FILE,name:'A team',version:1},canManage:false,members:[],hasMoreMembers:false,ownRole:null,requests:{data:[],hasMore:false,limit:100,offset:100}});}
+  return next(r);
+ }}),c=await teams.createNativeTeamController(NATIVE,f.check,f.deps);
+ try{assert.equal((await c.searchUsers('A & B?')).length,0);assert.equal((await c.team(SECOND_FILE,100)).requests.offset,100);assert.equal(f.calls.filter(r=>r.method!=='GET').length,0);}finally{c.dispose();}
+});

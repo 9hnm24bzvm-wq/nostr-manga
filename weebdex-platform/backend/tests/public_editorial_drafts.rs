@@ -498,7 +498,11 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
     ] {
         call(&client, &origin, "PUT", &gpath, Some(value), Some(2), 400).await;
     }
-    let group=call(&client,&origin,"PUT",&gpath,Some(json!({"version":1,"members":[member],"focusedLanguages":["en","ja"],"description":"Leader update"})),Some(2),200).await;
+    // Membership consent cannot be bypassed through the signed local adapter.
+    let refused=call(&client,&origin,"PUT",&gpath,Some(json!({"version":1,"members":[member]})),Some(2),409).await;
+    assert!(refused.to_string().contains("Invite new members"));
+    // Explicit role-plus-grant staff administration remains an authorized path.
+    let group=call(&client,&origin,"PUT",&gpath,Some(json!({"version":1,"members":[member],"focusedLanguages":["en","ja"],"description":"Staff-approved member setup"})),Some(5),200).await;
     assert_eq!(group["data"]["attributes"]["version"], 2);
     assert_eq!(group["data"]["relationships"].as_array().unwrap().len(), 2);
     let group = call(
@@ -539,19 +543,23 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
     let rich_path=format!("/api/v1/group/{}",rich_group["data"]["id"].as_str().unwrap());
     call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"officers":[publisher]})),Some(2),400).await;
     call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"officers":[member]})),Some(4),403).await;
-    let promoted=call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"officers":[member],"members":[]})),Some(2),200).await;
+    let refused=call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"officers":[member],"members":[]})),Some(2),409).await;
+    assert!(refused.to_string().contains("Invite new members"));
+    call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"members":[member]})),Some(5),200).await;
+    // A leader can still assign roles to an already accepted/authorized member.
+    let promoted=call(&client,&origin,"PUT",&rich_path,Some(json!({"version":2,"officers":[member],"members":[]})),Some(2),200).await;
     assert_eq!(promoted["data"]["attributes"]["localMembershipRoles"],"leader-officer-member-v1");
     let officer=promoted["data"]["relationships"].as_array().unwrap().iter().find(|r|r["id"]==member.as_str()).unwrap();
     assert_eq!(officer["attributes"]["isOfficer"],true);
     assert_eq!(officer["attributes"]["username"],"EditorialUser4");
     call(&client,&origin,"PUT",&rich_path,Some(json!({"version":1,"officers":[]})),Some(2),409).await;
     // Being an officer does not grant the leader-only group edit/delete action.
-    call(&client,&origin,"PUT",&rich_path,Some(json!({"version":2,"description":"Officer write"})),Some(4),403).await;
+    call(&client,&origin,"PUT",&rich_path,Some(json!({"version":3,"description":"Officer write"})),Some(4),403).await;
     call(&client,&origin,"DELETE",&rich_path,None,Some(2),403).await;
     let moderator=resolver.preferred(ResourceKind::User,"EditorialUser5").await.unwrap().unwrap();
     let stale_delete=format!("{rich_path}?expectedAccountId={moderator}&expectedVersion=1");
     call(&client,&origin,"DELETE",&stale_delete,None,Some(5),409).await;
-    let exact_delete=format!("{rich_path}?expectedAccountId={moderator}&expectedVersion=2");
+    let exact_delete=format!("{rich_path}?expectedAccountId={moderator}&expectedVersion=3");
     call(&client,&origin,"DELETE",&exact_delete,None,Some(5),200).await;
     let locked_author=call(&client,&origin,"POST","/api/v1/author",Some(json!({"name":"Lock control author"})),Some(2),200).await;
     let lock_path=format!("/api/v1/author/{}",locked_author["data"]["id"].as_str().unwrap());
@@ -715,6 +723,33 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
         400,
     )
     .await;
+    // Genuine signed review commands share required author-facing feedback,
+    // while retaining the signature, expected-account and moderator boundaries.
+    let submitted=resolver.preferred(ResourceKind::Manga,"EditorialDraft2").await.unwrap().unwrap();
+    let staff=resolver.preferred(ResourceKind::User,"EditorialUser5").await.unwrap().unwrap();
+    let reject=format!("/api/v1/manga/draft/{submitted}/reject");
+    for payload in [json!({"version":1,"expectedAccountId":staff}),json!({"version":1,"reason":"   ","expectedAccountId":staff})] {
+        call(&client,&origin,"POST",&reject,Some(payload),Some(5),400).await;
+    }
+    call(&client,&origin,"POST",&reject,Some(json!({"version":1,"reason":"Clarify the description","expectedAccountId":owner})),Some(5),409).await;
+    call(&client,&origin,"POST",&reject,Some(json!({"version":1,"reason":"Clarify the description","expectedAccountId":owner})),Some(2),403).await;
+    let rejected=call(&client,&origin,"POST",&reject,Some(json!({"version":1,"reason":"Clarify the description","affectedFields":["description"],"expectedAccountId":staff})),Some(5),200).await;
+    assert_eq!(rejected["data"]["attributes"]["state"],"rejected");assert_eq!(rejected["data"]["attributes"]["version"],2);
+    assert_eq!(rejected["data"]["attributes"]["reviewTimeline"]["events"][0]["reason"],"Clarify the description");
+    let own=call(&client,&origin,"GET",&format!("/api/v1/manga/draft/{submitted}"),None,Some(2),200).await;
+    assert_eq!(own["data"]["attributes"]["reviewTimeline"]["events"][0]["reason"],"Clarify the description");
+    assert_eq!(own["data"]["attributes"]["reviewTimeline"]["events"][0]["affectedFields"],json!(["description"]));
+    let own_list=call(&client,&origin,"GET","/api/v1/manga/draft?state=rejected",None,Some(2),200).await;
+    let card=own_list["data"].as_array().unwrap().iter().find(|row|row["id"]==submitted.as_str()).unwrap();
+    assert_eq!(card["attributes"]["reviewTimeline"]["events"].as_array().unwrap().len(),1);
+    assert_eq!(card["attributes"]["reviewTimeline"]["events"][0]["reason"],"Clarify the description");
+    call(&client,&origin,"GET",&format!("/api/v1/manga/draft/{submitted}"),None,Some(4),403).await;
+    let foreign=call(&client,&origin,"GET","/api/v1/manga/draft",None,Some(4),200).await;
+    assert!(!foreign.to_string().contains("Clarify the description"));
+    call(&client,&origin,"GET",&format!("/api/v1/manga/{submitted}"),None,None,404).await;
+    let sql=state.db.client().await.unwrap();
+    let feedback=sql.query_one("SELECT actor_id,reason,affected_fields FROM platform.native_draft_reviews WHERE manga_id='EditorialDraft2' AND version=2",&[]).await.unwrap();
+    assert_eq!(feedback.get::<_,String>(0),"EditorialUser5");assert_eq!(feedback.get::<_,String>(1),"Clarify the description");assert_eq!(feedback.get::<_,Vec<String>>(2),vec!["description"]);drop(sql);
     // Current service and admission are rechecked for each fresh signed request.
     repository
         .set_account_admission(id(2), false)
@@ -758,11 +793,11 @@ async fn editorial_and_drafts_require_real_current_bound_authority_and_atomic_au
     call(&client, &origin, "DELETE", &gpath, None, Some(5), 200).await;
     let sql = state.db.client().await.unwrap();
     let audits=sql.query("SELECT actor_id,operation,old_version,new_version FROM platform.catalog_audit ORDER BY id",&[]).await.unwrap();
-    assert_eq!(audits.len(), 17);
+    assert_eq!(audits.len(), 19);
     // Exact per-entity histories also prove every refused lock, role and stale
     // deletion left no audit side effect.
     for (kind, created, expected) in [
-        (ResourceKind::Group, &rich_group, vec![("create",None,Some(1)),("update",Some(1),Some(2)),("remove",None,None)]),
+        (ResourceKind::Group, &rich_group, vec![("create",None,Some(1)),("update",Some(1),Some(2)),("update",Some(2),Some(3)),("remove",None,None)]),
         (ResourceKind::Author, &locked_author, vec![("create",None,Some(1)),("update",Some(1),Some(2)),("update",Some(2),Some(3))]),
     ] {
         let public_id=PublicUuid::parse(created["data"]["id"].as_str().unwrap()).unwrap();

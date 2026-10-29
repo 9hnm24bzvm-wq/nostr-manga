@@ -68,8 +68,9 @@ impl Fixture {
                 "Missing {header}: {vary}"
             );
         }
+        let url = response.url().to_string();
         let value: Value = response.json().await.unwrap();
-        assert_eq!(status, expected, "{value}");
+        assert_eq!(status, expected, "{url}: {value}");
         if expected == 200 && value.get("revision").is_some() {
             assert_eq!(value["authentication"], "native-session");
             assert_eq!(value["scope"], "instance-account");
@@ -438,7 +439,7 @@ async fn native_team_feedback_and_credits_keep_narrow_authority() {
             .as_array()
             .unwrap()
             .iter()
-            .any(|r| r["id"] == g && r["role"] == "leader")
+            .any(|r| r["id"] == g && r["role"] == "leader" && r["version"] == 1)
     );
     assert!(mine["data"].as_array().unwrap().len() <= 100);
     f.call("POST",&format!("/api/v1/account/group/{g}/requests"),Some("NativeOther"),Some(json!({"kind":"invitation","recipient":f.account,"version":1,"expectedAccountId":f.other})),403).await;
@@ -509,8 +510,13 @@ async fn native_team_feedback_and_credits_keep_narrow_authority() {
         db.execute("UPDATE platform.users SET verified=true,disabled=false,roles=$1,permissions=$2 || '[\"self.scanlation_group.update\"]'::jsonb WHERE id='NativeOther'", &[&saved_roles,&saved_permissions]).await.unwrap();
         db.batch_execute(change).await.unwrap();
         drop(db);
-        let refused=f.call("PUT",&format!("/api/v1/account/group/{g}"),Some("NativeActor"),Some(json!({"version":4,"leader":f.other,"officers":[],"members":[f.account],"expectedAccountId":f.account})),409).await;
-        assert!(refused.to_string().contains("new leader"));
+        eprintln!("Leadership target eligibility case: {change}");
+        // Disabled native IDs are intentionally rejected by the adapter before
+        // the core target-eligibility check; other ineligible users reach409.
+        let disabled_target = change.contains("disabled=true");
+        let refused=f.call("PUT",&format!("/api/v1/account/group/{g}"),Some("NativeActor"),Some(json!({"version":4,"leader":f.other,"officers":[],"members":[f.account],"expectedAccountId":f.account})),if disabled_target {400} else {409}).await;
+        if disabled_target {assert_eq!(refused["errors"][0]["detail"],"Unknown native group member");}
+        else {assert!(refused.to_string().contains("new leader"));}
         let current = f
             .call(
                 "GET",
@@ -977,6 +983,26 @@ async fn native_team_feedback_and_credits_keep_narrow_authority() {
     drop(db);
     let staff=f.call("PUT",&format!("/api/v1/account/group/{g}"),Some("NativeOther"),Some(json!({"version":4,"leader":f.account,"officers":[],"members":[f.other,outsider],"expectedAccountId":f.other})),200).await;
     assert_eq!(staff["data"]["attributes"]["version"], 5);
+    // Metadata-only editors can change public catalogue fields, not read a
+    // different author's historical review feedback through the write receipt.
+    let db=f.state.db.client().await.unwrap();
+    db.batch_execute("INSERT INTO platform.catalog_manga(id,owner_id,owner_name,title,language,publication_status,content_rating,state,version) VALUES('FeedbackScopeTitle','NativeActor','NativeActor','Published feedback fixture','en','ongoing','safe','published',3); INSERT INTO platform.native_draft_reviews(manga_id,version,action,actor_id,reason,affected_fields) VALUES('FeedbackScopeTitle',2,'rejected','NativeOther','Author-only historical explanation',ARRAY['description']); UPDATE platform.users SET permissions=permissions || '[\"manga.update\"]'::jsonb WHERE id='NativeNoPerm'").await.unwrap();
+    let before_history:Value=db.query_one("SELECT to_jsonb(r) FROM platform.native_draft_reviews r WHERE manga_id='FeedbackScopeTitle' AND version=2",&[]).await.unwrap().get(0);drop(db);
+    let public=resolver.preferred(ResourceKind::Manga,"FeedbackScopeTitle").await.unwrap().unwrap();
+    let edited=f.call("PUT",&format!("/api/v1/account/manga/{public}"),Some("NativeNoPerm"),Some(json!({"version":3,"description":{"en":"Public catalogue correction"},"expectedAccountId":outsider})),200).await;
+    assert_eq!(edited["data"]["attributes"]["version"],4);
+    assert!(edited["data"]["attributes"].get("reviewTimeline").is_none());
+    assert!(!edited.to_string().contains("Author-only historical explanation"));
+    // A metadata-only staff grant also does not become a private-review grant.
+    let db=f.state.db.client().await.unwrap();db.batch_execute("UPDATE platform.users SET roles='[\"moderator\"]'::jsonb WHERE id='NativeNoPerm'").await.unwrap();drop(db);
+    let private_edit=f.call("PUT",&format!("/api/v1/account/manga/{title}"),Some("NativeNoPerm"),Some(json!({"version":history["data"]["attributes"]["version"],"description":{"en":"Metadata-only staff correction"},"expectedAccountId":outsider})),200).await;
+    assert!(private_edit["data"]["attributes"].get("reviewTimeline").is_none());
+    assert!(!private_edit.to_string().contains("Second revision required"));
+    f.call("GET",&draft,Some("NativeNoPerm"),None,403).await;
+    let owner_feedback=f.call("GET",&draft,Some("NativeActor"),None,200).await;
+    assert_eq!(owner_feedback["data"]["attributes"]["reviewTimeline"]["events"][3]["reason"],"Second revision required");
+    let db=f.state.db.client().await.unwrap();let after_history:Value=db.query_one("SELECT to_jsonb(r) FROM platform.native_draft_reviews r WHERE manga_id='FeedbackScopeTitle' AND version=2",&[]).await.unwrap().get(0);assert_eq!(before_history,after_history);drop(db);
+
     assert_eq!(before.2, f.counts().await.2);
     assert_eq!(before.3, f.counts().await.3);
 }

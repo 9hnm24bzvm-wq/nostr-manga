@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { verifyRemoteSignerDependencies } from './remote-signer-dependency-provenance.mjs';
 import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';
 import { createSixPersonaOverlays, sixPersonaRouteAdditions } from '../platform-integrations/six-persona/overlays.mjs';
 import { createAccountLibraryOverlays } from '../platform-integrations/local-library/account-overlays.mjs';
@@ -20,6 +21,7 @@ import { productionAliasName, resolveProductionAlias, describeProductionAlias } 
 import { createLocalLibraryOverlays } from '../platform-integrations/local-library/overlays.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const remoteSignerDependencies = verifyRemoteSignerDependencies();
 const frontend = path.join(root, 'frontend');
 const dependencies = fs.realpathSync(process.env.WEEBDEX_SEMANTIC_NODE_MODULES ?? path.join(frontend, 'node_modules'));
 const require = createRequire(path.join(dependencies, '../package.json'));
@@ -104,6 +106,13 @@ for (const name of ['@lucide/svelte', 'svelte-sonner', 'axios', 'http-status-cod
   aliasesForCheck[name] = [path.join(dependencies, name, typeEntry)];
   packageTypeAliases.push({ name, production_entry: aliases.find(alias => productionAliasName(alias.find) === name)?.replacement, same_package_declaration: aliasesForCheck[name][0], declaration_sha256: hash(fs.readFileSync(aliasesForCheck[name][0])) });
 }
+// The one imported NIP44 runtime subpath uses its exact same-package declarations.
+const remotePackage=path.join(root,'.build/remote-signer-nostr-tools-2.25.2/node_modules/nostr-tools');
+const remoteMetadata=JSON.parse(fs.readFileSync(path.join(remotePackage,'package.json')));
+if(remoteMetadata.name!=='nostr-tools'||remoteMetadata.version!=='2.25.2'||remoteMetadata.exports?.['./nip44']?.types!=='./lib/types/nip44.d.ts')throw Error('Remote signer declaration identity changed');
+const remoteDeclaration=path.join(remotePackage,'lib/types/nip44.d.ts');
+aliasesForCheck['nostr-tools/nip44']=[remoteDeclaration];
+packageTypeAliases.push({name:'nostr-tools/nip44',production_entry:aliases.find(alias=>productionAliasName(alias.find)==='nostr-tools/nip44')?.replacement,same_package_declaration:remoteDeclaration,declaration_sha256:hash(fs.readFileSync(remoteDeclaration))});
 const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input), createPublicUploadOverlays(input), createNativeUploadOverlays(input), createBoundedReaderOverlays(input), createAccountLibraryOverlays(input), createSixPersonaOverlays(input)];
 const manifest = [], rewrites = [], maps = new Map(), graph = [], reachable = new Set(), workerTypeBindings = [];
 const projectedSourceRoots = ['src', 'platform-integrations'].map(name => path.join(project, name) + path.sep);
@@ -292,7 +301,7 @@ if (!completed || +completed[2] !== diagnostics.filter(item => item.severity ===
 const toolsUsed = ['typescript', 'svelte-check', 'svelte', '@sveltejs/kit', 'vite', 'magic-string', '@jridgewell/trace-mapping'].map(name => { const file = path.join(dependencies, name, 'package.json'), pkg = JSON.parse(fs.readFileSync(file)); return { package: name, version: pkg.version, package_sha256: hash(fs.readFileSync(file)) }; });
 const after = sourceInventory();
 if (JSON.stringify(before) !== JSON.stringify(after)) throw Error('Canonical frontend inventory changed');
-const summary = { status: checked.status === 0 && workerCheck.status === 0 ? 'passed' : 'failed', utc: new Date().toISOString(), base_commit: spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim(), canonical_frontend_files: Object.keys(before).length, canonical_frontend_unchanged: true, runtime_browser_database_services_started: false, installed_dependencies: false, production_configuration_sha256: hash(fs.readFileSync(path.join(root, 'scripts/vite.platform.config.mjs'))), production_overlay_order: plugins.map(plugin => plugin.name), production_aliases: aliases.map(describeProductionAlias), declaration_entrypoints_for_runtime_package_aliases: packageTypeAliases, worker_platform_type_bindings: workerTypeBindings, strict: tsconfig.compilerOptions.strict, checkJs: tsconfig.compilerOptions.checkJs, skipLibCheck: tsconfig.compilerOptions.skipLibCheck, skipLibCheck_inherited_from_original: true, source_diagnostic_suppressions_added: false, reachable_integration_files: integrationRoots.map(file => path.relative(project, file)).sort(), redirected_inactive_source_roots: [...redirected], fragments, resolver_rewrites: rewrites, errors: diagnostics.filter(item => item.severity === 'error').length, warnings: diagnostics.filter(item => item.severity === 'warning').length, svelte_check_receipt: checked.receipt, service_worker_receipt: workerCheck.receipt, limitation: 'Projection maps resolve to exact composed production snapshots, not falsely to pre-overlay source. Stage hashes preserve original → shared → reader → local provenance. No application behavior is changed; residual diagnostics are reported.' };
+const summary = { remote_signer_dependencies: remoteSignerDependencies, status: checked.status === 0 && workerCheck.status === 0 ? 'passed' : 'failed', utc: new Date().toISOString(), base_commit: spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim(), canonical_frontend_files: Object.keys(before).length, canonical_frontend_unchanged: true, runtime_browser_database_services_started: false, installed_dependencies: false, production_configuration_sha256: hash(fs.readFileSync(path.join(root, 'scripts/vite.platform.config.mjs'))), production_overlay_order: plugins.map(plugin => plugin.name), production_aliases: aliases.map(describeProductionAlias), declaration_entrypoints_for_runtime_package_aliases: packageTypeAliases, worker_platform_type_bindings: workerTypeBindings, strict: tsconfig.compilerOptions.strict, checkJs: tsconfig.compilerOptions.checkJs, skipLibCheck: tsconfig.compilerOptions.skipLibCheck, skipLibCheck_inherited_from_original: true, source_diagnostic_suppressions_added: false, reachable_integration_files: integrationRoots.map(file => path.relative(project, file)).sort(), redirected_inactive_source_roots: [...redirected], fragments, resolver_rewrites: rewrites, errors: diagnostics.filter(item => item.severity === 'error').length, warnings: diagnostics.filter(item => item.severity === 'warning').length, svelte_check_receipt: checked.receipt, service_worker_receipt: workerCheck.receipt, limitation: 'Projection maps resolve to exact composed production snapshots, not falsely to pre-overlay source. Stage hashes preserve original → shared → reader → local provenance. No application behavior is changed; residual diagnostics are reported.' };
 writeJSON(path.join(evidence, 'cached-toolchain.json'), toolsUsed);
 writeJSON(path.join(evidence, 'source-map-validation.json'), { status: 'passed', validated_maps: mapValidation.length, maps: mapValidation });
 writeJSON(path.join(evidence, 'canonical-source-hashes.json'), before);

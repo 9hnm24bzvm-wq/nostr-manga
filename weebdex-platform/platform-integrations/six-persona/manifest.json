@@ -1,9 +1,10 @@
 {
   "schema": "six-persona-overlay-scope-v1",
-  "baseline_commit": "9a70b771bfa8cb1b20f82c926f65956b93c2d5e6",
+  "baseline_commit_local": "9a70b771bfa8cb1b20f82c926f65956b93c2d5e6",
+  "baseline_tree": "a035b00056557f83348db13c6288a680fd35aca8",
   "qualification": "Source composition only; no runtime, browser or release acceptance inherited.",
-  "patch_count": 76,
-  "patch_registry_sha256": "60f655bab0ccdc717d352009e2158afda4c3fe9a5006bb970515a6f8620a2798",
+  "patch_count": 78,
+  "patch_registry_sha256": "69034bcc3aca5d95acd75280b6eca7799bdcb5767c8490db976018ce1c1794a3",
   "rows": [
     {
       "path": "src/lib/Locale.ts",
@@ -33,7 +34,7 @@
       "path": "src/lib/components/upload/UploadChapter.svelte",
       "original_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
       "input_sha256": "cd7c05c772868f13e30268aada620ed994ba8a760a41cf4de8f97f3d9c45449a",
-      "output_sha256": "50bde8c65ce678ea0abd6c26023b2ce2a632209293ae4245f03ae4835373894e"
+      "output_sha256": "3e29cca73c66e66edf28cd4fe95f7f9ab7e2c9d226df0fe2edb97ca032607a92"
     },
     {
       "path": "src/lib/components/upload/UploadChapterGroups.svelte",

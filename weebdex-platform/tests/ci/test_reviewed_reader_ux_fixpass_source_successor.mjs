@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor,readReaderUxAssociation} from './reviewed-card-spinner-source-successor.mjs';
+import {readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor,readReaderUxAssociation} from './reviewed-six-persona-source-successor.mjs';
 const root=fileURLToPath(new URL('../../../',import.meta.url)),association=readReaderUxFixpassAssociation();
 const hash=value=>createHash('sha256').update(value).digest('hex');
 const git=file=>execFileSync('git',['show',association.predecessor_commit+':'+file],{cwd:root,maxBuffer:8*1024*1024,stdio:['ignore','pipe','pipe']});

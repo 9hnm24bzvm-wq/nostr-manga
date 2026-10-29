@@ -341,5 +341,19 @@
     "before": "uploadSession.is_committed = true;\r\n\t\t\t\t\tuploadSession.can_mutate = false;\r\n\t\t\t\t\tuploadSession.can_retry_commit = false;",
     "after": "uploadSession = { ...uploadSession, is_committed: true, can_mutate: false, can_retry_commit: false };",
     "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "initialize commit receipt state before reactive validity reads",
+    "before": "let isValid = $derived(",
+    "after": "let signedReceiptPending = $state(false);\r\n\tlet isValid = $derived(",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "remove later commit receipt state declaration after hoisting",
+    "before": "\tlet signedReceiptPending = $state(false);\r\n\tconst showSignedCommitFence = () => {",
+    "after": "\tconst showSignedCommitFence = () => {",
+    "count": 1
   }
 ]

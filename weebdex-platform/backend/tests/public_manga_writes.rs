@@ -205,7 +205,7 @@ async fn signed_title_create_edit_submit_publish_and_overlay_preserve_original_a
     // Staff role can review, but cannot borrow the configured operator's key.
     f.call(Some(8),"POST",&publish,Some(json!({"version":v})),403).await;
     let count:i64=db.query_one("SELECT count(*) FROM platform.protocol_publication_commands WHERE catalog_id=$1",&[&native]).await.unwrap().get(0);assert_eq!(count,0);
-    let rejected=f.call(Some(8),"POST",&reject,Some(json!({"version":v})),200).await;
+    let rejected=f.call(Some(8),"POST",&reject,Some(json!({"version":v,"reason":"Clarify the submitted description before publication"})),200).await;
     let v=rejected["data"]["attributes"]["version"].as_i64().unwrap();assert_eq!(rejected["data"]["attributes"]["state"],"rejected");
     let submitted=f.call(Some(1),"POST",&commit,Some(json!({"version":v})),201).await;let v=submitted["data"]["attributes"]["version"].as_i64().unwrap();
     db.execute("UPDATE platform.users SET roles='[\"moderator\"]',permissions=permissions||'[\"manga.state.update\"]'::jsonb WHERE id='PublicUploadUser1'",&[]).await.unwrap();

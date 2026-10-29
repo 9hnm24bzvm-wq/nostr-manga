@@ -470,7 +470,7 @@ async fn member_ids(tx: &Transaction<'_>, value: &mut Value) -> PublicApiResult<
     native.sort();
     native.dedup();
     if !native.is_empty() {
-        let rows = tx.query("SELECT id FROM platform.users WHERE id=ANY($1::text[]) AND NOT disabled ORDER BY id FOR SHARE", &[&native]).await?;
+        let rows = tx.query("SELECT id FROM platform.users WHERE id=ANY($1::text[]) AND NOT disabled ORDER BY id FOR SHARE NOWAIT", &[&native]).await?;
         if rows.len() != native.len() {
             return Err(PublicApiError::bad_request("Unknown native group member"));
         }

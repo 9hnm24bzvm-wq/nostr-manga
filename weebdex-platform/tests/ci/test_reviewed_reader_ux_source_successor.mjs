@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {readReaderUxAssociation,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {readReaderUxAssociation,restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 const root=fileURLToPath(new URL('../../../',import.meta.url)),association=readReaderUxAssociation();
 const hash=value=>createHash('sha256').update(value).digest('hex');
 test('reader UX association binds exact reviewed current source and immutable predecessor without inherited execution claims',()=>{

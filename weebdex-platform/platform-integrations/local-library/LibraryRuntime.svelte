@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { toast } from 'svelte-sonner';
   import { openLibrary, message } from './library';
+  import RemoteSignerStatus from './RemoteSignerStatus.svelte';
 
   // The root shell owns startup and errors once, including standalone readers.
   // Management UI can be dismissed without discarding the persistent library.
@@ -12,3 +13,5 @@
     return () => window.removeEventListener('weebdex-library-error', reportError);
   });
 </script>
+
+<RemoteSignerStatus />

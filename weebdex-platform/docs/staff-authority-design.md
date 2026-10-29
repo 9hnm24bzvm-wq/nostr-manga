@@ -1,8 +1,8 @@
-# Native authority management — review draft
+# Native authority management — ratified design
 
 Scope: local native accounts only. No original-service keys, publisher admission,
 protocol signing authority, or global service credentials are managed here.
-This design is awaiting owner ratification; it does not grant production authority.
+The owner ratified this design on 2026-10-28; it does not grant production authority.
 
 ## Review and mutation contract
 
@@ -59,7 +59,7 @@ changed separately and are preserved when selecting a role bundle.
 Multiple named bundles may be reviewed together. The product never accepts raw
 role or permission strings. Replacing a selection deliberately replaces prior
 nonbaseline authority and warns about legacy/custom grants. Bootstrap proposes
-only the four administrative bundles, not content moderation or source operation.
+only the four administrative bundles, not additional content-moderation grants or source operation.
 Restriction v1 lasts until an administrator explicitly lifts it; no expiry is
 implied. Runtime instance policy/contact remains separately config-owned.
 
@@ -69,7 +69,10 @@ Owner ratified this design on 2026-10-28, including the existing role hierarchy:
 `staff` and `sysop` satisfy legacy moderator role tests, but **never** grant an
 exact permission by themselves. New security routes require `sysop` and the
 specific `admin.*` grant. The policy module's metadata and UI explain that
-hierarchy instead of globally changing shared legacy helpers.
+hierarchy instead of globally changing shared legacy helpers. Baseline permissions
+can still combine with inherited role gates, such as replying in a locked discussion
+with `reply.create`. Security-only bootstrap describes the additional grants, not
+the absence of all inherited native role behavior.
 
 Additional reviewed bundles cover the existing privileged native surface:
 

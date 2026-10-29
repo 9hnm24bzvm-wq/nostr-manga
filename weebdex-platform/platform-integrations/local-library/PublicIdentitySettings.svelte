@@ -8,11 +8,12 @@
   import ProtocolIdentityPanel from './ProtocolIdentityPanel.svelte';
   import IdentitySetup from './IdentitySetup.svelte';
   import NativeIdentityLink from './NativeIdentityLink.svelte';
-  let view = $state<'profile' | 'follows' | 'actions' | 'connections' | 'keys' | 'lookup'>('profile'), open = $state(false), pending = $state(false), error = $state('');
+  import RemoteSignerPanel from './RemoteSignerPanel.svelte';
+  let view = $state<'profile' | 'follows' | 'actions' | 'connections' | 'keys' | 'lookup' | 'remote'>('profile'), open = $state(false), pending = $state(false), error = $state('');
   let disposed = false, viewGeneration = $state(0);
   let selectedOrigin = $state(''), resumeSelected = $state(true);
   let advanced = $state<HTMLDetailsElement | null>(null), advancedOpen = $state(false);
-  const title = $derived({ profile: 'Public profile', follows: 'Public follows', actions: 'Saved public actions', connections: 'Identity & instances', keys: 'Public identity', lookup: 'Find a public profile' }[view]);
+  const title = $derived({ profile: 'Public profile', follows: 'Public follows', actions: 'Saved public actions', connections: 'Identity & instances', keys: 'Public identity', lookup: 'Find a public profile', remote: 'Connect remote signer' }[view]);
   function setOpen(value: boolean) { viewGeneration++; open = value; }
   function edit(next: typeof view, resume = true) { if (!advanced?.open) return; resumeSelected = resume; view = next; setOpen(true); }
   function viewGuard(generation: number) { return () => { if (disposed || !advanced?.open || !open || generation !== viewGeneration) throw Error('This identity task was closed. Reopen it and review again.'); }; }
@@ -49,7 +50,7 @@
     <Button disabled={pending} onclick={() => edit('keys')}>{$signerIdentity.owner ? 'Review site access' : 'Connect an existing identity'}</Button>
     {#if $signerIdentity.owner}<Button variant="outline" onclick={() => edit('keys', false)}>Use a different identity</Button><Button variant="outline" onclick={disconnectSigner}>{$signerIdentity.source === 'local' ? 'Lock identity' : 'Disconnect identity'}</Button>{/if}
     <p class="text-muted-foreground text-sm">Joining requires your approval. It does not post anything or grant every permission. Use the connection panel above to link it deliberately to this account. Site access and publishing permissions remain separate.</p>
-    <details><summary class="cursor-pointer text-sm">Advanced connection options</summary><div class="mt-3 flex gap-2"><Button variant="outline" disabled={pending} onclick={connect}>Connect browser extension</Button><Button variant="ghost" onclick={() => edit('connections')}>Connection settings</Button></div></details>
+    <details><summary class="cursor-pointer text-sm">Advanced connection options</summary><div class="mt-3 flex gap-2"><Button variant="outline" disabled={pending} onclick={connect}>Connect browser extension</Button><Button variant="outline" disabled={pending} onclick={() => edit('remote')}>Connect remote signer</Button><Button variant="ghost" onclick={() => edit('connections')}>Connection settings</Button></div></details>
   </section>
   <section class="space-y-3 border-t pt-4">
     <div class="space-y-1"><strong class="block font-semibold">Public profile</strong><p class="text-foreground/85 max-w-md">Choose the name and bio shown with your public identity.</p></div>
@@ -71,6 +72,6 @@
 <Dialog.Root {open} onOpenChange={setOpen}>
   <Dialog.Content class="max-h-[calc(100dvh-2rem)] !max-w-[min(42rem,calc(100dvw-2rem))] overflow-y-auto">
     <Dialog.Header><Dialog.Title>{title}</Dialog.Title></Dialog.Header>
-    {#if open}{#key viewGeneration}{#if view === 'keys'}<IdentitySetup {resumeSelected} onprofile={(origin) => { selectedOrigin = origin; view = 'profile'; viewGeneration++; }} onfinish={() => setOpen(false)} assertCurrent={viewGuard(viewGeneration)} finishLabel="Done" allowFinishLater={false} />{:else}<ProtocolIdentityPanel bind:selectedOrigin settingsView={view} assertViewCurrent={viewGuard(viewGeneration)} />{/if}{/key}{/if}
+    {#if open}{#key viewGeneration}{#if view === 'remote'}<RemoteSignerPanel assertCurrent={viewGuard(viewGeneration)} />{:else if view === 'keys'}<IdentitySetup {resumeSelected} onprofile={(origin) => { selectedOrigin = origin; view = 'profile'; viewGeneration++; }} onfinish={() => setOpen(false)} assertCurrent={viewGuard(viewGeneration)} finishLabel="Done" allowFinishLater={false} />{:else}<ProtocolIdentityPanel bind:selectedOrigin settingsView={view} assertViewCurrent={viewGuard(viewGeneration)} />{/if}{/key}{/if}
   </Dialog.Content>
 </Dialog.Root>

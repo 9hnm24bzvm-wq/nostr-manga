@@ -151,10 +151,15 @@ async fn list(
         .map(|v| (ResourceKind::Manga, v))
         .collect::<Vec<_>>();
     let index = AliasIndex::load_in(&tx, &resources).await?;
-    let data = values
+    let mut data = values
         .iter()
         .map(|v| index.resource(ResourceKind::Manga, v, &query.includes))
         .collect::<PublicApiResult<Vec<_>>>()?;
+    // These rows have already passed this signed account's private draft scope.
+    // List cards need only the latest event, not 100 full histories.
+    for (resource, native) in data.iter_mut().zip(values.iter()) {
+        resource.attributes["reviewTimeline"] = super::native_draft_reviews::summary(&tx, native["id"].as_str().ok_or_else(PublicApiError::unavailable)?).await?;
+    }
     tx.commit().await?;
     Ok(Json(CollectionResponse::new(
         data,
@@ -196,7 +201,8 @@ async fn detail(
         .get::<_, Option<Value>>(1)
         .ok_or_else(PublicApiError::unavailable)?;
     let index = AliasIndex::load_in(&tx, &[(ResourceKind::Manga, value.clone())]).await?;
-    let resource = index.resource(ResourceKind::Manga, &value, &query.includes)?;
+    let mut resource = index.resource(ResourceKind::Manga, &value, &query.includes)?;
+    resource.attributes["reviewTimeline"] = super::native_draft_reviews::timeline(&tx, &target.native_id).await?;
     tx.commit().await?;
     Ok(Json(EntityResponse::new(resource)))
 }

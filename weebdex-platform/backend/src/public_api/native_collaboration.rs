@@ -106,12 +106,12 @@ pub(super) async fn own_groups(
     tx: &Transaction<'_>,
     actor: &NativeActor,
 ) -> PublicApiResult<Value> {
-    let rows=tx.query("SELECT g.id,g.name,m.is_leader,m.is_officer FROM platform.catalog_group_members m JOIN platform.catalog_groups g ON g.id=m.group_id WHERE m.user_id=$1 AND g.deleted_at IS NULL AND platform.protocol_group_is_visible(g.id) ORDER BY m.is_leader DESC,lower(g.name),g.id LIMIT 101",&[&actor.user_id()]).await?;
+    let rows=tx.query("SELECT g.id,g.name,m.is_leader,m.is_officer,g.version FROM platform.catalog_group_members m JOIN platform.catalog_groups g ON g.id=m.group_id WHERE m.user_id=$1 AND g.deleted_at IS NULL AND platform.protocol_group_is_visible(g.id) ORDER BY m.is_leader DESC,lower(g.name),g.id LIMIT 101",&[&actor.user_id()]).await?;
     let more = rows.len() > 100;
     let mut data = Vec::new();
     for r in rows.into_iter().take(100) {
         let id: String = r.get(0);
-        data.push(json!({"id":preferred(tx,ResourceKind::Group,&id).await?,"name":r.get::<_,String>(1),"role":if r.get::<_,bool>(2){"leader"}else if r.get::<_,bool>(3){"officer"}else{"member"}}));
+        data.push(json!({"id":preferred(tx,ResourceKind::Group,&id).await?,"name":r.get::<_,String>(1),"version":r.get::<_,i32>(4),"role":if r.get::<_,bool>(2){"leader"}else if r.get::<_,bool>(3){"officer"}else{"member"}}));
     }
     Ok(json!({"data":data,"hasMore":more,"limit":100}))
 }

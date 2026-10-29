@@ -1,4 +1,4 @@
-import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 // Exact retained predecessor and additive observed-account behavior. No Git,
 // production dependencies, signatures, HTTP, or external account mutations.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';

@@ -1,0 +1,71 @@
+{
+  "base_commit": "e3b9dd46def42f43a94f2421e33ca0b8e22832e5",
+  "status": "focused-tests-passed-not-browser-qualified",
+  "tests": 41,
+  "passed": 41,
+  "failed": 0,
+  "duration_ms": 8323.843015,
+  "test_command": "WEEBDEX_FRONTEND_ROOT=.build/frontend-ux-final WEEBDEX_BROWSER_DOM_NODE_MODULES=.build/qualified-test-deps-20261028/node_modules node --test tests/ci/test_remote_bunker.mjs tests/ci/test_remote_signer_session.mjs tests/ci/test_remote_signer_dom.mjs",
+  "boundaries": [
+    "24 actual owned loopback WebSocket / NIP44 / Schnorr tests",
+    "13 actual coordinator tests with finite native-account and bunker boundaries",
+    "4 actual Svelte component DOM tests with JSDOM and native Dialog primitives mocked",
+    "No real signer credentials, external relay, production publication or authority grants",
+    "Composed strict build and real browser focus still pending; independent predecessor35 review passed and41 successor review pending"
+  ],
+  "files": [
+    {
+      "path": "platform-integrations/local-library/remote-bunker.ts",
+      "sha256": "61ee7868b8529f629041707f4fa9024a8526b86d14cf8016f3b58176f5eebcd5"
+    },
+    {
+      "path": "platform-integrations/local-library/remote-signer-session.ts",
+      "sha256": "b833f407f424fcbc17cf62dc439f29af4c7f28276d298fbb1f6dbaeea1737de4"
+    },
+    {
+      "path": "platform-integrations/local-library/RemoteSignerPanel.svelte",
+      "sha256": "59a5b8ed1131bb87a060d1412bb57369c1282d877bbfcaf2b84a22124e77ec8f"
+    },
+    {
+      "path": "platform-integrations/local-library/RemoteSignerStatus.svelte",
+      "sha256": "b3f01ab5689325d372376ae43cbc04a429ab3b4a683f1a82269384e0882a7683"
+    },
+    {
+      "path": "platform-integrations/local-library/publication.ts",
+      "sha256": "2ea3532751b610074886c087c75d8a623897f77a594c6bc47ea46da4a06f7b76"
+    },
+    {
+      "path": "platform-integrations/local-library/LibraryRuntime.svelte",
+      "sha256": "56d42298d4212667213f9e6b87bc81431185b1b5ca15a3e3135203a88131be98"
+    },
+    {
+      "path": "platform-integrations/local-library/PublicIdentitySettings.svelte",
+      "sha256": "293ea9991a070772761e4f8ad676ad032711501c4442c968b72c756bbed60b11"
+    },
+    {
+      "path": "platform-integrations/local-library/NativeIdentityLink.svelte",
+      "sha256": "34bf1e628d17f018ee50a8e317cd289bb574f7401c1c21789f9088a8bba19754"
+    },
+    {
+      "path": "tests/ci/test_remote_bunker.mjs",
+      "sha256": "fdad37c015e3432331a2f0e155c4dbb9d9739fe674b32515307bffaf0e89c906"
+    },
+    {
+      "path": "tests/ci/test_remote_signer_session.mjs",
+      "sha256": "4cacd92204c83c0c2b5a7dcfd501fc18ee78469b5190a8cc5530994790f0e238"
+    },
+    {
+      "path": "tests/ci/test_remote_signer_dom.mjs",
+      "sha256": "876d547dc528d701be1ef57606ea2aa5261408867bff29113a081d1f07cbc769"
+    },
+    {
+      "path": "platform-integrations/local-library/remote-signing-dependencies/package-lock.json",
+      "sha256": "0f2ab48d9c6e4f486c0672f384ed6cb4736bf1f20cd876c83b46466075066160"
+    },
+    {
+      "path": "scripts/restore-remote-signer-deps.py",
+      "sha256": "0075a818e38e25ea7ac8a3fb421510ed61aa128b990ef9d9c9eeed8bbc3705eb"
+    }
+  ],
+  "log_sha256": "f948de1095d9c8fc16b5b7b6c1fe3ce0f69e19411d127669a163f3b4d0bd08ea"
+}

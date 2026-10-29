@@ -135,7 +135,8 @@ export function createNativeUploadAdapter(injected: Partial<PublicUploadDependen
     else if(/^\/chapter\/[^/]+(?:\/claim)?$/.test(route)&&input.method!=='GET')nativePath='/account'+route;
     else throw new PublicUploadRequestError('Unsupported native upload operation','unsent');
     if(url.searchParams.has('expectedAccountId')&&(url.searchParams.getAll('expectedAccountId').length!==1||url.searchParams.get('expectedAccountId')!==account.actor))throw new PublicUploadRequestError('Upload account capture changed','unsent',409);
-    url.pathname='/api/v1'+nativePath;url.searchParams.set('expectedAccountId',account.actor);
+    const parameters=new URLSearchParams(url.search);parameters.set('expectedAccountId',account.actor);
+    url.pathname='/api/v1'+nativePath;url.search=parameters.toString().replace(/^\?/,'');
     const response=await account.access.request({...input,url:url.href});assertCurrent();return response;
   };}
   const scheduleCommitKey = (account: Account) => account.key.replace('account-upload-recovery.v1:', 'account-upload-scheduled-commit.v1:') + ':' + account.actor;
@@ -377,7 +378,7 @@ export function createNativeUploadAdapter(injected: Partial<PublicUploadDependen
     const permissions = strings(user.permissions), roles = strings(user.roles), publication = record(upload.publication), limits = record(upload.limits);
     const canBegin = boolean(upload.canBegin), canManage = boolean(upload.canManage); if (canBegin !== permissions.includes('chapter.create') || canManage !== permissions.includes('self.chapter.update') || publication.requiresOperatorOrAuthorizedGroup !== true) fail('Upload eligibility was not backed by actual native grants');
     const view: User = { id: publicUuid(user.id), name: text(user.username, 'bound username'), version: integer(user.version, 1), roles, permissions };
-    if(result.groups!==undefined){const own=record(result.groups);if(!Array.isArray(own.data)||own.data.length>100||typeof own.hasMore!=='boolean')fail('Current group memberships could not be verified');const groups=own.data.map(value=>{const row=record(value),id=publicUuid(row.id),name=text(row.name,'group name');if(!['leader','officer','member'].includes(String(row.role)))fail('Invalid current group role');return {id,name,relationships:{members:[{id:view.id,is_leader:row.role==='leader',is_officer:row.role==='officer'}]}} as ScanlationGroup;});if(new Set(groups.map(row=>row.id)).size!==groups.length)fail('Duplicate current group membership');view.relationships={...view.relationships,groups};view.upload_groups_truncated=own.hasMore;}
+    if(result.groups!==undefined){const own=record(result.groups);if(!Array.isArray(own.data)||own.data.length>100||typeof own.hasMore!=='boolean')fail('Current group memberships could not be verified');const groups=own.data.map((value):ScanlationGroup=>{const row=record(value),id=publicUuid(row.id),name=text(row.name,'group name'),version=integer(row.version,1);if(!['leader','officer','member'].includes(String(row.role)))fail('Invalid current group role');return {id,name,version,relationships:{members:[{id:view.id,name:view.name,version:view.version,is_leader:row.role==='leader',is_officer:row.role==='officer'}]}};});if(new Set(groups.map(row=>row.id)).size!==groups.length)fail('Duplicate current group membership');view.relationships={...view.relationships,groups};view.upload_groups_truncated=own.hasMore;}
     account.actor = view.id; account.user = view; account.facts = { canBegin, canManage, permissions, publication, limits, ...(upload.preflight ? {preflight:uploadEligibility(upload.preflight)} : {}) }; accounts.set(view, account); return view;
   }
   function publicUploadOwner(target: () => string, user: User, targetKind: 'manga' | 'chapter' = 'manga', lifecycle: 'component' | 'caller' = 'component'): PublicUploadOwner {
@@ -396,7 +397,7 @@ export function createNativeUploadAdapter(injected: Partial<PublicUploadDependen
     });
     const preflight = async (groups: string[]): Promise<UploadEligibility> => {
       assert(); const selected=ids(groups,10), query=new URLSearchParams();for(const group of selected)query.append('groups[]',group);
-      const url=new URL(account.scope.origin+'/api/v1/upload/preflight/'+id);for(const [key,value] of query)url.searchParams.append(key,value);
+      const url=new URL(account.scope.origin+'/api/v1/upload/preflight/'+id);url.search=query.toString().replace(/^\?/,'');
       const response=await owned.request({url:url.href,method:'GET'});assert();if(response.status!==200)throw resumeError(response.status,response.body);
       const result=uploadEligibility(record(response.body).preflight);account.facts.preflight=result;return structuredClone(result);
     };

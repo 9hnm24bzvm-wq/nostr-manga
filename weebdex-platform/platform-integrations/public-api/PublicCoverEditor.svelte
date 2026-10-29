@@ -1,10 +1,11 @@
 <script lang="ts">
+ import UnsavedEditorGuard from './UnsavedEditorGuard.svelte';
  import { onMount, onDestroy } from 'svelte';
  import { Locale } from '$lib';
  import {canonicalLanguageOptions,languageLabel} from './language';
  import { createSessionCoverController, coverCommandCapabilities, type SignedCoverController, type CoverRecord } from './session-cover-client';
  import type { MangaView } from './types';
- let { nativeAccount, title, accountId, disabled=false, assertCurrent, onChanged, onState }: { nativeAccount:string; title:MangaView; accountId:string; disabled?:boolean; assertCurrent:()=>void; onChanged:()=>Promise<void>; onState:(state:{pending:boolean;busy:boolean})=>void }=$props();
+ let { nativeAccount, title, accountId, disabled=false, assertCurrent, onChanged, onState }: { nativeAccount:string; title:MangaView; accountId:string; disabled?:boolean; assertCurrent:()=>void; onChanged:()=>Promise<void>; onState:(state:{pending:boolean;busy:boolean;dirty?:boolean})=>void }=$props();
  let controller=$state<SignedCoverController>();
  let disposed=false,previewEpoch=0;
  let covers=$state<CoverRecord[]>([]),total=$state(0),offset=$state(0),pageReady=$state(false),ready=$state(false),busy=$state(false),pending=$state(false),message=$state('');
@@ -16,7 +17,8 @@
  const canEdit=$derived(capabilities.edit&&pageReady),canRemove=$derived(capabilities.remove&&pageReady);
  const dirty=$derived(Boolean(file)||(selected?locale!==(selected.locale??'')||volume!==selected.volume||description!==selected.description||main!==selected.main:locale!==title.language||volume!==''||description!==''||!main));
  function active(){if(disposed)throw Error('Cover editor closed');assertCurrent();}
- function publishState(){pending=controller?.pending()??false;onState({pending,busy});}
+ function publishState(){pending=controller?.pending()??false;onState({pending,busy,dirty:ready&&dirty});}
+ $effect(()=>onState({pending,busy,dirty:ready&&dirty}));
  function clearPreview(){previewEpoch++;if(preview)URL.revokeObjectURL(preview);preview=null;}
  function choose(row?:CoverRecord){clearPreview();customLanguage=false;selectedId=row?.id??'';locale=row?row.locale??'':title.language;volume=row?.volume??'';description=row?.description??'';main=row?.main??true;file=null;}
  async function list(nextOffset=offset,keep=selectedId){
@@ -53,6 +55,7 @@
  async function remove(){if(!controller||!selected||!canRemove||disabled||pending)return;const row=selected;if(!confirm('Approve this instance-local cover removal now? The cover will be hidden here. Original signed publications are unchanged.'))return;await run(async()=>{await controller!.remove(row);active();choose();await list();await onChanged();active();message='Instance cover removed with moderator approval. No original event was deleted.';});}
  async function showOriginal(){if(!controller||!selected?.original)return;const row=selected,epoch=++previewEpoch;await run(async()=>{const blob=await controller!.preview(row);active();if(epoch!==previewEpoch||selectedId!==row.id)return;const url=URL.createObjectURL(blob);if(disposed||epoch!==previewEpoch){URL.revokeObjectURL(url);return;}if(preview)URL.revokeObjectURL(preview);preview=url;message='Cover preview loaded.';});}
 </script>
+<UnsavedEditorGuard dirty={ready&&dirty} />
 <section class="space-y-3 rounded border p-3" aria-label="Cover images">
  <h4 class="font-medium">Cover image</h4>
  <p class="text-sm">Choose a PNG, JPEG or WebP image up to 25 MiB. Your original file is kept unchanged. To submit a draft, add a cover in the title’s original language.</p>

@@ -1,4 +1,4 @@
-import {restoreReaderUxFixpassPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {restoreReaderUxFixpassPredecessor} from './reviewed-six-persona-source-successor.mjs';
 // Actual TypeScript inspection/controller scope. Transport is finite and synthetic.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
 import {inspection,fixture,id,other,actor,reason,collection,RequestFailure,deferred,plain,root} from './report-draft-fixture.mjs';

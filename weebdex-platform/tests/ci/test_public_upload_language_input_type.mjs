@@ -1,4 +1,4 @@
-import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 // Finite actual-composition type regression, not a whole-application or DOM pass.
 // Uses existing pinned dependencies only; no writes, subprocesses or runtime Git.
 import assert from 'node:assert/strict';

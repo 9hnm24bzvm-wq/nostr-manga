@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, tick } from 'svelte';
+  import { onDestroy, tick, untrack } from 'svelte';
   import { get } from 'svelte/store';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
@@ -155,7 +155,7 @@
   // Reuse the selected identity without importing, generating or signing again.
   // No new key or secret transfer occurs here. Reuse existing session authority;
   // this is not evidence that a backup exists and grants no additional site access.
-  if (resumeSelected) {
+  if (untrack(() => resumeSelected)) {
     const selected = get(signerIdentity);
     if (selected.owner) { identity = { publicKey: selected.owner, npub: encodePublicKey(selected.owner), source: selected.source === 'local' ? 'imported' : 'external' }; selectionGeneration = selected.generation; backupAcknowledged = true; installed = true; stage = 'connected'; }
   }

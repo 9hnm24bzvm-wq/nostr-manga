@@ -1,7 +1,7 @@
 // Historical signed route regression; not current native UI qualification.
 import {historicalContributionSource,historicalContributionOverlayFactories} from './historical-contribution-ui-fixture.mjs';
 const {createFrontendOverlays,createReaderOverlays,createLocalLibraryOverlays,createPublicApiOverlays,createPublicUploadOverlays}=await historicalContributionOverlayFactories();
-import {restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 // Execute the actual five-stage route and Chapter API composition in Node VM.
 // Catalogue replies and native cookie/grant reads are explicit stand-ins. The
 // page/layout/editor associations are exact source checks, not a DOM/browser,

@@ -2,7 +2,8 @@
  import {onDestroy,untrack} from 'svelte';
  import {Session} from '$lib/stores';
  import {createStaffClient,can,effectText,WorkspaceError,type StaffClient,type Authority} from './staff-client';
- let client:StaffClient|undefined,epoch=0,closed=false;
+ let client=$state.raw<StaffClient>();
+ let epoch=0,closed=false;
  let authority=$state<Authority>(),rows=$state<any[]>([]),reviewers=$state<any[]>([]),total=$state(0),page=$state(1),view=$state('queue'),status=$state('waiting'),assigned=$state('all'),priority=$state(''),search=$state('');
  let pending=$state(false),error=$state(''),notice=$state(''),review=$state<any>(),action=$state(''),reason=$state(''),pendingPath=$state('');
  const allowed=$derived(can(authority,view==='history'?'report.history':'report.update'));
@@ -13,7 +14,7 @@
  function failure(cause:unknown){error=cause instanceof Error?cause.message:'The action could not be confirmed.';if(cause instanceof WorkspaceError&&[401,403].includes(cause.status)){rows=[];review=undefined;authority=undefined;client?.dispose();client=undefined;}}
  async function load(){if(pending||!$Session?.identity?.id)return;const assert=guard();pending=true;error='';try{const selected=client??await createStaffClient($Session.identity.id,assert);assert();client=selected;authority=selected.authority;if(!can(authority,view==='history'?'report.history':'report.update'))throw new WorkspaceError('Your current account does not have access to this view.',403);
   const query=new URLSearchParams({page:String(page),search});if(view==='queue'){query.set('status',status);query.set('assigned',assigned);if(priority)query.set('priority',priority);}
-  const result=await selected.read('/staff/'+(view==='queue'?'reports':'history')+'?'+query);assert();if(!Array.isArray(result.data)||!Number.isSafeInteger(result.total))throw Error('The queue could not be checked.');rows=result.data;total=result.total;
+  const result=await selected.read('/staff/'+(view==='queue'?'reports':'history')+'?'+query.toString().replace(/^\?/,''));assert();if(!Array.isArray(result.data)||!Number.isSafeInteger(result.total))throw Error('The queue could not be checked.');rows=result.data;total=result.total;
   if(can(authority,'report.assign')&&view==='queue'){const directory=await selected.read('/staff/reviewers');assert();reviewers=Array.isArray(directory.data)?directory.data:[];}
  }catch(cause){try{assert();failure(cause);}catch{}}finally{try{assert();pending=false;}catch{}}}
  async function switchView(next:string){if(pending)return;view=next;page=1;rows=[];review=undefined;await load();}
@@ -59,7 +60,7 @@
   {#each rows as row (row.id)}<article class="rounded border p-4 space-y-2"><h2 class="font-semibold">{row.operation} · {row.actor}</h2><p>{row.category.replaceAll('_',' ')} {row.objectId} · {new Date(row.createdAt).toLocaleString()}</p>{#if row.reason}<p class="whitespace-pre-wrap">{row.reason}</p>{/if}<p>{summary(row.effect)}</p><details><summary>Decision reference</summary><p>Report {row.reportId} · revision {row.version}</p></details></article>{/each}
  {/if}
  {#if total>25}<nav aria-label="Queue pages" class="flex gap-3"><button class="rounded border p-2" disabled={pending||page===1} onclick={()=>{page--;void load();}}>Previous</button><span>Page {page}</span><button class="rounded border p-2" disabled={pending||page*25>=total} onclick={()=>{page++;void load();}}>Next</button></nav>{/if}
- {#if review}<section class="rounded border-2 p-5 space-y-4" role="region" aria-label="Review moderation consequence">
+ {#if review}<section class="rounded border-2 p-5 space-y-4" aria-label="Review moderation consequence">
   <h2 class="text-xl font-semibold">{action==='correct'?'Correct a local decision':action==='reopen'?'Reopen this report':action==='delete'?'Delete this report only':'Review report decision'}</h2>
   {#if review.targetHref}<a class="underline" href={review.targetHref}>Open the exact reported subject</a>{/if}
   {#if review.report?.details}<p class="whitespace-pre-wrap">{review.report.details}</p>{/if}

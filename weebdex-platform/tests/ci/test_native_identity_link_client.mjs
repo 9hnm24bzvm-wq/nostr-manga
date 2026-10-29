@@ -1,3 +1,6 @@
+import {after} from 'node:test';
+import {installRetainedQueryOverride,assertCanonicalQuery} from './retained-query-override-fixture.mjs';
+const restoreRetainedQuery=installRetainedQueryOverride();after(restoreRetainedQuery);
 import test from 'node:test';import assert from 'node:assert/strict';import {fixture} from './library-management-fixture.mjs';
 const id='11111111-1111-4111-8111-111111111111';
 const json=value=>new Response(JSON.stringify(value),{headers:{'content-type':'application/json'}});
@@ -6,7 +9,7 @@ async function setup({unknown=false,gateConfirm=false,signerGate}={}){
  const receipt=()=>({result:'ok',accountId:id,publicKey:key,revision,scope:'private-account-association',authentication:'native-session',publiclyListed:false,grantsAuthority:false,changesPublisherAuthority:false});
  const codec=await f.load('protocol/codec.js');
  const client=await m.createIdentityLinkClient('NativeOne',f.assertCurrent,{origin:()=>origin,fences:{get:k=>map.get(k)??null,set:(k,v)=>map.set(k,v),delete:k=>map.delete(k)},fetch:async(url,init)=>{
- assert.equal(init.credentials,'same-origin');assert.equal(init.redirect,'error');assert.equal(init.headers.Authorization,undefined);const body=init.body?JSON.parse(new TextDecoder().decode(init.body)):undefined;
+ assertCanonicalQuery(assert,url);assert.equal(init.credentials,'same-origin');assert.equal(init.redirect,'error');assert.equal(init.headers.Authorization,undefined);const body=init.body?JSON.parse(new TextDecoder().decode(init.body)):undefined;
  if(url.endsWith('/me'))return json({result:'ok',response:'entity',data:{id,type:'user',attributes:{username:'Reader',isVerified:true,permissions:['self.user.update']}},nostr:{scope:'instance-account',identity:'native-session-account',authentication:'native-session',nativeSessionAuthority:true}});
  if(url.endsWith('/prepare')){prepares++;const payload=JSON.stringify({purpose:'weebdex-private-identity-link-v1',challenge:'a'.repeat(64),accountId:id,publicKey:body.publicKey??key,action:body.action,revision,origin,expiresAt:Math.floor(Date.now()/1000)+300});return json({result:'ok',accountId:id,challengeId:'a'.repeat(64),action:body.action,publicKey:body.publicKey??key,revision,expiresAt:JSON.parse(payload).expiresAt,payload,proofUrl:origin+'/api/v1/account/identity-link/confirm',proofPayloadHash:codec.hash(new TextEncoder().encode(payload)),privateProofOnly:true,grantsAuthority:false});}
  if(url.endsWith('/confirm')){confirms++;signedProof=body.proof;if(unknown)throw Error('lost response');key=body.confirmation==='connect-private-identity'?f.owner:null;revision++;return json(receipt());}return json(receipt());

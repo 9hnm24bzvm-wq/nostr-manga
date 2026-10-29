@@ -80,6 +80,9 @@ async fn command(State(s):State<AppState>,h:HeaderMap,Path(id):Path<String>,Json
  if reviewed.get::<_,String>(0)!=a.user_id||reviewed.get::<_,Vec<u8>>(1)!=hash||!reviewed.get::<_,bool>(2)||!reviewed.get::<_,bool>(3){return Err(ApiError::conflict("The review expired or changed. Review again; no action was applied."));}
  let before=target(&tx,&id,true).await?;let next=prospective(&before,&c)?;let mut effects=json!({});
  if matches!(c.operation.as_str(),"revoke-sessions"|"reactivate"){lock_credentials(&tx,&id).await?;}fresh_in(&tx,&a).await?;
+ // A SELECT ... FOR UPDATE expression may be evaluated before its row-lock
+ // wait. Re-read this wall-clock deadline after all locks, not transaction NOW().
+ if !tx.query_one("SELECT expires_at>clock_timestamp() FROM platform.security_reviews WHERE request_id=$1",&[&c.request_id]).await.map_err(lock_error)?.get::<_,bool>(0){return Err(ApiError::conflict("The review expired while waiting. Review again; no action was applied."));}
  match c.operation.as_str(){
  "roles"=>{tx.execute("UPDATE platform.users SET roles=$2,permissions=$3,authority_bundles=$4,updated_at=clock_timestamp(),version=version+CASE WHEN roles<>$2 OR permissions<>$3 THEN 1 ELSE 0 END WHERE id=$1",&[&id,&json!(next.roles),&json!(next.permissions),&json!(next.bundles)]).await.map_err(lock_error)?;},
  "restrict"|"unrestrict"=>{tx.execute("UPDATE platform.users SET roles=$2,updated_at=clock_timestamp(),version=version+CASE WHEN roles<>$2 THEN 1 ELSE 0 END WHERE id=$1",&[&id,&json!(next.roles)]).await.map_err(lock_error)?;},

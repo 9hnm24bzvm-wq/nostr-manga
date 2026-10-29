@@ -179,7 +179,11 @@ async fn transition(State(state):State<AppState>,Path(manga):Path<String>,Origin
     let visible:bool=tx.query_opt("SELECT protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL", &[&manga]).await?.ok_or_else(PublicApiError::not_found)?.get(0);
     if !visible && !(next=="published" && crate::protocol::publication::pending_native_manga_receipt_allowed(&state,&tx,&manga,&actor).await?) {return Err(PublicApiError::not_found());}
     let native=core::manga_transition_in(&state,&tx,&actor,&manga,&payload,next,true).await?;
-    let result=resource(&tx,native).await?;tx.commit().await?;Ok(result)
+    // Transition authority already requires this draft's owner or reviewer.
+    // Do not add private feedback to the generic public/published projection.
+    let mut result=resource(&tx,native).await?;
+    result.0.data.attributes["reviewTimeline"]=super::native_draft_reviews::timeline(&tx,&manga).await?;
+    tx.commit().await?;Ok(result)
 }
 #[cfg(test)]
 mod tests {

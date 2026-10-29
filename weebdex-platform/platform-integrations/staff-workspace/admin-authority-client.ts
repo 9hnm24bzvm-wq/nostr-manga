@@ -28,9 +28,9 @@ export function createAdminClient(account:string,assertCurrent=()=>{},injected:P
  function validReceipt(r:any,c:AdminCommand){return r.scope==='native-admin-receipt'&&r.requestId===c.requestId&&r.targetId===c.targetId&&r.operation===c.operation&&(typeof r.auditId==='string'||r.outcome==='cancelled-before-apply')&&Number.isSafeInteger(r.authorityVersion);}
  return {check,dispose(){closed=true;controller.abort();},newRequestId:deps.requestId,
   context:()=>send('/staff/admin/context') as Promise<AdminContext>,
-  users:(q='',after='')=>send('/staff/admin/users?'+new URLSearchParams({q,after})),
+  users:(q='',after='')=>send('/staff/admin/users?'+new URLSearchParams({q,after}).toString().replace(/^\?/,'')),
   target:(id:string)=>send('/staff/admin/users/'+encodeURIComponent(id)),
-  audit:(targetId='',before='')=>send('/staff/admin/audit?'+new URLSearchParams({targetId,...(before?{before}:{})})),
+  audit:(targetId='',before='')=>send('/staff/admin/audit?'+new URLSearchParams({targetId,...(before?{before}:{})}).toString().replace(/^\?/,'')),
   intent:()=>readSaved('intent'),pending:()=>readSaved('pending'),
   cancel(){check();if(readSaved('pending'))throw new AdminError('An unconfirmed action must be reconciled, not discarded.',409);deps.storage.removeItem(prefix+'intent');},
   async review(c:AdminCommand){check();if(busy||readSaved('pending'))throw new AdminError('Check the earlier action receipt before reviewing another action.',409);saved('intent',c);busy=true;try{const result=await send('/staff/admin/users/'+encodeURIComponent(c.targetId)+'/review','POST',c);if(result.scope!=='native-admin-review'||result.requestId!==c.requestId||JSON.stringify(result.command)!==JSON.stringify(c)){

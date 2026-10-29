@@ -1,6 +1,6 @@
 import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import test from 'node:test';import assert from 'node:assert/strict';
 import {titleSpinnerPatches,titleSpinnerManifest,assertTitleSpinnerScope,applyTitleSpinnerOutput,restoreTitleSpinnerOutput} from '../../platform-integrations/local-library/title-spinner-overlays.mjs';
-import {readReaderFollowupSourceAssociation,restoreReaderFollowupSourcePredecessor,readTitleSpinnerSourceAssociation,restoreTitleSpinnerSourcePredecessor,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {readReaderFollowupSourceAssociation,restoreReaderFollowupSourcePredecessor,readTitleSpinnerSourceAssociation,restoreTitleSpinnerSourcePredecessor,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-six-persona-source-successor.mjs';
 import {composed} from './composed-account-library-fixture.mjs';
 const root=fileURLToPath(new URL('../../../',import.meta.url)),hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 test('title spinner exact successor only wraps two pending statuses; every script and visual class stays identical',async()=>{

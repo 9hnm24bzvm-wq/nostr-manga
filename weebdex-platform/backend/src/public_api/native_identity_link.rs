@@ -20,6 +20,13 @@ use serde_json::{Value, json};
 use tokio_postgres::Transaction;
 const CONFIRM_PATH: &str = "/api/v1/account/identity-link/confirm";
 
+fn canonical_origin(value: &str) -> PublicApiResult<String> {
+    Ok(url::Url::parse(value)
+        .map_err(|_| PublicApiError::conflict("The configured site origin could not be verified"))?
+        .origin()
+        .ascii_serialization())
+}
+
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/account/identity-link", get(read))
@@ -160,12 +167,9 @@ async fn prepare(
     OsRng.fill_bytes(&mut random);
     let id = hex::encode(random);
     let expires = now() + 300;
-    let url = format!(
-        "{}{}",
-        state.config.public_origin.trim_end_matches('/'),
-        CONFIRM_PATH
-    );
-    let payload=json!({"purpose":"weebdex-private-identity-link-v1","challenge":id,"accountId":account,"publicKey":key,"action":command.action,"revision":revision,"origin":state.config.public_origin,"expiresAt":expires}).to_string();
+    let origin = canonical_origin(&state.config.public_origin)?;
+    let url = format!("{}{}", origin, CONFIRM_PATH);
+    let payload=json!({"purpose":"weebdex-private-identity-link-v1","challenge":id,"accountId":account,"publicKey":key,"action":command.action,"revision":revision,"origin":origin,"expiresAt":expires}).to_string();
     // A new review invalidates earlier unconfirmed reviews for this account.
     tx.execute("UPDATE platform.native_identity_link_challenges SET used_at=clock_timestamp(),outcome='replaced' WHERE user_id=$1 AND used_at IS NULL",&[&actor.user_id]).await?;
     tx.execute("DELETE FROM platform.native_identity_link_challenges WHERE user_id=$1 AND created_at<clock_timestamp()-interval '30 days'",&[&actor.user_id]).await?;
@@ -252,7 +256,7 @@ async fn confirm(
             &key,
             &format!(
                 "{}{}",
-                state.config.public_origin.trim_end_matches('/'),
+                canonical_origin(&state.config.public_origin)?,
                 CONFIRM_PATH
             ),
             &payload,
@@ -286,7 +290,7 @@ async fn confirm(
             next.as_deref().expect("link proof has a key"),
             &format!(
                 "{}{}",
-                state.config.public_origin.trim_end_matches('/'),
+                canonical_origin(&state.config.public_origin)?,
                 CONFIRM_PATH
             ),
             &payload,
@@ -295,4 +299,24 @@ async fn confirm(
     tx.execute("UPDATE platform.native_identity_link_challenges SET used_at=clock_timestamp(),outcome=$2 WHERE id=$1",&[&command.challenge_id,&if action=="link"{"linked"}else{"unlinked"}]).await?;
     tx.commit().await?;
     Ok(Json(envelope(&account, next, revision + 1)))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn private_challenge_uses_the_browser_canonical_origin() {
+        assert_eq!(
+            canonical_origin("https://EXAMPLE.com:443/").unwrap(),
+            "https://example.com"
+        );
+        assert_eq!(
+            canonical_origin("http://LOCALHOST:80/").unwrap(),
+            "http://localhost"
+        );
+        assert_eq!(
+            canonical_origin("http://127.0.0.1:4321/").unwrap(),
+            "http://127.0.0.1:4321"
+        );
+    }
 }

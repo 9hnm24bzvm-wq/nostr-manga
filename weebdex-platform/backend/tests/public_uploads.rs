@@ -869,6 +869,20 @@ async fn wait_original_projection(f:&Fixture,event:&str) {
         loop {if f.state.protocol.entry(binary).await.unwrap().is_some(){break;}tokio::time::sleep(Duration::from_millis(30)).await;}
     }).await.expect("actual original backend did not project the signed receipt");
 }
+// The fixture does not spawn the platform serve importer. Source projection
+// alone does not clear the accepted-pending catalogue flag. Run the same real
+// bounded import step as production and observe readiness, never edit the flag.
+async fn wait_catalog_projection(f:&Fixture,event:&str) {
+    let commands:i64=f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get(0);
+    tokio::time::timeout(Duration::from_secs(30),async {
+        loop {
+            weebdex_platform::protocol::bridge::import_page(&f.state).await.unwrap();
+            let ready:bool=f.state.db.client().await.unwrap().query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.protocol_event_id=$1 AND NOT c.is_unavailable AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id))",&[&event]).await.unwrap().get(0);
+            if ready {break;}tokio::time::sleep(Duration::from_millis(30)).await;
+        }
+    }).await.expect("actual platform importer did not make the accepted source readable");
+    assert_eq!(f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),commands,"read projection must not replay publication");
+}
 async fn restart_platform_over_owned_source(f:&mut Fixture) {
     let config=f.state.config.as_ref().clone();restart_platform_with_config(f,config).await;
 }
@@ -879,7 +893,8 @@ async fn restart_platform_with_config(f:&mut Fixture,config:Config) {
     // This is an application restart, not a claim to have restarted PostgreSQL.
     f._server.0.abort();let _=(&mut f._server.0).await;
     let state=AppState::connect(config,std::env::var("PLATFORM_AUTH_TEST_DATABASE_URL").unwrap()).await.unwrap();
-    state.protocol.verify_schema().await.unwrap();state.protocol.install_visibility_function().await.unwrap();
+    // Restart follows production serve: verify prepared policy without privileged DDL.
+    state.protocol.verify_schema().await.unwrap();state.protocol.verify_visibility_function().await.unwrap();
     let mut repo=f.repository.clone();repo.pool=state.db.pool().clone();
     let config=state.config.protocol_publication.as_ref().unwrap().clone();
     // Release the previous application's sole runtime owner before reopening its
@@ -1352,6 +1367,8 @@ async fn signed_original_page_edits_refuse_both_modes_despite_forged_local_metad
     let f=fixture_full(Config::default(),true,true).await;let session=f.begin(1).await;
     let files=f.multipart(1,&session,&[("original.png","image/png",&png())],200).await;
     let receipt=f.call(Some(1),"POST",&format!("/api/v1/upload/{session}/commit"),Some(commit(files["data"].as_array().unwrap())),200).await;
+    // Acceptance is not projection. Wait on the exact original receipt, never relax visibility.
+    wait_original_projection(&f,receipt["attributes"]["nostr"]["eventId"].as_str().unwrap()).await;
     let chapter=receipt["id"].as_str().unwrap();let native=f.native(ResourceKind::Chapter,chapter).await;
     let db=f.state.db.client().await.unwrap();let before:Value=db.query_one("SELECT to_jsonb(c) FROM platform.catalog_chapters c WHERE id=$1",&[&native]).await.unwrap().get(0);
     assert!(before["protocol_event_id"].is_string());
@@ -1448,4 +1465,123 @@ async fn native_upload_preflight_and_configured_completion_are_current_and_read_
     let attached=native("POST",&format!("/api/v1/account/upload/{session}?expectedAccountId={account}")).header("content-type",format!("multipart/form-data; boundary={boundary}")).body(body).send().await.unwrap();assert_eq!(attached.status().as_u16(),200);let attached:Value=attached.json().await.unwrap();assert_eq!(attached["data"].as_array().unwrap().len(),2);
     let committed=native("POST",&format!("/api/v1/account/upload/{session}/commit?expectedAccountId={account}")).json(&commit(attached["data"].as_array().unwrap())).send().await.unwrap();assert_eq!(committed.status().as_u16(),200);let receipt:Value=committed.json().await.unwrap();assert_eq!(receipt["type"],"chapter");assert_eq!(receipt["attributes"]["pages"],2);assert_eq!(receipt["nostr"]["accountId"],account);
     let read:Value=native("GET",&format!("/api/v1/account/uploads/{session}?expectedAccountId={account}")).send().await.unwrap().json().await.unwrap();assert_eq!(read["session"]["state"],"committed");assert_eq!(read["session"]["receipt"]["id"],receipt["id"]);
+}
+
+// Native-cookie transport for the following isolated boundary fixtures. These
+// requests never use a caller signer or create a real account publication grant.
+async fn native_boundary_call(f:&Fixture,method:&str,path:&str,body:Vec<u8>,mime:&str,expected:u16)->Value {
+    let response=f.http.request(method.parse().unwrap(),format!("{}{path}",f.origin))
+        .header("origin",&f.origin).header("cookie","weebdex_session=synthetic-public-upload-cookie")
+        .header("x-weebdex-expected-account","PublicUploadUser1").header("content-type",mime).body(body).send().await.unwrap();
+    let actual=response.status().as_u16();assert_eq!(response.headers()["cache-control"],"private, no-store");
+    let value:Value=response.json().await.unwrap();assert_eq!(actual,expected,"{method} {path}: {value}");value
+}
+fn native_boundary_path(account:&str,suffix:&str)->String {format!("/api/v1/account/{suffix}?expectedAccountId={account}")}
+
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="Owned disposable PostgreSQL fixture; run alone"]
+async fn native_preflight_and_commit_refuse_multiple_bound_groups_without_commands() {
+    let f=fixture().await;let account=schedule_account(&f,"PublicUploadUser1").await;
+    let db=f.state.db.client().await.unwrap();let mut groups=Vec::new();
+    for (group,key) in [("BoundGrp01",9),("BoundGrp02",10)] {
+        db.execute("INSERT INTO platform.catalog_groups(id,owner_id,owner_name,name) VALUES($1,'PublicUploadUser1','Synthetic uploader',$1)",&[&group]).await.unwrap();
+        db.execute("INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader) VALUES($1,'PublicUploadUser1','Synthetic uploader',true)",&[&group]).await.unwrap();
+        db.execute("INSERT INTO platform.protocol_identity_bindings(publisher,group_id) VALUES($1,$2)",&[&public(key),&group]).await.unwrap();
+        groups.push(PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::Group,group).await.unwrap().unwrap().to_string());
+    }
+    let bindings:i64=db.query_one("SELECT count(*) FROM platform.protocol_identity_bindings",&[]).await.unwrap().get(0);drop(db);
+    let path=format!("{}&groups[]={}&groups[]={}",native_boundary_path(&account,&format!("upload/preflight/{}",f.manga)),groups[0],groups[1]);
+    let checked=native_boundary_call(&f,"GET",&path,vec![],"application/json",200).await;
+    assert_eq!(checked["preflight"]["eligible"],false);assert!(checked["preflight"]["reason"].as_str().unwrap().contains("at most one"));
+    assert_eq!(checked["preflight"]["limits"]["maxSessionBytes"],500*1024*1024);
+    assert_eq!(checked["preflight"]["limits"]["maxUniqueBytes"],256*1024*1024);
+    let start=native_boundary_call(&f,"POST",&native_boundary_path(&account,"upload/begin"),serde_json::to_vec(&json!({"manga":f.manga,"groups":groups})).unwrap(),"application/json",200).await;
+    let session=start["id"].as_str().unwrap();let (mime,body)=multipart(&[("group.png","image/png",&png())]);
+    let files=native_boundary_call(&f,"POST",&native_boundary_path(&account,&format!("upload/{session}")),body,&mime,200).await;
+    let refused=native_boundary_call(&f,"POST",&native_boundary_path(&account,&format!("upload/{session}/commit")),serde_json::to_vec(&commit(files["data"].as_array().unwrap())).unwrap(),"application/json",400).await;
+    assert!(refused["errors"][0]["detail"].as_str().unwrap().contains("at most one"));
+    let saved=native_boundary_call(&f,"GET",&native_boundary_path(&account,&format!("uploads/{session}")),vec![],"application/json",200).await;
+    assert_eq!(saved["session"]["state"],"open");assert_eq!(saved["session"]["files"].as_array().unwrap().len(),1);
+    let db=f.state.db.client().await.unwrap();assert_eq!(db.query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.protocol_identity_bindings",&[]).await.unwrap().get::<_,i64>(0),bindings);
+}
+
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="Owned disposable PostgreSQL fixture; real HTTP over synthetic saved rows, run alone"]
+async fn native_workbench_bounds_owned_rows_and_excludes_foreign_receipts() {
+    let f=fixture().await;let account=schedule_account(&f,"PublicUploadUser1").await;
+    let open=f.begin(1).await;let db=f.state.db.client().await.unwrap();
+    for index in 0..51 {
+        let id=format!("WorkOwn{index:03}");
+        db.execute("INSERT INTO platform.upload_sessions(id,owner_id,manga_id,state,updated_at) VALUES($1,'PublicUploadUser1',$2,'committed',TIMESTAMPTZ '2020-01-01 UTC'+$3::integer*interval '1 second')",&[&id,&f.native_manga,&index]).await.unwrap();
+    }
+    let foreign="WorkFor000";
+    db.execute("INSERT INTO platform.upload_sessions(id,owner_id,manga_id,state) VALUES($1,'PublicUploadUser2',$2,'committed')",&[&foreign,&f.native_manga]).await.unwrap();
+    let snapshot:Value=db.query_one("SELECT jsonb_agg(to_jsonb(s) ORDER BY s.id) FROM platform.upload_sessions s",&[]).await.unwrap().get(0);drop(db);
+    let foreign_uuid=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::UploadSession,foreign).await.unwrap().unwrap().to_string();
+    let path=native_boundary_path(&account,"upload/workbench");
+    let first=native_boundary_call(&f,"GET",&path,vec![],"application/json",200).await;
+    let second=native_boundary_call(&f,"GET",&path,vec![],"application/json",200).await;assert_eq!(first,second);
+    assert_eq!(first["hasMore"],true);let entries=first["entries"].as_array().unwrap();assert_eq!(entries.len(),50);assert_eq!(entries[0]["id"],open);
+    assert!(entries.iter().all(|row|row["id"]!=foreign_uuid));
+    assert_eq!(entries.iter().map(|row|row["id"].as_str().unwrap()).collect::<std::collections::BTreeSet<_>>().len(),50);
+    let foreign_account=schedule_account(&f,"PublicUploadUser2").await;
+    native_boundary_call(&f,"GET",&native_boundary_path(&foreign_account,"upload/workbench"),vec![],"application/json",409).await;
+    native_boundary_call(&f,"GET",&native_boundary_path(&account,&format!("uploads/{foreign_uuid}")),vec![],"application/json",404).await;
+    let db=f.state.db.client().await.unwrap();assert_eq!(db.query_one("SELECT jsonb_agg(to_jsonb(s) ORDER BY s.id) FROM platform.upload_sessions s",&[]).await.unwrap().get::<_,Value>(0),snapshot);
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+}
+
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="Owned disposable PostgreSQL; descriptor boundary injection, not full-size media acceptance"]
+async fn native_unique_descriptor_budget_refuses_before_source_side_effects() {
+    let f=fixture().await;let account=schedule_account(&f,"PublicUploadUser1").await;
+    let session=f.begin(1).await;let native=f.native(ResourceKind::UploadSession,&session).await;
+    let db=f.state.db.client().await.unwrap();let mut order=Vec::new();
+    // No giant or fake file is written. The actual HTTP commit must reject the
+    // 256MiB+1 declared unique total before opening originals or creating commands.
+    for index in 0..33 {
+        let id=format!("BdgFile{index:03}");let hash=format!("{:064x}",index+1);let bytes:i64=if index==32 {1}else{8*1024*1024};
+        db.execute("INSERT INTO platform.media_objects(id,digest,storage_key,mime,extension,bytes,width,height) VALUES($1,$1,$1,'image/png','png',$2,1,1)",&[&hash,&bytes]).await.unwrap();
+        db.execute("INSERT INTO platform.upload_files(id,session_id,object_id,original_name,position) VALUES($1,$2,$3,'synthetic-descriptor.png',$4)",&[&id,&native,&hash,&index]).await.unwrap();
+        order.push(PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::UploadFile,&id).await.unwrap().unwrap().to_string());
+    }
+    drop(db);
+    let payload=json!({"chapterDraft":{"volume":null,"chapter":"1","title":null,"translatedLanguage":"ta"},"pageOrder":order,"termsAccepted":true});
+    let refused=native_boundary_call(&f,"POST",&native_boundary_path(&account,&format!("upload/{session}/commit")),serde_json::to_vec(&payload).unwrap(),"application/json",400).await;
+    assert!(refused["errors"][0]["detail"].as_str().unwrap().contains("256 MiB"),"the complete commit must reach the unique-byte guard: {refused}");
+    let db=f.state.db.client().await.unwrap();assert_eq!(db.query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),0);
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.catalog_chapters",&[]).await.unwrap().get::<_,i64>(0),0);
+    assert_eq!(db.query_one("SELECT state FROM platform.upload_sessions WHERE id=$1",&[&native]).await.unwrap().get::<_,String>(0),"open");
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.upload_files WHERE session_id=$1",&[&native]).await.unwrap().get::<_,i64>(0),33);
+}
+
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="Owned disposable PostgreSQL and existing STRFRY_BIN; real PNG/WebP source bytes, run alone"]
+async fn native_duplicate_originals_and_webp_remain_readable_in_exact_page_order() {
+    let f=fixture_full(Config::default(),true,true).await;let account=schedule_account(&f,"PublicUploadUser1").await;
+    let start=native_boundary_call(&f,"POST",&native_boundary_path(&account,"upload/begin"),serde_json::to_vec(&json!({"manga":f.manga,"groups":[]})).unwrap(),"application/json",200).await;
+    let session=start["id"].as_str().unwrap();let png=png();let mut webp=Cursor::new(Vec::new());
+    DynamicImage::ImageRgb8(RgbImage::from_pixel(13,17,Rgb([12,34,56]))).write_to(&mut webp,ImageFormat::WebP).unwrap();let webp=webp.into_inner();
+    let (mime,bytes)=multipart(&[("1.png","image/png",&png),("2.webp","image/webp",&webp),("3.png","image/png",&png)]);
+    let files=native_boundary_call(&f,"POST",&native_boundary_path(&account,&format!("upload/{session}")),bytes,&mime,200).await;
+    assert_eq!(files["data"].as_array().unwrap().len(),3);
+    let receipt=native_boundary_call(&f,"POST",&native_boundary_path(&account,&format!("upload/{session}/commit")),serde_json::to_vec(&commit(files["data"].as_array().unwrap())).unwrap(),"application/json",200).await;
+    assert_eq!(receipt["attributes"]["pages"],3);let chapter=receipt["id"].as_str().unwrap();let event=receipt["attributes"]["nostr"]["eventId"].as_str().unwrap();
+    wait_original_projection(&f,event).await;
+    let entry=f.state.protocol.entry(hex::decode(event).unwrap().try_into().unwrap()).await.unwrap().unwrap();
+    wait_original_projection(&f,entry.metadata["series"].as_str().unwrap()).await;
+    wait_catalog_projection(&f,event).await;
+    let png_hash=hex::encode(Sha256::digest(&png));let webp_hash=hex::encode(Sha256::digest(&webp));
+    let detail=f.call(None,"GET",&format!("/api/v1/chapter/{chapter}"),None,200).await;assert_eq!(detail["data"]["attributes"]["pages"],3);assert_eq!(detail["data"]["attributes"]["isUnavailable"],false);
+    let media=f.call(None,"GET",&format!("/api/v1/at-home/server/{chapter}"),None,200).await;
+    assert_eq!(media["chapter"]["data"],json!([png_hash,webp_hash,png_hash]));
+    for (hash,mime,bytes) in [(&png_hash,"image/png",&png),(&webp_hash,"image/webp",&webp)] {
+        let response=f.http.get(format!("{}/data/{chapter}/{hash}",f.origin)).send().await.unwrap();
+        assert_eq!(response.status().as_u16(),200);assert_eq!(response.headers()["content-type"],mime);assert_eq!(response.bytes().await.unwrap().as_ref(),bytes.as_slice());
+    }
+    let native=f.native(ResourceKind::Chapter,chapter).await;let db=f.state.db.client().await.unwrap();
+    let sizes=db.query_one("SELECT count(*),count(DISTINCT p.object_id),sum(o.bytes)::bigint FROM platform.chapter_pages p JOIN platform.media_objects o ON o.id=p.object_id WHERE p.chapter_id=$1",&[&native]).await.unwrap();
+    assert_eq!(sizes.get::<_,i64>(0),3);assert_eq!(sizes.get::<_,i64>(1),2);assert_eq!(sizes.get::<_,i64>(2),(png.len()*2+webp.len()) as i64);
+    let unique:i64=db.query_one("SELECT sum(bytes)::bigint FROM platform.media_objects WHERE id IN (SELECT object_id FROM platform.chapter_pages WHERE chapter_id=$1)",&[&native]).await.unwrap().get(0);assert_eq!(unique,(png.len()+webp.len()) as i64);
 }

@@ -1,4 +1,4 @@
-import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 import { restoreCancellationObserver, restoreCancellationCounterfactualTest } from './upload-cancel-observer-association.mjs';
 // No browser, server, socket, dependency install, or external network is used.
 import test from 'node:test';

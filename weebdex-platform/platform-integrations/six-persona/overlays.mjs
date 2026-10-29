@@ -8,7 +8,7 @@ import {staffWorkspacePatches} from '../staff-workspace/patches.mjs';
 import {integrationPatches} from './integration-patches.mjs';
 export {sixPersonaRouteAdditions,sixPersonaComponents} from './integration-patches.mjs';
 const hash=value=>createHash('sha256').update(value).digest('hex');
-const REVIEWED_MANIFEST_SHA='780624e8e49a0a1b00768fffdce48ce1e5ea48f406fe7b40e6dce9e22145029e';
+const REVIEWED_MANIFEST_SHA='1a7c5bdef584e45db14862ccf92a20843bfb468c5195935b4de80c8ad742604c';
 const manifestBytes=fs.readFileSync(new URL('./manifest.json',import.meta.url));
 export const sixPersonaManifest=JSON.parse(manifestBytes);
 export const sixPersonaPatches=[...uploadCompletionPatches,...contributorRoutePatches,...staffWorkspacePatches,...integrationPatches];

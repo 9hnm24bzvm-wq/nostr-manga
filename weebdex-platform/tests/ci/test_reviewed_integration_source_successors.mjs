@@ -1,4 +1,4 @@
-import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 import {localPageDriverPath,restoreLocalPageDriverSource} from './reviewed-local-page-driver-source-successor.mjs';
 import {updatesIntegrationPaths,restoreBundleSource} from './reviewed-bundle-source-successors.mjs';
 import {nativeProfileActionsPaths,restoreNativeProfileActionsSource} from "./native-profile-actions-source-association.mjs";

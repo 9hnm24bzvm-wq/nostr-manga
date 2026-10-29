@@ -1,4 +1,4 @@
-import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 import {nativeSiteClientBindingStage,nativeSiteClientBindingPath,restoreNativeSiteClientBindingSource} from './reviewed-native-source-successors.mjs';
 import {restoreBoundedReaderSource} from './reviewed-bounded-reader-source-successors.mjs';
 import {restoreModeratorTransportSource} from './reviewed-moderator-transport-source-successors.mjs';

@@ -1,7 +1,7 @@
 // Compiled production contribution components + real native clients/transport.
 // DOM, auth check, catalogue responses and leaf widgets are finite stand-ins.
 import fs from'node:fs';import path from'node:path';import test from'node:test';import assert from'node:assert/strict';
-import{root,component,mounted,settle,flushSync,writable,window}from'./account-fixpass-dom-fixture.mjs';
+import{root,component,mounted,settle,flushSync,writable,window,editorNavigation}from'./account-fixpass-dom-fixture.mjs';
 import{fixture,api,title,drafts,covers,relations,signerActivations,MANGA,USER,FILE,SECOND_FILE,PNG,digest,image,installRetainedQueryOverride,titleRow,entity,response,refusal,deferred}from'./native-contribution-fixture.mjs';
 import{createFrontendOverlays}from'../../platform-integrations/frontend-overlays.mjs';import{createReaderOverlays}from'../../platform-integrations/frontend-reader-overlays.mjs';import{createLocalLibraryOverlays}from'../../platform-integrations/local-library/overlays.mjs';import{createPublicApiOverlays}from'../../platform-integrations/public-api/overlays.mjs';import{createPublicUploadOverlays,createNativeUploadOverlays}from'../../platform-integrations/public-api/upload-overlays.mjs';
 const dir=path.join(root,'platform-integrations/public-api'),read=n=>fs.readFileSync(path.join(dir,n+'.svelte'),'utf8');
@@ -96,4 +96,26 @@ test('current native cover delayed upload after account replacement cannot claim
 test('current named-language editor preserves an imported nonstandard language on an unrelated metadata save',async()=>{
  const row=titleRow();row.attributes.originalLanguage='tam';row.attributes.title={tam:'Imported title'};row.attributes.description={tam:'Original text'};
  const f=await render({editTitle:true,state:{title:row}});try{assert.equal(field(f.host,'Original language').value,'tam');assert.equal(field(f.host,'Original language').selectedOptions[0].textContent,'Tamil (previously saved code: tam)');setInput(f.host,'Description','Updated description');button(f.host,'Save changes').click();await settle();const write=f.calls.find(r=>r.method==='PUT');assert.ok(write);assert.equal(Object.hasOwn(write.body,'originalLanguage'),false);assert.deepEqual(write.body.description,{tam:'Updated description'});assert.match(f.host.textContent,/Changes saved/);assert.equal(field(f.host,'Original language').value,'tam');}finally{await f.dispose();}
+});
+
+
+test('nested unsaved cover file warns on Back/link/unload and refresh only discards after confirmation',async()=>{
+ const f=await render({realChildren:true});const previous=window.confirm,prior=globalThis.confirm;
+ try{await saveNewDraft(f);selectFile(f.host);window.confirm=globalThis.confirm=()=>false;
+  assert.equal(field(f.host,'Original-language title').matches(':disabled'),true);
+  for(const type of ['popstate','link','goto'])assert.equal(editorNavigation({type}).cancelled,true);
+  assert.equal(editorNavigation({willUnload:true}).cancelled,true);
+  const reads=f.calls.filter(r=>r.route.endsWith('/covers')).length;button(f.host,'Refresh covers').click();await settle();assert.equal(f.calls.filter(r=>r.route.endsWith('/covers')).length,reads);assert.equal(button(f.host,'Upload cover').disabled,false);
+  window.confirm=globalThis.confirm=()=>true;button(f.host,'Refresh covers').click();await settle();assert.equal(button(f.host,'Upload cover').disabled,true);assert.equal(editorNavigation().cancelled,false);assert.equal(field(f.host,'Original-language title').matches(':disabled'),false);assert.equal(f.calls.filter(r=>r.route.startsWith('/cover/')).length,0);
+ }finally{window.confirm=previous;globalThis.confirm=prior;await f.dispose();assert.equal(editorNavigation().registered,0);}
+});
+
+test('nested relation buffer survives navigation/reload cancellation, explicit discard resets and account change clears it',async()=>{
+ const f=await render({realChildren:true});const previous=window.confirm,prior=globalThis.confirm;
+ try{await saveNewDraft(f);const select=field(f.host,'Relation');select.value='prequel';select.dispatchEvent(new Event('change',{bubbles:true}));flushSync();window.confirm=globalThis.confirm=()=>false;
+  assert.equal(field(f.host,'Original-language title').matches(':disabled'),true);assert.equal(editorNavigation({type:'popstate'}).cancelled,true);assert.equal(editorNavigation({type:'link'}).cancelled,true);assert.equal(editorNavigation({willUnload:true}).cancelled,true);
+  const reads=f.calls.filter(r=>r.route.endsWith('/relations')).length;button(f.host,'Reload relations').click();await settle();assert.equal(select.value,'prequel');assert.equal(f.calls.filter(r=>r.route.endsWith('/relations')).length,reads);
+  window.confirm=globalThis.confirm=()=>true;button(f.host,'Reload relations').click();await settle();assert.equal(select.value,'sequel');assert.equal(editorNavigation().cancelled,false);
+  select.value='prequel';select.dispatchEvent(new Event('change',{bubbles:true}));flushSync();f.Session.set(undefined);await settle();assert.equal(f.host.querySelector('select[value="prequel"]'),null);assert.doesNotMatch(f.host.textContent,/Title relations/);assert.equal(f.calls.filter(r=>r.route.endsWith('/relation')).length,0);assert.equal(f.storage.size,0);
+ }finally{window.confirm=previous;globalThis.confirm=prior;await f.dispose();assert.equal(editorNavigation().registered,0);}
 });

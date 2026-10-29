@@ -60,8 +60,12 @@ revision. Concurrent bootstrap/handoff cannot create an unreviewed duplicate.
 
 Bootstrap grants only **Manage staff access**, **Manage local restrictions**,
 **Revoke native sessions**, and **Read security history**, plus the seventeen
-ordinary account permissions. It does not grant report review, announcements,
-catalogue editing, account reactivation or original-service control.
+ordinary account permissions. It adds no report-review, announcement, catalogue-
+editing or account-reactivation grants and no original-service control. The
+existing native hierarchy is preserved: `sysop` satisfies legacy staff/moderator
+role gates. Baseline permissions can combine with those gates, for example
+`reply.create` permits replying in a locked discussion. Review this inherited
+behavior as well as the exact additional grants before confirming bootstrap.
 
 If the CLI exits unexpectedly after confirmation, do **not** assume failure or
 rerun blindly. Sign in and inspect `/staff/users` and security history. A second

@@ -19,7 +19,7 @@ export type Capabilities = { catalog_namespace: string | null; available: boolea
 export type SourceMapping = { kind: 'manga' | 'chapter'; id: string; event_id: string; compatibility_id: string; publisher?: string; source_kind?: number; canonical_id?: string; parent?: { id: string; event_id: string } | null };
 export type NIP07Signer = { getPublicKey(): Promise<string>; signEvent(event: unknown): Promise<unknown> };
 export type LocalSessionSigner = NIP07Signer & { clear(): void };
-export const signerIdentity = writable<{ owner: string | null; generation: number; source: 'local' | 'external' | null }>({ owner: null, generation: 0, source: null });
+export const signerIdentity = writable<{ owner: string | null; generation: number; source: 'local' | 'external' | 'remote' | null }>({ owner: null, generation: 0, source: null });
 let signer: NIP07Signer | LocalSessionSigner | null = null;
 let clearLocalSigner: (() => void) | null = null;
 const protocolScopes = createScopedProtocolAccess({
@@ -44,6 +44,14 @@ export function installLocalSigner(owner: string, candidate: LocalSessionSigner,
   const generation = get(signerIdentity).generation + 1;
   signer = candidate; clearLocalSigner = () => candidate.clear();
   signerIdentity.set({ owner, generation, source: 'local' });
+}
+export type RemoteSessionSigner = LocalSessionSigner & { onClose(listener: () => void): () => void };
+export function installRemoteSigner(owner: string, candidate: RemoteSessionSigner, assertCurrent: () => void) {
+  assertCurrent(); if (!/^[0-9a-f]{64}$/.test(owner)) throw Error('Invalid remote signing public key');
+  clearSelectedSigner(); const generation = get(signerIdentity).generation + 1;
+  signer = candidate; clearLocalSigner = () => candidate.clear();
+  signerIdentity.set({ owner, generation, source: 'remote' });
+  candidate.onClose(() => { if (signer === candidate) disconnectSigner(); });
 }
 export async function connectSigner(assertCurrent = () => {}, expectedOwner?: string) {
   assertCurrent();

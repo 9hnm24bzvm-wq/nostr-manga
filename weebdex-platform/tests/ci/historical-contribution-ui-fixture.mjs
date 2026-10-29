@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import {fileURLToPath,pathToFileURL} from 'node:url';
-import {readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-six-persona-source-successor.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const associated=new Set(readReaderUxFixpassAssociation().rows.map(row=>row.path));
 export function historicalContributionSource(file,encoding='utf8'){

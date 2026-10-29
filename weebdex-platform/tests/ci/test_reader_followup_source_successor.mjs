@@ -1,6 +1,6 @@
 import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';import test from 'node:test';import assert from 'node:assert/strict';
 import {readCompletionManifest,readCompletionPatches,applyReadCompletionOutput,restoreReadCompletionOutput,assertReadCompletionScope} from '../../platform-integrations/local-library/reader-completion-overlays.mjs';
-import {readCardSpinnerSourceAssociation,restoreCardSpinnerSourcePredecessor,readReaderFollowupSourceAssociation,restoreReaderFollowupSourcePredecessor,readTitleSpinnerSourceAssociation,restoreTitleSpinnerSourcePredecessor,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-card-spinner-source-successor.mjs';
+import {readCardSpinnerSourceAssociation,restoreCardSpinnerSourcePredecessor,readReaderFollowupSourceAssociation,restoreReaderFollowupSourcePredecessor,readTitleSpinnerSourceAssociation,restoreTitleSpinnerSourcePredecessor,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor} from './reviewed-six-persona-source-successor.mjs';
 import {composed} from './composed-account-library-fixture.mjs';
 const root=fileURLToPath(new URL('../../../',import.meta.url)),hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 test('bounded badge state precedence changes one exact expression and preserves guarded fallback',async()=>{

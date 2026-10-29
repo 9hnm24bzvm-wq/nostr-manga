@@ -65,7 +65,7 @@ export function fixture(options={}){
   throw Error('Unexpected synthetic route '+method+' '+route);
  };
  const deps={origin:()=>ORIGIN,fences,fetch:async(url,init)=>{
-  const u=new URL(url),native=u.pathname.startsWith('/api/v1/account/');assert.equal(init.headers?.Authorization,undefined);assert.equal(init.headers?.authorization,undefined);assert.equal(init.credentials,native?'same-origin':'omit');if(native)assert.equal(init.headers['X-Weebdex-Expected-Account'],NATIVE);
+  const u=new URL(url);assert.ok(!u.search.startsWith('??'),'Double-prefixed retained query');for(const key of u.searchParams.keys())assert.ok(!key.startsWith('?'),'Unknown retained query key '+key);const native=u.pathname.startsWith('/api/v1/account/');assert.equal(init.headers?.Authorization,undefined);assert.equal(init.headers?.authorization,undefined);assert.equal(init.credentials,native?'same-origin':'omit');if(native)assert.equal(init.headers['X-Weebdex-Expected-Account'],NATIVE);
   const route=u.pathname.slice(native?'/api/v1/account'.length:'/api/v1'.length);if(/^\/(?:upload|uploads)(?:\/|$)/.test(route))assert.equal(u.searchParams.get('expectedAccountId'),USER);
   const request={url:u,route,method:init.method,bytes:init.body,body:init.body&&init.headers?.['Content-Type']==='application/json'?JSON.parse(new TextDecoder().decode(init.body)):undefined,init};calls.push(request);
   const result=await(options.request?options.request(request,defaultRequest,state):defaultRequest(request));

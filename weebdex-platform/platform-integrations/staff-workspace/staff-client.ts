@@ -29,7 +29,7 @@ export async function createStaffClient(account:string,assertCurrent=()=>{},inje
  }
  const authority=await send('/staff/context') as Authority;
  if(authority.scope!=='native-staff-context'||!Array.isArray(authority.roles)||authority.roles.some(role=>typeof role!=='string')||!Array.isArray(authority.permissions)||authority.permissions.some(grant=>typeof grant!=='string')||typeof authority.username!=='string'||typeof authority.verified!=='boolean'||typeof authority.staff!=='boolean'||typeof authority.moderator!=='boolean'||authority.sourceOperatorAuthority!==false)throw new WorkspaceError('The account authority could not be checked.');
- return {authority,check,dispose(){closed=true;controller.abort();},read:(path:string)=>send(path),pending:fence,
+ return {authority,check,dispose(){closed=true;controller.abort();},read:(path:string)=>send(path),pending(path:string):PendingReceipt|undefined{try{return fence(path);}catch{return{path,raw:'',invalid:true};}},
   async mutate(path:string,payload:Record<string,unknown>,method:'POST'|'PUT'='POST'){
    check();if(busy)throw new WorkspaceError('An action is still in progress.',409);if(fence(path))throw new WorkspaceError('An earlier result is still unconfirmed. Check its receipt first.',409,true);
    const requestId=typeof payload.requestId==='string'?payload.requestId:deps.requestId();if(!/^[A-Za-z0-9_-]{16,80}$/.test(requestId))throw new WorkspaceError('The action reference is invalid. Reopen this review.',400);const command={...payload,requestId},marker=JSON.stringify({requestId,path,markerId:deps.requestId()});busy=true;
