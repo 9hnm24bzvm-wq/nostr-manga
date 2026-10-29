@@ -77,7 +77,7 @@ function bindings(source, expression) {
   });
   return source.replace(/<script lang="ts">/, `<script lang="ts">\nconst {${[...names].join(',')}}=${expression};\n`);
 }
-const common = { ...svelte, Constants, Locale, page, cn: (...values) => values.filter(value => typeof value === 'string').join(' '), equal: require('fast-deep-equal'), buttonVariants: () => '', ...searchQuery };
+const common = { ...svelte, ...await moduleNamespace('language'), Constants, Locale, page, cn: (...values) => values.filter(value => typeof value === 'string').join(' '), equal: require('fast-deep-equal'), buttonVariants: () => '', ...searchQuery };
 globalThis.__catalogFilterEnvironment = common;
 const shell = await component('shell', '<script>let {children,child}=$props();</script><div>{#if child}{@render child({props:{}})}{:else}{@render children?.()}{/if}</div>');
 const empty = await component('empty', '<span aria-hidden="true"></span>');

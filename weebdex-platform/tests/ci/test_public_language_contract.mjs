@@ -88,8 +88,8 @@ test('all supplied originals, including native Locale, remain exact attachment b
 });
 
 test('named public search selections preserve exact codes, including unknown URL languages',()=>{
- const source=fs.readFileSync(path.join(directory,'PublicLanguageFilter.svelte'),'utf8').match(/<script lang="ts">([\s\S]*?)<\/script>/)[1].replace(/import[^;]+;/,'');
- const ui=vm.runInNewContext(stripTypeScriptTypes(source,{mode:'transform'})+'\n({toggle,get:()=>value})',{$state:value=>value,$derived:value=>value,$bindable:value=>value,$props:()=>({value:['EN'],label:'Language'}),Locale:{Languages:{en:'English',ja:'Japanese'}}});
+ const source=fs.readFileSync(path.join(directory,'PublicLanguageFilter.svelte'),'utf8').match(/<script lang="ts">([\s\S]*?)<\/script>/)[1].replace(/import[^;]+;/g,'');
+ const ui=vm.runInNewContext(stripTypeScriptTypes(source,{mode:'transform'})+'\n({toggle,get:()=>value})',{$state:value=>value,$derived:value=>value,$bindable:value=>value,$props:Object.assign(()=>({value:['EN'],label:'Language'}),{id:()=>'finite-language-filter'}),Locale:{Languages:{en:'English',ja:'Japanese'}},searchLanguageCodes:language.searchLanguageCodes});
  ui.toggle('ja',true); assert.deepEqual(plain(ui.get()),['EN','ja']); ui.toggle('EN',false); assert.deepEqual(plain(ui.get()),['ja']);
 });
 

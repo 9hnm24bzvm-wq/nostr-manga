@@ -355,5 +355,68 @@
     "before": "\tlet signedReceiptPending = $state(false);\r\n\tconst showSignedCommitFence = () => {",
     "after": "\tconst showSignedCommitFence = () => {",
     "count": 1
+  },
+  {
+    "path": "src/routes/(app)/settings/preferences/+page.svelte",
+    "label": "preference choices use exact native settings vocabulary",
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport { nativeSettingLanguages } from \"$publicApi/settings-schema\";",
+    "count": 1
+  },
+  {
+    "path": "src/routes/(app)/settings/preferences/+page.svelte",
+    "label": "one supported Tamil preference choice without schema migration",
+    "before": "Object.entries(Locale.Languages)",
+    "after": "nativeSettingLanguages.map(code => [code, Locale.toLanguage(code)])",
+    "count": 2
+  },
+  {
+    "path": "src/lib/stores/prefs.ts",
+    "label": "shared read-only preference language aliases",
+    "before": "import * as Constants from \"$lib/constants\";",
+    "after": "import { searchLanguageCodes } from \"$publicApi/language\";\r\nimport * as Constants from \"$lib/constants\";",
+    "count": 1
+  },
+  {
+    "path": "src/lib/stores/prefs.ts",
+    "label": "original preference searches include canonical and legacy Tamil",
+    "before": "prefs.languages.forEach(code => searchParams.append(\"lang\", code));",
+    "after": "searchLanguageCodes(prefs.languages).forEach(code => searchParams.append(\"lang\", code));",
+    "count": 1
+  },
+  {
+    "path": "src/lib/stores/prefs.ts",
+    "label": "chapter preference searches include canonical and legacy Tamil",
+    "before": "prefs.translated_languages.forEach(code => searchParams.append(\"tlang\", code));",
+    "after": "searchLanguageCodes(prefs.translated_languages).forEach(code => searchParams.append(\"tlang\", code));",
+    "count": 1
+  },
+  {
+    "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "label": "title preference alias helper import",
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport { searchLanguageCodes } from \"$publicApi/language\";",
+    "count": 1
+  },
+  {
+    "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "label": "title default preference preserves all Tamil editions",
+    "before": "$prefs.translated_languages.forEach(v => q.append(\"tlang\", v));",
+    "after": "searchLanguageCodes($prefs.translated_languages).forEach(v => q.append(\"tlang\", v));",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/MangaSearchFilter.svelte",
+    "label": "search preference alias helper import",
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport { searchLanguageCodes } from \"$publicApi/language\";",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/MangaSearchFilter.svelte",
+    "label": "new search inherits complete Tamil preference without rewriting URLs",
+    "before": "init.lang = structuredClone($prefs.languages);",
+    "after": "init.lang = searchLanguageCodes($prefs.languages);",
+    "count": 1
   }
 ]

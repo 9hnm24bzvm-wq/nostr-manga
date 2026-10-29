@@ -3,8 +3,8 @@
   "baseline_commit_local": "9a70b771bfa8cb1b20f82c926f65956b93c2d5e6",
   "baseline_tree": "a035b00056557f83348db13c6288a680fd35aca8",
   "qualification": "Source composition only; no runtime, browser or release acceptance inherited.",
-  "patch_count": 78,
-  "patch_registry_sha256": "69034bcc3aca5d95acd75280b6eca7799bdcb5767c8490db976018ce1c1794a3",
+  "patch_count": 90,
+  "patch_registry_sha256": "52682b68f79f493ff0b11b7fb3717d1b8d083bd2e6f2044baa129d420bbdb703",
   "rows": [
     {
       "path": "src/lib/Locale.ts",
@@ -13,10 +13,22 @@
       "output_sha256": "6b3ca089f2ef8d959912194d4efcfa48ae7694cf8b57cad689093359d9e65d3e"
     },
     {
+      "path": "src/lib/components/AppHeader.svelte",
+      "original_sha256": "12cbd39322cb42b61df449e7c3b4d9ceb064f3ca67806d5c412689561e2065be",
+      "input_sha256": "67c9123993ae5788928925404b9fea8fb675fc59c40aa7a0d2bf39618fd54740",
+      "output_sha256": "000252c4bb6ef08e984c61db64d32c935052e27bf33a76bbc7df1493c55876eb"
+    },
+    {
       "path": "src/lib/components/AppSidebar.svelte",
       "original_sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5",
       "input_sha256": "0239cb7428b70b00ccb95a0e24cf0fae223f3dcbe07093d255c4e3c043b564e0",
-      "output_sha256": "bfc0815e00084be311d522482491d3cdf4c8375c6d96e4e7ab539ce2aaf05376"
+      "output_sha256": "5e568ed4c8d7aabf68cb4d394ab0d8c9961b8e6daf113b89e40474370075b09a"
+    },
+    {
+      "path": "src/lib/components/MangaSearchFilter.svelte",
+      "original_sha256": "f3628652c45bc03b00f0115e1a7ca135d5ccd990e1543bf9326e546c64bca4b7",
+      "input_sha256": "28a9113753610c9756ed110159e9ca171378b549e9927008ce36782a9fc97988",
+      "output_sha256": "fccecfec71f667b4031ee46c15f52be22c15d703a0c6b2d053e2839b711f029d"
     },
     {
       "path": "src/lib/components/ReportSearchEntry.svelte",
@@ -53,6 +65,12 @@
       "original_sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
       "input_sha256": "7e07634970b98b11dffa117d015fa9d245f03dcf82d6e1f83f247ae67e8e62cc",
       "output_sha256": "2511f39a0fab9a2f6b3eaeafdec313ee8f2e2a076d9a5a7733856c65cda0f9c6"
+    },
+    {
+      "path": "src/lib/stores/prefs.ts",
+      "original_sha256": "cd441d7ca0bddd4ac0e2c8d60b40f073143b0c3b47084455dc2bb2c80acb64b6",
+      "input_sha256": "46326f61376c1b0070dd79115eaceb354dabb9167c5edb6a47c808dc8ce627cf",
+      "output_sha256": "4b9d5d00272fd2269dd2ef46ca2dc794ecd45d6304cd2593696af31b7bd6b503"
     },
     {
       "path": "src/routes/(app)/about/+page.svelte",
@@ -127,6 +145,12 @@
       "output_sha256": "3a556f3d4c1974732a95519f684e4fc7ebcb60f8bedcda147e15e09280da9bff"
     },
     {
+      "path": "src/routes/(app)/settings/preferences/+page.svelte",
+      "original_sha256": "0d77b163a1ec200ec7cf07951e475f413127b5a49f3f1ef5f137cf3c3baa8b7b",
+      "input_sha256": "f87f5ed651353f6662453b2586ea15528c9ad8df367c25b4a45ddc5d11ff0e32",
+      "output_sha256": "ec064729f46a5c5d94003cddf8bb3ec312cb1f620eab927997b4c77c6eb598d8"
+    },
+    {
       "path": "src/routes/(app)/terms/+page.svelte",
       "original_sha256": "f3cd4ecd86212975d0180f61543f56cba4c0d2c04928d84378e1384bd7693c8b",
       "input_sha256": "f3cd4ecd86212975d0180f61543f56cba4c0d2c04928d84378e1384bd7693c8b",
@@ -136,7 +160,7 @@
       "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
       "original_sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e",
       "input_sha256": "106bd6d2d0d9cc2faf87a1cf6d358f6c360c1ad47bf83c2159030e79c4eac2da",
-      "output_sha256": "ed44df6deae27bfb36a16315e2e4b3293aecc6c2b46103af46117a3b211992e8"
+      "output_sha256": "b89d70dee97eb06e02a2b4142e641bedff1f4e1d6a7f427d4d2048dec14fb17f"
     },
     {
       "path": "src/routes/(app)/user/[id]/settings/+page.svelte",

@@ -2029,6 +2029,51 @@
       ]
     },
     {
+      "path": "weebdex-platform/platform-integrations/public-api/PublicLanguageFilter.svelte",
+      "current_bytes": 2665,
+      "current_sha256": "b2c7e2d632365d42271e9fa0910fb3b902972c301e52c898c609b5198b82a23b",
+      "added": false,
+      "previous_bytes": 1481,
+      "previous_sha256": "59af7c46e6ebf69ec9e8dcda7fe75696ce553485537e2a62210b153769be6e5e",
+      "byte_reversals": [
+        {
+          "start": 51,
+          "end": 102,
+          "current_sha256": "22b720754231d76350f6a6c382c2f544c6b7118c05fb5c061a04577a225ef691",
+          "previous_base64": "",
+          "previous_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "start": 216,
+          "end": 306,
+          "current_sha256": "4d6cbbf246a20e6a34ca55c426286d82ba4375ad28195f5ded777f9aaa096cb2",
+          "previous_base64": "",
+          "previous_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "start": 386,
+          "end": 1366,
+          "current_sha256": "6991d66b6e719ebb2ea7ad1504850076a63c9bd7ba632a4d41e670b1de16c115",
+          "previous_base64": "IGNvbnN0IG9wdGlvbnM9JGRlcml2ZWQoWy4uLm5ldyBTZXQoWy4uLk9iamVjdC5rZXlzKG5hbWVzKSwuLi4odmFsdWU/P1tdKV0pXS5maWx0ZXIoY29kZT0+YCR7bmFtZXNbY29kZV0/P2NvZGV9ICR7Y29kZX1gLnRvTG93ZXJDYXNlKCkuaW5jbHVkZXMoZmlsdGVyLnRvTG93ZXJDYXNlKCkpKSk7CiBmdW5jdGlvbiB0b2dnbGUoY29kZTpzdHJpbmcsY2hlY2tlZDpib29sZWFuKXt2YWx1ZT1jaGVja2VkP1suLi5uZXcgU2V0KFsuLi4odmFsdWU/P1tdKSxjb2RlXSldOih2YWx1ZT8/W10pLmZpbHRlcihpdGVtPT5pdGVtIT09Y29kZSk7fQo=",
+          "previous_sha256": "c4d99c4126dd45e836c03b55167ac0849679e45e79d2bd8b733aef552e31c18b"
+        },
+        {
+          "start": 1432,
+          "end": 1625,
+          "current_sha256": "57090fb87a11a58e71228298e9969134b49126337db51a1b240a7ee9e2806ed8",
+          "previous_base64": "IDxzdW1tYXJ5IGNsYXNzPSJjdXJzb3ItcG9pbnRlciIgYXJpYS1kaXNhYmxlZD17ZGlzYWJsZWR9PntsYWJlbH06IHt2YWx1ZT8ubGVuZ3RoID8gdmFsdWUubWFwKGNvZGU9Pm5hbWVzW2NvZGVdPz9jb2RlKS5qb2luKCcsICcpIDogJ0FueSd9PC9zdW1tYXJ5Pgo=",
+          "previous_sha256": "15dabddc3673a7dcbdb36c40c0c8a3691abbfacb593fbf2a1394e6e789664761"
+        },
+        {
+          "start": 2009,
+          "end": 2560,
+          "current_sha256": "992b0248ffc887c0211af434174796d38fce6cf877ad156d224bb6afc0dc0bae",
+          "previous_base64": "ICAgeyNlYWNoIG9wdGlvbnMgYXMgY29kZX08bGFiZWwgY2xhc3M9ImZsZXggaXRlbXMtY2VudGVyIGdhcC0yIHAtMSI+PGlucHV0IHR5cGU9ImNoZWNrYm94IiBjaGVja2VkPXt2YWx1ZT8uaW5jbHVkZXMoY29kZSk/P2ZhbHNlfSBvbmNoYW5nZT17ZXZlbnQ9PnRvZ2dsZShjb2RlLGV2ZW50LmN1cnJlbnRUYXJnZXQuY2hlY2tlZCl9IC8+e25hbWVzW2NvZGVdPz9jb2RlfTwvbGFiZWw+ey9lYWNofQo=",
+          "previous_sha256": "d816e702c6306a5f9251572718ebf7cccf14fd28f8af4a75208fd9ae23c3c5c2"
+        }
+      ]
+    },
+    {
       "path": "weebdex-platform/platform-integrations/public-api/PublicRelationEditor.svelte",
       "current_bytes": 8517,
       "current_sha256": "e5a2c55be09e5a4af2ecfed09228eac936686ff9ca48204a8216e047d1aad9d7",
@@ -2289,16 +2334,16 @@
     },
     {
       "path": "weebdex-platform/platform-integrations/public-api/language.ts",
-      "current_bytes": 2165,
-      "current_sha256": "278c3b97d77147725d4817968e09be46e52c5bfc2bd1b2ecf9766d8ee4761d27",
+      "current_bytes": 2489,
+      "current_sha256": "db2ed2b37fbc71aa0a06c07d3ef23eed57f098a7813ec3c5486d06b7f20c9b05",
       "added": false,
       "previous_bytes": 1557,
       "previous_sha256": "277af04bf0eb0e6da55ef44e26d20138b9f74bba7d0f955bd14bac57711dc2da",
       "byte_reversals": [
         {
           "start": 1557,
-          "end": 2165,
-          "current_sha256": "0151ca0d5c422bb6547e24c626be2573320a32b89741aec638aa25cbc0fc08f1",
+          "end": 2489,
+          "current_sha256": "ab1d722d8a6706914a8de335a14fbeb013c967bc0306abd2b83974b0b798d516",
           "previous_base64": "",
           "previous_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         }
@@ -2489,26 +2534,26 @@
     },
     {
       "path": "weebdex-platform/platform-integrations/six-persona-upload/patches.json",
-      "current_bytes": 33566,
-      "current_sha256": "c14f02bd97825df8b17266e707c274b1d69ba76b8f1749d07ed2a041a7aa4e61",
+      "current_bytes": 36407,
+      "current_sha256": "238d813c2906c282d92a92997aad8cc6cdf7599a54ecdb6c5c6bc180914bc270",
       "added": true
     },
     {
       "path": "weebdex-platform/platform-integrations/six-persona/integration-patches.mjs",
-      "current_bytes": 1729,
-      "current_sha256": "d13bed089517068b3d1b5563e446e82fd8caee74fe30eb52c4e365baf8cb5f6b",
+      "current_bytes": 2668,
+      "current_sha256": "e6c68f1469ace3412f477fdb90f117ea9340182fd598186477ac33bc3c78fc95",
       "added": true
     },
     {
       "path": "weebdex-platform/platform-integrations/six-persona/manifest.json",
-      "current_bytes": 8401,
-      "current_sha256": "1a7c5bdef584e45db14862ccf92a20843bfb468c5195935b4de80c8ad742604c",
+      "current_bytes": 9768,
+      "current_sha256": "598945f551692a0056da8bb9cae7c9e7976614a90641c98b568e80890daf8cf7",
       "added": true
     },
     {
       "path": "weebdex-platform/platform-integrations/six-persona/overlays.mjs",
       "current_bytes": 3687,
-      "current_sha256": "949282a8c47855fce6973323b2b59e1d911e4956a6989c6ddc841b194e928e55",
+      "current_sha256": "33a1236a4960a98c2f5b4ea77b457dfa9f005b730fb4078dbb8f03bb0f7c3aab",
       "added": true
     },
     {
@@ -3167,10 +3212,44 @@
       ]
     },
     {
+      "path": "weebdex-platform/tests/ci/public-catalog-filter-controls-fixture.mjs",
+      "current_bytes": 15724,
+      "current_sha256": "41aa2b41f1f6559956f35e617eafc4ec89bd3c5db86d84806a0bdbce69a16b94",
+      "added": false,
+      "previous_bytes": 15686,
+      "previous_sha256": "a02b506781cfcf307e50678f141f1aca32fa59f58377f393d48de3f455a00c0c",
+      "byte_reversals": [
+        {
+          "start": 6803,
+          "end": 7053,
+          "current_sha256": "3a6dc79aff0fd67f1978169b63bb5d60dbab8eeb223236b5d11c540246359fcf",
+          "previous_base64": "Y29uc3QgY29tbW9uID0geyAuLi5zdmVsdGUsIENvbnN0YW50cywgTG9jYWxlLCBwYWdlLCBjbjogKC4uLnZhbHVlcykgPT4gdmFsdWVzLmZpbHRlcih2YWx1ZSA9PiB0eXBlb2YgdmFsdWUgPT09ICdzdHJpbmcnKS5qb2luKCcgJyksIGVxdWFsOiByZXF1aXJlKCdmYXN0LWRlZXAtZXF1YWwnKSwgYnV0dG9uVmFyaWFudHM6ICgpID0+ICcnLCAuLi5zZWFyY2hRdWVyeSB9Owo=",
+          "previous_sha256": "20974c37af27cf15f0f2eb66de849d360954912c68ffde01913e62308b7d214a"
+        }
+      ]
+    },
+    {
       "path": "weebdex-platform/tests/ci/retained-query-override-fixture.mjs",
       "current_bytes": 1184,
       "current_sha256": "853d004b0bb83e7d997e6202f4bce6d3fd8346cc5b9010af6f7adb6dd9d6ad0a",
       "added": true
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_account_settings_client.mjs",
+      "current_bytes": 11604,
+      "current_sha256": "24fbbbcc21bb47bfb7aad5289ccd678ec333d8f99d1fc58f2ef31e08118f6b6e",
+      "added": false,
+      "previous_bytes": 10944,
+      "previous_sha256": "3eae4bc17e3100e2c3ef64ca1bdd4d55c4050b8ea7224a63069722f03b0f381a",
+      "byte_reversals": [
+        {
+          "start": 10944,
+          "end": 11604,
+          "current_sha256": "ef8cbeab19e4c1ef128d3ebd660942a0a81273dbdc402cfc45779851de1394ac",
+          "previous_base64": "",
+          "previous_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
     },
     {
       "path": "weebdex-platform/tests/ci/test_admin_authority_client.mjs",
@@ -3512,6 +3591,12 @@
       "added": true
     },
     {
+      "path": "weebdex-platform/tests/ci/test_header_drawer_accessibility_dom.mjs",
+      "current_bytes": 15390,
+      "current_sha256": "d3b5c73df774db2a8719688269b406d9e477dc139d3618efadb62a411593bc4f",
+      "added": true
+    },
+    {
       "path": "weebdex-platform/tests/ci/test_identity_setup_local_controls.mjs",
       "current_bytes": 8988,
       "current_sha256": "198ecf607df453582a54bbcf4f83ed8ead8b48dfc3bf8258f7ed10a227f0c233",
@@ -3753,6 +3838,58 @@
       "added": true
     },
     {
+      "path": "weebdex-platform/tests/ci/test_preferences_presentation_dom.mjs",
+      "current_bytes": 15606,
+      "current_sha256": "83a7b2f3c8f4d18d17e9a8fb19deead5324b9918022bb63ac129c6a0b18b653d",
+      "added": false,
+      "previous_bytes": 9849,
+      "previous_sha256": "69d7ffb9fe5333bb4860b25b9462fcba22350423ee01bd7a5551f8c37571ed0e",
+      "byte_reversals": [
+        {
+          "start": 291,
+          "end": 373,
+          "current_sha256": "81626652c149a6ba3393360a011db366cc6ac787f762f7e087817395d40aefab",
+          "previous_base64": "aW1wb3J0IHtjb21wb3NlZH0gZnJvbSAnLi9jb21wb3NlZC1hY2NvdW50LWxpYnJhcnktZml4dHVyZS5tanMnOwo=",
+          "previous_sha256": "1bda6f5ddb7eae15a1c843834bc903f3e0643de0b0cdaface7a68006b3a1b29a"
+        },
+        {
+          "start": 4327,
+          "end": 6395,
+          "current_sha256": "37e8357be197d2f0a8eb80bc01ecbd1bf99cce6f7b31849cf57d1a4d907cae5a",
+          "previous_base64": "",
+          "previous_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "start": 6540,
+          "end": 6918,
+          "current_sha256": "691eb6b31f43f71ead53bc45089a9a2ce5ad66152ebef317a173d2eef41cde5a",
+          "previous_base64": "Y29uc3Qgc291cmNlcz17fTtmb3IoY29uc3Qgcm93IG9mIG1hbmlmZXN0KXtjb25zdCBjdXJyZW50PWF3YWl0IGNvbXBvc2VkKHJvdy5wYXRoKTtjb25zdCBiZWZvcmU9aGFzaChjdXJyZW50KT09PXJvdy5vdXRwdXRfc2hhMjU2P3Jlc3RvcmUoY3VycmVudCxyb3cucGF0aCk6Y3VycmVudDtzb3VyY2VzW3Jvdy5wYXRoXT17YmVmb3JlLGFmdGVyOmFwcGx5KGJlZm9yZSxyb3cucGF0aCl9O30K",
+          "previous_sha256": "c745092a9d846b4c8f2e1d50d6908b4bae51fae92ef166b1823a35b30ec83121"
+        },
+        {
+          "start": 6979,
+          "end": 7273,
+          "current_sha256": "095f3505c99707fd0802b5a4e79af6646faf60211418878930ad03c55ac5a985",
+          "previous_base64": "Y29uc3QgUHJlZmVyZW5jZXM9YXdhaXQgY29tcGlsZWQoJ1ByZWZlcmVuY2VzJyxzb3VyY2VzW3ByZWZQYXRoXS5hZnRlcix0cnVlKSxPbGRQcmVmZXJlbmNlcz1hd2FpdCBjb21waWxlZCgnT2xkUHJlZmVyZW5jZXMnLHNvdXJjZXNbcHJlZlBhdGhdLmJlZm9yZSx0cnVlKSxGaWx0ZXI9YXdhaXQgY29tcGlsZWQoJ0ZpbHRlcicsc291cmNlc1tmaWx0ZXJQYXRoXS5hZnRlcix0cnVlKTsK",
+          "previous_sha256": "642aebedd67004dfbad5ed9b22533a2c1a71460d5415a20e7dd6cb66d3dc67cd"
+        },
+        {
+          "start": 7486,
+          "end": 8907,
+          "current_sha256": "0b297c28f4f222c38e6b4ebcb5e40b231430f656896f52c2cb20c4f3d2176b20",
+          "previous_base64": "ZnVuY3Rpb24gZml4dHVyZXModmFsdWVzPXt9KXtjb25zdCBwcmVmcz13cml0YWJsZSh7Li4uc3RydWN0dXJlZENsb25lKGRlZmF1bHRzKSwuLi52YWx1ZXN9KSxTZXNzaW9uPXdyaXRhYmxlKHVuZGVmaW5lZCk7U2Vzc2lvbi5pc1ZhbGlkPWFzeW5jKCk9PmZhbHNlO2NvbnN0IGxvY2FsZT17ZW46J0VuZ2xpc2gnLGphOidKYXBhbmVzZSd9O2dsb2JhbFRoaXMuX19wcmVmZXJlbmNlc0ZpeHR1cmU9e1BVQkxJQ19TSVRFX05BTUU6J1Rlc3QnLHByZWZzLFNlc3Npb24scG9wdWxhdGVUYWdMaXN0OmFzeW5jKCk9Pnt9LG5hdGl2ZUF1dGhvcml0eTp3cml0YWJsZSh7YWN0b3I6bnVsbCxlcG9jaDowfSksTXV0ZXg6Y2xhc3N7c3Vic2NyaWJlPXdyaXRhYmxlKGZhbHNlKS5zdWJzY3JpYmU7aXNMb2NrZWQ9KCk9PmZhbHNlO2V4ZWM9Zm49PmZuKCk7fSxjcmVhdGVNdXRhdGlvbk93bmVyOigpPT4oe30pLEFQSTp7fSxDb25zdGFudHM6e0Vycm9yOntFcnJvcn19LExvY2FsZTp7TGFuZ3VhZ2VzOmxvY2FsZSx0b0xhbmd1YWdlOmlkPT5sb2NhbGVbaWRdLHRvMzE2NjooKT0+ICdnYid9LGVxdWFsOihhLGIpPT5KU09OLnN0cmluZ2lmeShhKT09PUpTT04uc3RyaW5naWZ5KGIpLGNuOigpPT4nJyxidXR0b25WYXJpYW50czooKT0+JycsdG9hc3Q6e3N1Y2Nlc3MoKXt9fSxTdGF0dXNDb2Rlczp7T0s6MjAwfSxCdXR0b24sQ29tYm9ib3g6e1Jvb3Q6R2VuZXJpYyxUcmlnZ2VyOkdlbmVyaWMsQ29udGVudDpHZW5lcmljLEl0ZW06R2VuZXJpY30sU2VsZWN0OntSb290OlNlbGVjdFJvb3QsVHJpZ2dlcjpHZW5lcmljLENvbnRlbnQ6R2VuZXJpYyxJdGVtOlNlbGVjdEl0ZW19LERpYWxvZzp7Um9vdDpHZW5lcmljLFRyaWdnZXI6R2VuZXJpYyxDb250ZW50OkdlbmVyaWN9LEVtcHR5OntSb290OkdlbmVyaWN9LENoZWNrYm94OkdlbmVyaWMsSW1hZ2VMb2FkZXI6R2VuZXJpYyxMYWJlbDpHZW5lcmljLFNlcGFyYXRvcjpHZW5lcmljLFNwaW5uZXI6R2VuZXJpYyxUYWdDb21ib0JveDpHZW5lcmljLFBsdXM6R2VuZXJpYyxUcmFzaDpHZW5lcmljLEFjY291bnRQcmVmZXJlbmNlU2F2ZTpHZW5lcmljLEVudGl0eVNlYXJjaERpYWxvZzpHZW5lcmljLFB1YmxpY1RpdGxlR3JvdXBGaWx0ZXI6R2VuZXJpYyxBcnJvd0Rvd25XaWRlTmFycm93OkdlbmVyaWMsQXJyb3dVcE5hcnJvd1dpZGU6R2VuZXJpYyxnZXRNYW5nYTooKT0+KCk9Pih7aWQ6J3RpdGxlJyxyZWxhdGlvbnNoaXBzOnthdmFpbGFibGVfbGFuZ3VhZ2VzOlsnZW4nLCdqYSddfX0pLHBhZ2U6e3VybDpuZXcgVVJMKCdodHRwczovL2ZpeHR1cmUuaW52YWxpZC90aXRsZS90aXRsZScpfSxnb3RvOmFzeW5jKCk9Pnt9fTtyZXR1cm4gcHJlZnM7fQo=",
+          "previous_sha256": "5f57949f4f7f677366fa1f98f6fd826ea24a7711c17d4fa91b698255ef9a3341"
+        },
+        {
+          "start": 12240,
+          "end": 15606,
+          "current_sha256": "2deb961200887f4fc2fcf4d204b51adf6d517e4d1836170ac75722c148dfc77e",
+          "previous_base64": "",
+          "previous_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
       "path": "weebdex-platform/tests/ci/test_public_chapter_edit_route.mjs",
       "current_bytes": 10324,
       "current_sha256": "6b08b71858333da2222f747df8521df13ee16626c6478758ed7446e395676bf3",
@@ -3774,6 +3911,23 @@
       "current_bytes": 3630,
       "current_sha256": "63d4f5d1fe33fa097bdb28c33c632a0a36a3af298c797fbce0bc220f0601a9a2",
       "added": true
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_public_language_contract.mjs",
+      "current_bytes": 12198,
+      "current_sha256": "8ef7c71ceb3aedcf45c393fd0eb68b2709cfac09521c4f736e5cb1f31f3328e5",
+      "added": false,
+      "previous_bytes": 12099,
+      "previous_sha256": "2c732473203ee9a5a62044eca6b06e7336b9ff6f0d9b046a6b28e4f538a75b38",
+      "byte_reversals": [
+        {
+          "start": 9763,
+          "end": 10298,
+          "current_sha256": "52de8185ca1321b6819ed39204c97da48033d64fef09496007f5ca4d0d1ff8f6",
+          "previous_base64": "IGNvbnN0IHNvdXJjZT1mcy5yZWFkRmlsZVN5bmMocGF0aC5qb2luKGRpcmVjdG9yeSwnUHVibGljTGFuZ3VhZ2VGaWx0ZXIuc3ZlbHRlJyksJ3V0ZjgnKS5tYXRjaCgvPHNjcmlwdCBsYW5nPSJ0cyI+KFtcc1xTXSo/KTxcL3NjcmlwdD4vKVsxXS5yZXBsYWNlKC9pbXBvcnRbXjtdKzsvLCcnKTsKIGNvbnN0IHVpPXZtLnJ1bkluTmV3Q29udGV4dChzdHJpcFR5cGVTY3JpcHRUeXBlcyhzb3VyY2Use21vZGU6J3RyYW5zZm9ybSd9KSsnXG4oe3RvZ2dsZSxnZXQ6KCk9PnZhbHVlfSknLHskc3RhdGU6dmFsdWU9PnZhbHVlLCRkZXJpdmVkOnZhbHVlPT52YWx1ZSwkYmluZGFibGU6dmFsdWU9PnZhbHVlLCRwcm9wczooKT0+KHt2YWx1ZTpbJ0VOJ10sbGFiZWw6J0xhbmd1YWdlJ30pLExvY2FsZTp7TGFuZ3VhZ2VzOntlbjonRW5nbGlzaCcsamE6J0phcGFuZXNlJ319fSk7Cg==",
+          "previous_sha256": "bd5788200d05068b567a55ecbd13f8c8a7485eb480c6b08e8752a09cf121c717"
+        }
+      ]
     },
     {
       "path": "weebdex-platform/tests/ci/test_public_report_draft_dom.mjs",
@@ -4178,6 +4332,12 @@
       "path": "weebdex-platform/tests/ci/test_staff_workspace_dom.mjs",
       "current_bytes": 31624,
       "current_sha256": "8167ea96b554fcd44cba8a0ccbd48ec31d5b9fd53e5a2dfa76efa4a9f7356929",
+      "added": true
+    },
+    {
+      "path": "weebdex-platform/tests/ci/test_tamil_language_aliases.mjs",
+      "current_bytes": 9510,
+      "current_sha256": "b44915ce14da66a7fc09220e5ec17ac90a6344cebd2a8fc0b2f7976c225e835b",
       "added": true
     },
     {

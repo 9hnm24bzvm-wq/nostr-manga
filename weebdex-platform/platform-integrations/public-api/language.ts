@@ -22,3 +22,9 @@ export function canonicalLanguageOptions(registry:Record<string,string>):[string
 }
 export function languageLabel(value:string,registry:Record<string,string>):string { return value==='tam'?'Tamil (previously saved code: tam)':value==='ta'?'Tamil':registry[value]??value; }
 export const legacyLanguageReplacement=(value:string):string|undefined=>value==='tam'?'ta':undefined;
+
+// Reading/search only: Tamil has a canonical public code and a retained native
+// code. Never use this to rewrite metadata or the native preference schema.
+export function searchLanguageCodes(values:readonly string[]):string[] {
+ return [...new Set(values.flatMap(code=>code==='ta'||code==='tam'?['ta','tam']:[code]))];
+}
