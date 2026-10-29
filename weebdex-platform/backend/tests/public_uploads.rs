@@ -1421,3 +1421,31 @@ async fn native_cookie_schedule_captures_configured_authority_without_user_signa
     let kept=other(&f,"GET",&other_path(&format!("uploads/{other_session}")),vec![],"application/json",200).await;assert_eq!(kept["session"]["state"],"open");assert_eq!(kept["session"]["files"].as_array().unwrap().len(),1);
     other(&f,"DELETE",&other_path(&format!("upload/{other_session}")),vec![],"application/json",200).await;
 }
+
+// Actual native-cookie HTTP with deliberately provisioned synthetic publication
+// authority. No user account, external destination, or automatic grant is used.
+#[tokio::test(flavor="multi_thread",worker_threads=4)]
+#[ignore="Owned disposable PostgreSQL fixture; run alone"]
+async fn native_upload_preflight_and_configured_completion_are_current_and_read_only() {
+    let f=fixture().await;
+    let account=schedule_account(&f,"PublicUploadUser1").await;
+    let path=format!("/api/v1/account/upload/preflight/{}?expectedAccountId={account}",f.manga);
+    let native=|method:&str,path:&str|f.http.request(method.parse().unwrap(),format!("{}{path}",f.origin)).header("cookie",format!("{}=synthetic-public-upload-cookie",f.state.config.session_cookie_name)).header("x-weebdex-expected-account","PublicUploadUser1").header("origin",&f.origin);
+    let before:i64=f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get(0);
+    let response=native("GET",&path).send().await.unwrap();assert_eq!(response.status().as_u16(),200);let first:Value=response.json().await.unwrap();
+    assert_eq!(first["preflight"]["eligible"],true);assert_eq!(first["preflight"]["configured"],true);
+    assert_eq!(first["preflight"]["formats"],json!(["image/jpeg","image/png","image/webp"]));
+    assert_eq!(first["preflight"]["limits"]["maxUniqueBytes"],256*1024*1024);
+    assert_eq!(first["preflight"]["limits"]["maxFileBytes"],8*1024*1024);
+    let db=f.state.db.client().await.unwrap();assert_eq!(db.query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),before);
+    db.execute("UPDATE platform.protocol_identity_bindings SET revoked_at=clock_timestamp() WHERE user_id='PublicUploadUser1'",&[]).await.unwrap();drop(db);
+    let denied:Value=native("GET",&path).send().await.unwrap().json().await.unwrap();assert_eq!(denied["preflight"]["eligible"],false);assert!(denied["preflight"]["reason"].as_str().unwrap().contains("site operator"));
+    let db=f.state.db.client().await.unwrap();assert_eq!(db.query_one("SELECT count(*) FROM platform.protocol_publication_commands",&[]).await.unwrap().get::<_,i64>(0),before);db.execute("UPDATE platform.protocol_identity_bindings SET revoked_at=NULL WHERE user_id='PublicUploadUser1'",&[]).await.unwrap();drop(db);
+    let begin:Value=native("POST",&format!("/api/v1/account/upload/begin?expectedAccountId={account}")).json(&json!({"manga":f.manga,"groups":[],"expectedAccountId":account})).send().await.unwrap().json().await.unwrap();let session=begin["id"].as_str().unwrap();
+    let boundary="six-persona-native-synthetic";let mut body=format!("--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"page.png\"\r\nContent-Type: image/png\r\n\r\n").into_bytes();body.extend(png());
+    let mut webp=Cursor::new(Vec::new());DynamicImage::ImageRgb8(RgbImage::from_pixel(13,17,Rgb([12,34,56]))).write_to(&mut webp,ImageFormat::WebP).unwrap();
+    body.extend(format!("\r\n--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"page-2.webp\"\r\nContent-Type: image/webp\r\n\r\n").as_bytes());body.extend(webp.into_inner());body.extend(format!("\r\n--{boundary}--\r\n").as_bytes());
+    let attached=native("POST",&format!("/api/v1/account/upload/{session}?expectedAccountId={account}")).header("content-type",format!("multipart/form-data; boundary={boundary}")).body(body).send().await.unwrap();assert_eq!(attached.status().as_u16(),200);let attached:Value=attached.json().await.unwrap();assert_eq!(attached["data"].as_array().unwrap().len(),2);
+    let committed=native("POST",&format!("/api/v1/account/upload/{session}/commit?expectedAccountId={account}")).json(&commit(attached["data"].as_array().unwrap())).send().await.unwrap();assert_eq!(committed.status().as_u16(),200);let receipt:Value=committed.json().await.unwrap();assert_eq!(receipt["type"],"chapter");assert_eq!(receipt["attributes"]["pages"],2);assert_eq!(receipt["nostr"]["accountId"],account);
+    let read:Value=native("GET",&format!("/api/v1/account/uploads/{session}?expectedAccountId={account}")).send().await.unwrap().json().await.unwrap();assert_eq!(read["session"]["state"],"committed");assert_eq!(read["session"]["receipt"]["id"],receipt["id"]);
+}

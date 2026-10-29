@@ -1,13 +1,14 @@
 <script lang="ts">
  import { onMount, onDestroy } from 'svelte';
  import { Locale } from '$lib';
+ import {canonicalLanguageOptions,languageLabel} from './language';
  import { createSessionCoverController, coverCommandCapabilities, type SignedCoverController, type CoverRecord } from './session-cover-client';
  import type { MangaView } from './types';
  let { nativeAccount, title, accountId, disabled=false, assertCurrent, onChanged, onState }: { nativeAccount:string; title:MangaView; accountId:string; disabled?:boolean; assertCurrent:()=>void; onChanged:()=>Promise<void>; onState:(state:{pending:boolean;busy:boolean})=>void }=$props();
  let controller=$state<SignedCoverController>();
  let disposed=false,previewEpoch=0;
  let covers=$state<CoverRecord[]>([]),total=$state(0),offset=$state(0),pageReady=$state(false),ready=$state(false),busy=$state(false),pending=$state(false),message=$state('');
- const languages=Object.entries({...Locale.Languages,ta:'Tamil'}).filter(([code])=>/^[a-z]{2}(-[a-z]{2})?$/.test(code)).sort((a,b)=>a[1].localeCompare(b[1]));
+ const languages=canonicalLanguageOptions(Locale.Languages);
  let customLanguage=$state(false);
  let file=$state<File|null>(null),locale=$state(''),volume=$state(''),description=$state(''),main=$state(true),selectedId=$state(''),preview=$state<string|null>(null);
  const selected=$derived(covers.find(row=>row.id===selectedId));

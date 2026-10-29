@@ -1,4 +1,5 @@
 <script lang="ts">
+ import {reviewTimeline} from './draft-feedback';
  import { onDestroy } from 'svelte';
  import { Constants, Locale } from '$lib';
  import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
@@ -11,6 +12,7 @@
  import type { SignedTitleController, TitleAccount } from './title-client';
  let {nativeAccount,manga,account,assertCurrent,onChanged}:{nativeAccount:string;manga:MangaView;account:TitleAccount;assertCurrent:()=>void;onChanged:(value:MangaView|undefined)=>void}=$props();
  let disposed=false,busy=$state(false),pending=$state(false),removalQueued=$state(false),message=$state(''),controller:SignedTitleController|undefined;
+ const feedback=$derived(reviewTimeline(manga.public_api.resource.attributes.reviewTimeline).events.filter(e=>e.action==='rejected').at(-1));
  const grants=$derived(draftGrants(account,manga));
  const creator=$derived(manga.public_api.resource.relationships.find(row=>row.type==='creator'&&typeof row.attributes?.username==='string'));
  const submitter=$derived(creator?{id:creator.id,name:String(creator.attributes!.username)}:undefined);
@@ -132,6 +134,7 @@
 			</strong>
 		</div>
 	</div>
+ {#if manga.state==='rejected'}<div class="rounded border p-3"><strong>Changes requested</strong>{#if feedback}<p>{feedback.reason}</p>{:else}<p>Open the draft to review its details.</p>{/if}<a class="underline" href={`/title/${manga.id}/edit?draft=true`}>Edit and resubmit</a></div>{/if}
  {#if message}<p class="text-sm" role="status">{message}</p>{/if}
  {#if pending}<p class="text-sm" role="alert">An earlier outcome is unconfirmed. No command will be replayed, even after reloading this list.</p>{/if}
 </article>

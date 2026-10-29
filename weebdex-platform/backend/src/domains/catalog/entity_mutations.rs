@@ -326,10 +326,20 @@ pub(crate) async fn group_update(
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     v::id(id)?;
     let GroupUpdate { version, name, locked, inactive, metadata, leader, officers, members } = input;
+    // The legacy native route loads its principal before opening a transaction.
+    // Recheck and hold actual account grants before the group lock, just as the
+    // account adapters do, so a revoked grant cannot authorize a late role edit.
+    let actual = tx.query_opt("SELECT verified,roles,permissions FROM platform.users WHERE id=$1 AND NOT disabled FOR SHARE NOWAIT", &[&actor.user_id()]).await?.ok_or_else(|| ApiError::forbidden("Group account authority ended"))?;
+    let actual_roles: Value = actual.get(1);
+    let actual_permissions: Value = actual.get(2);
+    let eligible = actual.get::<_, bool>(0) && actual_roles.as_array().is_some_and(|roles| !roles.iter().any(|role| role == "banned" || role == "restricted"));
+    let current_permission = |permission: &str| eligible && actual_permissions.as_array().is_some_and(|permissions| permissions.iter().any(|value| value == permission));
+    let current_staff = actual_roles.as_array().is_some_and(|roles| roles.iter().any(|role| matches!(role.as_str(), Some("moderator" | "staff" | "sysop"))));
     let row=tx.query_opt("SELECT locked,version FROM platform.catalog_groups WHERE id=$1 AND deleted_at IS NULL AND platform.protocol_group_is_visible(id) FOR UPDATE",&[&id]).await?.ok_or_else(||ApiError::not_found("Group not found"))?;
-    let staff = actor.is_moderator() && actor.has_perm("scanlation_group.update");
+    let staff = actor.is_moderator() && actor.has_perm("scanlation_group.update") && current_staff && current_permission("scanlation_group.update");
     if !staff {
         actor.require_permission("self.scanlation_group.update")?;
+        if !current_permission("self.scanlation_group.update") { return Err(ApiError::forbidden("Group account authority ended")); }
         let owns:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_group_members WHERE group_id=$1 AND user_id=$2 AND is_leader)",&[&id,&actor.user_id()]).await?.get(0);
         if !owns || row.get::<_, bool>(0) {
             return Err(ApiError::forbidden("Group leader permission required"));
@@ -362,6 +372,25 @@ pub(crate) async fn group_update(
         all.insert(leader.clone());
         all.extend(officers.iter().cloned());
         let ids: Vec<String> = all.into_iter().collect();
+        if !staff && ids.iter().any(|id| !current.iter().any(|row| row.get::<_, String>(0) == *id)) {
+            return Err(ApiError::new(axum::http::StatusCode::CONFLICT, "invitation_required", "Invite new members and wait for acceptance before assigning local roles"));
+        }
+        if !current.iter().any(|row| row.get::<_, String>(0) == leader && row.get::<_, bool>(1)) {
+            // A leadership transfer must leave an account that can actually manage
+            // this team. Hold the destination against disable/grant changes until
+            // the membership replacement commits; NOWAIT prevents lock cycles.
+            let target = tx.query_opt("SELECT verified,roles,permissions FROM platform.users WHERE id=$1 AND NOT disabled FOR SHARE NOWAIT", &[&leader]).await?;
+            let eligible = target.as_ref().is_some_and(|row| {
+                let roles: Value = row.get(1);
+                let permissions: Value = row.get(2);
+                row.get::<_, bool>(0)
+                    && roles.as_array().is_some_and(|values| !values.iter().any(|value| value == "banned" || value == "restricted"))
+                    && permissions.as_array().is_some_and(|values| values.iter().any(|value| value == "self.scanlation_group.update"))
+            });
+            if !eligible {
+                return Err(ApiError::conflict("Choose a verified, active group member with permission to manage groups as the new leader"));
+            }
+        }
         let users = tx
             .query(
                 "SELECT id,username FROM platform.users WHERE id=ANY($1) AND NOT disabled",

@@ -1,7 +1,11 @@
 <script lang="ts">
+ import {reviewFields,reviewTimeline} from './draft-feedback';
+ import UnsavedEditorGuard from './UnsavedEditorGuard.svelte';
+ import {allowEditorDiscard} from './editor-unsaved';
  import AccountActionGate from './AccountActionGate.svelte';
  import { Session } from '$lib/stores';
  import { Locale } from '$lib';
+ import {canonicalLanguageOptions,languageLabel} from './language';
  import { nativeAccountIssue, type NativeAccountIssue } from './native-account-scope';
  import { onDestroy, onMount, untrack } from 'svelte';
  import { createSessionTitleController, titleAwaitingProjection, type SignedTitleController, type TitleAction } from './session-title-client';
@@ -15,8 +19,10 @@
  const captured=untrack(()=>data?.manga?.id),path=window.location.pathname;
  let owner=$state<SignedTitleController>();
  let disposed=false,generation=0;let capturedSession=$state.raw(untrack(()=>$Session)),issue=$state<NativeAccountIssue>();
+ let rejectionReason=$state(''),affectedFields=$state<string[]>([]);
  let current=$state<MangaView>(),ready=$state(false),busy=$state(false),pending=$state(false),message=$state('');
- const languages=Object.entries({...Locale.Languages,ta:'Tamil'}).filter(([code])=>/^[a-z]{2}(-[a-z]{2})?$/.test(code)).sort((a,b)=>a[1].localeCompare(b[1]));
+ const history=$derived(reviewTimeline(current?.public_api.resource.attributes.reviewTimeline));
+ const languages=canonicalLanguageOptions(Locale.Languages);
  let customLanguage=$state(false);
  let title=$state(''),language=$state('en'),description=$state(''),status=$state('ongoing'),rating=$state('safe');
  let fields=$state<RichTitleFields>(richTitleFields());
@@ -29,7 +35,7 @@
  const canWrite=$derived(access.write);
  const canEditLinks=$derived(access.links);
  const canReview=$derived(access.review);
- const metadataDirty=$derived(!!current&&(title!==originalText(current,'title')||description!==originalText(current,'description')||language!==current.language||status!==current.status||rating!==current.content_rating||titleFieldsChanged(fields,current)));
+ const metadataDirty=$derived(current?(title!==originalText(current,'title')||description!==originalText(current,'description')||language!==current.language||status!==current.status||rating!==current.content_rating||titleFieldsChanged(fields,current)):(title!==''||description!==''||language!=='en'||status!=='ongoing'||rating!=='safe'||titleFieldsChanged(fields)));
  const awaitingProjection=$derived(titleAwaitingProjection(current));
  const hasCover=$derived(!!current?.relationships.cover&&current.relationships.cover.language===current.language);
  function originalText(value:MangaView,key:'title'|'description'){const map=value.public_api.resource.attributes[key];return map&&typeof map==='object'&&value.language in map&&typeof (map as Record<string,unknown>)[value.language]==='string'?(map as Record<string,string>)[value.language]:'';}
@@ -38,7 +44,7 @@
  function responseError(response:{status:number;body?:unknown}){const body=response.body as {errors?:{detail?:string}[]}|undefined;return body?.errors?.[0]?.detail??`Title request refused (HTTP ${response.status})`;}
  let initializing = $state(false);
  async function initialize(){if(initializing||disposed||!$Session?.identity?.id)return;capturedSession=$Session;const session=capturedSession,token=generation,check=()=>{active();if(generation!==token||$Session!==session)throw Error('This account view changed.');};initializing=true;issue=undefined;message='';try{const next=await createSessionTitleController(session.identity.id,check,captured);try{active();if(token!==generation)throw Error('This account view changed.');}catch(error){next.dispose();throw error;}owner=next;permissions=[...owner.account.permissions];roles=[...owner.account.roles];pending=owner.pending();if(captured){const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}ready=true;if(pending)message='A previous title command has an unconfirmed outcome. It will not be replayed. Review the actual account drafts or contact the instance operator before further changes.';}catch(error){if(!disposed&&token===generation){issue=nativeAccountIssue(error);message=failure(error);}}finally{if(!disposed&&token===generation)initializing=false;}}
- $effect(()=>{const session=$Session;untrack(()=>{generation++;owner?.dispose();owner=undefined;current=undefined;ready=false;initializing=false;busy=false;pending=false;permissions=[];roles=[];customLanguage=false;language='en';title='';description='';fields=richTitleFields();coverBusy=false;coverPending=false;relationBusy=false;relationPending=false;dispositionBusy=false;dispositionPending=false;removed=false;message='';issue=undefined;capturedSession=session;if(session?.identity?.id)void initialize();});});
+ $effect(()=>{const session=$Session;untrack(()=>{generation++;owner?.dispose();owner=undefined;current=undefined;ready=false;initializing=false;busy=false;pending=false;permissions=[];roles=[];customLanguage=false;language='en';title='';description='';status='ongoing';rating='safe';rejectionReason='';affectedFields=[];fields=richTitleFields();coverBusy=false;coverPending=false;relationBusy=false;relationPending=false;dispositionBusy=false;dispositionPending=false;removed=false;message='';issue=undefined;capturedSession=session;if(session?.identity?.id)void initialize();});});
  async function command(action:TitleAction){
   if(!owner||!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed)return;
   if(metadataDirty&&action!=='create'&&action!=='update'){message='Save metadata changes before reviewing this title.';return;}
@@ -58,11 +64,13 @@
     if(rating!==current.content_rating)payload.content_rating=rating;
     if(Object.keys(payload).length===1){message='No metadata changes to save.';return;}
    }
+   if(action==='reject')payload={reason:rejectionReason,affectedFields};
    if(payload){for(const [keys,allowed] of [[['title','alt_titles'],access.title],[['authors'],access.authors],[['artists'],access.artists],[['tags'],access.tags]] as const)if(!allowed&&keys.some(key=>Object.hasOwn(payload!,key)))throw Error('You do not have permission to edit that title field.');}
    if(payload&&(Object.hasOwn(payload,'links')||Object.hasOwn(payload,'officialLinks'))&&!canEditLinks)throw Error('You do not have permission to edit links.');
    const response=await owner.mutate(action,payload);active();
    if(response.status>=400||!response.body)throw Error(responseError(response));
    restore(response.body);
+   if(action==='reject'){rejectionReason='';affectedFields=[];}
    const source=response.body.public_api.resource.attributes.nostr as {publicationStatus?:string;publicationScope?:string;metadataScope?:string}|undefined;
    message=action==='publish'?(source?.publicationStatus==='accepted_pending_projection'?'The original signed title was accepted and is waiting for actual local source projection. Public detail is not readable yet.':source?.publicationScope==='original-protocol'?'The original signed title publication receipt was accepted. Public readability remains a separate observation.':'Title published on this instance. No original-protocol publication is claimed.'):
     action==='submit'?'Draft submitted for instance review.':action==='reject'?'Draft rejected by the instance reviewer.':action==='create'?'Draft saved. Add a cover in the original language before submitting for review.':'Changes saved on this site. Original publications are unchanged.';
@@ -71,6 +79,7 @@
  }
  async function reload(){if(!owner||busy||coverBusy||dispositionBusy||relationBusy||removed||!current)return;if(metadataDirty&&!confirm('Discard unsaved title metadata changes and reload the actual server record?'))return;const operationOwner=owner,token=generation;busy=true;try{const response=await owner.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);message='Current title read from the server. No mutation was replayed; an unconfirmed command remains fenced.';}catch(error){if(!disposed&&token===generation&&owner===operationOwner)message=failure(error);}finally{if(!disposed&&token===generation&&owner===operationOwner){busy=false;pending=owner?.pending()??pending;if(owner){permissions=[...owner.account.permissions];roles=[...owner.account.roles];}}}}
 </script>
+<UnsavedEditorGuard dirty={ready&&(metadataDirty||!!rejectionReason.trim()||affectedFields.length>0)} />
 <section class="space-y-4 rounded border p-4">
  <h3 class="text-lg font-medium">Title details</h3>
  <p>Changes apply to this site. Original publications remain unchanged.</p>
@@ -86,7 +95,7 @@
   <fieldset disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||awaitingProjection||!canWrite} class="space-y-3">
    <label class="block">Original-language title<input class="block w-full rounded border p-2" bind:value={title} disabled={!access.title} maxlength="500" required={!current} /></label>
    <label class="block">Original language<select class="block w-full rounded border p-2" value={customLanguage?'__other__':language} onchange={event=>{const value=event.currentTarget.value;customLanguage=value==='__other__';language=customLanguage?'':value;}}>
-    {#if !customLanguage&&!languages.some(([code])=>code===language)}<option value={language}>{Locale.toLanguage(language)||'Unspecified language'}</option>{/if}
+    {#if !customLanguage&&!languages.some(([code])=>code===language)}<option value={language}>{languageLabel(language,Locale.Languages)}</option>{/if}
     {#each languages as [code,name]}<option value={code}>{name}</option>{/each}<option value="__other__">Other language…</option>
    </select></label>
    {#if customLanguage}<label class="block">Other original language code<input class="block w-full rounded border p-2" bind:value={language} required placeholder="For example, ta or pt-br" /></label>{/if}
@@ -94,7 +103,7 @@
    <label class="block">Publication status<select class="block rounded border p-2" bind:value={status}><option value="ongoing">Ongoing</option><option value="completed">Completed</option><option value="hiatus">Hiatus</option><option value="cancelled">Cancelled</option></select></label>
    <label class="block">Content rating<select class="block rounded border p-2" bind:value={rating}><option value="safe">Safe</option><option value="suggestive">Suggestive</option><option value="erotica">Erotica</option><option value="pornographic">Pornographic</option></select></label>
    <fieldset disabled={!access.title} class="space-y-2 rounded border p-3"><legend class="font-medium">Alternate titles</legend>
-    {#each fields.altTitles as alternate,index}<div class="flex flex-wrap gap-2"><label>Language<input class="block rounded border p-2" bind:value={alternate.language} maxlength="100" required /></label><label class="flex-1">Alternate title<input class="block w-full rounded border p-2" bind:value={alternate.text} maxlength="500" required /></label><button type="button" class="rounded border px-3 py-1" onclick={()=>{fields.altTitles=fields.altTitles.filter((_,i)=>i!==index);}}>Remove alternate title</button></div>{/each}
+    {#each fields.altTitles as alternate,index}<div class="flex flex-wrap gap-2"><label>Language<select class="block rounded border p-2" bind:value={alternate.language} required>{#if !languages.some(([code])=>code===alternate.language)}<option value={alternate.language}>{languageLabel(alternate.language,Locale.Languages)||'Choose language'}</option>{/if}{#each languages as [code,label]}<option value={code}>{label}</option>{/each}</select></label><label class="flex-1">Alternate title<input class="block w-full rounded border p-2" bind:value={alternate.text} maxlength="500" required /></label><button type="button" class="rounded border px-3 py-1" onclick={()=>{fields.altTitles=fields.altTitles.filter((_,i)=>i!==index);}}>Remove alternate title</button></div>{/each}
     <button type="button" class="rounded border px-3 py-1" disabled={fields.altTitles.length>=100} onclick={()=>{fields.altTitles=[...fields.altTitles,{language,text:''}];}}>Add alternate title</button>
    </fieldset>
    <div class="grid gap-3 sm:grid-cols-2">
@@ -118,14 +127,17 @@
   </fieldset>
  </form>
  {#if current}
+  {#if current.state==='rejected'}<p role="status">Changes requested. Read the review below, edit this same draft, then resubmit. Saved covers and related titles stay attached.</p>{/if}
+  {#if history.events.length}<section class="space-y-3 rounded border p-3" aria-label="Draft review history"><h2 class="font-medium">Review timeline</h2><ol>{#each history.events as event}<li class="border-b py-2"><strong>{event.action==='rejected'?'Changes requested':event.action==='submitted'?'Submitted for review':'Published'}</strong> · <time datetime={event.createdAt}>{new Date(event.createdAt).toLocaleString()}</time>{#if event.reason}<p>{event.reason}</p>{/if}{#if event.affectedFields.length}<p>Affected: {event.affectedFields.map(field=>reviewFields.find(([key])=>key===field)?.[1]??field).join(', ')}</p>{/if}</li>{/each}</ol>{#if history.hasEarlier}<p>Showing the latest 100 review events.</p>{/if}</section>{/if}
   {#key current.id}<PublicCoverEditor nativeAccount={capturedSession!.identity.id} title={current} accountId={owner!.account.id} disabled={busy||pending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||awaitingProjection} assertCurrent={active} onState={state=>{coverPending=state.pending;coverBusy=state.busy;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}
   {#if !removed}{#key current.id}<PublicRelationEditor nativeAccount={capturedSession!.identity.id} title={current} accountId={owner!.account.id} disabled={busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||metadataDirty||awaitingProjection} assertCurrent={active} onState={state=>{relationBusy=state.busy;relationPending=state.pending;}} onChanged={async()=>{const response=await owner!.read();active();if(response.status!==200||!response.body)throw Error(responseError(response));restore(response.body);}} />{/key}{/if}
   {#if !hasCover&&(current.state==='draft'||current.state==='rejected')}<p>Add a cover in the title’s original language before submitting for review.</p>{/if}
   <div class="flex flex-wrap gap-3">
-   {#if current.state==='draft'||current.state==='rejected'}<button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||!access.submit||!hasCover} onclick={()=>command('submit')}>Submit for review</button>{/if}
+   {#if current.state==='draft'||current.state==='rejected'}<button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||!access.submit||!hasCover} onclick={()=>command('submit')}>{current.state==='rejected'?'Resubmit for review':'Submit for review'}</button>{/if}
    {#if current.state==='submitted'&&canReview}
+    <fieldset class="w-full space-y-2 rounded border p-3" disabled={busy||pending}><legend>Request changes</legend><label class="block">What should the author change?<textarea class="block w-full rounded border p-2" bind:value={rejectionReason} maxlength="2000" placeholder="Give a clear, helpful reason visible to the author."></textarea></label><div class="flex flex-wrap gap-3">{#each reviewFields as [field,label]}<label><input type="checkbox" value={field} bind:group={affectedFields} /> {label}</label>{/each}</div><p class="text-sm">This feedback is visible to the author. Do not include private moderation notes.</p></fieldset>
     <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty} onclick={()=>command('publish')}>Publish reviewed title</button>
-    <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty} onclick={()=>command('reject')}>Reject reviewed draft</button>
+    <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||pending||coverBusy||coverPending||dispositionBusy||dispositionPending||relationBusy||relationPending||removed||metadataDirty||!rejectionReason.trim()} onclick={()=>command('reject')}>Request changes</button>
    {/if}
    <button class="rounded border px-4 py-2" type="button" disabled={!ready||busy||coverBusy||dispositionBusy||relationBusy||removed} onclick={reload}>Reload title details</button>
   </div>

@@ -55,6 +55,9 @@ const publicEnv = Object.fromEntries([
   "PUBLIC_DATA_URL", "PUBLIC_UPLOAD_URL", "PUBLIC_PROXY_URL", "PUBLIC_OPENGRAPH_URL",
 ].map(key => [key, env[key]]));
 const evidence = {
+  six_persona_repairs: integration.six_persona_repairs,
+  approved_six_persona_exceptions: integration.approved_six_persona_exceptions,
+  six_persona_qualification: integration.six_persona_qualification,
   source_changed: false,
   public_api_catalogue_enabled: integration.public_api_catalogue_enabled,
   public_signed_upload_enabled: integration.public_signed_upload_enabled,

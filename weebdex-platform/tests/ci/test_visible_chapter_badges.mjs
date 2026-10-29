@@ -91,3 +91,9 @@ test('same-context read failures remain explicit and do not automatically retry'
   assert.equal(f.controller.snapshot.status, 'error'); assert.equal(f.calls.length, 1);
   assert.equal(f.controller.snapshot.values, undefined); f.controller.dispose();
 });
+
+test('transient cleanup recovery is plain, support detail remains available, and Retry preserves ownership',async()=>{
+ const f=await badgeFixture('account',1);f.control.hold=1;f.control.ignoredAbort=true;const pending=f.controller.refresh();await turns();f.controller.dispose();await turns();f.expireCleanup();await pending;
+ const reopened=f.make();await reopened.refresh();assert.equal(reopened.snapshot.status,'error');assert.match(reopened.snapshot.message,/temporarily unavailable|try again/i);assert.doesNotMatch(reopened.snapshot.message,/fetch|cleanup|cancellation/i);assert.match(reopened.snapshot.supportDetails,/cleanup|cancellation/i);assert.equal(reopened.snapshot.values,undefined);const count=f.calls.length;await reopened.refresh();assert.equal(f.calls.length,count,'A retry cannot escape unsettled transport ownership');
+ f.settleHeld();await turns();f.control.hold=0;await reopened.refresh();assert.equal(reopened.snapshot.status,'ready');assert.equal(reopened.snapshot.values['chapter:0'],true);reopened.dispose();
+});

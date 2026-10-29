@@ -4,12 +4,13 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { generateLocalKeyDraft, importLocalKeyDraft, encodePublicKey } from './local-signing-key';
-  import { connectSigner, signerIdentity, capabilities, assertAllowedRelay, admitAccount, type Relay } from './publication';
+  import { connectSigner, signerIdentity, capabilities, assertAllowedRelay, admitAccount, relayPreferences, rememberRelay, type Relay } from './publication';
   import { proveService } from './protocol/nostr.js';
   import { enrollmentPolicy } from './enrollment-policy';
 
-  let { onfinish, assertCurrent = () => {}, finishLabel = 'Continue', allowFinishLater = true, resumeSelected = false }: {
+  let { onfinish, onprofile, assertCurrent = () => {}, finishLabel = 'Continue', allowFinishLater = true, resumeSelected = false }: {
     onfinish: () => void;
+    onprofile?: (origin: string) => void;
     assertCurrent?: () => void;
     finishLabel?: string;
     allowFinishLater?: boolean;
@@ -139,6 +140,18 @@
     } catch { if (!disposed && epoch === generation) error = 'Joining could not be confirmed; the site may already have received your request. Keep this same recovery key. You can explicitly retry joining with it, or return later. Your library was not shared.'; }
     finally { if (!disposed && epoch === generation) pending = false; }
   }
+  async function openProfile() {
+    if (pending || !relay) return;
+    const epoch = generation, destination = relay; pending = true; error = '';
+    try {
+      assertActive(epoch); const preferences = await relayPreferences(); assertActive(epoch);
+      const saved = preferences.relays.find(row => row.origin === destination.origin);
+      if (saved && saved.serviceKey !== destination.serviceKey) throw Error('The saved destination has a different service identity. Review it in Library settings first.');
+      if (!saved) await rememberRelay(destination.origin, destination.serviceKey, preferences.revision, () => assertActive(epoch));
+      assertActive(epoch); if (onprofile) onprofile(destination.origin); else { notice = 'Destination saved. Open Account → Advanced identity tools → Edit public profile.'; }
+    } catch (cause) { if (!disposed && epoch === generation) error = cause instanceof Error ? cause.message : 'The destination could not be saved. Try again.'; }
+    finally { if (!disposed && epoch === generation) pending = false; }
+  }
   // Reuse the selected identity without importing, generating or signing again.
   // No new key or secret transfer occurs here. Reuse existing session authority;
   // this is not evidence that a backup exists and grants no additional site access.
@@ -153,14 +166,13 @@
   <header class="space-y-2">
     <h2 id="identity-setup-title-{id}" bind:this={heading} tabindex="-1" class="text-lg font-semibold leading-tight">{title}</h2>
     {#if stage === 'choose'}
-      <p class="text-muted-foreground text-sm">This optional identity is for publishing outside the site. Your normal account already handles ratings, comments, reports and follows. We will help you keep its private recovery key safe.</p>
+      <p class="text-muted-foreground text-sm">This optional identity is for publishing outside the site. Your normal account already handles ratings, comments, reports and follows. Connect an existing signer without giving this site your private key.</p>
     {/if}
   </header>
   {#if stage === 'choose'}
     <div class="flex flex-col gap-2">
-      <Button class="min-h-11 w-full" disabled={pending} onclick={createKey}>Create my public identity</Button>
-      <Button class="min-h-11 w-full" variant="outline" disabled={pending} onclick={openImport}>I already have a private key</Button>
-      <details><summary class="cursor-pointer text-sm">More ways to connect</summary><Button class="mt-2 min-h-11 w-full" variant="outline" disabled={pending} onclick={useExtension}>Use a browser extension</Button></details>
+      <Button class="min-h-11 w-full" disabled={pending} onclick={useExtension}>Use my browser signer</Button>
+      <details><summary class="cursor-pointer text-sm">Advanced: create or import a private key</summary><div class="mt-3 space-y-2"><p class="text-sm">Most people do not need this. Keep using an existing signer if you already have an identity.</p><Button class="min-h-11 w-full" variant="outline" disabled={pending} onclick={openImport}>I already have a private key</Button><Button class="min-h-11 w-full" variant="outline" disabled={pending} onclick={createKey}>Create a new public identity</Button></div></details>
     </div>
     <p class="text-muted-foreground text-sm">Private keys stay in this browser session. Nothing is published during key setup.</p>
   {:else if stage === 'import'}
@@ -194,7 +206,7 @@
     </details>
     <label class="flex items-start gap-3 text-sm"><input class="mt-1 size-4 shrink-0" type="checkbox" bind:checked={backupAcknowledged} disabled={pending} /> <span>{identity.source === 'external' ? 'I manage my private-key backup in my signer.' : 'I have saved my private key somewhere safe.'}</span></label>
     <p class="text-muted-foreground text-xs">This acknowledgement does not create or verify a backup for you.</p>
-    <p class="text-sm">Next: review joining this site. Saving your recovery key alone does not give you access to ratings or other account actions.</p>
+    <p class="text-sm">Next: review joining this site. This optional public-site access is separate from your normal account; reading, ratings and local comments already use your ordinary login.</p>
     <Button class="min-h-11 w-full" disabled={pending || !backupAcknowledged} onclick={reviewInstance}>Continue to site access</Button>
     <details><summary class="cursor-pointer text-sm">Connect without joining (advanced)</summary>
       <p class="mt-2 text-muted-foreground text-sm">For an already approved identity or when this site is unavailable. Connecting locally does not request admission or publish anything; site access is not confirmed.</p>
@@ -231,8 +243,10 @@
     <p class="text-sm">Your joining request was accepted by <span class="break-all">{relay.origin}</span>. Return to your task to check the account access it needs. Joining does not automatically link an email account or grant every permission. Your saved manga and reading history were not shared.</p>
     <Input aria-label="Your public key" value={identity.npub} readonly spellcheck={false} class="font-mono text-xs" />
     <Button class="min-h-11" variant="outline" onclick={copyPublic}>Copy public key</Button>
-    <p class="text-muted-foreground text-sm">You can add a public name or profile later in Settings → Public identity. {identity.source === 'external' ? 'Reconnect your signer next time.' : 'After reloading or locking this session, paste your saved private key to use this identity again.'}</p>
-    <Button class="min-h-11 w-full" onclick={onfinish}>{finishLabel}</Button>
+    <p class="text-muted-foreground text-sm">You can add a public name or profile later in Account → Advanced identity tools → Public profile. {identity.source === 'external' ? 'Reconnect your signer next time.' : 'After reloading or locking this session, paste your saved private key to use this identity again.'}</p>
+    <p class="text-muted-foreground text-sm">Use this verified site for your profile and public actions. This only remembers a destination; it does not publish or share your library.</p>
+    <Button class="min-h-11 w-full" disabled={pending} onclick={openProfile}>Use this site for my public profile</Button>
+    <Button class="min-h-11 w-full" variant="outline" onclick={onfinish}>{finishLabel}</Button>
   {/if}
   {#if pending}<p class="text-muted-foreground text-sm" role="status">Working…</p>{/if}
   {#if error}<p role="alert" class="text-destructive text-sm">{error}</p>{/if}

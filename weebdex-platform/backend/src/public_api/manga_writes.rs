@@ -168,10 +168,10 @@ async fn reject(state:State<AppState>,path:Path<String>,uri:OriginalUri,headers:
 async fn transition(State(state):State<AppState>,Path(manga):Path<String>,OriginalUri(uri):OriginalUri,
     headers:HeaderMap,request:Request,next:&str)->PublicApiResult<Json<EntityResponse<Resource>>> {
     let manga=PublicUuid::parse(&manga)?;
-    let (cap,body)=authorize(&state,&uri,&headers,request,1024,false).await?;
+    let (cap,body)=authorize(&state,&uri,&headers,request,12000,false).await?;
     let mut payload:Value=serde_json::from_slice(&body).map_err(|_|PublicApiError::bad_request("Invalid title transition body"))?;
     let expected=take_expected_account(&mut payload)?;
-    v::allowed(&payload,&["version"])?;v::version(&payload)?;
+    v::allowed(&payload,&["version","reason","affectedFields"])?;v::version(&payload)?;
     let mut client=state.db.client().await?;let tx=client.transaction().await?;
     let actor=bound_account_write(&tx,&cap).await?;expected_account(&tx,&actor,expected.as_ref()).await?;let manga=resolve(&tx,ResourceKind::Manga,&manga).await?;
     // A hidden source cannot be reviewed through a saved UUID. Exact pending

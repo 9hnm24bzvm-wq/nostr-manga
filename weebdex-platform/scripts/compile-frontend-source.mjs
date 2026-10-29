@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createSixPersonaOverlays } from '../platform-integrations/six-persona/overlays.mjs';
 import { createAccountLibraryOverlays } from '../platform-integrations/local-library/account-overlays.mjs';
 import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';
 // Syntax/source compiler only; no application, browser or database execution.
@@ -17,7 +18,7 @@ const frontend = process.env.WEEBDEX_FRONTEND_ROOT ?? path.join(root, 'frontend'
 const require = createRequire(path.join(frontend, 'package.json'));
 const { compile } = require('svelte/compiler'), { transform } = require('esbuild');
 const integration = prepareFrontendIntegration(frontend);
-const plugins = [createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createPublicApiOverlays(frontend), createPublicUploadOverlays(frontend), createNativeUploadOverlays(frontend), createBoundedReaderOverlays(frontend), createAccountLibraryOverlays(frontend)];
+const plugins = [createFrontendOverlays(frontend), createReaderOverlays(frontend), createLocalLibraryOverlays(frontend), createPublicApiOverlays(frontend), createPublicUploadOverlays(frontend), createNativeUploadOverlays(frontend), createBoundedReaderOverlays(frontend), createAccountLibraryOverlays(frontend), createSixPersonaOverlays(frontend)];
 const failures = [], warnings = []; let components = 0, scripts = 0;
 const compileOne = async (file, external = false) => {
   let source = fs.readFileSync(file, 'utf8');

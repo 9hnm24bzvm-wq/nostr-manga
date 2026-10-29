@@ -134,6 +134,7 @@ async fn context(
         .await?
         .get(0);
     let configured = state.config.protocol_publication.is_some();
+    let preflight = crate::protocol::publication::native_upload_preflight(&state, &tx, &actor, &[]).await?;
     let permissions = actor
         .0
         .permissions
@@ -141,13 +142,17 @@ async fn context(
         .filter(|p| actor.0.has_perm(p))
         .collect::<Vec<_>>();
     let mut value = json!({"result":"ok","user":{"id":user,"version":version,"username":actor.0.username,"roles":actor.0.roles,"permissions":permissions},"nostr":{"catalogueScope":"instance-local","catalogNamespace":PublicUuid::parse(&namespace)?,"nativeSessionAuthority":true},"upload":{"canBegin":actor.has_perm("chapter.create"),"canManage":actor.has_perm("self.chapter.update"),"conditional":true,"publication":{"scope":if configured{"original-protocol"}else{"instance-local"},"configured":configured,"requiresOperatorOrAuthorizedGroup":true},"limits":{"maxFiles":storage::MAX_FILES,"maxFilesPerRequest":5,"maxFileBytes":storage::MAX_FILE_BYTES,"maxSessionBytes":storage::MAX_SESSION_BYTES,"maxPixels":storage::MAX_PIXELS,"maxDimension":storage::MAX_DIMENSION}}});
+    value["upload"]["preflight"] = preflight;
+    value["groups"] = super::native_collaboration::own_groups(&tx, &actor).await?;
     account::provenance(&mut value, user.as_str());
     tx.commit().await?;
     Ok(Json(value))
 }
 async fn project(tx: &Transaction<'_>, native: Value, account: &str) -> PublicApiResult<Value> {
+    let native_id = native["id"].as_str().ok_or_else(PublicApiError::unavailable)?.to_owned();
     let mut value = serde_json::to_value(manga_writes::resource(tx, native).await?.0)
         .map_err(|_| PublicApiError::unavailable())?;
+    value["data"]["attributes"]["reviewTimeline"] = super::native_draft_reviews::timeline(tx, &native_id).await?;
     account::provenance(&mut value, account);
     Ok(value)
 }
@@ -245,14 +250,14 @@ async fn transition(
 ) -> PublicApiResult<Json<Value>> {
     super::uploads::no_query(&uri)?;
     let id = PublicUuid::parse(&id)?;
-    let bytes = account::body(request, &headers, true, 1024).await?;
+    let bytes = account::body(request, &headers, true, 12000).await?;
     let mut input: Value = super::native_json::parse(&bytes)
         .map_err(|_| PublicApiError::bad_request("Invalid title transition"))?;
     let mut db = state.db.client().await?;
     let tx = db.transaction().await?;
     let actor = actor(&state, &headers, &tx, true).await?;
     let account = capture(&tx, &actor, &mut input).await?;
-    crate::domains::catalog::validation::allowed(&input, &["version"])?;
+    crate::domains::catalog::validation::allowed(&input, &["version", "reason", "affectedFields"])?;
     crate::domains::catalog::validation::version(&input)?;
     let id = resolve(&tx, ResourceKind::Manga, &id).await?;
     let visible:bool=tx.query_opt("SELECT protocol_source_visible AND platform.protocol_source_is_visible(protocol_series_id) FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL",&[&id]).await?.ok_or_else(PublicApiError::not_found)?.get(0);

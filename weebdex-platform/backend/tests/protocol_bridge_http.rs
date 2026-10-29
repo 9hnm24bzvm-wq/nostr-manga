@@ -834,7 +834,7 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
         (
             Method::POST,
             format!("/api/manga/draft/{review_mid}/reject"),
-            Some(json!({"version":review_version})),
+            Some(json!({"version":review_version,"reason":"Prepared source must remain immutable"})),
         ),
         (Method::POST, format!("/api/manga/{review_mid}/lock"), None),
         (Method::DELETE, format!("/api/manga/{review_mid}"), None),

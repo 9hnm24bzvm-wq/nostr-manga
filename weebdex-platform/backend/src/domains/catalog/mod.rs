@@ -1,4 +1,5 @@
 mod derivatives;
+pub(crate) mod draft_reviews;
 pub(crate) mod entity_mutations;
 mod feed_diagnostics;
 mod feed_projection;

@@ -23,11 +23,11 @@ async function wizard({ downloadFails = false, changeOnDownloadUrl = false, clip
   f.publication.disconnectSigner();
   const keys = await f.load('local-signing-key.ts');
   const gate = deferred(), entered = deferred(), destroyers = [];
-  const calls = { enrollmentChecks: 0, capabilities: 0, proofs: 0, admissions: 0, signedProofs: 0, clipboard: 0, privateClipboard: 0, finished: 0, focuses: 0 };
+  const calls = { enrollmentChecks: 0, capabilities: 0, proofs: 0, admissions: 0, signedProofs: 0, clipboard: 0, privateClipboard: 0, finished: 0, focuses: 0, profileOpened: 0, remembered: 0 };
   let active = true;
   const current = () => { if (!active) throw Error('Parent setup closed'); };
   const input = { value: '', dispatchEvent() {} };
-  const props = Object.assign(() => ({ onfinish: () => { calls.finished++; }, assertCurrent: current }), { id: () => 'synthetic-setup' });
+  const props = Object.assign(() => ({ onfinish: () => { calls.finished++; }, onprofile: () => { calls.profileOpened++; }, assertCurrent: current }), { id: () => 'synthetic-setup' });
   const localState = Object.assign(value => value, { raw: value => value });
   const waitAt = async boundary => { if (gateAt === boundary) { entered.resolve(); await gate.promise; } };
   const downloads = { blobs: [], clicked: 0, removed: 0, revoked: [], filename: '', href: '' };
@@ -39,6 +39,8 @@ async function wizard({ downloadFails = false, changeOnDownloadUrl = false, clip
     onDestroy: fn => destroyers.push(fn), tick: () => Promise.resolve(),
     ...keys, signerIdentity: f.publication.signerIdentity,
     connectSigner: f.publication.connectSigner, assertAllowedRelay: f.publication.assertAllowedRelay,
+    relayPreferences: async () => { await waitAt('preferences'); return f.publication.relayPreferences(); },
+    rememberRelay: async (...args) => { calls.remembered++; await waitAt('remember'); return f.publication.rememberRelay(...args); },
     async capabilities() { calls.capabilities++; await waitAt('capabilities'); if (capabilityFails) throw Error('Synthetic capability failure'); return f.publication.capabilities(); },
     async proveService(origin, key) { calls.proofs++; await waitAt('proof'); if (proofFails) throw Error('Synthetic service proof failure'); assert.equal(origin, f.review.recipients[0].origin); assert.equal(key, f.review.recipients[0].serviceKey); return { origin, serviceKey: key }; },
     async enrollmentPolicy(relay, assertCurrent) {
@@ -58,7 +60,7 @@ async function wizard({ downloadFails = false, changeOnDownloadUrl = false, clip
     navigator: { clipboard: { async writeText(value) { calls.clipboard++; if (value.startsWith('nsec1')) calls.privateClipboard++; await waitAt('clipboard'); if (clipboardFails) throw Error('Synthetic clipboard refusal'); } } },
   });
   const script = source.match(/<script\b[^>]*>([\s\S]*?)<\/script>/)[1].replace(/^\s*import[^;]+;\s*$/gm, '');
-  const api = vm.runInContext('(function(){' + stripTypeScriptTypes(script, { mode: 'transform' }) + '\nreturn { createKey, openImport, importKey, downloadRecoveryKey, useExtension, reveal, copyPrivate, copyPublic, reviewInstance, join, connectSession, finishLater, startAgain, bindInput(value){importInput=value}, bindHeading(value){heading=value}, acknowledge(){backupAcknowledged=true}, state(){return {stage,hasDraft:!!draft,hasSecret:!!revealedSecret,hasIdentity:!!identity,hasRelay:!!relay,pending,backupAcknowledged,error,notice,installed,enrollmentOpen}}, draftHandle(){return draft}, publicIdentity(){return identity} }; })()', context);
+  const api = vm.runInContext('(function(){' + stripTypeScriptTypes(script, { mode: 'transform' }) + '\nreturn { createKey, openImport, importKey, downloadRecoveryKey, useExtension, reveal, copyPrivate, copyPublic, reviewInstance, join, openProfile, connectSession, finishLater, startAgain, bindInput(value){importInput=value}, bindHeading(value){heading=value}, acknowledge(){backupAcknowledged=true}, state(){return {stage,hasDraft:!!draft,hasSecret:!!revealedSecret,hasIdentity:!!identity,hasRelay:!!relay,pending,backupAcknowledged,error,notice,installed,enrollmentOpen}}, draftHandle(){return draft}, publicIdentity(){return identity} }; })()', context);
   api.bindInput(input); api.bindHeading({ focus() { calls.focuses++; } });
   return { f, api, input, calls, downloads, entered: entered.promise, release: gate.resolve,
     identity: () => get(f.publication.signerIdentity),
@@ -280,3 +282,13 @@ test('closed or replaced identity setup cannot export a recovery download', asyn
     try { stale(w); w.api.downloadRecoveryKey(); assert.equal(w.downloads.blobs.length, 0); assert.equal(w.downloads.clicked, 0); } finally { await w.dispose(); }
   }
 });
+
+
+test('joining does not silently select a destination; explicit profile handoff remembers verified site without another admission', async () => {
+ const w=await wizard();try{w.api.openImport();w.input.value=syntheticPrivate;w.api.importKey();w.api.acknowledge();await w.api.reviewInstance();await w.api.join();assert.equal(w.api.state().stage,'done');assert.equal(w.calls.remembered,0);assert.equal(w.calls.profileOpened,0);const signatures=w.calls.signedProofs;await w.api.openProfile();assert.equal(w.calls.remembered,1);assert.equal(w.calls.profileOpened,1);assert.equal(w.calls.signedProofs,signatures);const preferences=await w.f.publication.relayPreferences();assert.equal(preferences.relays.length,1);assert.equal(preferences.relays[0].selected,false,'profile destination handoff does not opt library into publication');}finally{await w.f.dispose();}
+});
+test('closing join-to-profile handoff before deferred preferences prevents remembering or opening stale profile',async()=>{
+ const w=await wizard({gateAt:'preferences'});try{w.api.openImport();w.input.value=syntheticPrivate;w.api.importKey();w.api.acknowledge();await w.api.reviewInstance();await w.api.join();const opening=w.api.openProfile();await w.entered;w.destroy();w.release();await opening;assert.equal(w.calls.remembered,0);assert.equal(w.calls.profileOpened,0);}finally{w.release();await w.f.dispose();}
+});
+
+test('closing during destination verification cannot persist a late remembered site',async()=>{const w=await wizard({gateAt:'remember'});try{w.api.openImport();w.input.value=syntheticPrivate;w.api.importKey();w.api.acknowledge();await w.api.reviewInstance();await w.api.join();const opening=w.api.openProfile();await w.entered;w.destroy();w.release();await opening;assert.equal(w.calls.profileOpened,0);assert.equal((await w.f.publication.relayPreferences()).relays.length,0);}finally{w.release();await w.f.dispose();}});

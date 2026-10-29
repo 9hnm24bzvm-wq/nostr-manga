@@ -10,7 +10,7 @@ export async function load(name){const file=path.join(dir,name+'.ts');if(cache.h
  if(specifier==='svelte')return stub(specifier,{onDestroy:()=>{},createContext:()=>{let v;return[()=>v,x=>v=x];}});
  if(specifier==='svelte/store')return stub(specifier,{get:()=>({identity:{id:'Reader1234'}})});
  if(specifier==='$lib/stores')return stub(specifier,{Session:{}});
- if(specifier==='$lib/constants/Error')return stub(specifier,{Error:class extends Error{constructor(title,description){super(title+': '+description);this.title=title;this.description=description;}}});
+ if(specifier==='$lib/constants/Error')return stub(specifier,{Error:class extends Error{constructor(title,description){super(title+': '+description);this.title=title;this.body=description;this.description=description;}}});
  if(specifier.includes('local-library/publication'))return stub(specifier,{capabilities:forbidden,selectedSigner:forbidden});
  if(specifier.includes('protocol/nostr.js'))return stub(specifier,{origin:x=>new URL(x).origin,proveService:forbidden});
  if(specifier.includes('protocol/codec.js'))return stub(specifier,{hash:bytes=>createHash('sha256').update(bytes).digest('hex')});
@@ -35,6 +35,7 @@ export function fixture(options={}){
  const calls=[],storage=options.storage??new Map(),state={active:true,generation:0,native:NATIVE,title:titleRow(),sessions:new Map(),current:undefined,beginCount:0,attachCount:0,commits:0,...options.state};
  const permissions=['manga.create','chapter.create','self.chapter.update','manga.relation.edit','manga.cover.edit'];
  const account={result:'ok',user:{id:USER,username:'Reader',version:7,roles:[],permissions},nostr:{...marker,catalogNamespace:NAMESPACE,nativeSessionAuthority:true,catalogueScope:'instance-local'},upload:{canBegin:true,canManage:true,conditional:true,publication:{configured:false,requiresOperatorOrAuthorizedGroup:true,scope:'instance-local'},limits:{maxFiles:500,maxFileBytes:25*1024*1024}}};
+ account.upload.preflight={configured:false,scope:'instance-local',eligible:true,reason:null,formats:['image/jpeg','image/png','image/webp','image/gif'],limits:{maxFiles:500,maxFilesPerRequest:5,maxFileBytes:25*1024*1024,maxSessionBytes:500*1024*1024,maxUniqueBytes:500*1024*1024,maxPixels:20_000_000,maxDimension:20_000},checkedAt:'2026-10-28T00:00:00Z'};
  options.account?.(account);
  const check=()=>{if(!state.active)throw Error('View/account changed');};
  const fences={get:k=>storage.get(k)??null,set:(k,v)=>storage.set(k,v),delete:k=>storage.delete(k)};
@@ -50,6 +51,7 @@ export function fixture(options={}){
   if(route==='/manga/draft/'+MANGA+'/commit'){state.title.attributes.version++;state.title.attributes.state='submitted';return entity(clone(state.title),201);}
   if(route==='/manga/'+MANGA+'/relations'){const q=request.url.searchParams,v=Number(q.get('ownerVersion')),snapshot='a'.repeat(64);assert.equal(q.get('limit'),'32');assert.equal(q.get('offset'),'0');assert.equal(q.get('expectedAccountId'),USER);return response({result:'ok',response:'collection',data:[],limit:32,offset:0,total:0,persistedTotal:0,nextOffset:null,ownerMangaId:MANGA,ownerVersion:v,version:v,snapshot,nostr:{versionScope:'owner_manga',pagination:'bounded-relations-v1',snapshot,identity:{kind:'manga',requestedId:MANGA,canonicalId:MANGA,source:'persisted-public-resource-ids'}}});}
   if(route==='/manga/'+MANGA+'/covers'){const q=request.url.searchParams;if([...q.keys()].some(key=>!['limit','offset','expectedAccountId'].includes(key))||q.size!==3||q.get('limit')!=='100'||q.get('expectedAccountId')!==USER||!/^\d+$/.test(q.get('offset')??''))return refusal(400,'Invalid cover query');return response({result:'ok',response:'collection',data:[],total:0,limit:100,offset:Number(q.get('offset'))});}
+  if(route==='/upload/preflight/'+MANGA&&method==='GET')return response({result:'ok',preflight:clone(account.upload.preflight)});
   if(route==='/upload'&&method==='GET'){const current=state.sessions.get(state.current);return current?response({id:current.id,type:'upload_session',attributes:{version:current.version,isCommitted:current.isCommitted,isProcessed:current.isProcessed,isDeleted:current.isDeleted}}):refusal(404);}
   if(route==='/upload/begin'){const id=state.beginCount++?SECOND_SESSION:SESSION,current=session(id);state.sessions.set(id,current);state.current=id;return response({id,type:'upload_session',attributes:{version:1,isCommitted:false,isProcessed:false,isDeleted:false}});}
   if(route==='/upload/check-approval-required')return response({result:'ok',requiresApproval:false});

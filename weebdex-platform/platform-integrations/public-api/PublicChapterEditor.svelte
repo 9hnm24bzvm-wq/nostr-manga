@@ -1,4 +1,9 @@
 <script lang="ts">
+ import UnsavedEditorGuard from './UnsavedEditorGuard.svelte';
+ import {allowEditorDiscard} from './editor-unsaved';
+  import {Locale} from '$lib';
+  import {canonicalLanguageOptions,languageLabel,legacyLanguageReplacement} from './language';
+  import NativeChapterCreditsEditor from './NativeChapterCreditsEditor.svelte';
   import PublicChapterPagesEditor from './PublicChapterPagesEditor.svelte';
   import { chapterMetadataPatch } from './language';
   import { onDestroy, onMount, untrack } from 'svelte';
@@ -18,6 +23,8 @@
   let groups = $state((captured.relationships.groups ?? []).map(group => group.id).join(', '));
   let owner = $state.raw<PublicUploadOwner>(), pagesLocked = $state(true);
   let ready = $state(false), busy = $state(false), pending = $state(false), removed = $state(false), removalChoice = $state<'request-review' | 'approve-hide'>(), message = $state('');
+  const languages=canonicalLanguageOptions(Locale.Languages);
+  let creditBusy=$state(false),creditDirty=$state(false),creditPending=$state(false);
   let access=$state<ChapterEditAccess>(),sourcePending=$state(false);
   let disposed = false,generation=0,capturedSession=untrack(()=>$Session),issue=$state<NativeAccountIssue>();
   const current = () => { if (disposed || $Session!==capturedSession || initial.id !== id) throw Error('The chapter editor changed. Reload the current chapter.'); };
@@ -39,7 +46,7 @@
   async function refreshAccess(){access=undefined;if(!owner)return;try{const next=await owner.chapterAccess(chapter.version);owner.assert();current();access=next;}catch(error){if(!disposed)message=error instanceof Error?error.message:'Chapter eligibility is unavailable. Reload the current chapter.';}}
   function restore(value: Chapter) { chapter = value; title = value.title ?? ''; volume = value.volume ?? ''; number = value.chapter ?? ''; language = value.language; groups = (value.relationships.groups ?? []).map(group => group.id).join(', '); }
   async function command(action: 'update' | 'claim' | 'remove', removalMode?: 'request-review' | 'approve-hide') {
-    if (!owner || !ready || busy || pagesLocked || pending || removed || action === 'remove' && !removalMode) return;
+    if (!owner || !ready || busy || creditBusy || creditDirty || creditPending || pagesLocked || pending || removed || action === 'remove' && !removalMode) return;
     const operationOwner=owner,token=generation;busy = true; message = ''; removalChoice = undefined;
     try {
       await refreshAccess();owner.assert();current();
@@ -65,12 +72,14 @@
   }
   async function reload() {
     if (!owner || busy || pagesLocked || removed) return;
+    if (!allowEditorDiscard(metadataChanged,message=>window.confirm(message))) return;
     const operationOwner=owner,token=generation;busy = true;
     try { const response = await publicCatalogueRead<Chapter>('chapter.get', { id }); owner.assert(); current(); if (response.status !== 200 || !response.body || response.body.id !== id) throw Error('Current chapter is unavailable.'); restore(response.body); pending=owner.chapterPending();sourcePending=owner.chapterPendingPhase()==='local-review-accepted-source-unconfirmed'; await refreshAccess(); if(access)message = pending?'Current chapter reloaded. Its unconfirmed command remains fenced; detail is not a command receipt. No mutation was replayed.':'Current chapter reloaded. No mutation was replayed.'; }
     catch (error) { if (!disposed&&token===generation&&owner===operationOwner) message = error instanceof Error ? error.message : 'Could not reload this chapter.'; }
     finally { if (!disposed&&token===generation&&owner===operationOwner) busy = false; }
   }
 </script>
+<UnsavedEditorGuard dirty={ready&&metadataChanged} />
 <section class="mx-auto max-w-270 space-y-4 p-5">
   <h2 class="text-xl font-medium">Edit chapter</h2>
   <p>Changes apply to this site. Original publications and their pages cannot be changed. Where page editing is available, prepare your changes privately below.</p>
@@ -81,12 +90,11 @@
   {#if ready&&!access}<p>Chapter eligibility could not be verified. Reload the current chapter before changing it.</p>{/if}
   {#if access&&!access.claimFactsAvailable}<p>We could not verify whether you can claim this chapter. Your access has not changed.</p>{/if}
   <form class="space-y-3" onsubmit={event => { event.preventDefault(); void command('update'); }}>
-    <fieldset disabled={!ready || busy || pagesLocked || pending || removed || !canUpdate} class="space-y-3">
+    <fieldset disabled={!ready || busy || creditBusy || creditDirty || creditPending || pagesLocked || pending || removed || !canUpdate} class="space-y-3">
       <label class="block">Title<input class="block w-full rounded border p-2" bind:value={title} maxlength="255" /></label>
       <label class="block">Volume<input class="block w-full rounded border p-2" bind:value={volume} maxlength="32" /></label>
       <label class="block">Chapter<input class="block w-full rounded border p-2" bind:value={number} maxlength="32" /></label>
-      <label class="block">Language<input class="block w-full rounded border p-2" bind:value={language} /></label>
-      <p class="text-sm">Use a language code, such as en for English or pt-br for Brazilian Portuguese. You can leave an existing value unchanged.</p>
+      <label class="block">Language<select class="block w-full rounded border p-2" bind:value={language}>{#if !languages.some(([code])=>code===language)}<option value={language}>{languageLabel(language,Locale.Languages)}</option>{/if}{#each languages as [code,label]}<option value={code}>{label}</option>{/each}</select></label>{#if legacyLanguageReplacement(language)}<button type="button" class="underline" onclick={()=>language=legacyLanguageReplacement(language)!}>Use Tamil (ta)</button><p>The saved language is kept unless you choose to replace it.</p>{/if}
       <label class="block">Group IDs, separated by commas<input class="block w-full rounded border p-2" bind:value={groups} /></label>
       <button type="submit" class="rounded border px-4 py-2">Save changes</button>
     </fieldset>
@@ -105,7 +113,8 @@
   {/if}
   {#if owner && ready && !removed}
     {#if metadataChanged}<p>Save your chapter details or reload before editing pages. Saving pages does not save unsaved chapter details.</p>{/if}
-    <PublicChapterPagesEditor {chapter} {owner} {access} disabled={busy || pending || metadataChanged} onlock={locked => pagesLocked = locked} oncommit={value => { restore(value); void refreshAccess(); }} />
+    <PublicChapterPagesEditor {chapter} {owner} {access} disabled={busy || pending || metadataChanged || creditBusy || creditDirty || creditPending} onlock={locked => pagesLocked = locked} oncommit={value => { restore(value); void refreshAccess(); }} />
   {/if}
+  {#if ready&&canUpdate&&!removed}<NativeChapterCreditsEditor chapterId={id} version={chapter.version} disabled={busy||pending||metadataChanged||pagesLocked} onChanged={reload} onState={state=>{creditBusy=state.busy;creditDirty=state.dirty;creditPending=state.pending;}} />{/if}
   <a class="underline" href={`/title/${chapter.relationships.manga.id}`}>Return to the title</a>
 </section>

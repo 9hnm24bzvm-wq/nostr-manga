@@ -1,3 +1,4 @@
+import { uploadEligibility, assertUploadBudget, type UploadEligibility } from './upload-eligibility';
 import { createUploadSchedules, scheduleReceipt, scheduledUtc, type UploadSchedules, type ScheduleReceipt } from './upload-schedules';
 import { publicWriteLanguage } from './language';
 // Explicit browser-account upload adapter. Shared canonical lifecycle, byte hashes, CAS and unknown-outcome fences; no signer or authentication fallback.
@@ -19,10 +20,10 @@ export const [getUploadOwner, setUploadOwner] = createContext<PublicUploadOwner>
 type Scope = { origin: string; catalogNamespace: string };
 type Response<T = unknown> = { status: number; body?: T; headers?: Record<string, string | null>; accepted?: true; sessionId?: string; publicationStatus?: string; receipt?: unknown; scheduled?: ScheduleReceipt };
 export type UploadSnapshot = { draft: ChapterDraft; page_order: string[] };
-export type UploadAccountFacts = { canBegin: boolean; canManage: boolean; publication: Record<string, unknown>; limits: Record<string, unknown>; permissions: string[] };
+export type UploadAccountFacts = { canBegin: boolean; canManage: boolean; publication: Record<string, unknown>; limits: Record<string, unknown>; permissions: string[]; preflight?: UploadEligibility };
 type FileFacts = { mimeType: string; fileSize: number; dimensions?: { width: number; height: number }; previewUrl?: string };
 declare global {
-  interface User { permissions?: string[] }
+  interface User { permissions?: string[]; upload_groups_truncated?: boolean }
   interface UploadSessionFile {
     public_upload?: FileFacts;
     upload_recovery?: { state: 'unsent' | 'rejected' | 'unknown'; session: string; before_ids: string[]; hash?: string };
@@ -40,6 +41,8 @@ export interface UploadFenceStore { get(key: string): string | null; set(key: st
 export interface PublicUploadOwner {
   readonly id: string; readonly actor: string; readonly schedulingAvailable:boolean; readonly schedules: UploadSchedules;
   assert(): void; alive(): boolean; dispose(): void;
+  preflight(groups: string[]): Promise<UploadEligibility>;
+  capabilities(): UploadEligibility | undefined;
   commitState(): Fence['state'] | undefined;
   pendingCommitSession(): string | undefined;
   pendingReplacement(): UploadReplacementStatus | undefined;
@@ -101,8 +104,11 @@ function boolean(value: unknown): boolean { if (typeof value !== 'boolean') fail
 function strings(value: unknown): string[] { if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) fail('Invalid account grants'); return [...value] as string[]; }
 function ids(value: unknown, maximum = 500): string[] { if (!Array.isArray(value) || value.length > maximum) fail('Invalid upload UUID list'); const result = value.map(publicUuid); if (new Set(result).size !== result.length) fail('Duplicate upload UUID'); return result; }
 function draft(input: unknown): ChapterDraft { const row = record(input, 'upload draft'); const output: ChapterDraft = {}; for (const [key, value] of Object.entries(row)) { if (!['title', 'volume', 'chapter', 'language'].includes(key) || value !== null && typeof value !== 'string') fail('Invalid saved chapter draft'); if (typeof value === 'string') Object.assign(output, { [key]: value }); } return output; }
-function actualError(body: unknown): string | undefined { if (!body || typeof body !== 'object') return; const row = body as Record<string, unknown>; if (typeof row.error === 'string') return row.error; if (Array.isArray(row.errors)) { const first = row.errors[0]; if (first && typeof first === 'object' && typeof first.detail === 'string') return first.detail; } }
-export function resumeError(status?: number, body?: unknown): VisibleError { return new VisibleError(status === 403 ? 'Upload authorization refused' : status === 409 ? 'Upload session changed' : 'Upload was not confirmed', actualError(body) ?? 'Your staged work was kept. Reload its exact current state before retrying.'); }
+function actualError(body: unknown): string | undefined { if (!body || typeof body !== 'object') return; const row = body as Record<string, unknown>; if (typeof row.error === 'string') return row.error.slice(0,2048); if (Array.isArray(row.errors)) { const first = row.errors[0]; if (first && typeof first === 'object' && typeof first.detail === 'string') return first.detail.slice(0,2048); } }
+export function resumeError(status?: number, body?: unknown): VisibleError {
+ const detail=actualError(body),description=detail&&/operator-provisioned|bound to the configured operator signer|protocol signer identity/i.test(detail)?'This account needs publishing access from the site operator. Your staged pages are kept.':detail&&/original.*group.*authority|protocol group identity|managed group publication/i.test(detail)?'Publishing access for this group is unavailable. Ask a group manager or the site operator; your staged pages are kept.':detail??'Your staged work was kept. Check its current status before trying again.';
+ const error=new VisibleError(status===403?'Publishing access needed':status===409?'Upload changed':'Upload was not confirmed',description) as VisibleError & {supportDetails?:string};if(detail&&description!==detail)error.supportDetails=detail;return error;
+}
 export const snapshot = (input: ChapterDraft, files: UploadSessionFile[]): UploadSnapshot => ({ draft: draft(Object.fromEntries(['volume', 'chapter', 'title', 'language'].flatMap(key => typeof input[key as keyof ChapterDraft] === 'string' ? [[key, input[key as keyof ChapterDraft]]] : []))), page_order: files.map(file => file.id) });
 export const signature = (value: UploadSnapshot) => JSON.stringify(value);
 const sameDraft = (a?: ChapterDraft | null, b?: ChapterDraft | null) => signature(snapshot(a ?? {}, [])) === signature(snapshot(b ?? {}, []));
@@ -371,7 +377,8 @@ export function createNativeUploadAdapter(injected: Partial<PublicUploadDependen
     const permissions = strings(user.permissions), roles = strings(user.roles), publication = record(upload.publication), limits = record(upload.limits);
     const canBegin = boolean(upload.canBegin), canManage = boolean(upload.canManage); if (canBegin !== permissions.includes('chapter.create') || canManage !== permissions.includes('self.chapter.update') || publication.requiresOperatorOrAuthorizedGroup !== true) fail('Upload eligibility was not backed by actual native grants');
     const view: User = { id: publicUuid(user.id), name: text(user.username, 'bound username'), version: integer(user.version, 1), roles, permissions };
-    account.actor = view.id; account.user = view; account.facts = { canBegin, canManage, permissions, publication, limits }; accounts.set(view, account); return view;
+    if(result.groups!==undefined){const own=record(result.groups);if(!Array.isArray(own.data)||own.data.length>100||typeof own.hasMore!=='boolean')fail('Current group memberships could not be verified');const groups=own.data.map(value=>{const row=record(value),id=publicUuid(row.id),name=text(row.name,'group name');if(!['leader','officer','member'].includes(String(row.role)))fail('Invalid current group role');return {id,name,relationships:{members:[{id:view.id,is_leader:row.role==='leader',is_officer:row.role==='officer'}]}} as ScanlationGroup;});if(new Set(groups.map(row=>row.id)).size!==groups.length)fail('Duplicate current group membership');view.relationships={...view.relationships,groups};view.upload_groups_truncated=own.hasMore;}
+    account.actor = view.id; account.user = view; account.facts = { canBegin, canManage, permissions, publication, limits, ...(upload.preflight ? {preflight:uploadEligibility(upload.preflight)} : {}) }; accounts.set(view, account); return view;
   }
   function publicUploadOwner(target: () => string, user: User, targetKind: 'manga' | 'chapter' = 'manga', lifecycle: 'component' | 'caller' = 'component'): PublicUploadOwner {
     const account = accounts.get(user); if (!account) fail('Load your current browser upload account first', 409);
@@ -387,7 +394,21 @@ export function createNativeUploadAdapter(injected: Partial<PublicUploadDependen
       request: async (path, method, guard) => { assert(); guard(); const request = transport(account, () => { assert(); guard(); }); const response = await request({ url: account.scope.origin + '/api/v1' + path, method }); assert(); guard(); return response; },
       present: async receipt => { const parents = receipt.relationships.filter(row => row.type === 'manga'); if (parents.length !== 1) fail('Scheduled reader parent is unavailable'); return (await presentation(owned, receipt, publicUuid(parents[0].id))).body; },
     });
-    const owner: PublicUploadOwner = { id, actor: account.actor, schedulingAvailable:account.facts.publication.configured===true, schedules: owned.schedules.manager, assert, alive: () => { try { assert(); return true; } catch { return false; } }, dispose: () => { disposed = true; account.access.dispose(); }, commitState: () => (owned.fence ?? readFence(account))?.state, pendingCommitSession: () => (owned.fence ?? readFence(account))?.sessionId, pendingReplacement: () => { const value = replacementPending(owned); return value ? Object.freeze({ state: value.state, sessionId: value.sessionId, fileId: value.fileId, expectedVersion: value.expectedVersion }) : undefined; }, chapterPagesPending: () => !!owned.sessionId || !!readChapterBegin(account) || !!readFence(account) || !!readReplacement(account), chapterBeginPending: () => !!readChapterBegin(account), reconcileChapterBegin: async () => {
+    const preflight = async (groups: string[]): Promise<UploadEligibility> => {
+      assert(); const selected=ids(groups,10), query=new URLSearchParams();for(const group of selected)query.append('groups[]',group);
+      const url=new URL(account.scope.origin+'/api/v1/upload/preflight/'+id);for(const [key,value] of query)url.searchParams.append(key,value);
+      const response=await owned.request({url:url.href,method:'GET'});assert();if(response.status!==200)throw resumeError(response.status,response.body);
+      const result=uploadEligibility(record(response.body).preflight);account.facts.preflight=result;return structuredClone(result);
+    };
+    const capabilities = (): UploadEligibility | undefined => {
+      if(!account.facts.preflight)return undefined;
+      if(targetKind!=='chapter')return structuredClone(account.facts.preflight);
+      // Native page replacement is a local edit, not a new source publication.
+      // Its existing chapter-access/version gates remain mandatory at dispatch.
+      const limits={...account.facts.preflight.limits,...account.facts.limits};limits.maxFileBytes=Math.min(Number(limits.maxFileBytes),25*1024*1024);limits.maxUniqueBytes=Number(limits.maxSessionBytes);
+      return uploadEligibility({...account.facts.preflight,configured:false,scope:'instance-local',eligible:account.facts.canManage,reason:account.facts.canManage?null:'This account cannot edit chapter pages.',formats:['image/jpeg','image/png','image/webp','image/gif'],limits});
+    };
+    const owner: PublicUploadOwner = { id, actor: account.actor, preflight, capabilities, schedulingAvailable:account.facts.publication.configured===true, schedules: owned.schedules.manager, assert, alive: () => { try { assert(); return true; } catch { return false; } }, dispose: () => { disposed = true; account.access.dispose(); }, commitState: () => (owned.fence ?? readFence(account))?.state, pendingCommitSession: () => (owned.fence ?? readFence(account))?.sessionId, pendingReplacement: () => { const value = replacementPending(owned); return value ? Object.freeze({ state: value.state, sessionId: value.sessionId, fileId: value.fileId, expectedVersion: value.expectedVersion }) : undefined; }, chapterPagesPending: () => !!owned.sessionId || !!readChapterBegin(account) || !!readFence(account) || !!readReplacement(account), chapterBeginPending: () => !!readChapterBegin(account), reconcileChapterBegin: async () => {
       assert(); const pending = readChapterBegin(account);
       if (!pending || targetKind !== 'chapter' || pending.chapterId !== id) fail('No page-edit admission belongs to this chapter', 409);
       // Current ownership/target/version cannot identify an uncertain admission:
@@ -530,6 +551,7 @@ export function createNativeUploadAdapter(injected: Partial<PublicUploadDependen
         const candidate = { draft: draft(value.draft), page_order: ids(value.page_order) }; if (!candidate.page_order.length || !candidate.draft.language) fail('A language and staged page order are required', 422);
         const current = await exact(owned, sessionId); if (!current.can_mutate || !current.can_retry_commit || !sameDraft(current.draft, candidate.draft) || JSON.stringify(current.page_order) !== JSON.stringify(candidate.page_order)) fail('Commit must match the acknowledged private draft and exact page order', 409);
         if (targetKind === 'chapter' && (current.chapter_id !== id || current.edit_version === undefined || value.publishAt !== undefined)) fail('Local page commits require their exact edit binding and cannot be scheduled',409);
+        if (targetKind === 'manga') { const eligibility=await preflight(current.public_upload.groupIds);owned.assert();assertMutable(owned);assertUploadBudget(eligibility,current.relationships.files??[]); }
         if(value.publishAt!==undefined&&account.facts.publication.configured!==true)fail('This site does not support scheduled publishing. You can upload now instead.',409);
         const publishAt = value.publishAt === undefined ? undefined : scheduledUtc(value.publishAt);
         const schedule = publishAt === undefined ? undefined : { accountId: account.actor, publishAt, fingerprint: await scheduleFingerprint(current) }; owned.assert();

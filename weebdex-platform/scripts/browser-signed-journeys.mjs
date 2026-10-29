@@ -360,8 +360,10 @@ export async function runSignedJourneys(h) {
     await closeTools();
     if (new URL(page.url()).pathname !== "/settings/identity") {
       await management();
-      await spaClick(page.locator('nav[aria-label="Settings"]').getByRole("link", { name: "Public identity", exact: true }), url => url.pathname === "/settings/identity");
+      await spaClick(page.locator('nav[aria-label="Settings"]').getByRole("link", { name: "Advanced", exact: true }), url => url.pathname === "/settings/identity");
     }
+    const advanced = page.locator("[data-advanced-identity]");
+    if (!(await advanced.evaluate(element => element.open))) await advanced.locator("summary").first().click();
     await expand(identityMain());
     insist(await libraryMain().count() === 0, "Public identity tab also mounted Library management");
   };
@@ -375,6 +377,13 @@ export async function runSignedJourneys(h) {
     }
     await expand(identity());
     insist(await page.getByRole("dialog").count() === 1, "Public-identity task is not the single native dialog");
+  };
+  const loadCurrentMetadata = async () => {
+    const fresh = identity().getByRole("button", { name: "Load my current information", exact: true });
+    if (await fresh.count()) await fresh.click();
+    else await consentDialog(identity().getByRole("button", { name: "Reload current information", exact: true }), "Reload current public information");
+    await idle(identity());
+    await identity().getByText("Your current public information is ready to edit. Unchanged information is preserved.", { exact: true }).waitFor({ state: "visible" });
   };
   const prepareIdentity = async () => {
     await openIdentityTool("connections");
@@ -568,12 +577,12 @@ export async function runSignedJourneys(h) {
         lifecycleCoverage.two_real_recipients = true; return { event_id: job.id, genuine_service_origins: recipients.map(row => row.origin), actual_independent_service_proofs: true, real_library_receipts_and_projections: 2, identical_signed_event: true };
       });
       await step("real recipient selection changes discard review and exact-body retry retains original approved service", async () => {
-        await prepareIdentity(); await openIdentityTool("profile"); await identity().getByLabel("Public username", { exact: true }).fill("SyntheticRecipient" + marker); await identity().getByRole("button", { name: "Review public profile", exact: true }).click(); await nativeSelectForLabel(identity(), "Verified recipient").selectOption(second.origin);
+        await prepareIdentity(); await openIdentityTool("profile"); await loadCurrentMetadata(); await identity().getByLabel("Public username", { exact: true }).fill("SyntheticRecipient" + marker); await identity().getByRole("button", { name: "Review public profile", exact: true }).click(); await nativeSelectForLabel(identity(), "Verified recipient").selectOption(second.origin);
         await until(() => identity().getByRole("button", { name: "Sign and send reviewed public action", exact: true }).count(), count => count === 0, "Changing to another genuine recipient retained old review/consent"); insist((signedCounts.get(0) ?? 0) === 0, "Recipient change signed an unapproved profile");
-        await nativeSelectForLabel(identity(), "Verified recipient").selectOption(protocol); await identity().getByRole("button", { name: "Review public profile", exact: true }).click(); let interrupted = 0; const intercept = async route => { if (route.request().method() !== "POST") return route.continue(); interrupted++; await route.abort("failed"); };
+        await nativeSelectForLabel(identity(), "Verified recipient").selectOption(protocol); await loadCurrentMetadata(); await identity().getByLabel("Public username", { exact: true }).fill("SyntheticRecipient" + marker); await identity().getByRole("button", { name: "Review public profile", exact: true }).click(); let interrupted = 0; const intercept = async route => { if (route.request().method() !== "POST") return route.continue(); interrupted++; await route.abort("failed"); };
         await context.route(protocol + "/account-metadata", intercept); try { await sendAction(); } finally { await context.unroute(protocol + "/account-metadata", intercept); }
         const saved = (await actions()).filter(row => row.event.kind === 0).at(-1); insist(interrupted === 1 && saved?.state === "outcome_unknown" && saved.relay.origin === protocol && saved.relay.serviceKey === fixture.service_key && (await original("/events/" + saved.event.id)).status === 404, "Failed original-recipient action was lost or rebound");
-        const exact = signedEventDigest(saved.event), exactRequestBytes = digest(JSON.stringify(saved.event)), signed = signedCounts.get(0); await nativeSelectForLabel(identity(), "Verified recipient").selectOption(second.origin); await openOutbox(); await consentDialog(actionCard(saved.event.id).getByRole("button", { name: "Retry saved action", exact: true }), saved.event.id); await idle(identity()); await counterpart(saved.event.id);
+        const exact = signedEventDigest(saved.event), exactRequestBytes = digest(JSON.stringify({ ...saved.event, expectedHead: saved.expectedHead })), signed = signedCounts.get(0); await nativeSelectForLabel(identity(), "Verified recipient").selectOption(second.origin); await openOutbox(); await consentDialog(actionCard(saved.event.id).getByRole("button", { name: "Retry saved action", exact: true }), saved.event.id); await idle(identity()); await counterpart(saved.event.id);
         const done = (await actions()).find(row => row.event.id === saved.event.id), posts = mutationRequests.filter(row => row.path === "/account-metadata" && row.bodyDigest === exactRequestBytes); insist(done.state === "accepted" && signedEventDigest(done.event) === exact && done.relay.origin === protocol && done.relay.serviceKey === fixture.service_key && signedCounts.get(0) === signed && posts.length === 2 && posts.every(row => row.origin === protocol), "Exact-body retry switched to the newly selected genuine service");
         return { original_recipient: protocol, newly_selected_recipient: second.origin, exact_event_id: saved.event.id, exact_body_digest: exact, original_recipient_only_browser_transport: true, no_event_resigning: true };
       });
@@ -644,18 +653,18 @@ export async function runSignedJourneys(h) {
       await step("public action fixture admission and dynamic target panel remain independent from password identity", async () => { await admit(true); await prepareIdentity(); return { public_key_explicitly_admitted: true, verified_recipient: protocol, password_session: false }; });
       if (phase === "signed-profile") {
         for (const kind of [0, 3, 10002]) await step(`visible reviewed kind ${kind} metadata reaches genuine current-head projection`, async () => {
-          await openIdentityTool(kind === 0 ? "profile" : "follows");
+          await openIdentityTool(kind === 0 ? "profile" : "follows"); await loadCurrentMetadata();
           if (kind === 0) { await identity().getByLabel("Public username", { exact: true }).fill("Synthetic" + marker); await identity().getByLabel("Public display name", { exact: true }).fill("Disposable profile " + marker); await identity().getByLabel("Public bio", { exact: true }).fill("Synthetic browser acceptance profile."); await identity().getByRole("button", { name: "Review public profile", exact: true }).click(); }
-          if (kind === 3) { await identity().getByLabel("Public follow keys, one 64-character hex key per line", { exact: true }).fill(fixture.operator_pubkey); await identity().getByRole("button", { name: "Review replacement public follow list", exact: true }).click(); }
-          if (kind === 10002) { await identity().getByLabel("Public write relay URLs, one WSS URL per line", { exact: true }).fill(websocket.href); await identity().getByRole("button", { name: "Review replacement public relay list", exact: true }).click(); }
+          if (kind === 3) { await identity().getByLabel("People you follow, one public npub per line (public hex keys also work)", { exact: true }).fill(fixture.operator_pubkey); await identity().getByRole("button", { name: "Review replacement public follow list", exact: true }).click(); }
+          if (kind === 10002) { await identity().getByLabel("Public relay URLs, one WSS URL per line; optionally add read or write", { exact: true }).fill(websocket.href); await identity().getByRole("button", { name: "Review replacement public relay list", exact: true }).click(); }
           await sendAction(); const saved = (await actions()).filter(row => row.event.kind === kind).at(-1); insist(saved?.state === "accepted" && saved.relay.origin === protocol && verify(saved.event), "Original metadata exact receipt missing");
           const event = await counterpart(saved.event.id); const head = await until(() => original(`/accounts/${owner}/metadata/${kind}`), value => value.status === 200 && value.body.id === saved.event.id && value.body.projected === true, "Real replaceable metadata head did not project", 60000);
           insist(signedEventDigest(event.body) === signedEventDigest(saved.event) && head.body.publisher === owner && head.body.kind === kind, "Current public metadata is not the exact signed event");
-          await identity().getByRole("button", { name: "Read verified current public metadata", exact: true }).click(); await idle(identity()); await identity().locator(`[data-verified-metadata-kind="${kind}"][data-verified-metadata-id="${saved.event.id}"]`).waitFor({ state: "visible" });
+          await loadCurrentMetadata(); await identity().locator(`[data-verified-metadata-kind="${kind}"][data-verified-metadata-id="${saved.event.id}"]`).waitFor({ state: "visible" });
           return { kind, event_id: saved.event.id, actual_account_metadata_post: true, projected_current_head: true, current_verified_event_rendered: true, recipient: protocol };
         });
         await step("authored metadata withdrawal uses visible exact-event review and real original kind5 endpoint", async () => {
-          const profile = (await actions()).find(row => row.event.kind === 0); await openIdentityTool("profile"); await identity().getByRole("button", { name: "Read verified current public metadata", exact: true }).click(); await idle(identity()); const item = identity().locator(`[data-verified-metadata-kind="0"][data-verified-metadata-id="${profile.event.id}"]`); await item.waitFor({ state: "visible" }); await item.getByRole("button", { name: "Review removal", exact: true }).click(); await sendAction();
+          const profile = (await actions()).find(row => row.event.kind === 0); await openIdentityTool("profile"); await loadCurrentMetadata(); const item = identity().locator(`[data-verified-metadata-kind="0"][data-verified-metadata-id="${profile.event.id}"]`); await item.waitFor({ state: "visible" }); await item.getByRole("button", { name: "Review removal", exact: true }).click(); await sendAction();
           const withdrawal = (await actions()).filter(row => row.event.kind === 5).at(-1); insist(withdrawal?.state === "accepted" && withdrawal.event.tags.length === 1 && withdrawal.event.tags[0][1] === profile.event.id, "Withdrawal was not bound to the exact authored profile");
           const actual = await until(() => original("/account-deletions/" + withdrawal.event.id), value => value.status === 200 && verify(value.body) && value.body.id === withdrawal.event.id, "Genuine original withdrawal counterpart missing");
           await until(() => original(`/accounts/${owner}/metadata/0`), value => value.status === 404, "Authored metadata remained current after real withdrawal projection", 60000);

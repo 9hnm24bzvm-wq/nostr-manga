@@ -1,0 +1,147 @@
+{
+  "schema": "six-persona-overlay-scope-v1",
+  "baseline_commit": "9a70b771bfa8cb1b20f82c926f65956b93c2d5e6",
+  "qualification": "Source composition only; no runtime, browser or release acceptance inherited.",
+  "patch_count": 76,
+  "patch_registry_sha256": "60f655bab0ccdc717d352009e2158afda4c3fe9a5006bb970515a6f8620a2798",
+  "rows": [
+    {
+      "path": "src/lib/Locale.ts",
+      "original_sha256": "24683b1d2e4490108de376ef1afee3891e2a04994670f661f57dc753f1dbd214",
+      "input_sha256": "7178e3556d21fbb90bffcd48057ff8212803257c1cf4ad5b437ad15d0f8ead13",
+      "output_sha256": "6b3ca089f2ef8d959912194d4efcfa48ae7694cf8b57cad689093359d9e65d3e"
+    },
+    {
+      "path": "src/lib/components/AppSidebar.svelte",
+      "original_sha256": "4b791bc6e08322d2fcb4e161c7c8861502073fb76abce47d42f33fa9d7e985c5",
+      "input_sha256": "0239cb7428b70b00ccb95a0e24cf0fae223f3dcbe07093d255c4e3c043b564e0",
+      "output_sha256": "bfc0815e00084be311d522482491d3cdf4c8375c6d96e4e7ab539ce2aaf05376"
+    },
+    {
+      "path": "src/lib/components/ReportSearchEntry.svelte",
+      "original_sha256": "dcbb141a5dbb92d29f15996544b4e02070ef32d1200aaf84392487ae32961e2d",
+      "input_sha256": "6bb648650fbba370b1a713b911cdb43d2168c665ff44e5a8175811c32e53178d",
+      "output_sha256": "40c918e37d9e31ce7e2f8250e95b40a55d9022e4868956e1391cdf99e0143286"
+    },
+    {
+      "path": "src/lib/components/reader/reader-panel.svelte",
+      "original_sha256": "6fc6e2c1432d40d0d9c6069d41c751d9cc286ac4f26398d4750cab7e9e2d34fa",
+      "input_sha256": "72edf7f161f7e81f961703558a6cb8fc8490151bea77a7e721bbb0d8c0b2c0c8",
+      "output_sha256": "e10061cbb2bc795e259c1342055fcd3012e2bc17b3c40a156b8c2025c814d7cd"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapter.svelte",
+      "original_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
+      "input_sha256": "cd7c05c772868f13e30268aada620ed994ba8a760a41cf4de8f97f3d9c45449a",
+      "output_sha256": "50bde8c65ce678ea0abd6c26023b2ce2a632209293ae4245f03ae4835373894e"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterGroups.svelte",
+      "original_sha256": "46e6be074d81f70ce14fd47a3e8a74b12542c3271b74d810db4c4aa2f9fa480a",
+      "input_sha256": "0500a0fb7a843503e137b44355ef51e683e3484fb54b8784c8b9c66e22857184",
+      "output_sha256": "5749e0181e79fe86d475fdf49797613fee0885701b8cc19c1ea7dc15ef761ba5"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+      "original_sha256": "c94de7465c23c046f6277dae37266b845b62ba8c5097980a3629014f6f3d7ff9",
+      "input_sha256": "c5a66bf9ffafabdd44cf64b4d754e5695f9364883d52344f286d71c479b9732b",
+      "output_sha256": "8ecfbbd5a58dfcb7c277381f72ba6936599e50851579d73d39dc6e004d8ebd3f"
+    },
+    {
+      "path": "src/lib/components/upload/UploadChapterPages.svelte",
+      "original_sha256": "b10b1a339cfd91dcb9c5af0ccc8e20f1dfce4e2cb2d6fc3c3b0286dc22904e66",
+      "input_sha256": "7e07634970b98b11dffa117d015fa9d245f03dcf82d6e1f83f247ae67e8e62cc",
+      "output_sha256": "2511f39a0fab9a2f6b3eaeafdec313ee8f2e2a076d9a5a7733856c65cda0f9c6"
+    },
+    {
+      "path": "src/routes/(app)/about/+page.svelte",
+      "original_sha256": "5cf47bdcf2ec5f9c02778f5b2bf646f4d4c4a2957e9a61b94c8e939d0960fa14",
+      "input_sha256": "5cf47bdcf2ec5f9c02778f5b2bf646f4d4c4a2957e9a61b94c8e939d0960fa14",
+      "output_sha256": "a00d34db4ef55dca2d34b67bca20a37064668a81b2151910ce5bbbeb3c598a71"
+    },
+    {
+      "path": "src/routes/(app)/author/[id]/settings/+layout.svelte",
+      "original_sha256": "ed4945b0bf7451ae9685d93b3ec8d04fe6d50589d323a7312a3b98ee4e123599",
+      "input_sha256": "ed4945b0bf7451ae9685d93b3ec8d04fe6d50589d323a7312a3b98ee4e123599",
+      "output_sha256": "a293566376225bc2f5e617a7944df7cc52150217b86c3211f4a324ae1a19556e"
+    },
+    {
+      "path": "src/routes/(app)/author/[id]/settings/+page.svelte",
+      "original_sha256": "5b5a916d1d5094de6936b3c00fd0884eddf5e6b797c52fbb221c037e2f31fb47",
+      "input_sha256": "5b5a916d1d5094de6936b3c00fd0884eddf5e6b797c52fbb221c037e2f31fb47",
+      "output_sha256": "9c989f89559c576eae6d0b0039b7f7db3926cca50e5e709afffe07fb5ac0cfdb"
+    },
+    {
+      "path": "src/routes/(app)/create/group/+layout.svelte",
+      "original_sha256": "0467fd688f8966e2a92ef751e568cad1a521722157bc4efcfa5c4a25ee7b71ee",
+      "input_sha256": "0467fd688f8966e2a92ef751e568cad1a521722157bc4efcfa5c4a25ee7b71ee",
+      "output_sha256": "a293566376225bc2f5e617a7944df7cc52150217b86c3211f4a324ae1a19556e"
+    },
+    {
+      "path": "src/routes/(app)/create/group/+page.svelte",
+      "original_sha256": "b6832cfa3085708a141a079ce43674bf79384b82f0b193e477df76b1e553f835",
+      "input_sha256": "b6832cfa3085708a141a079ce43674bf79384b82f0b193e477df76b1e553f835",
+      "output_sha256": "a2ec7d74dd38affc200f88dd1c71d2c7fb4ec5c7f63efa7070c5e980a7a09be7"
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/+page.svelte",
+      "original_sha256": "bd0a7bcac1e816fb89ea7443c78f36ccad976fa08bfa2cf35d07ba25f40f01c2",
+      "input_sha256": "304119982e951d4eddbc8b099d37413a3a2819fa103b75e0782b0105908a688b",
+      "output_sha256": "491406471f8e17c53a08dc8d60749658bb5e14475f150eeab5d5c50605d7328c"
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/settings/+layout.svelte",
+      "original_sha256": "db6702a17c9fd64be4f21f8fc8e7fe5998c8cf04aa4c41b62a1c253c006a967f",
+      "input_sha256": "db6702a17c9fd64be4f21f8fc8e7fe5998c8cf04aa4c41b62a1c253c006a967f",
+      "output_sha256": "a293566376225bc2f5e617a7944df7cc52150217b86c3211f4a324ae1a19556e"
+    },
+    {
+      "path": "src/routes/(app)/group/[id]/settings/+page.svelte",
+      "original_sha256": "9d7319ce7ccae8203e4b79c01453257cb009db0696e9c85080188e26e41a4a98",
+      "input_sha256": "4f666ec443d0e46ef38cd115833a74f1fffc40622832adcd63c27d16fe014c52",
+      "output_sha256": "b8e801f86a7ab142262e7b7fabcfedd40840517150972870b081cdf062228e88"
+    },
+    {
+      "path": "src/routes/(app)/groups/+page.svelte",
+      "original_sha256": "79984c406d9f50322983854e70a2f1feaeb8ff9837fd04070859d825ba8c5cc8",
+      "input_sha256": "79984c406d9f50322983854e70a2f1feaeb8ff9837fd04070859d825ba8c5cc8",
+      "output_sha256": "36b84f8ea8e7a31ffa228a4da958ab4e4a04d69762bce27dae91b26d4576e70b"
+    },
+    {
+      "path": "src/routes/(app)/guidelines/+page.svelte",
+      "original_sha256": "51844f5c45245bed1faad31a843db41f4ed6ddd36c8c75499cdbdb2b1fc8b909",
+      "input_sha256": "51844f5c45245bed1faad31a843db41f4ed6ddd36c8c75499cdbdb2b1fc8b909",
+      "output_sha256": "868bc30e93176061aaa81da9b09b206dffa77b3a3b6bac93e62ee818aab84726"
+    },
+    {
+      "path": "src/routes/(app)/my/reports/+page.svelte",
+      "original_sha256": "8a5ddb5387ecf78a376d2cffe6d5b0214ea8359895e7c438730156b811363f5a",
+      "input_sha256": "cb293a6ee787f0f05e5235603cd4b27e25e63574f107fe571ed6d048e1c1b7b4",
+      "output_sha256": "d75e9262aeced1f81e2c440277648ee5e96fe83a2ffbc7d1d5f843b75bedcd74"
+    },
+    {
+      "path": "src/routes/(app)/privacy/+page.svelte",
+      "original_sha256": "42264c485f5127e965f48af96a0c2160e03528cf71e9d569ec457cd1a8008279",
+      "input_sha256": "42264c485f5127e965f48af96a0c2160e03528cf71e9d569ec457cd1a8008279",
+      "output_sha256": "3a556f3d4c1974732a95519f684e4fc7ebcb60f8bedcda147e15e09280da9bff"
+    },
+    {
+      "path": "src/routes/(app)/terms/+page.svelte",
+      "original_sha256": "f3cd4ecd86212975d0180f61543f56cba4c0d2c04928d84378e1384bd7693c8b",
+      "input_sha256": "f3cd4ecd86212975d0180f61543f56cba4c0d2c04928d84378e1384bd7693c8b",
+      "output_sha256": "a23085dfa2228b7f0b00a079b2240461ac95d49a4cbae1fab440250dd8a835e6"
+    },
+    {
+      "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
+      "original_sha256": "a28566e4e2a83ec0eb77974c1481502bbd6d6882f2c1ba6768eab1edbfa95a8e",
+      "input_sha256": "106bd6d2d0d9cc2faf87a1cf6d358f6c360c1ad47bf83c2159030e79c4eac2da",
+      "output_sha256": "ed44df6deae27bfb36a16315e2e4b3293aecc6c2b46103af46117a3b211992e8"
+    },
+    {
+      "path": "src/routes/(app)/user/[id]/settings/+page.svelte",
+      "original_sha256": "b64a8ac906f93b0d74cbf9a658933a52370b91d7a413c317585dda59f9d6dc90",
+      "input_sha256": "3b29d0a6a985be3c9c63394c6656b37d264b40ff9c592e28637b803c28b15122",
+      "output_sha256": "aace7dccc16a9ca0f68dbe37991d28d9629aec35eb32341175ed41e66c57d756"
+    }
+  ]
+}

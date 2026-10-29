@@ -236,6 +236,8 @@ pub(crate) async fn confirm_in(tx:&Transaction<'_>,user:&str,authority:&str,comm
         "SELECT id FROM platform.sessions WHERE user_id=$1 ORDER BY id LIMIT 10001 FOR UPDATE NOWAIT",
         "SELECT id FROM platform.api_clients WHERE user_id=$1 ORDER BY id LIMIT 10001 FOR UPDATE NOWAIT",
         "SELECT id FROM platform.auth_email_tokens WHERE user_id=$1 ORDER BY id LIMIT 10001 FOR UPDATE NOWAIT",
+        "SELECT user_id FROM platform.native_identity_links WHERE user_id=$1 FOR UPDATE NOWAIT",
+        "SELECT id FROM platform.native_identity_link_challenges WHERE user_id=$1 ORDER BY id LIMIT 10001 FOR UPDATE NOWAIT",
     ] {
         if tx.query(sql,&[&user]).await.map_err(lock_error)?.len()>10000 {return Err(ApiError::conflict("Account credential history requires administrator-assisted disable"));}
     }
@@ -244,6 +246,10 @@ pub(crate) async fn confirm_in(tx:&Transaction<'_>,user:&str,authority:&str,comm
     tx.execute("UPDATE platform.api_clients SET revoked_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE user_id=$1 AND revoked_at IS NULL",&[&user]).await?;
     tx.execute("UPDATE platform.auth_email_tokens SET used_at=COALESCE(used_at,clock_timestamp()) WHERE user_id=$1",&[&user]).await?;
     tx.execute("UPDATE platform.protocol_identity_bindings SET revoked_at=COALESCE(revoked_at,clock_timestamp()) WHERE user_id=$1",&[&user]).await?;
+    // Private portable association is separate from publisher authority. Closure
+    // clears it in the same rollback transaction; reactivation cannot revive it.
+    tx.execute("UPDATE platform.native_identity_links SET public_key=NULL,revision=revision+1,updated_at=clock_timestamp() WHERE user_id=$1",&[&user]).await?;
+    tx.execute("UPDATE platform.native_identity_link_challenges SET used_at=clock_timestamp(),outcome='account-closed' WHERE user_id=$1 AND used_at IS NULL",&[&user]).await?;
     tx.execute("UPDATE platform.account_disable_confirmations SET used_at=COALESCE(used_at,clock_timestamp()) WHERE user_id=$1",&[&user]).await?;
     tx.execute("INSERT INTO platform.account_lifecycle_audit(user_id,confirmation_id,operation,authority,old_version,new_version) VALUES($1,$2,'disable',$3,$4,$5)",&[&user,&command.confirmation_id,&authority,&version,&(version+1)]).await?;
     tx.execute("UPDATE platform.users SET disabled=true,closed_at=clock_timestamp(),version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&user]).await?;

@@ -1,11 +1,12 @@
 import fs from 'node:fs';import path from 'node:path';import {fileURLToPath,pathToFileURL} from 'node:url';import {createRequire} from 'node:module';import test from 'node:test';import assert from 'node:assert/strict';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),deps=process.env.WEEBDEX_FRONTEND_ROOT,require=createRequire(path.join(deps,'package.json')),{compile}=require('svelte/compiler'),{JSDOM}=require(path.join(process.env.WEEBDEX_BROWSER_DOM_NODE_MODULES,'jsdom'));const{window}=new JSDOM('<main></main>',{url:'https://site.example/my/reports'});for(const key of ['window','document','Node','Element','HTMLElement','Text','Comment','Event','CustomEvent','MutationObserver','getComputedStyle'])globalThis[key]=window[key];const svelte=pathToFileURL(path.join(deps,'node_modules/svelte/src/index-client.js')).href,{mount,unmount,flushSync}=await import(svelte),{writable}=await import(pathToFileURL(path.join(deps,'node_modules/svelte/src/store/index-client.js'))),dir=fs.mkdtempSync(path.join(root,'.build/account-heading-dom-'));fs.symlinkSync(path.join(deps,'node_modules'),path.join(dir,'node_modules'));test.after(()=>{window.close();fs.rmSync(dir,{recursive:true,force:true});delete globalThis.__reports;});
 
-import {composed} from './composed-account-library-fixture.mjs';
+import {composed,composedBaseline} from './composed-account-library-fixture.mjs';
 import {applyReportLifecycleOutput,restoreReportLifecycleOutput,reportLifecycleManifest} from '../../platform-integrations/local-library/report-lifecycle-overlays.mjs';
 import {createHash} from 'node:crypto';
 const relative='src/routes/(app)/my/reports/+page.svelte';
-const source=await composed(relative);
+const source=await composedBaseline(relative);
+const currentSource=await composed(relative);
 const predecessor=createHash('sha256').update(source).digest('hex')===reportLifecycleManifest[0].output_sha256?restoreReportLifecycleOutput(source,relative):source;
 const corrected=applyReportLifecycleOutput(predecessor,relative);
 function output(name,source){fs.writeFileSync(path.join(dir,name+'.mjs'),compile(source,{filename:name+'.svelte',generate:'client',runes:true}).js.code);return pathToFileURL(path.join(dir,name+'.mjs')).href;}
@@ -17,7 +18,7 @@ const childUrl=output('child',child);
 function adaptParent(parent){
 parent=parent.replace(/import .*? from .*?;/g,line=>{if(line.includes('readPrivateFeed'))return 'const {readPrivateFeed,privateFeedIdentity,page,Constants}=globalThis.__reports; const replaceState=()=>{};const PUBLIC_SITE_NAME="Test";const StatusCodes={OK:200,TOO_MANY_REQUESTS:429};';if(line.includes('ReportSearch.svelte'))return 'import ReportSearch from '+JSON.stringify(childUrl)+';';if(line.includes('ReportSearchFilter'))return 'import ReportSearchFilter from '+JSON.stringify(stub)+';';if(line.includes('GenericPagination'))return 'import GenericPagination from '+JSON.stringify(stub)+';';return '';});
 return parent;}
-const Page=(await import(output('page',adaptParent(corrected)))).default;
+const Page=(await import(output('page',adaptParent(currentSource)))).default;
 const OldPage=(await import(output('old-page',adaptParent(predecessor)))).default;
 const settle=async()=>{for(let i=0;i<12;i++){await new Promise(resolve=>setImmediate(resolve));flushSync();}};
 

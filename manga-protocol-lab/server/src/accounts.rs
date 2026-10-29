@@ -11,6 +11,10 @@ use anyhow::{Result, ensure};
 #[error("account is not admitted")]
 pub struct AccountDenied;
 
+#[derive(Debug, thiserror::Error)]
+#[error("metadata changed since review")]
+pub struct AccountHeadChanged;
+
 #[derive(Clone)]
 pub struct AccountPermit {
     pub(crate) publisher: Id,
@@ -57,6 +61,16 @@ impl Repository {
         &self,
         permit: &AccountPermit,
         event: &Event,
+    ) -> Result<StageOutcome> {
+        self.stage_account_metadata_expected(permit, event, None).await
+    }
+    /// HTTP proof binds expected_head to the full request body. None retains
+    /// legacy relay semantics; Some(None) means the editor observed no head.
+    pub async fn stage_account_metadata_expected(
+        &self,
+        permit: &AccountPermit,
+        event: &Event,
+        expected_head: Option<Option<Id>>,
     ) -> Result<StageOutcome> {
         ensure!(
             matches!(event.kind, 0 | 3 | 10002),
@@ -112,10 +126,14 @@ impl Repository {
             if current.as_ref() == Some(&id) {
                 return Ok(StageOutcome::Current);
             }
+            if let Some(expected) = expected_head.as_ref() {
+                if current.as_deref() != expected.as_ref().map(|id| id.as_slice()) { return Err(AccountHeadChanged.into()); }
+            }
             if created < clock || (created == clock && id >= winner) {
                 return Ok(StageOutcome::Superseded);
             }
         }
+        if old.is_none() && expected_head.as_ref().is_some_and(|expected| expected.is_some()) { return Err(AccountHeadChanged.into()); }
         crate::ordinary_deletion::admit_event_tx(&tx, event).await?;
         // A collision with a differently managed lifecycle is never resurrected.
         tx.execute("INSERT INTO events(id,publisher,kind,created_at,raw_event,state) VALUES($1,$2,$3,$4,$5,'hosted')", &[&id,&permit.publisher.as_slice(),&kind,&created,&raw]).await?;

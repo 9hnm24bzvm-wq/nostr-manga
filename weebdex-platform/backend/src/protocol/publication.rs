@@ -719,6 +719,46 @@ async fn prepared_input(
     }))
 }
 
+const NATIVE_UPLOAD_SOURCE_FORMATS: &[&str] = &["image/jpeg", "image/png", "image/webp"];
+const NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES: u64 = 256 * 1024 * 1024;
+
+/// Read-only eligibility: uses the same current binding/admission/group gates as
+/// command publication, without allocating a command, signing, or granting access.
+pub(crate) async fn native_upload_preflight(
+    state: &crate::state::AppState,
+    tx: &tokio_postgres::Transaction<'_>,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+    selected_groups: &[String],
+) -> ApiResult<serde_json::Value> {
+    use crate::domains::uploads::storage;
+    let configured = state.config.protocol_publication.is_some();
+    let mut limits = serde_json::json!({"maxFiles":storage::MAX_FILES,"maxFilesPerRequest":5,"maxFileBytes":storage::MAX_FILE_BYTES.min(25*1024*1024),"maxSessionBytes":storage::MAX_SESSION_BYTES,"maxUniqueBytes":storage::MAX_SESSION_BYTES,"maxPixels":storage::MAX_PIXELS,"maxDimension":storage::MAX_DIMENSION});
+    let formats = if configured { NATIVE_UPLOAD_SOURCE_FORMATS.to_vec() } else { vec!["image/jpeg","image/png","image/webp","image/gif"] };
+    if configured { limits["maxUniqueBytes"] = serde_json::json!(NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES); limits["maxSessionBytes"] = serde_json::json!(NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES); }
+    let eligibility: ApiResult<()> = async {
+        actor.require_permission("chapter.create")?;
+        actor.require_permission("self.chapter.update")?;
+        crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+        if !configured { return Ok(()); }
+        if state.config.database_connections < 4 { return Err(ApiError::unavailable()); }
+        let runtime = state.protocol.publication_runtime().await?;
+        limits["maxFileBytes"] = serde_json::json!(storage::MAX_FILE_BYTES.min(25*1024*1024).min(runtime.storage.max_blob_bytes));
+        let bound = tx.query("SELECT publisher FROM platform.protocol_identity_bindings WHERE group_id=ANY($1) AND revoked_at IS NULL", &[&selected_groups]).await?;
+        if bound.len() > 1 { return Err(ApiError::bad_request("Select at most one publishing-enabled group. Other group credits do not grant publishing access.")); }
+        let member: String = tx.query_opt("SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL", &[&actor.user_id()]).await?.ok_or_else(||ApiError::forbidden("This account needs publishing access from the site operator. Connecting a portable identity alone does not grant it."))?.get(0);
+        if let Some(group) = bound.first() {
+            let publisher: String = group.get(0);
+            runtime.groups.as_ref().ok_or_else(||ApiError::forbidden("Group publishing is not configured on this site."))?.authorize(identity(&publisher).map_err(|_|ApiError::unavailable())?,identity(&member).map_err(|_|ApiError::unavailable())?,"publish").await.map_err(|_|ApiError::forbidden("Your account does not currently have this group's publishing permission. Ask a group manager or choose an authorized group."))?;
+        } else {
+            if member != runtime.publisher { return Err(ApiError::forbidden("Choose a group you are authorized to publish for, or ask the site operator for publishing access.")); }
+            runtime.repository.publisher_permit(identity(&member).map_err(|_|ApiError::unavailable())?).await.map_err(|_|ApiError::forbidden("Your publishing access is not currently active. Ask the site operator to review it."))?;
+        }
+        Ok(())
+    }.await;
+    let (eligible, reason) = match eligibility { Ok(()) => (true, None), Err(error) => (false, Some(if error.status.is_server_error() { "Publishing access could not be checked. Please try again or contact the site operator.".to_owned() } else { error.message })) };
+    Ok(serde_json::json!({"configured":configured,"scope":if configured {"original-protocol"} else {"instance-local"},"eligible":eligible,"reason":reason,"formats":formats,"limits":limits,"requiresOperatorOrAuthorizedGroup":configured,"checkedAt":tx.query_one("SELECT platform.catalog_timestamp(clock_timestamp())",&[]).await?.get::<_,String>(0),"informationalGroupDelay":true}))
+}
+
 async fn command_publish(
     state: &crate::state::AppState,
     account_tx: &tokio_postgres::Transaction<'_>,
@@ -1126,7 +1166,7 @@ pub(crate) async fn publish_native_upload_fenced(
     let mut unique = BTreeMap::new();
     for file in files {
         if !auth::valid_hash(&file.hash)
-            || !["image/jpeg", "image/png", "image/webp"].contains(&file.mime.as_str())
+            || !NATIVE_UPLOAD_SOURCE_FORMATS.contains(&file.mime.as_str())
             || file.bytes == 0
             || file.bytes > runtime.storage.max_blob_bytes
             || file.width == 0
@@ -1154,7 +1194,7 @@ pub(crate) async fn publish_native_upload_fenced(
         .values()
         .try_fold(0u64, |sum, file| sum.checked_add(file.bytes))
         .ok_or_else(|| ApiError::bad_request("Original byte total overflow"))?;
-    if total > 256 * 1024 * 1024 {
+    if total > NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES {
         return Err(ApiError::bad_request(
             "Configured protocol publication supports at most 256 MiB of unique original bytes",
         ));

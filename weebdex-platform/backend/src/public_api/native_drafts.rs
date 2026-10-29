@@ -156,10 +156,13 @@ async fn list(
         .map(|v| (ResourceKind::Manga, v))
         .collect::<Vec<_>>();
     let index = AliasIndex::load_in(&tx, &resources).await?;
-    let data = values
+    let mut data = values
         .iter()
         .map(|v| index.resource(ResourceKind::Manga, v, &query.includes))
         .collect::<PublicApiResult<Vec<_>>>()?;
+    for (resource, native) in data.iter_mut().zip(values.iter()) {
+        resource.attributes["reviewTimeline"] = super::native_draft_reviews::summary(&tx, native["id"].as_str().ok_or_else(PublicApiError::unavailable)?).await?;
+    }
     let mut result = CollectionResponse::new(data, query.limit, query.offset, total as u64);
     result.extensions.insert("nostr".into(),serde_json::json!({"scope":"instance-account","authentication":"native-session","accountId":super::uploads::preferred(&tx,ResourceKind::User,actor.user_id()).await?}));
     tx.commit().await?;
@@ -197,7 +200,8 @@ async fn detail(
         .get::<_, Option<Value>>(1)
         .ok_or_else(PublicApiError::unavailable)?;
     let index = AliasIndex::load_in(&tx, &[(ResourceKind::Manga, value.clone())]).await?;
-    let resource = index.resource(ResourceKind::Manga, &value, &query.includes)?;
+    let mut resource = index.resource(ResourceKind::Manga, &value, &query.includes)?;
+    resource.attributes["reviewTimeline"] = super::native_draft_reviews::timeline(&tx, &target.native_id).await?;
     let mut result = EntityResponse::new(resource);
     result.extensions.insert("nostr".into(),serde_json::json!({"scope":"instance-account","authentication":"native-session","accountId":super::uploads::preferred(&tx,ResourceKind::User,actor.user_id()).await?}));
     tx.commit().await?;

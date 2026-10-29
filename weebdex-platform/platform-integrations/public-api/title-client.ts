@@ -1,3 +1,4 @@
+import {rejectionFeedback} from './draft-feedback';
 import { publicWriteLanguage } from './language';
 import { createEditorSearch, officialLinkDictionary, type EditorChoice } from './editor-fields';
 // Scoped signed title metadata commands. No cookie/native command fallback.
@@ -156,7 +157,7 @@ export async function createSignedTitleController(assertCurrent:()=>void,target?
     for(const field of ['title','description'])if(Object.hasOwn(payload,field))payload[field]={...record(previous!.public_api.resource.attributes[field]??{},'current localized metadata'),...record(payload[field])};
     if(encoder.encode(JSON.stringify(payload)).byteLength>32768)fail('Localized title edit exceeds the 32 KiB request budget',422);
    }
-  }else{if(input!==undefined)fail('Draft transitions accept only the captured current version',422);payload={version};}
+  }else if(action==='reject'){payload={version,...rejectionFeedback(input)};}else{if(input!==undefined)fail('Draft transitions accept only the captured current version',422);payload={version};}
   payload={...payload,expectedAccountId:account.id};
   if(encoder.encode(JSON.stringify(payload)).byteLength>32768)fail('Signed title account intent exceeds the 32 KiB request budget',422);
   const route=action==='create'?'/manga':action==='update'?`/manga/${id}`:`/manga/draft/${id}/${action==='submit'?'commit':action}`;

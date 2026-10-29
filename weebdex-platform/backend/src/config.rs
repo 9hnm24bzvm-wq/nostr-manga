@@ -27,6 +27,7 @@ pub struct Config {
     pub public_origin: String,
     pub ui_dir: PathBuf,
     pub ui_fallback: String,
+    pub instance: crate::domains::staff_workspace::InstanceInformation,
     pub database_connections: usize,
     pub database_wait_ms: u64,
     pub database_plaintext_local: bool,
@@ -67,6 +68,7 @@ impl Default for Config {
             public_origin: "http://localhost:8080".into(),
             ui_dir: "artifacts/frontend".into(),
             ui_fallback: "index.html".into(),
+            instance: crate::domains::staff_workspace::InstanceInformation::default(),
             database_connections: 8,
             database_wait_ms: 500,
             database_plaintext_local: false,
@@ -294,6 +296,7 @@ impl Config {
     }
 
     pub fn validate(&self) -> Result<()> {
+        self.instance.validate()?;
         ensure!((1..=1000).contains(&self.scheduled_upload_maximum)
             && (1..=536870912000_i64).contains(&self.scheduled_upload_bytes)
             && (1..=31536000).contains(&self.scheduled_upload_horizon_seconds)

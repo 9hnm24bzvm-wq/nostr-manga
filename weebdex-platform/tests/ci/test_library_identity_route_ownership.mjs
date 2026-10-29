@@ -278,8 +278,9 @@ for(const reason of ['Close','Escape','route-owner'])test(`closed Lists held rea
 
 test('current metadata read remains inspectable while routine action rows hide raw proof', async()=>{
   const {env}=environment();
-  env.readMetadata=async(_relay,_owner,kind)=>({head:{id:'c'.repeat(64),projected:true},event:{id:'c'.repeat(64),kind,pubkey:'b'.repeat(64),tags:[],content:kind===0?'Saved profile content':'',created_at:1}});
-  let view=await render(IdentitySettings,env);view.target.querySelector('[data-advanced-identity] summary').click();await settle();await click(view.target,'Edit public profile');await selectRecipient(view.target);await click(view.target,'Read verified current public metadata');
+  env.metadataForEditing=async(relay,owner,kind)=>({headGuard:true,relay,owner,kind,head:{id:'c'.repeat(64),projected:true},event:{id:'c'.repeat(64),kind,pubkey:owner,tags:[],content:kind===0?JSON.stringify({about:'Saved profile content'}):'',created_at:1}});
+  env.profileFields=base=>JSON.parse(base.event.content);env.relayLines=()=>[];
+  let view=await render(IdentitySettings,env);view.target.querySelector('[data-advanced-identity] summary').click();await settle();await click(view.target,'Edit public profile');await selectRecipient(view.target);await click(view.target,'Load my current information');
   assert(!view.target.textContent.includes('Saved profile content'));await click(view.target,'Inspect current data');assert(view.target.textContent.includes('Saved profile content'));await view.close();
   env.publicActionRecords=async()=>[{event:{id:'d'.repeat(64),kind:1111,pubkey:'b'.repeat(64),tags:[],content:'Reviewed comment',created_at:1},relay:recipient,state:'prepared',message:'Saved on this device',cancelled:false}];
   view=await render(IdentitySettings,env);view.target.querySelector('[data-advanced-identity] summary').click();await settle();await click(view.target,'Saved public actions');const card=view.target.querySelector('[data-public-action-id]');assert.equal(card.dataset.publicActionId,'d'.repeat(64));assert.match(card.textContent,/Ready to send/);assert(!card.textContent.includes('d'.repeat(64)));await click(view.target,'Inspect saved action');assert(card.textContent.includes('Reviewed comment'));assert(card.textContent.includes('d'.repeat(64)));await view.close();

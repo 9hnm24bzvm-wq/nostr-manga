@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { createBoundedReaderOverlays } from '../platform-integrations/bounded-reader/overlays.mjs';
+import { createSixPersonaOverlays, sixPersonaRouteAdditions } from '../platform-integrations/six-persona/overlays.mjs';
 import { createAccountLibraryOverlays } from '../platform-integrations/local-library/account-overlays.mjs';
 // Materialize the actual production transforms in an ignored, local-only tree.
 // This command never starts the application, a browser, or a database.
@@ -14,7 +15,7 @@ import { createFrontendOverlays } from '../platform-integrations/frontend-overla
 import { createReaderOverlays } from '../platform-integrations/frontend-reader-overlays.mjs';
 import { createPublicApiOverlays } from '../platform-integrations/public-api/overlays.mjs';
 import { createPublicUploadOverlays, createNativeUploadOverlays } from '../platform-integrations/public-api/upload-overlays.mjs';
-import { associateCurrentUploadRecipe as associateSupersededUploadRecipe } from './composed-native-upload-provenance.mjs';
+import { associateCurrentUploadRecipe as associateSupersededUploadRecipe } from './composed-six-persona-provenance.mjs';
 import { productionAliasName, resolveProductionAlias, describeProductionAlias } from './composed-production-aliases.mjs';
 import { createLocalLibraryOverlays } from '../platform-integrations/local-library/overlays.mjs';
 
@@ -62,7 +63,7 @@ fs.cpSync(path.join(root, 'platform-integrations'), path.join(project, 'platform
 fs.cpSync(path.join(root, 'platform-integrations'), path.join(work, 'production-composed/platform-integrations'), { recursive: true });
 
 // Reconstructed routes are installed on the production build input by its preparation step.
-for (const addition of frontendRouteAdditions) {
+for (const addition of [...frontendRouteAdditions, ...sixPersonaRouteAdditions]) {
   for (const tree of [input, project]) {
     const target = path.join(tree, addition.target), source = path.join(root, addition.source);
     if (fs.existsSync(target) && !fs.readFileSync(target).equals(fs.readFileSync(source))) throw Error(`Reviewed route source drift: ${addition.target}`);
@@ -103,7 +104,7 @@ for (const name of ['@lucide/svelte', 'svelte-sonner', 'axios', 'http-status-cod
   aliasesForCheck[name] = [path.join(dependencies, name, typeEntry)];
   packageTypeAliases.push({ name, production_entry: aliases.find(alias => productionAliasName(alias.find) === name)?.replacement, same_package_declaration: aliasesForCheck[name][0], declaration_sha256: hash(fs.readFileSync(aliasesForCheck[name][0])) });
 }
-const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input), createPublicUploadOverlays(input), createNativeUploadOverlays(input), createBoundedReaderOverlays(input), createAccountLibraryOverlays(input)];
+const plugins = [createFrontendOverlays(input), createReaderOverlays(input), createLocalLibraryOverlays(input), createPublicApiOverlays(input), createPublicUploadOverlays(input), createNativeUploadOverlays(input), createBoundedReaderOverlays(input), createAccountLibraryOverlays(input), createSixPersonaOverlays(input)];
 const manifest = [], rewrites = [], maps = new Map(), graph = [], reachable = new Set(), workerTypeBindings = [];
 const projectedSourceRoots = ['src', 'platform-integrations'].map(name => path.join(project, name) + path.sep);
 function isProjectedSource(file) {

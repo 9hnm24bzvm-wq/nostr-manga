@@ -1,0 +1,104 @@
+// Compiled production Svelte + production browser client; only HTTP responses are fixtures.
+// The paired Rust suite exercises real router/SQL authority, not these fixture claims.
+import fs from 'node:fs';import path from 'node:path';import test from 'node:test';import assert from 'node:assert/strict';
+import {root,window,component,module,mounted,settle,flushSync,writable} from './account-fixpass-dom-fixture.mjs';
+for(const name of ['HTMLTextAreaElement','HTMLSelectElement','BeforeUnloadEvent'])if(window[name])globalThis[name]=window[name];globalThis.sessionStorage=window.sessionStorage;
+globalThis.__accountFixpass={modules:{}};
+const client=await module('staff-client',fs.readFileSync(path.join(root,'platform-integrations/staff-workspace/staff-client.ts'),'utf8'));
+const SharedSession=writable(undefined);
+globalThis.__accountFixpass.modules={'$lib/stores':{Session:SharedSession},'./staff-client':client,'$app/navigation':{beforeNavigate:()=>{}}};
+const auth=(patch={})=>({scope:'native-staff-context',actorId:'Moderator1',username:'Synthetic moderator',roles:['moderator'],permissions:['report.update','report.delete','report.history'],verified:true,moderator:true,staff:false,sourceOperatorAuthority:false,...patch});
+const row={id:'ReportOne1',category:'scanlation_group',objectId:'GroupOne01',reason:'Group claim request',status:'waiting',version:1,submitter:'Synthetic reporter',assignedTo:null,assignee:null,workState:'unassigned',priority:'normal',appealState:'none'};
+const review={report:{id:row.id,objectId:row.objectId,status:'waiting',version:1,details:'Synthetic evidence'},target:{label:'Moonlight Team',id:row.objectId},claimant:{name:'Synthetic reporter'},reason:{label:'Group claim request'},acceptAllowed:true,acceptEffect:{action:'grant_group_leadership',claimant_id:'Reporter1',group_id:row.objectId},contextHash:'a'.repeat(64)};
+function response(body,status=200){return new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json'}});}
+function button(host,text){const found=[...host.querySelectorAll('button')].find(b=>b.textContent.trim()===text);assert.ok(found,`button ${text}: ${host.textContent}`);return found;}
+function edit(element,value){assert.ok(element);element.value=value;element.dispatchEvent(new Event('input',{bubbles:true}));flushSync();}
+let Component=await component('ModerationWorkspace',fs.readFileSync(path.join(root,'platform-integrations/staff-workspace/ModerationWorkspace.svelte'),'utf8'));
+let Profile=await component('StaffProfileEditor',fs.readFileSync(path.join(root,'platform-integrations/staff-workspace/StaffProfileEditor.svelte'),'utf8'));
+let Personal=await component('PersonalReportHistory',fs.readFileSync(path.join(root,'platform-integrations/staff-workspace/PersonalReportHistory.svelte'),'utf8'));
+let Policy=await component('InstancePolicy',fs.readFileSync(path.join(root,'platform-integrations/staff-workspace/InstancePolicy.svelte'),'utf8'));
+function environment(handler,authority=auth()){
+ sessionStorage.clear();const calls=[],Session=SharedSession;Session.set({identity:{id:'Moderator1'},roles:authority.roles,permissions:authority.permissions});
+ globalThis.__accountFixpass.modules={'$lib/stores':{Session},'./staff-client':client,'$app/navigation':{beforeNavigate:()=>{}}};
+ globalThis.fetch=async(url,init={})=>{const path=new URL(url,'https://catalog.example').pathname,method=init.method??'GET',body=init.body?JSON.parse(init.body):undefined;calls.push({path,method,body});if(path==='/api/staff/context')return response(authority);const result=await handler({path,method,body,url,init});if(result)return result;if(path==='/api/staff/reports')return response({scope:'site-moderator-queue',actorId:'Moderator1',data:[row],total:1});if(path.endsWith('/review'))return response({scope:'native-moderation-review',actorId:'Moderator1',context:review});if(path==='/api/staff/history')return response({scope:'staff-decision-history',actorId:'Moderator1',data:[],total:0});throw Error('Unexpected fixture request '+method+' '+path);};
+ return{calls,Session};
+}
+test('native moderator queue is distinct from personal reports; effect review and Cancel do not mutate',async()=>{
+ const env=environment(()=>{}),ui=await mounted(Component);try{assert.match(ui.host.textContent,/Moderator queue/);assert.match(ui.host.textContent,/My reports — only my submissions/);button(ui.host,'Review report').click();await settle();assert.match(ui.host.textContent,/Grant local leadership of Moonlight Team/);assert.match(ui.host.textContent,/Synthetic reporter/);button(ui.host,'Cancel').click();await settle();assert.equal(env.calls.filter(c=>c.method!=='GET').length,0);assert.equal(ui.host.querySelector('[aria-label="Review moderation consequence"]'),null);}finally{await ui.dispose();}
+});
+test('confirmed native decision has exact reviewed effect and one durable receipt',async()=>{
+ const env=environment(({path,method,body})=>method==='POST'?response({scope:'native-moderation',actorId:'Moderator1',requestId:body.requestId,id:row.id,status:'accepted',version:2,effect:body.expectedEffect}):undefined),ui=await mounted(Component);try{button(ui.host,'Review report').click();await settle();edit(ui.host.querySelector('textarea'),'Reviewed group proof');button(ui.host,'Confirm acceptance').click();await settle();const writes=env.calls.filter(c=>c.method==='POST');assert.equal(writes.length,1);assert.deepEqual(writes[0].body.expectedEffect,review.acceptEffect);assert.equal(writes[0].body.expectedReportVersion,1);assert.match(ui.host.textContent,/durable receipt/);}finally{await ui.dispose();}
+});
+test('lost result stays fenced and receipt checking never replays the POST',async()=>{
+ let receipt;const env=environment(({path,method,body})=>{if(method==='POST'){receipt={scope:'native-moderation',actorId:'Moderator1',requestId:body.requestId,id:row.id,status:'accepted',version:2};throw Error('Synthetic lost response');}if(path.startsWith('/api/staff/receipts/'))return response(receipt);}),ui=await mounted(Component);try{button(ui.host,'Review report').click();await settle();edit(ui.host.querySelector('textarea'),'Synthetic decision');button(ui.host,'Confirm acceptance').click();await settle();assert.match(ui.host.textContent,/unconfirmed/);button(ui.host,'Confirm acceptance').click();await settle();assert.equal(env.calls.filter(c=>c.method==='POST').length,1);button(ui.host,'Check action receipt').click();await settle();assert.equal(env.calls.filter(c=>c.method==='POST').length,1);assert.match(ui.host.textContent,/earlier action was confirmed/);}finally{await ui.dispose();}
+});
+test('same-tick account change prevents a stale report decision before dispatch',async()=>{
+ const env=environment(()=>{}),ui=await mounted(Component);try{button(ui.host,'Review report').click();await settle();edit(ui.host.querySelector('textarea'),'Stale review');env.Session.set(undefined);button(ui.host,'Confirm acceptance').click();await settle();assert.equal(env.calls.filter(c=>c.method==='POST').length,0);assert.doesNotMatch(ui.host.textContent,/Synthetic evidence/);}finally{await ui.dispose();}
+});
+test('dedicated staff foreign profile edits changed-only fields and rechecks after a lost role',async()=>{
+ const target='11111111-1111-8111-8111-111111111111';let attributes={username:'Foreign person',roles:['user'],version:4,description:'Existing biography',discord:'preserve-code',twitter:'https://x.com/example',website:'https://example.invalid'};let deny=false;
+ const env=environment(({path,method,body})=>{if(path.endsWith('/profile')){if(method==='PUT'){if(deny)return response({error:'Staff permission was removed'},403);assert.deepEqual(Object.keys(body.patch).sort(),['description','version']);attributes={...attributes,...body.patch,version:5};}return response({scope:'native-staff-profile',actorId:'Moderator1',userId:target,attributes,changed:method==='PUT'});}},auth({roles:['staff'],staff:true,permissions:['user.update']}));
+ const ui=await mounted(Profile,{targetId:target});try{assert.match(ui.host.textContent,/Foreign person/);edit(ui.host.querySelector('textarea'),'New staff biography');ui.host.querySelector('form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));await settle();button(ui.host,'Cancel').click();await settle();assert.equal(env.calls.filter(c=>c.method==='PUT').length,0);ui.host.querySelector('form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));await settle();button(ui.host,'Confirm profile changes').click();await settle();assert.equal(attributes.description,'New staff biography');assert.equal(attributes.discord,'preserve-code');assert.match(ui.host.textContent,/Profile saved/);deny=true;edit(ui.host.querySelector('textarea'),'Forbidden stale change');ui.host.querySelector('form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));await settle();button(ui.host,'Confirm profile changes').click();await settle();assert.match(ui.host.textContent,/permission was removed/);assert.equal(button(ui.host,'Review changes').disabled,true);assert.equal(attributes.description,'New staff biography');}finally{await ui.dispose();}
+});
+test('ordinary personal history can appeal with review/cancel and cannot inspect other queue data',async()=>{
+ const env=environment(({path,method,body})=>{if(path.endsWith('/history'))return response({scope:'personal-report-history',actorId:'Moderator1',id:'ReportOne1',version:2,status:'refused',appealState:'none',data:[{operation:'reject',reason:'Explain the missing evidence',createdAt:'2026-10-28T00:00:00Z'}]});if(method==='POST')return response({scope:'native-moderation',actorId:'Moderator1',requestId:body.requestId,id:'ReportOne1',effect:{action:'appeal'}});},auth({roles:['user'],moderator:false,permissions:['report.create']})),ui=await mounted(Personal,{reportId:'ReportOne1'});try{button(ui.host,'Decision history and appeal').click();await settle();assert.match(ui.host.textContent,/missing evidence/);edit(ui.host.querySelector('textarea'),'New supporting evidence');ui.host.querySelector('form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));await settle();button(ui.host,'Cancel').click();await settle();assert.equal(env.calls.filter(c=>c.method==='POST').length,0);assert.equal(env.calls.filter(c=>c.path==='/api/staff/reports').length,0);}finally{await ui.dispose();}
+});
+test('instance policy identifies this operator and never substitutes upstream contact text',async()=>{
+ environment(({path})=>path==='/api/instance-information'?response({scope:'public-instance-information',information:{operatorName:'Synthetic instance operator',contactUrl:'mailto:help@example.invalid',terms:'Synthetic instance terms',termsUrl:null}}):undefined);
+ const ui=await mounted(Policy,{kind:'terms'});try{assert.match(ui.host.textContent,/Synthetic instance operator/);assert.match(ui.host.textContent,/Synthetic instance terms/);assert.equal(ui.host.querySelector('a').getAttribute('href'),'mailto:help@example.invalid');assert.doesNotMatch(ui.host.textContent,/weebdex\.org/);}finally{await ui.dispose();}
+});
+
+// Held real fetch responses exercise production send()/body parsing and persistent markers.
+function deferred(){let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return{promise,resolve,reject};}
+const actionPath='/staff/reports/ReportOne1/decision';
+async function heldClient(options={}){
+ const values=new Map(),calls=[],held=deferred();let origin='https://catalog.example',current=true,sequence=0;
+ const storage={getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value),removeItem:key=>values.delete(key)};
+ const instance=await client.createStaffClient('Moderator1',()=>{if(!current)throw new client.WorkspaceError('Account changed',409);},{origin:()=>origin,storage,requestId:()=>`synthetic-request-${String(++sequence).padStart(5,'0')}`,fetch:async(url,init={})=>{
+  const path=new URL(url).pathname,body=init.body?JSON.parse(init.body):undefined;calls.push({path,init,body});if(path==='/api/staff/context')return response(auth());if(path.startsWith('/api/staff/receipts/'))return options.receipt?options.receipt({path,body}):response({scope:'native-moderation',actorId:'Moderator1',requestId:decodeURIComponent(path.split('/').at(-1))});return held.promise;
+ }});
+ const key=`weebdex.staff-action.v1:https://catalog.example:Moderator1:${actionPath}`;
+ return{instance,values,calls,held,key,storage,switchAccount:()=>{current=false;},switchOrigin:()=>{origin='https://other.invalid';},success:()=>response({scope:'native-moderation',actorId:'Moderator1',requestId:calls.find(call=>call.init.method==='POST').body.requestId})};
+}
+for(const boundary of ['account switch without render flush','dispose','origin switch'])test(`post-dispatch ${boundary} keeps the unknown-outcome fence`,async()=>{
+ const fixture=await heldClient(),{instance,values,key}=fixture;try{
+  const command=instance.mutate(actionPath,{action:'accept'}),rejection=assert.rejects(command,error=>error instanceof client.WorkspaceError&&error.uncertain===true);
+  assert.equal(fixture.calls.filter(call=>call.init.method==='POST').length,1);const marker=values.get(key);assert.ok(marker);
+  if(boundary.startsWith('account'))fixture.switchAccount();else if(boundary==='dispose')instance.dispose();else fixture.switchOrigin();
+  fixture.held.resolve(fixture.success());await rejection;assert.equal(values.get(key),marker);
+ }finally{instance.dispose();}
+});
+test('malformed saved receipt blocks every new dispatch and cannot be silently reconciled',async()=>{
+ const fixture=await heldClient();try{for(const malformed of ['not-json','{}',JSON.stringify({path:actionPath,requestId:'short'}),JSON.stringify({path:'/staff/reports/Other/work',requestId:'synthetic-request-00001'})]){
+  fixture.values.set(fixture.key,malformed);await assert.rejects(fixture.instance.mutate(actionPath,{action:'accept'}),error=>error.uncertain);await assert.rejects(fixture.instance.reconcile(actionPath),error=>error.uncertain);assert.equal(fixture.values.get(fixture.key),malformed);
+ }assert.equal(fixture.calls.length,1);}finally{fixture.instance.dispose();}
+});
+for(const status of [500,503,408])test(`HTTP ${status} never certifies that a dispatched action did not commit`,async()=>{
+ const fixture=await heldClient();try{const command=fixture.instance.mutate(actionPath,{action:'accept'}),rejection=assert.rejects(command,error=>error.uncertain);fixture.held.resolve(response({error:'Synthetic uncertain upstream failure'},status));await rejection;assert.ok(fixture.values.get(fixture.key));}finally{fixture.instance.dispose();}
+});
+test('malformed 4xx refusal remains unknown rather than clearing the marker',async()=>{
+ const fixture=await heldClient();try{const command=fixture.instance.mutate(actionPath,{action:'accept'}),rejection=assert.rejects(command,error=>error.uncertain);fixture.held.resolve(response({unrelated:true},409));await rejection;assert.ok(fixture.values.get(fixture.key));}finally{fixture.instance.dispose();}
+});
+test('validated definitive 4xx refusal clears only its own marker',async()=>{
+ const fixture=await heldClient();try{const command=fixture.instance.mutate(actionPath,{action:'accept'}),rejection=assert.rejects(command,error=>error.status===409&&!error.uncertain&&error.confirmedRefusal);fixture.held.resolve(response({error:'The reviewed version changed'},409));await rejection;assert.equal(fixture.values.has(fixture.key),false);}finally{fixture.instance.dispose();}
+});
+for(const completion of ['success','refusal'])test(`late ${completion} cannot remove a newer installed marker`,async()=>{
+ const fixture=await heldClient();try{const command=fixture.instance.mutate(actionPath,{action:'accept'});const completed=completion==='success'?command:assert.rejects(command,error=>error.confirmedRefusal);const newer=JSON.stringify({path:actionPath,requestId:'synthetic-request-newer',markerId:'newer-installation'});fixture.values.set(fixture.key,newer);fixture.held.resolve(completion==='success'?fixture.success():response({error:'Reviewed state changed'},409));await completed;assert.equal(fixture.values.get(fixture.key),newer);}finally{fixture.instance.dispose();}
+});
+test('receipt reconciliation cannot erase a newer marker installed while its GET was held',async()=>{
+ const receipt=deferred(),fixture=await heldClient({receipt:()=>receipt.promise});try{
+  const first=JSON.stringify({path:actionPath,requestId:'synthetic-request-old1'}),second=JSON.stringify({path:actionPath,requestId:'synthetic-request-new1'});fixture.values.set(fixture.key,first);const check=fixture.instance.reconcile(actionPath);fixture.values.set(fixture.key,second);receipt.resolve(response({scope:'native-moderation',actorId:'Moderator1',requestId:'synthetic-request-old1'}));await check;assert.equal(fixture.values.get(fixture.key),second);assert.equal(fixture.calls.filter(call=>call.init.method==='POST').length,0);
+ }finally{fixture.instance.dispose();}
+});
+test('a storage write that is not retained prevents dispatch',async()=>{
+ let posts=0;const instance=await client.createStaffClient('Moderator1',()=>{},{origin:()=>window.location.origin,requestId:()=> 'synthetic-request-00001',storage:{getItem:()=>null,setItem:()=>{},removeItem:()=>{}},fetch:async(url,init={})=>{if(init.method==='POST')posts++;return response(auth());}});try{await assert.rejects(instance.mutate(actionPath,{action:'accept'}),/No action was sent/);assert.equal(posts,0);}finally{instance.dispose();}
+});
+test('mounted review unmount after dispatch retains the receipt and a new mount does not replay',async()=>{
+ const held=deferred();let sent;const env=environment(({method,body})=>{if(method==='POST'){sent=body;return held.promise;}});let ui=await mounted(Component);try{
+  button(ui.host,'Review report').click();await settle();edit(ui.host.querySelector('textarea'),'Synthetic unmount review');button(ui.host,'Confirm acceptance').click();assert.ok(sent);const key=Object.keys(sessionStorage).find(key=>key.endsWith(actionPath)),marker=sessionStorage.getItem(key);assert.ok(marker);await ui.dispose();ui=undefined;held.resolve(response({scope:'native-moderation',actorId:'Moderator1',requestId:sent.requestId,id:row.id,status:'accepted',version:2}));await settle();assert.equal(sessionStorage.getItem(key),marker);ui=await mounted(Component);button(ui.host,'Review report').click();await settle();edit(ui.host.querySelector('textarea'),'Must not resend');button(ui.host,'Confirm acceptance').click();await settle();assert.equal(env.calls.filter(call=>call.method==='POST').length,1);assert.ok(sessionStorage.getItem(key));
+ }finally{if(ui)await ui.dispose();}
+});
+test('local correction review explains the exact prior membership and cancel never reverses it',async()=>{
+ const context={reportId:row.id,reportVersion:2,contextHash:'b'.repeat(64),targetName:'Moonlight Team',effect:{action:'restore_previous_group_membership',previousMembership:{name:'Earlier officer name',is_leader:false,is_officer:true}},previousEffect:{new_member_name:'Synthetic claimant'}};
+ const env=environment(({path})=>path==='/api/staff/reports'?response({scope:'site-moderator-queue',actorId:'Moderator1',data:[{...row,status:'accepted',version:2}],total:1}):path.endsWith('/correction')?response({scope:'native-correction-review',actorId:'Moderator1',context}):undefined,auth({roles:['staff'],staff:true,permissions:['report.update','report.correct','group.leadership.revoke']}));const ui=await mounted(Component);try{button(ui.host,'Review local correction').click();await settle();assert.match(ui.host.textContent,/Synthetic claimant/);assert.match(ui.host.textContent,/Earlier officer name/);assert.match(ui.host.textContent,/officer permissions and no leadership permissions/);assert.match(ui.host.textContent,/original decision stays in history/);button(ui.host,'Cancel').click();await settle();assert.equal(env.calls.filter(call=>call.method!=='GET').length,0);}finally{await ui.dispose();}
+});

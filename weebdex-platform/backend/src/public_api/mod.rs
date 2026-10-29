@@ -22,6 +22,8 @@ pub fn router() -> axum::Router<crate::AppState> {
     routes::router()
         .merge(auth::router())
         .merge(native_account::router())
+        .merge(native_identity_link::router())
+        .merge(native_collaboration::router())
         .merge(native_account_profile_settings::router())
         .merge(native_contributions::router())
         .merge(native_drafts::router())
@@ -79,6 +81,9 @@ pub fn router() -> axum::Router<crate::AppState> {
 
 pub mod auth;
 mod native_account;
+mod native_identity_link;
+mod native_collaboration;
+mod native_draft_reviews;
 mod native_account_profile_settings;
 mod native_contributions;
 mod native_json;

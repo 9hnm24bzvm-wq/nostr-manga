@@ -296,7 +296,7 @@ fn read_class(request: &Request) -> Class {
     let public=path.strip_prefix("/api/v1");
     let path=public.or_else(||path.strip_prefix("/api")).unwrap_or(path);
     let segments=path.split('/').filter(|s|!s.is_empty()).collect::<Vec<_>>();
-    let private=path.starts_with("/user/history") || path.starts_with("/user/follows")
+    let private=native_staff_private_path(original_path(request)) || path.starts_with("/user/history") || path.starts_with("/user/follows")
         || public.is_some() && segment_prefix(path, "/account/library")
         || (public.is_some() && matches!(segments.as_slice(),["nostr","manga",_,"reading-status"] | ["nostr","user",_,"profile"]))
         || (public.is_some() && (path=="/manga/read" || path=="/manga/status"
@@ -364,6 +364,9 @@ fn request_origin(headers: &HeaderMap, expected: &str) -> Result<Option<HeaderVa
 }
 /// Only the native completion and Continue seams get the account preflight
 /// header. This is not a global native API or public/signed CORS expansion.
+fn native_staff_private_path(path: &str) -> bool {
+    segment_prefix(path, "/api/staff") || segment_prefix(path, "/api/my/reports")
+}
 fn native_account_reader_path(path: &str) -> bool {
     path.strip_prefix("/api/user/history/manga/")
         .and_then(|rest| rest.strip_suffix("/completion").or_else(|| rest.strip_suffix("/continue")))
@@ -589,7 +592,8 @@ fn account_closure_private(path:&str, method:&Method)->bool {
 async fn response_headers(State(state): State<AppState>, request: Request, next: Next) -> Response {
     let service_worker = request.uri().path() == "/service-worker.js";
     let native_account_reader = native_account_reader_path(original_path(&request))
-        || segment_prefix(original_path(&request), "/api/v1/account");
+        || segment_prefix(original_path(&request), "/api/v1/account")
+        || native_staff_private_path(original_path(&request));
     let closure_private=account_closure_private(original_path(&request),request.method());
     let signed_report_private = signed_native_user_report_private(original_path(&request), request.method())
         || segment_prefix(original_path(&request), "/api/v1/nostr/moderation/reports");
@@ -909,6 +913,12 @@ mod public_boundary_tests {
     }
     #[test]
     fn nested_private_reads_use_original_external_uri() {
+        for path in ["/api/staff", "/api/staff/reports", "/api/staff/admin/users", "/api/my/reports/id/history"] {
+            let mut request=Request::builder().uri("/stripped").body(Body::empty()).unwrap();
+            request.extensions_mut().insert(OriginalUri(path.parse().unwrap()));
+            assert!(native_staff_private_path(path));assert!(matches!(read_class(&request),Class::LibraryHead));
+        }
+        for path in ["/api/staffing", "/api/my/reports-extra", "/api/instance-information", "/api/v1/staff"] {assert!(!native_staff_private_path(path));}
         for path in ["/api/v1/nostr/user/id/profile","/api/v1/nostr/manga/id/reading-status","/api/v1/manga/read","/api/v1/manga/status","/api/v1/manga/id/read","/api/v1/manga/id/status","/api/v1/user/list","/api/v1/user/id/list","/api/v1/list/id","/api/v1/list/id/feed","/api/user/history","/api/user/follows/manga"] {
             let mut request=Request::builder().uri("/stripped").body(Body::empty()).unwrap();
             request.extensions_mut().insert(OriginalUri(path.parse().unwrap()));

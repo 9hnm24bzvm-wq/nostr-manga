@@ -45,7 +45,7 @@ export function installLocalSigner(owner: string, candidate: LocalSessionSigner,
   signer = candidate; clearLocalSigner = () => candidate.clear();
   signerIdentity.set({ owner, generation, source: 'local' });
 }
-export async function connectSigner(assertCurrent = () => {}) {
+export async function connectSigner(assertCurrent = () => {}, expectedOwner?: string) {
   assertCurrent();
   const candidate = (window as Window & { nostr?: NIP07Signer }).nostr;
   if (!candidate?.getPublicKey || !candidate.signEvent) throw Error('No compatible NIP-07 browser signer was found. Create or import a key in Public identity settings, or install a signing extension.');
@@ -54,6 +54,7 @@ export async function connectSigner(assertCurrent = () => {}) {
   const owner = await signerRequest(() => { assertCurrent(); return candidate.getPublicKey(); });
   assertCurrent();
   if (!/^[0-9a-f]{64}$/.test(owner)) throw Error('Signer returned an invalid public key');
+  if (expectedOwner && owner !== expectedOwner) throw Error('Your signer selected a different identity. Choose the identity connected to this account in your signer and try again. Nothing was linked or published.');
   if (get(signerIdentity).generation !== generation) throw Error('Signer selection changed');
   signer = candidate; signerIdentity.set({ owner, generation, source: 'external' });
 }
@@ -84,15 +85,17 @@ export async function relayPreferences() {
   const { protocol } = await publicationStores(false), preferences = await protocol.relayPreferences();
   return { ...preferences, relays: preferences.relays.map(row => ({ ...row, selected: row.selected === true })) };
 }
-export async function rememberRelay(input: string, key: string, expectedRevision: number) {
+export async function rememberRelay(input: string, key: string, expectedRevision: number, assertCurrent = () => {}) {
+  assertCurrent();
   const { protocol, check } = await publicationStores(false);
   const policy = await capabilities(), canonical = assertAllowedRelay(input, policy);
   if (key && !/^[0-9a-f]{64}$/.test(key)) throw Error('Invalid expected service public key');
-  const verified = await proveService(canonical, key || undefined); check(); await verifyLibraryRelay(verified, check);
-  const current = await protocol.relayPreferences();
+  const active = () => { check(); assertCurrent(); };
+  const verified = await proveService(canonical, key || undefined); active(); await verifyLibraryRelay(verified, active); active();
+  const current = await protocol.relayPreferences(); active();
   if (current.revision !== expectedRevision) throw Error('Instance selection changed. Review it again.');
   const next = [...current.relays.filter(row => row.origin !== canonical), { ...verified, selected: false }];
-  await protocol.setRelays(next, expectedRevision);
+  active(); await protocol.setRelays(next, expectedRevision); active();
   return verified;
 }
 export async function selectRelays(relays: Relay[], expectedRevision: number) {

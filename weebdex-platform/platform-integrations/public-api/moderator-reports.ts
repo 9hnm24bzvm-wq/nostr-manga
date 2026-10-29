@@ -39,17 +39,19 @@ function target(input:unknown,category?:string,id?:string,depth=0):Record<string
  if(t.thread!==undefined){if(t.category!=='reply')fail('Unexpected thread expansion');target(t.thread,'thread',String(s.threadId),depth+1);}
  if(t.parent!==undefined){if(!['chapter','thread','reply'].includes(String(t.category)))fail('Unexpected parent expansion');const parentState=t.category==='reply'?record(record(t.thread).state):s;const kind=t.category==='chapter'?'manga':parentState.parentKind==='group'?'scanlation_group':String(parentState.parentKind);target(t.parent,kind,String(parentState.parentId),depth+1);}if(t.hasLeader!==undefined&&t.category!=='scanlation_group')fail('Unexpected group authority');return t;
 }
-function effect(input:unknown,r:ModeratorSummary,t:Record<string,unknown>):Record<string,unknown>{
+function effect(input:unknown,r:ModeratorSummary,t:Record<string,unknown>,claimant:unknown):Record<string,unknown>{
  const e=record(input),version=typeof t.version==='number'?t.version:null;
- const expected=r.reasonId==='scanlation_group_claim'?{action:'grant_group_leadership',group_id:r.objectId,claimant_id:r.submitterId,old_group_version:version,new_group_version:version===null?null:version+1}:r.reasonId==='chapter_removal_request'?{action:'instance_soft_hide',chapter_id:r.objectId,source_deletion:'independent_original_moderation'}:r.reasonId==='manga_removal_request'?{action:'instance_soft_hide',manga_id:r.objectId,old_version:version,new_version:version===null?null:version+1,source_deletion:'not_requested',original_event_rewritten:false}:{};
+ let membership:unknown=null;if(r.reasonId==='scanlation_group_claim'){if(!Object.hasOwn(e,'previous_membership'))fail('Missing reversible membership record');if(e.previous_membership!==null){const previous=keys(e.previous_membership,['name','is_leader','is_officer']);text(previous.name,128);if(typeof previous.is_leader!=='boolean'||typeof previous.is_officer!=='boolean')fail('Invalid previous membership record');membership=previous;}}
+ const expected=r.reasonId==='scanlation_group_claim'?{action:'grant_group_leadership',group_id:r.objectId,claimant_id:r.submitterId,old_group_version:version,new_group_version:version===null?null:version+1,previous_membership:membership,new_member_name:claimant===null?null:record(claimant).name}:r.reasonId==='chapter_removal_request'?{action:'instance_soft_hide',chapter_id:r.objectId,source_deletion:'independent_original_moderation',old_version:version,new_version:version===null?null:version+1,previous_deleted:false}:r.reasonId==='manga_removal_request'?{action:'instance_soft_hide',manga_id:r.objectId,old_version:version,new_version:version===null?null:version+1,source_deletion:'not_requested',original_event_rewritten:false,previous_deleted:false}:{};
  if(!equal(e,expected))fail('Unexpected native moderation effect');return e;
 }
 function context(input:unknown,id:string):ModeratorContext{
  const c=keys(input,['report','reason','target','claimant','targetRevision','acceptAllowed','acceptEffect','contextHash']),r=record(c.report),s=summary(r,true);if(s.id!==id)fail('Wrong moderation report');
  if(r.submittedTargetVersion!==null)positive(r.submittedTargetVersion);text(r.details,20000);text(r.notes,20000);
  const reason=keys(c.reason,['id','version','label','detailsRequired','enabled']);if(nativeId(reason.id)!==s.reasonId||!text(reason.label,8000)||typeof reason.detailsRequired!=='boolean'||typeof reason.enabled!=='boolean')fail('Invalid moderation reason');positive(reason.version);
- const t=target(c.target,s.category,s.objectId);effect(c.acceptEffect,s,t);if(typeof c.acceptAllowed!=='boolean'||s.status!=='waiting'&&c.acceptAllowed)fail('Invalid moderation permission');
+ const t=target(c.target,s.category,s.objectId);if(typeof c.acceptAllowed!=='boolean'||s.status!=='waiting'&&c.acceptAllowed)fail('Invalid moderation permission');
  if(c.claimant!==null){const claimant=keys(c.claimant,['id','version','name','eligible']);if(s.reasonId!=='scanlation_group_claim'||nativeId(claimant.id)!==s.submitterId||typeof claimant.eligible!=='boolean')fail('Invalid claim authority');positive(claimant.version);text(claimant.name,128);}
+ effect(c.acceptEffect,s,t,c.claimant);
  if(digest(c.targetRevision)!==sha({target:c.target,claimant:c.claimant}))fail('Target revision does not match its reviewed evidence');
  const {contextHash,...review}=c;if(digest(contextHash)!==sha(review))fail('Moderation context digest mismatch');return c as unknown as ModeratorContext;
 }

@@ -64,7 +64,7 @@ test('closing a reviewed action before deferred signing creates no local signatu
   const { f } = await localFixture();
   try {
     const identity = await f.load('protocol-identity.ts');
-    const review = identity.reviewProfile(f.review.recipients[0], { name: 'Synthetic reader', display_name: '', about: '' });
+    const review = identity.reviewProfile(f.review.recipients[0], { name: 'Synthetic reader', display_name: '', about: '' }, { headGuard:true, relay: f.review.recipients[0], owner: f.publication.selectedSigner().owner, kind: 0, head: null, event: null });
     const pending = identity.sendReviewed(review, true, f.assertCurrent); f.close();
     await assert.rejects(pending, /Management closed/);
     assert.equal((await identity.publicActionRecords()).length, 0); assert.equal(f.calls.posts, 0);

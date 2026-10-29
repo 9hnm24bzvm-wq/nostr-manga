@@ -1,0 +1,345 @@
+[
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "page-format capability import",
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport { uploadFormatName } from \"$publicApi/upload-eligibility\";",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "WebP original format admission",
+    "before": "const imageMimeTypes = [\"image/jpeg\", \"image/jpg\", \"image/png\", \"image/gif\"];",
+    "after": "const imageMimeTypes = [\"image/jpeg\", \"image/jpg\", \"image/png\", \"image/gif\", \"image/webp\"];",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "archive accounts for unsupported and unsafe entries",
+    "before": "const entries = all.filter(entry => !entry.dir && /\\.(jpg|jpeg|png|gif)$/i.test(entry.name)).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: \"base\" }));",
+    "after": "const rejected: {name:string;reason:string}[] = [];\r\n\t\t\tconst entries = all.filter(entry => { if(entry.dir)return false; const original=(entry as unknown as {unsafeOriginalName?:string}).unsafeOriginalName??entry.name; if(original!==entry.name || /(^[\\\\/]|(^|[\\\\/])\\.\\.([\\\\/]|$))/.test(original) || (Number(entry.unixPermissions)&0xf000)===0xa000) { rejected.push({name:original,reason:\"Unsafe archive path or symbolic link\"});return false; } if(!/\\.(jpg|jpeg|png|gif|webp)$/i.test(entry.name)) {rejected.push({name:entry.name,reason:\"Not a supported page image\"});return false;} return true; }).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: \"base\" }));",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "archive WebP MIME",
+    "before": "const type = ext === \"png\" ? \"image/png\" : ext === \"gif\" ? \"image/gif\" : \"image/jpeg\";",
+    "after": "const type = ext === \"png\" ? \"image/png\" : ext === \"gif\" ? \"image/gif\" : ext === \"webp\" ? \"image/webp\" : \"image/jpeg\";",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "safe archive basenames",
+    "before": "files.push(new File([blob], entry.name, { type }));",
+    "after": "files.push(new File([blob], entry.name.split(/[\\\\/]/).pop()!, { type }));",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "archive returns explicit receipt",
+    "before": "\t\t\treturn files;",
+    "after": "\t\t\treturn {files,rejected};",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "selection receipt callback",
+    "before": "disabled: propDisabled\r\n\t}: {",
+    "after": "disabled: propDisabled,\r\n\t\tonSelection = (_ready: boolean) => {}\r\n\t}: {",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "selection callback type",
+    "before": "pages: UploadSessionFile[];\r\n\t\tdisabled?: boolean;",
+    "after": "pages: UploadSessionFile[];\r\n\t\tdisabled?: boolean;\r\n\t\tonSelection?: (ready:boolean) => void;",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "capability-bound page controls",
+    "before": "const owner = getUploadOwner();",
+    "after": "const owner = getUploadOwner();\r\n\tconst capabilities = $derived(owner.capabilities());\r\n\tlet selectionReceipt = $state<{selected:number;accepted:number;pages:number;rejected:{name:string;reason:string}[];reviewed:boolean}>();\r\n\tconst effectiveLimits = () => { const access=owner.capabilities(); if(!access?.eligible)throw new Constants.Error.Error(\"Check publishing access\",access?.reason??\"Refresh publishing access before choosing pages.\");return access; };",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "bounded WebP dimensions",
+    "before": "\t\telse if (bytes.length >= 4 && bytes[0] === 255 && bytes[1] === 216) {",
+    "after": "\t\telse if (bytes.length >= 30 && String.fromCharCode(...bytes.subarray(0,4)) === \"RIFF\" && String.fromCharCode(...bytes.subarray(8,12)) === \"WEBP\") {\r\n\t\t\tconst kind=String.fromCharCode(...bytes.subarray(12,16));\r\n\t\t\tif(kind===\"VP8X\"){width=1+bytes[24]+(bytes[25]<<8)+(bytes[26]<<16);height=1+bytes[27]+(bytes[28]<<8)+(bytes[29]<<16);}\r\n\t\t\telse if(kind===\"VP8L\"&&bytes[20]===47){const bits=view.getUint32(21,true);width=1+(bits&0x3fff);height=1+((bits>>>14)&0x3fff);}\r\n\t\t\telse if(kind===\"VP8 \"&&bytes[23]===157&&bytes[24]===1&&bytes[25]===42){width=view.getUint16(26,true)&0x3fff;height=view.getUint16(28,true)&0x3fff;}\r\n\t\t}\r\n\t\telse if (bytes.length >= 4 && bytes[0] === 255 && bytes[1] === 216) {",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "current pixel/dimension limits",
+    "before": "if (!width || !height || width * height > 50_000_000) throw new Constants.Error.Error(file.name, \"Could not decode image, or its decoded dimensions exceed the 50-million-pixel admission limit.\");",
+    "after": "const {limits}=effectiveLimits(); if (!width || !height || width * height > limits.maxPixels || width>limits.maxDimension || height>limits.maxDimension) throw new Constants.Error.Error(file.name, \"Could not decode image, or its dimensions exceed this site\u2019s current image limit.\");",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "every selected entry has a visible admission outcome",
+    "before": "\tconst processFiles = async (files: File[], session: UploadSession) => {\r\n\t\tassertFileSession(session);\r\n\t\tif (files.length > maxSessionFiles || pages.length + files.length > maxSessionFiles) throw new Constants.Error.Error(\"Too many upload files\", \"A session admits at most 500 pages. Split large folders into smaller selections.\");\r\n\t\tconst admittedSessionSize = pages.reduce((total, page) => total + Number(page.file_size ?? page.file?.size ?? 0), 0);\r\n\t\tlet remaining = maxSessionSize - admittedSessionSize;\r\n\t\tconst processedFiles: File[] = [];\r\n\t\t// One decoder at a time bounds memory; no Promise.all over untrusted files.\r\n\t\tconst admit = async (file: File) => {\r\n\t\t\tif (file.size > maxFileSize) throw new Constants.Error.Error(file.name, \"File too large\");\r\n\t\t\tconst decoded = await decodeUploadImage(file); assertFileSession(session);\r\n\t\t\tconst pieces = decoded.width > maxImageWidth || decoded.height > maxImageHeight ? await splitImage(decoded, file.name) : [file];\r\n\t\t\tassertFileSession(session);\r\n\t\t\tfor (const piece of pieces) {\r\n\t\t\t\tif (pages.length + processedFiles.length >= maxSessionFiles || piece.size > maxFileSize || piece.size > remaining) throw new Constants.Error.Error(\"Upload limit exceeded\", \"The decoded selection exceeds 500 pages or the 500 MiB session budget.\");\r\n\t\t\t\tremaining -= piece.size; processedFiles.push(piece);\r\n\t\t\t}\r\n\t\t};\r\n\t\tfor (const file of files) {\r\n\t\t\tif (imageMimeTypes.includes(file.type)) await admit(file);\r\n\t\t\telse if (archiveMimeTypes.includes(file.type) || /\\.(cbz|zip)$/i.test(file.name)) {\r\n\t\t\t\tconst extracted = await extractArchive(file, remaining, maxSessionFiles - pages.length - processedFiles.length); assertFileSession(session);\r\n\t\t\t\tfor (const image of extracted) await admit(image);\r\n\t\t\t}\r\n\t\t}\r\n\t\tif (!processedFiles.length) return;\r\n\r\n\t\tconst totalSize = processedFiles.reduce<number>((acc, file) => acc + file.size, 0);\r\n\t\tconst sessionSize = pages.reduce<number>((acc, file) => acc + Number(file.file_size ?? file.file?.size ?? 0), 0);\r\n\r\n\t\tif (totalSize + sessionSize >= maxSessionSize) {\r\n\t\t\ttoast.error(\"Maximum size for this upload session exceeded.\");\r\n\t\t\treturn;\r\n\t\t}\r\n\t\tprogress.total += totalSize;\r\n\r\n\t\tprocessedFiles.sort((a, b) =>\r\n\t\t\ta.name.localeCompare(b.name, undefined, {\r\n\t\t\t\tnumeric: true,\r\n\t\t\t\tsensitivity: \"base\"\r\n\t\t\t})\r\n\t\t);\r\n\r\n\t\tassertFileSession(session);\r\n\t\tconst newFiles = processedFiles.map(createPage);\r\n\t\tpages.push(...newFiles);\r\n\r\n\t\twhile (newFiles.length) {\r\n\t\t\tconst chunk: UploadSessionFile[] = [];\r\n\t\t\tfor (\r\n\t\t\t\tlet j = 0;\r\n\t\t\t\tj < maxChunkFiles && (chunk.length ? chunk.reduce((acc, file) => acc + file.file!.size, 0) : 0) < maxChunkSize;\r\n\t\t\t\tj++\r\n\t\t\t) {\r\n\t\t\t\tconst file = newFiles.shift();\r\n\t\t\t\tif (!file) break;\r\n\t\t\t\tchunk.push(file);\r\n\t\t\t}\r\n\t\t\ttry { assertFileSession(session); await uploadChunk(chunk, delta => { progress.loaded += delta; }); assertFileSession(session); }\r\n\t\t\tcatch (error) { if (owner.alive() && uploadSession === session) { markUnsentUploadPages(newFiles, session.id); pages = pages; progress = { total: 0, loaded: 0 }; } throw error; }\r\n\t\t}\r\n\r\n\t\tif (progress.loaded >= progress.total) {\r\n\t\t\tsetTimeout(() => {\r\n\t\t\t\tprogress = { total: 0, loaded: 0 };\r\n\t\t\t}, 1000);\r\n\t\t}\r\n\t};\r\n",
+    "after": "\tconst processFiles = async (files: File[], session: UploadSession) => {\r\n\t\tassertFileSession(session); const access=effectiveLimits(), limits=access.limits;\r\n\t\tconst receipt=selectionReceipt&&!selectionReceipt.reviewed?{...selectionReceipt,rejected:[...selectionReceipt.rejected]}:{selected:0,accepted:0,pages:0,rejected:[] as {name:string;reason:string}[],reviewed:false};selectionReceipt=receipt;onSelection(false);\r\n\t\tif(files.length>maxSessionFiles){receipt.selected+=files.length;receipt.rejected.push({name:`Entire selection (${files.length} files)`,reason:`All ${files.length} files were rejected: choose at most ${maxSessionFiles} files at once.`});selectionReceipt={...receipt};return;}\r\n\t\tconst processedFiles: File[]=[];let remaining=limits.maxSessionBytes-pages.reduce((sum,page)=>sum+Number(page.file_size??page.file?.size??0),0);\r\n\t\tconst reject=(name:string,error:unknown)=>{receipt.rejected.push({name,reason:error instanceof Constants.Error.Error?error.body:error instanceof Error?error.message:String(error)});};\r\n\t\tconst admit=async(file:File)=>{receipt.selected++;try {\r\n\t\t\tif(!access.formats.includes(file.type==='image/jpg'?'image/jpeg':file.type))throw new Constants.Error.Error(file.name,\"This image format cannot be published on this site.\");\r\n\t\t\tif(!file.size||file.size>limits.maxFileBytes)throw new Constants.Error.Error(file.name,\"Page exceeds the current file-size limit or is empty.\");\r\n\t\t\tif(pages.length+processedFiles.length>=limits.maxFiles)throw new Constants.Error.Error(file.name,\"The chapter has reached its page-count limit.\");\r\n\t\t\tconst decoded=await decodeUploadImage(file);assertFileSession(session);\r\n\t\t\tconst pieces=decoded.width>maxImageWidth||decoded.height>maxImageHeight?await splitImage(decoded,file.name):[file];assertFileSession(session);\r\n\t\t\tconst bytes=pieces.reduce((sum,piece)=>sum+piece.size,0);\r\n\t\t\tif(!pieces.length||pages.length+processedFiles.length+pieces.length>limits.maxFiles||pieces.some(piece=>piece.size>limits.maxFileBytes)||bytes>remaining)throw new Constants.Error.Error(file.name,\"This page exceeds the remaining page-count or chapter-size budget.\");\r\n\t\t\tremaining-=bytes;processedFiles.push(...pieces);receipt.accepted++;receipt.pages+=pieces.length;\r\n\t\t}catch(error){assertFileSession(session);reject(file.name,error);}};\r\n\t\tfor(const file of files){\r\n\t\t\tif(archiveMimeTypes.includes(file.type)||/\\.(cbz|zip)$/i.test(file.name)){\r\n\t\t\t\ttry{const extracted=await extractArchive(file,remaining,limits.maxFiles-pages.length-processedFiles.length);assertFileSession(session);receipt.selected+=extracted.rejected.length;receipt.rejected.push(...extracted.rejected);for(const image of extracted.files)await admit(image);}\r\n\t\t\t\tcatch(error){assertFileSession(session);receipt.selected++;reject(file.name,error);}\r\n\t\t\t}else await admit(file);\r\n\t\t}\r\n\t\tselectionReceipt={...receipt};onSelection(!receipt.rejected.length);\r\n\t\tif(!processedFiles.length)return;\r\n\t\tprocessedFiles.sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:\"base\"}));\r\n\t\tprogress.total+=processedFiles.reduce((sum,file)=>sum+file.size,0);assertFileSession(session);\r\n\t\tconst newFiles=processedFiles.map(createPage);pages.push(...newFiles);\r\n\t\twhile(newFiles.length){const chunk:UploadSessionFile[]=[];let bytes=0;while(newFiles.length&&chunk.length<limits.maxFilesPerRequest&&(!chunk.length||bytes+newFiles[0].file!.size<=maxChunkSize)){const file=newFiles.shift()!;chunk.push(file);bytes+=file.file!.size;}\r\n\t\t\ttry{assertFileSession(session);await uploadChunk(chunk,delta=>{progress.loaded+=delta;});assertFileSession(session);}\r\n\t\t\tcatch(error){if(owner.alive()&&uploadSession===session){markUnsentUploadPages(newFiles,session.id);pages=pages;progress={total:0,loaded:0};}throw error;}\r\n\t\t}\r\n\t\tif(progress.loaded>=progress.total)setTimeout(()=>{progress={total:0,loaded:0};},1000);\r\n\t};\r\n",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "effective replacement format and bytes",
+    "before": "if (!imageMimeTypes.includes(file.type) || !file.size || file.size > maxFileSize)",
+    "after": "if (!effectiveLimits().formats.includes(file.type) || !file.size || file.size > effectiveLimits().limits.maxFileBytes)",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "effective replacement budget",
+    "before": "pages.length > maxSessionFiles || total - previousSize + file.size > maxSessionSize",
+    "after": "pages.length > effectiveLimits().limits.maxFiles || total - previousSize + file.size > effectiveLimits().limits.maxSessionBytes",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "chooser exposes images and archives",
+    "before": "accept={imageMimeTypes.join(\",\")}",
+    "after": "accept={[...(capabilities?.formats??[]),...archiveMimeTypes,\".zip\",\".cbz\"].join(\",\")}",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterPages.svelte",
+    "label": "durable exact admission receipt",
+    "before": "<div class=\"space-y-4\">",
+    "after": "<div class=\"space-y-4\">\r\n\t{#if selectionReceipt}<section aria-label=\"Selected page results\" role=\"status\" class=\"rounded border p-3 space-y-2\">\r\n\t\t<p>{selectionReceipt.selected} selected entries: {selectionReceipt.accepted} accepted ({selectionReceipt.pages} pages), {selectionReceipt.selected-selectionReceipt.accepted} rejected.</p>\r\n\t\t{#if selectionReceipt.rejected.length}<p>Review every rejected entry before publishing. No rejected entry will be included.</p><ul>{#each selectionReceipt.rejected as item}<li>{item.name}: {item.reason}</li>{/each}</ul>\r\n\t\t\t<button type=\"button\" class=\"underline\" disabled={$mutex||selectionReceipt.reviewed} onclick={()=>{if(selectionReceipt){selectionReceipt.reviewed=true;onSelection(true);}}}>{selectionReceipt.reviewed?'Rejected entries reviewed':'I have reviewed the rejected entries'}</button>{/if}\r\n\t</section>{/if}\r\n\t{#if capabilities}<p class=\"text-sm\">Supported pages: {capabilities.formats.map(uploadFormatName).join(\", \")}. Up to {Math.floor(capabilities.limits.maxFileBytes/1024/1024)} MiB per page and {Math.floor(capabilities.limits.maxSessionBytes/1024/1024)} MiB per chapter. ZIP and CBZ are supported.</p>{/if}",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+    "label": "canonical language import",
+    "before": "import { Locale } from \"$lib\";",
+    "after": "import { Locale } from \"$lib\";\r\n\timport { canonicalLanguageOptions, languageLabel, legacyLanguageReplacement } from \"$publicApi/language\";",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+    "label": "canonical options including Tamil",
+    "before": "Object.entries(Locale.Languages).filter(([code]) => /^[a-z]{2}(?:-[a-z]{2})?$/.test(code))",
+    "after": "canonicalLanguageOptions(Locale.Languages)",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+    "label": "named legacy language preservation",
+    "before": "Previously saved language ({draft.language})",
+    "after": "{languageLabel(draft.language,Locale.Languages)} \u2014 saved value retained",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterMetadata.svelte",
+    "label": "explicit Tamil legacy normalization",
+    "before": "Your previously saved value has not been changed.</p>{/if}",
+    "after": "Your previously saved value has not been changed.</p>{#if legacyLanguageReplacement(draft.language)}<button type=\"button\" class=\"underline\" {disabled} onclick={()=>{draft.language=legacyLanguageReplacement(draft.language!)!;}}>Use Tamil (ta)</button>{/if}{/if}",
+    "count": 1
+  },
+  {
+    "path": "src/lib/Locale.ts",
+    "label": "Tamil flag canonical alias",
+    "before": "tam: \"tam\",",
+    "after": "ta: \"tam\",\r\n\ttam: \"tam\",",
+    "count": 1
+  },
+  {
+    "path": "src/lib/Locale.ts",
+    "label": "Tamil canonical catalogue choice",
+    "before": "tam: \"Tamil\",",
+    "after": "ta: \"Tamil\",\r\n\ttam: \"Tamil\",",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "upload eligibility UI import",
+    "before": "<script lang=\"ts\">",
+    "after": "<script lang=\"ts\">\r\n\timport { uploadFormatName, localScheduleUtc, type UploadEligibility } from \"$publicApi/upload-eligibility\";",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "form eligibility state",
+    "before": "let groups = $state<ScanlationGroup[]>([]);",
+    "after": "let groups = $state<ScanlationGroup[]>([]);\r\n\tlet eligibility=$state<UploadEligibility>(),checkingAccess=$state(false),accessMessage=$state(\"\"),checkedGroups=$state(\"\"),selectionReady=$state(true);\r\n\tlet durableIssue=$state<{title:string;description:string;supportDetails?:string}>();\r\n\tconst showUploadError=(error:unknown)=>{if(!owner.alive())return;durableIssue=error instanceof Constants.Error.Error?{title:error.title,description:error.body,...((error as {supportDetails?:string}).supportDetails?{supportDetails:(error as {supportDetails?:string}).supportDetails}:{})}:{title:\"Upload not completed\",description:error instanceof Error?error.message:\"Your staged pages were kept. Check upload status before trying again.\"};};\r\n\tconst checkPublishingAccess=async()=>{if(checkingAccess)return false;checkingAccess=true;accessMessage=\"\";try{const selected=groups.map(group=>group.id),result=await owner.preflight(selected);owner.assert();if(JSON.stringify(selected)!==JSON.stringify(groups.map(group=>group.id))){eligibility=undefined;accessMessage=\"Group selection changed. Check publishing access again.\";return false;}eligibility=result;checkedGroups=JSON.stringify(selected);return eligibility.eligible;}catch(error){if(owner.alive()){eligibility=undefined;accessMessage=error instanceof Error?error.message:\"Publishing access could not be checked.\";}return false;}finally{if(owner.alive())checkingAccess=false;}};\r\n\tonMount(()=>{void checkPublishingAccess();});",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "reject omissions pending explicit review",
+    "before": "scheduleValid && resumeReady &&",
+    "after": "!signedReceiptPending && uploadSession?.can_mutate !== false && selectionReady && scheduleValid && resumeReady &&",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "preflight before new staging",
+    "before": "const res = await owner.request<UploadSession>(\"/upload/begin\",",
+    "after": "if(!await checkPublishingAccess())return;\r\n\t\t\t\tconst res = await owner.request<UploadSession>(\"/upload/begin\",",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "actionable response errors",
+    "before": "} else if (res?.status === StatusCodes.FORBIDDEN) {\r\n\t\t\t\t\tthrow Constants.Error.Forbidden;\r\n\t\t\t\t} else if (res?.status === StatusCodes.TOO_MANY_REQUESTS) {\r\n\t\t\t\t\tthrow Constants.Error.TooManyRequests;\r\n\t\t\t\t} else throw Constants.Error.Unknown;",
+    "after": "} else throw resumeError(res?.status,res?.body);",
+    "count": 2
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "persistent command failure receipt",
+    "before": "if (e instanceof Constants.Error.Error) toast.error(e.title, { description: e.body });\r\n\t\t\t\telse toast.error(Constants.Error.Unknown.title, { description: Constants.Error.Unknown.body });",
+    "after": "showUploadError(e);",
+    "count": 2
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "persist restore failure",
+    "before": "if (error instanceof Constants.Error.Error) toast.error(error.title, { description: error.body });\r\n\t\telse toast.error(\"Upload could not be restored\", { description: \"Reload before creating another upload. Existing staging was kept.\" });",
+    "after": "showUploadError(error);",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "clear prior issue at explicit command",
+    "before": "await persistCurrentUpload();\r\n\t\t\t\tconst approvalRequired",
+    "after": "durableIssue=undefined;\r\n\t\t\t\tawait persistCurrentUpload();\r\n\t\t\t\tconst approvalRequired",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "selection review gates publication",
+    "before": "<UploadChapterPages bind:pages={uploadSession.relationships.files!} disabled={$mutex || !uploadSession} />",
+    "after": "<UploadChapterPages bind:pages={uploadSession.relationships.files!} disabled={$mutex || !uploadSession} onSelection={ready=>{selectionReady=ready;}} />",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "local schedule conversion",
+    "before": "scheduledUtc(publishAt)",
+    "after": "localScheduleUtc(publishAt)",
+    "count": 2
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "friendly date-time control",
+    "before": "<label for=\"publish-at-utc\">Publishing date and time (UTC)</label>",
+    "after": "<label for=\"publish-at-utc\">Publishing date and time (your local timezone)</label>",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "native local date-time input",
+    "before": "type=\"text\" class=\"block w-full rounded border p-2\" bind:value={publishAt} placeholder=\"YYYY-MM-DDTHH:MM:SS\"",
+    "after": "type=\"datetime-local\" class=\"block w-full rounded border p-2\" bind:value={publishAt}",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "honest release policy",
+    "before": "Use UTC, not your local time. Pages stay private until publishing starts. You cannot change pages or details after scheduling. A past time publishes immediately.",
+    "after": "Pages stay private until publishing starts. You cannot change pages or details after scheduling. A past time publishes immediately. Group preferred delays are informational only and do not change this time.",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "readable time validation",
+    "before": "Enter a real UTC date and time in YYYY-MM-DDTHH:MM:SS format.",
+    "after": "Choose a real publishing date and time.",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "visible effective schedule time",
+    "before": "{#if !scheduleValid}<p role=\"status\">Choose a real publishing date and time.</p>{/if}",
+    "after": "{#if !scheduleValid}<p role=\"status\">Choose a real publishing date and time.</p>{:else}<p>Publishing starts at or after {new Date(localScheduleUtc(publishAt)+\"Z\").toLocaleString(undefined,{dateStyle:\"medium\",timeStyle:\"long\"})}.</p>{/if}",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "keep upload results on page after dialog close",
+    "before": "if (chapter) await goto(`/chapter/${chapter.id}/1`);\r\n\t\t\telse await goto(`/title/${manga.id}${Utils.makeSlug(manga.title)}`);",
+    "after": "// Keep the durable result visible; reading is an explicit action below.",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "durable outcome and access before page selection",
+    "before": "<UploadSchedulesPanel {owner} revision={scheduleRevision} />",
+    "after": "<a class=\"underline\" href=\"/upload\">Your uploads and recovery</a>\r\n\t<section aria-label=\"Publishing access\" class=\"rounded border p-3 space-y-2\">\r\n\t\t<h3 class=\"font-medium\">Publishing access</h3>\r\n\t\t{#if eligibility}<p>{eligibility.configured?\"This site publishes through its configured publishing service.\":\"Your chapter will be published on this site only.\"}</p><p>{eligibility.eligible?\"Ready to publish with the selected group credits.\":eligibility.reason}</p><p>{eligibility.formats.map(uploadFormatName).join(\", \")} \u00b7 {Math.floor(eligibility.limits.maxFileBytes/1024/1024)} MiB per page \u00b7 {Math.floor(eligibility.limits.maxSessionBytes/1024/1024)} MiB per chapter.</p>{/if}\r\n\t\t{#if accessMessage}<p role=\"status\">{accessMessage}</p>{/if}\r\n\t\t{#if eligibility&&checkedGroups!==JSON.stringify(groups.map(group=>group.id))}<p role=\"status\">Group selection changed. Access will be checked again before pages are selected.</p>{/if}\r\n\t\t<p class=\"text-sm\">Access is checked again before publishing. Group credits and a connected portable identity do not grant publishing permission.</p>\r\n\t\t<button type=\"button\" class=\"underline\" disabled={$mutex||checkingAccess} onclick={checkPublishingAccess}>{checkingAccess?\"Checking access\u2026\":\"Check selected groups and access\"}</button>\r\n\t</section>\r\n\t{#if durableIssue}<section role=\"alert\" class=\"rounded border p-3\"><h3>{durableIssue.title}</h3><p>{durableIssue.description}</p>{#if durableIssue.supportDetails}<details><summary>Support details</summary><p>{durableIssue.supportDetails}</p></details>{/if}<a href=\"/upload\" class=\"underline\">Open your saved uploads</a></section>{/if}\r\n\t{#if message}<section role=\"status\" aria-label=\"Upload result\" class=\"rounded border p-3\"><h3>{message.title}</h3><p>{message.description.replace(/<br\\s*\\/?>/g,\" \")}</p>{#if chapter}<a class=\"underline\" href={`/chapter/${chapter.id}/1`}>Read chapter</a>{/if}{#if signedReceiptPending}<button type=\"button\" class=\"underline\" disabled={$mutex} onclick={checkSignedUploadReceipt}>Check upload status</button>{/if}</section>{/if}\r\n\t{#if uploadSession&&uploadSession.can_mutate===false&&!signedReceiptPending&&!chapter}<button type=\"button\" class=\"underline\" disabled={$mutex} onclick={checkSavedUploadStatus}>Check saved upload status</button>{/if}\r\n\t<UploadSchedulesPanel {owner} revision={scheduleRevision} />",
+    "count": 1
+  },
+  {
+    "path": "src/routes/(app)/title/MangaChapterListSection.svelte",
+    "label": "plain read-status retry with support details",
+    "before": "{#if $badgeState.message}<p role=\"status\" aria-label=\"Chapter read status\">{$badgeState.message}</p>{/if}",
+    "after": "{#if $badgeState.message}<p role=\"status\" aria-label=\"Chapter read status\">{$badgeState.message}</p>{/if}\r\n\t{#if $badgeState.supportDetails}<details class=\"text-sm\"><summary>Support details</summary><p>{$badgeState.supportDetails}</p></details>{/if}",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterGroups.svelte",
+    "label": "group membership is not publisher authority",
+    "before": "<Label>Groups</Label>",
+    "after": "<Label>Group credits</Label>\r\n\t<p class=\"text-sm text-muted-foreground\">Credit the teams that worked on this chapter. Membership and local leadership do not by themselves grant publishing access.</p>\r\n\t<a class=\"text-sm underline\" href=\"/create/group\">Create a group</a>",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "plain accepted publication receipt",
+    "before": "The original protocol accepted this chapter. It is waiting for local catalogue processing before it can be read.",
+    "after": "Your chapter was accepted and is being prepared for reading on this site.",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "publication fence immediately updates every visible control",
+    "before": "if (uploadSession) { uploadSession.can_mutate = false; uploadSession.can_cancel = false; uploadSession.can_retry_commit = false; }",
+    "after": "if (uploadSession) { uploadSession = { ...uploadSession, can_mutate: false, can_cancel: false, can_retry_commit: false }; }",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "server-owned unresolved work remains actionable after local recovery storage is gone",
+    "before": "} else toast.info(\"Upload session restored\", { description: resumeNotice(saved) });",
+    "after": "} else if(saved.can_mutate===false){message={title:\"Saved upload needs attention\",description:\"Your pages are kept, but this upload cannot currently be changed. Check saved status; do not create a duplicate upload. If access is blocked, ask the site team for help.\"};isBeginAnotherUploadSession=false;}\r\n\t\telse toast.info(\"Upload session restored\", { description: resumeNotice(saved) });",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "explicit readonly recovery without local commit fence",
+    "before": "const checkSignedUploadReceipt = () => mutex.wait(async () => {",
+    "after": "const checkSavedUploadStatus = () => mutex.wait(async()=>{try{const saved=await currentUpload(owner);owner.assert();if(saved)restoreUpload(saved);else durableIssue={title:\"Upload status unavailable\",description:\"No current upload was returned. Check Your uploads before starting over; absence alone does not prove an earlier request failed.\"};}catch(error){showUploadError(error);}});\r\n\tconst checkSignedUploadReceipt = () => mutex.wait(async () => {",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapterGroups.svelte",
+    "label": "bounded group shortcut explains global search fallback",
+    "before": "<Label>Your Groups</Label>",
+    "after": "<Label>Your groups</Label>\r\n\t\t\t\t\t{#if user.upload_groups_truncated}<p class=\"text-sm\">Showing your first 100 groups. Search all groups to find another team.</p>{/if}",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "unreviewed selected-page omissions survive navigation as a visible guard",
+    "before": "const hasUnsavedUpload = () => !!uploadSession && uploadSession.can_mutate !== false && signature(snapshot(draft, uploadSession.relationships.files ?? [])) !== lastSavedUpload;",
+    "after": "const hasUnsavedUpload = () => !selectionReady || !!uploadSession && uploadSession.can_mutate !== false && signature(snapshot(draft, uploadSession.relationships.files ?? [])) !== lastSavedUpload;",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "omission navigation guard explains the required review",
+    "before": "toast.info(\"Upload changes are still saving\", { description: \"Wait for the private staging save before leaving. No session was discarded.\" });",
+    "after": "toast.info(selectionReady ? \"Upload changes are still saving\" : \"Review rejected entries first\", { description: selectionReady ? \"Wait for the private staging save before leaving. No session was discarded.\" : \"Review the selected-page results before leaving. Some selected entries are not included in your staged chapter.\" });",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "successful publication immediately freezes visible controls",
+    "before": "uploadSession.is_committed = true;\r\n\t\t\t\t\tuploadSession.can_mutate = false;\r\n\t\t\t\t\tuploadSession.can_retry_commit = false;",
+    "after": "uploadSession = { ...uploadSession, is_committed: true, can_mutate: false, can_retry_commit: false };",
+    "count": 1
+  }
+]

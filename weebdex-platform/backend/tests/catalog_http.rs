@@ -900,7 +900,7 @@ async fn persisted_catalog_editorial_and_navigation_contracts() {
         &app,
         Method::POST,
         &format!("/api/manga/draft/{rid}/reject"),
-        Some(json!({"version":2})),
+        Some(json!({"version":2,"reason":"Clarify the synthetic draft description"})),
         cookie,
         StatusCode::OK,
     )

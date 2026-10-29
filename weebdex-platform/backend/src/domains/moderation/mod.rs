@@ -67,10 +67,10 @@ async fn search(
     let order = q.order("desc")?;
     let mut sql = Sql::default();
     sql.conditions.push("r.deleted_at IS NULL".into());
-    if !(a.is_moderator() && a.has_perm("report.update")) {
-        let actor = sql.bind(a.user_id);
-        sql.conditions.push(format!("r.submitter_id={actor}"));
-    }
+    // This route is My reports for EVERY account. Site-wide work has an
+    // explicitly named and separately authorized /staff/reports workspace.
+    let actor = sql.bind(a.user_id);
+    sql.conditions.push(format!("r.submitter_id={actor}"));
     for (key, column) in [
         ("category", "entity_type"),
         ("object", "entity_id"),
@@ -227,6 +227,8 @@ pub(crate) async fn review_report(
         }
         if tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.catalog_group_members WHERE group_id=$1 AND is_leader)",&[&group_id]).await?.get::<_,bool>(0){return Err(ApiError::conflict("This group has already been claimed"));}
         let claimant_name: String = user.get(0);
+        let previous_member=tx.query_opt("SELECT name,is_leader,is_officer FROM platform.catalog_group_members WHERE group_id=$1 AND user_id=$2 FOR UPDATE",&[&group_id,&claimant]).await?;
+        let previous_membership=previous_member.map(|r|json!({"name":r.get::<_,String>(0),"is_leader":r.get::<_,bool>(1),"is_officer":r.get::<_,bool>(2)}));
         tx.execute("INSERT INTO platform.catalog_group_members(group_id,user_id,name,is_leader,is_officer) VALUES($1,$2,$3,TRUE,FALSE) ON CONFLICT(group_id,user_id) DO UPDATE SET name=EXCLUDED.name,is_leader=TRUE,is_officer=FALSE",&[&group_id,&claimant,&claimant_name]).await?;
         tx.execute("UPDATE platform.catalog_groups SET version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&group_id]).await?;
         crate::domains::catalog::repository::audit(
@@ -239,7 +241,7 @@ pub(crate) async fn review_report(
             Some(group_version + 1),
         )
         .await?;
-        effect = json!({"action":"grant_group_leadership","group_id":group_id,"claimant_id":claimant,"old_group_version":group_version,"new_group_version":group_version+1});
+        effect = json!({"action":"grant_group_leadership","group_id":group_id,"claimant_id":claimant,"old_group_version":group_version,"new_group_version":group_version+1,"previous_membership":previous_membership,"new_member_name":claimant_name});
     }
     if status == "accepted" && row.get::<_, String>(5) == "chapter_removal_request" {
         a.require_permission("chapter.remove")?;
@@ -251,7 +253,8 @@ pub(crate) async fn review_report(
             return Err(ApiError::conflict("Chapter changed since this removal request; review its current state"));
         }
         crate::domains::catalog::CatalogRepository::delete_chapter(tx, &chapter, a).await?;
-        effect = json!({"action":"instance_soft_hide", "chapter_id":chapter, "source_deletion":"independent_original_moderation"});
+        let old_version=current.get::<_,i32>(0);
+        effect = json!({"action":"instance_soft_hide", "chapter_id":chapter, "source_deletion":"independent_original_moderation","old_version":old_version,"new_version":old_version+1,"previous_deleted":false});
     }
     if status == "accepted" && row.get::<_,String>(5) == "manga_removal_request" {
         a.require_permission("manga.delete")?;
@@ -261,7 +264,7 @@ pub(crate) async fn review_report(
         let current:i32=tx.query_one("SELECT version FROM platform.catalog_manga WHERE id=$1",&[&manga]).await?.get(0);
         if submitted!=Some(current){return Err(ApiError::conflict("Title changed since this removal request; review its current state"));}
         let next=crate::domains::catalog::mutations::manga_delete_in(tx,a,&manga,Some(current)).await?;
-        effect=json!({"action":"instance_soft_hide","manga_id":manga,"old_version":current,"new_version":next,"source_deletion":"not_requested","original_event_rewritten":false});
+        effect=json!({"action":"instance_soft_hide","manga_id":manga,"old_version":current,"new_version":next,"source_deletion":"not_requested","original_event_rewritten":false,"previous_deleted":false});
     }
     tx.execute("UPDATE platform.reports SET status=$2,notes=$3,reviewed_by=$4,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&status,&notes,&a.user_id()]).await?;
     tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,old_status,new_status,old_version,new_version,notes,effect) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)",&[&id,&a.user_id(),&operation,&old,&status,&version,&(version+1),&notes,&effect]).await?;
@@ -289,6 +292,9 @@ async fn remove(
 /// undeleted status. The caller owns the transaction and commit.
 pub(crate) struct ReportDeletion {pub status:String,pub old_version:i32,pub new_version:i32}
 pub(crate) async fn delete_report(tx:&tokio_postgres::Transaction<'_>,a:&impl ReportReviewActor,id:&str,expected:Option<i32>)->ApiResult<ReportDeletion>{
+    delete_report_reasoned(tx,a,id,expected,None).await
+}
+pub(crate) async fn delete_report_reasoned(tx:&tokio_postgres::Transaction<'_>,a:&impl ReportReviewActor,id:&str,expected:Option<i32>,notes:Option<&str>)->ApiResult<ReportDeletion>{
     if !a.is_moderator(){return Err(ApiError::forbidden("Moderator report permission required"));}
     a.require_permission("report.delete")?;v::id(id)?;
     crate::domains::auth::closure::active_in(tx,a.user_id()).await?;
@@ -297,7 +303,7 @@ pub(crate) async fn delete_report(tx:&tokio_postgres::Transaction<'_>,a:&impl Re
     if expected.is_some_and(|v|v!=old_version){return Err(ApiError::conflict("Report changed; reopen deletion review"));}
     let new_version=old_version.checked_add(1).ok_or_else(||ApiError::conflict("Report revision exhausted"))?;
     tx.execute("UPDATE platform.reports SET deleted_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE id=$1",&[&id]).await?;
-    tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,old_status,new_status,old_version,new_version) VALUES($1,$2,'delete',$3,$3,$4,$5)",&[&id,&a.user_id(),&status,&old_version,&new_version]).await?;
+    tx.execute("INSERT INTO platform.report_audit(report_id,actor_id,operation,old_status,new_status,old_version,new_version,notes) VALUES($1,$2,'delete',$3,$3,$4,$5,$6)",&[&id,&a.user_id(),&status,&old_version,&new_version,&notes]).await?;
     Ok(ReportDeletion{status,old_version,new_version})
 }
 

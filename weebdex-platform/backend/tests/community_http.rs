@@ -49,6 +49,13 @@ impl Browser {
                     .collect::<Vec<_>>()
                     .join("; "),
             );
+            if path.starts_with("/api/staff/") {
+                if let Some(token)=self.cookies.get("weebdex_session") {
+                    if let Some(user)=token.strip_prefix("isolated-").and_then(|s|s.strip_suffix("-token")) {
+                        r=r.header("x-weebdex-expected-account",user);
+                    }
+                }
+            }
         }
         if let Some(o) = origin {
             r = r.header(header::ORIGIN, o);
@@ -649,7 +656,7 @@ async fn all25_original_operations_persist_authorize_page_moderate_and_count_act
         .expect(
             &app,
             Method::GET,
-            "/api/report?order=asc&limit=1&page=2",
+            "/api/staff/reports?order=asc&limit=1&page=2",
             None,
             StatusCode::OK,
         )
@@ -864,7 +871,7 @@ async fn all25_original_operations_persist_authorize_page_moderate_and_count_act
         .expect(
             &app,
             Method::GET,
-            "/api/report?reason=scanlation_group_claim&order=asc",
+            "/api/staff/reports?reason=scanlation_group_claim&order=asc",
             None,
             StatusCode::OK,
         )

@@ -9,7 +9,7 @@ import { capabilities, assertAllowedRelay, selectedSigner, type Relay, type Sour
 import { origin, proveService, bytesResponse, signExact, signedRequest, verifyEvent, now } from './protocol/nostr.js';
 import { isPublicActionReceipt } from './protocol-receipt';
 export type SignedEvent = { id: string; pubkey: string; kind: number; created_at: number; tags: string[][]; content: string; sig: string };
-export type PublicReview = { relay: Relay; owner: string; generation: number; kind: number; content: string; tags: string[][]; purpose: string; source?: SourceMapping; parent?: SignedEvent };
+export type PublicReview = { relay: Relay; owner: string; generation: number; kind: number; content: string; tags: string[][]; purpose: string; source?: SourceMapping; parent?: SignedEvent; metadataBase?: MetadataBase; changes?: MetadataChanges };
 export async function sourceResource(kind: 'manga' | 'chapter', id: string, assertContext: () => void = () => {}): Promise<SourceMapping> {
   assertContext();
   if (PUBLIC_MANGADEX_CATALOGUE === '1') id = publicUuid(id);
@@ -39,7 +39,7 @@ export async function publicJson(relay: Relay, path: string, limit = 1024 * 1024
   const policy = await capabilities(); assertAllowedRelay(relay.origin, policy);
   if (!path.startsWith('/') || path.startsWith('//')) throw Error('Invalid original API path');
   const response = await fetch(origin(relay.origin) + path, { credentials: 'omit', redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(15000) });
-  if (!response.ok) { const error = Error(`Original public read failed: HTTP ${response.status}`) as Error & { status: number }; error.status = response.status; throw error; }
+  if (!response.ok) { const error = Error(`Original public read failed: HTTP ${response.status}`) as Error & { status: number; metadataHeadGuard?: boolean }; error.status = response.status; if (response.status === 404 && /^\/accounts\/[0-9a-f]{64}\/metadata\/(0|3|10002)$/.test(path)) { try { const value = JSON.parse(new TextDecoder().decode(await bytesResponse(response, 4096))); error.metadataHeadGuard = value.expectedHeadSupported === true; } catch { /* Unknown/malformed response does not prove safe absent-head updates. */ } } throw error; }
   return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await bytesResponse(response, limit)));
 }
 export async function readMetadata(relay: Relay, owner: string, kind: 0 | 3 | 10002) {
@@ -68,29 +68,68 @@ export async function readSocial(relay: Relay, source: SourceMapping, offset = 0
 }
 function checkedReview(review: PublicReview): PublicReview {
   const candidate = { ...review, pubkey: review.owner, created_at: now(), id: '0'.repeat(64), sig: '0'.repeat(128) };
-  delete (candidate as Partial<PublicReview>).relay; delete (candidate as Partial<PublicReview>).source; delete (candidate as Partial<PublicReview>).parent;
+  delete (candidate as Partial<PublicReview>).relay; delete (candidate as Partial<PublicReview>).source; delete (candidate as Partial<PublicReview>).parent; delete (candidate as Partial<PublicReview>).metadataBase; delete (candidate as Partial<PublicReview>).changes;
   if (new TextEncoder().encode(JSON.stringify(candidate)).length > 16384) throw Error('This template exceeds the original browser signed-event budget. Reduce its content or tags before reviewing.');
   return review;
 }
-export function reviewProfile(relay: Relay, profile: { name: string; display_name: string; about: string }): PublicReview {
+export type MetadataBase = { headGuard: boolean; relay: Relay; owner: string; kind: 0 | 3 | 10002; head: { id: string; created_at: number; projected: boolean } | null; event: SignedEvent | null };
+export type MetadataChanges = { added: string[]; changed: string[]; removed: string[] };
+export async function metadataForEditing(relay: Relay, owner: string, kind: 0 | 3 | 10002): Promise<MetadataBase> {
+  try { const result = await readMetadata(relay, owner, kind); return structuredClone({ relay, owner, kind, headGuard: result.head.expectedHeadSupported === true, ...result }); }
+  catch (error) { if ((error as Error & { status?: number }).status !== 404) throw error; return structuredClone({ relay, owner, kind, headGuard: (error as Error & { metadataHeadGuard?: boolean }).metadataHeadGuard === true, head: null, event: null }); }
+}
+function checkedBase(relay: Relay, kind: 0 | 3 | 10002, base?: MetadataBase) {
+  const identity = selectedSigner();
+  if (!base || base.owner !== identity.owner || base.kind !== kind || base.relay.origin !== relay.origin || base.relay.serviceKey !== relay.serviceKey) throw Error('Load the current public information before editing it.');
+  if (!base.headGuard) throw Error('This destination does not support safe conflict-checked profile updates. Ask its operator to upgrade; nothing was signed.');
+  if (base.head && (!base.event || !verifyEvent(base.event) || base.event.id !== base.head.id || base.event.pubkey !== identity.owner || base.event.kind !== kind || base.event.created_at !== base.head.created_at)) throw Error('The current public information is still updating or cannot be verified. Reload before editing; nothing was signed.');
+  if (!base.head && base.event) throw Error('Invalid public metadata baseline');
+  return { identity, base: structuredClone(base) };
+}
+export function profileFields(base: MetadataBase): Record<string, unknown> {
+  if (base.event && new TextEncoder().encode(base.event.content).length > 8000) throw Error('This profile exceeds the safe editor size limit. Existing information was not changed; use a compatible larger-profile editor.');
+  const value = base.event ? JSON.parse(base.event.content) : {};
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('The current public profile is not an editable object.');
+  return structuredClone(value);
+}
+export function reviewProfile(relay: Relay, patch: Record<string, string>, baseline?: MetadataBase, remove: string[] = []): PublicReview {
+  const { identity, base } = checkedBase(relay, 0, baseline), before = profileFields(base), profile = { ...before, ...patch };
+  if (remove.some(key => !Object.hasOwn(before, key)) || new Set(remove).size !== remove.length) throw Error('Choose existing profile fields to remove.');
+  for (const key of remove) delete profile[key];
   if (new TextEncoder().encode(JSON.stringify(profile)).length > 8000) throw Error('Profile exceeds the signed-event budget');
-  const identity = selectedSigner();
-  return checkedReview({ relay: structuredClone(relay), owner: identity.owner, generation: identity.generation, kind: 0, tags: [], content: JSON.stringify(profile), purpose: 'Publish this public profile' });
+  const changes = { added: Object.keys(profile).filter(key => !Object.hasOwn(before, key)), changed: Object.keys(profile).filter(key => Object.hasOwn(before, key) && JSON.stringify(before[key]) !== JSON.stringify(profile[key])), removed: Object.keys(before).filter(key => !Object.hasOwn(profile, key)) };
+  return checkedReview({ relay: structuredClone(relay), owner: identity.owner, generation: identity.generation, kind: 0, tags: base.event?.tags ?? [], content: JSON.stringify(profile), purpose: 'Update your public profile', metadataBase: base, changes });
 }
-export function reviewFollows(relay: Relay, keys: string[]): PublicReview {
-  if (keys.length > 256 || keys.some(key => !/^[0-9a-f]{64}$/.test(key)) || new Set(keys).size !== keys.length) throw Error('Choose at most 256 distinct public keys');
-  const identity = selectedSigner();
-  return checkedReview({ relay: structuredClone(relay), owner: identity.owner, generation: identity.generation, kind: 3, tags: keys.map(key => ['p', key]), content: '', purpose: 'Replace this identity’s public follow list' });
+export function reviewFollows(relay: Relay, keys: string[], baseline?: MetadataBase): PublicReview {
+  if (keys.length > 256 || keys.some(key => !/^[0-9a-f]{64}$/.test(key)) || new Set(keys).size !== keys.length) throw Error('Choose at most 256 distinct public identities');
+  const { identity, base } = checkedBase(relay, 3, baseline), previous = base.event?.tags ?? [], oldKeys = previous.filter(tag => tag[0] === 'p').map(tag => tag[1]);
+  // Preserve relay/pet-name extensions on retained contacts and all unrelated tags/content.
+  const tags = [...previous.filter(tag => tag[0] !== 'p'), ...keys.flatMap(key => { const saved = previous.filter(tag => tag[0] === 'p' && tag[1] === key); return saved.length ? saved : [['p', key]]; })];
+  const changes = { added: keys.filter(key => !oldKeys.includes(key)), changed: [], removed: oldKeys.filter(key => !keys.includes(key)) };
+  return checkedReview({ relay: structuredClone(relay), owner: identity.owner, generation: identity.generation, kind: 3, tags, content: base.event?.content ?? '', purpose: 'Update the people you publicly follow', metadataBase: base, changes });
 }
-export function reviewRelayList(relay: Relay, routes: string[]): PublicReview {
-  if (routes.length > 32 || routes.some(route => new TextEncoder().encode(route).length > 1024) || new Set(routes).size !== routes.length) throw Error('Choose at most 32 distinct write relay URLs');
-  const normalized = routes.map(route => {
-    const url = new URL(route), local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
-    if ((url.protocol !== 'wss:' && !(local && url.protocol === 'ws:')) || url.username || url.password || url.hash) throw Error('Use WSS relay URLs, or loopback WS for development');
-    return url.toString();
+export function relayLines(base: MetadataBase): string[] { return (base.event?.tags ?? []).filter(tag => tag[0] === 'r').map(tag => tag[1] + (tag[2] ? ' ' + tag[2] : '')); }
+export function reviewRelayList(relay: Relay, routes: string[], baseline?: MetadataBase): PublicReview {
+  if (routes.length > 32 || routes.some(route => new TextEncoder().encode(route).length > 1024)) throw Error('Choose at most 32 relay URLs');
+  const { identity, base } = checkedBase(relay, 10002, baseline), previous = base.event?.tags ?? [];
+  const tags = routes.map(route => {
+    const [input, mode, ...extra] = route.trim().split(/\s+/), url = new URL(input), local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+    if (extra.length || (mode && !['read', 'write'].includes(mode)) || (url.protocol !== 'wss:' && !(local && url.protocol === 'ws:')) || url.username || url.password || url.hash) throw Error('Use one WSS relay URL per line, optionally followed by read or write.');
+    const normalized = url.toString();
+    return previous.find(tag => tag[0] === 'r' && new URL(tag[1]).toString() === normalized && (tag[2] ?? '') === (mode ?? '')) ?? (mode ? ['r', normalized, mode] : ['r', normalized]);
   });
-  const identity = selectedSigner();
-  return checkedReview({ relay: structuredClone(relay), owner: identity.owner, generation: identity.generation, kind: 10002, tags: normalized.map(route => ['r', route, 'write']), content: '', purpose: 'Replace this identity’s public write relay list' });
+  if (new Set(tags.map(tag => tag[1])).size !== tags.length) throw Error('Each relay URL can appear only once.');
+  const old = previous.filter(tag => tag[0] === 'r'), names = (list: string[][]) => list.map(tag => tag.slice(1).join(' '));
+  const before = names(old), after = names(tags), changes = { added: after.filter(value => !before.includes(value)), changed: [], removed: before.filter(value => !after.includes(value)) };
+  return checkedReview({ relay: structuredClone(relay), owner: identity.owner, generation: identity.generation, kind: 10002, tags: [...previous.filter(tag => tag[0] !== 'r'), ...tags], content: base.event?.content ?? '', purpose: 'Update your public posting destinations', metadataBase: base, changes });
+}
+export async function assertMetadataUnchanged(review: PublicReview) {
+  if (![0, 3, 10002].includes(review.kind)) return;
+  const { base } = checkedBase(review.relay, review.kind as 0 | 3 | 10002, review.metadataBase);
+  const current = await metadataForEditing(review.relay, review.owner, review.kind as 0 | 3 | 10002);
+  if (!current.headGuard) throw Error('This destination no longer supports safe conflict-checked updates. Nothing was signed. Ask its operator to restore support before reviewing again.');
+  if (current.head?.id !== base.head?.id || current.head?.created_at !== base.head?.created_at) throw Error('Your public information changed since it was loaded. Reload it and review your changes again; the newer information was not overwritten.');
+  return current;
 }
 export function reviewComment(relay: Relay, source: SourceMapping, content: string, parent?: SignedEvent): PublicReview {
   if (!content.trim() || new TextEncoder().encode(content).length > 8000) throw Error('Enter a comment within the 8000-byte signed-event budget');
@@ -128,8 +167,8 @@ export async function sendReviewed(review: PublicReview, publicConsent: boolean,
   }
   let timestamp = now();
   if ([0, 3, 10002].includes(review.kind)) {
-    try { const current = await readMetadata(review.relay, identity.owner, review.kind as 0 | 3 | 10002); timestamp = Math.max(timestamp, current.head.created_at + 1); }
-    catch (error) { if ((error as Error & { status?: number }).status !== 404) throw error; }
+    const current = await assertMetadataUnchanged(review);
+    if (current?.head) timestamp = Math.max(timestamp, current.head.created_at + 1);
     assertContext();
     if (timestamp > now() + 60) throw Error('Metadata publication clock is ahead. Wait before signing.');
   }
@@ -140,14 +179,14 @@ export async function sendReviewed(review: PublicReview, publicConsent: boolean,
   const event = await signExact(actionSigner, identity.owner, { kind: review.kind, created_at: timestamp, tags: review.tags, content: review.content });
   identity.check();
   const path = review.kind === 5 ? '/account-deletions' : [0, 3, 10002].includes(review.kind) ? '/account-metadata' : '/social';
-  const record = await rememberPublicAction({ event, relay: review.relay, path, purpose: review.purpose, state: 'prepared', message: 'Signed and saved locally; not sent yet', cancelled: false, createdAt: Date.now() });
+  const record = await rememberPublicAction({ event, ...([0, 3, 10002].includes(review.kind) ? { expectedHead: review.metadataBase!.head?.id ?? null } : {}), relay: review.relay, path, purpose: review.purpose, state: 'prepared', message: 'Signed and saved locally; not sent yet', cancelled: false, createdAt: Date.now() });
   // After a signer returns, preserve the exact signed intent before checking the
   // UI context again. A changed target stops transport, never rebinds its body.
   try { assertContext(); }
   catch (error) { await updatePublicAction(record.event.id, { message: 'Exact signed intent retained at its original recipient; the selected UI context changed before delivery. No transport was started. Reconcile, cancel or explicitly retry this saved body.' }); throw error; }
   return deliverPublicAction(record.event.id, assertContext);
 }
-export type PublicActionRecord = { event: SignedEvent; relay: Relay; path: string; purpose: string; state: 'prepared' | 'sending' | 'accepted' | 'superseded' | 'outcome_unknown' | 'refused'; message: string; cancelled: boolean; createdAt: number; receipt?: { status: number; data: any } };
+export type PublicActionRecord = { event: SignedEvent; expectedHead?: string | null; relay: Relay; path: string; purpose: string; state: 'prepared' | 'sending' | 'accepted' | 'superseded' | 'outcome_unknown' | 'refused'; message: string; cancelled: boolean; createdAt: number; receipt?: { status: number; data: any } };
 const ACTIONS_KEY = 'weebdexSignedPublicActions-v1';
 export async function publicActionRecords(): Promise<PublicActionRecord[]> {
   const { protocol } = await stores();
@@ -209,6 +248,12 @@ export async function deliverPublicAction(id: string, assertContext: () => void 
       assertContext();
       if (reconciled.state === 'accepted') return { event: record.event, receipt: reconciled.receipt ?? { status: 200, data: { id, verified: true } } };
     }
+    if (record.path === '/account-metadata') {
+      if (!Object.hasOwn(record, 'expectedHead')) { await updatePublicAction(id, { state: 'refused', message: 'This older saved profile action has no conflict guard. Cancel it, load current information and review again.' }); throw Error('This older saved profile action has no conflict guard. Cancel it and review current information again.'); }
+      const current = await metadataForEditing(record.relay, record.event.pubkey, record.event.kind as 0 | 3 | 10002); assertContext();
+      if (!current.headGuard) throw Error('This destination does not support safe conflict-checked delivery. No HTTP proof or update was sent.');
+      if ((current.head?.id ?? null) !== record.expectedHead && current.head?.id !== record.event.id) { await updatePublicAction(id, { state: 'refused', message: 'The current public information changed. Cancel this action, reload and review again; nothing was overwritten.' }); throw Error('The current public information changed. Reload and review again; nothing was overwritten.'); }
+    }
     const active = async () => { const current = (await publicActionRecords()).find(row => row.event.id === id); identity.check(); assertContext(); if (!current || current.cancelled) throw Error('Further sending cancelled; an already sent request cannot be recalled'); };
     await active(); await updatePublicAction(id, { state: 'sending', message: 'Delivering this exact saved signed action' });
     try {
@@ -216,7 +261,10 @@ export async function deliverPublicAction(id: string, assertContext: () => void 
       // extension prompt or transport after a pending proof returns. The saved
       // original action and final IDB/beforeSend cancellation check stay intact.
       const proofSigner = { signEvent: async (template: unknown) => { assertContext(); const signed = await identity.signer.signEvent(template); assertContext(); return signed; } };
-      const receipt = await signedRequest(record.relay, proofSigner, identity.owner, record.path, 'POST', record.event, 65536, active);
+      const body = record.path === '/account-metadata' && Object.hasOwn(record, 'expectedHead') ? { ...record.event, expectedHead: record.expectedHead } : record.event;
+      const receipt = await signedRequest(record.relay, proofSigner, identity.owner, record.path, 'POST', body, 65536, active);
+      const conflict = receipt.data && typeof receipt.data === 'object' && !Array.isArray(receipt.data) ? receipt.data as Record<string, unknown> : undefined;
+      if (receipt.status === 409 && conflict?.id === id && conflict.headChanged === true) { await updatePublicAction(id, { state: 'refused', message: 'Your public information changed after review. Nothing was overwritten. Cancel this saved action, reload the current information and review again.', receipt }); throw Error('Your public information changed after review. Reload and review again; the newer information was not overwritten.'); }
       const accepted = isPublicActionReceipt(receipt.data) ? receipt.data : undefined;
       if (!accepted || accepted.id !== id || ![200, 202, 409].includes(receipt.status)) {
         if ([400, 401, 403, 404, 422].includes(receipt.status)) { await updatePublicAction(id, { state: 'refused', message: `Original service refused this exact action: HTTP ${receipt.status}`, receipt }); throw Error(`Original service refused this action: HTTP ${receipt.status}`); }

@@ -119,6 +119,8 @@ async fn signed_moderator_decisions_are_private_atomic_and_fresh() {
     let listener=tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();let origin=format!("http://{}",listener.local_addr().unwrap());
     let state=AppState::connect(Config{public_origin:origin.clone(),database_plaintext_local:true,database_connections:10,uploads_dir:runtime.join("media"),ui_dir:runtime.join("no-ui"),protocol_publication:Some(OperatorRuntimeConfig{operator_key_file:runtime.join("unused/operator.key"),expected_publisher:public(1),storage_owner:public(1),storage_holder:public(11),storage:json!({"path":runtime.join("unused/storage"),"volume":"reportsfixture","physical_bytes":1048576,"staging_bytes":1048576,"max_blob_bytes":262144}),group_keys_dir:None,backend:None,native_node:Some(json!({"bind":"127.0.0.1:9","base_url":"http://127.0.0.1:9","service_key_file":runtime.join("unused/service.key"),"admin_pubkey":public(1)}))}),..Config::default()},dsn).await.unwrap();
     state.db.migrate(domains::MIGRATIONS).await.unwrap();state.protocol.verify_schema().await.unwrap();
+    // Match the explicit production migration bootstrap, not its fail-closed placeholder.
+    state.protocol.install_visibility_function().await.unwrap();
     let db=state.db.client().await.unwrap();
     for (key,user,roles,permissions,disabled) in [
         (2,"ModReviewer",json!(["moderator"]),json!(["report.update","scanlation_group.update","manga.delete","chapter.remove"]),false),
@@ -149,7 +151,13 @@ async fn signed_moderator_decisions_are_private_atomic_and_fresh() {
     db.execute("INSERT INTO platform.reports(id,submitter_id,entity_type,entity_id,reason_id,body) VALUES('reply','ModSubmitter','reply',$1,'reply_spam','Private reply evidence')",&[&reply.to_string()]).await.unwrap();
     // > old offset ceiling, same category/status and microsecond timestamp ties.
     // Keyset traversal is exercised near the far boundary, without huge output.
-    db.execute("INSERT INTO platform.reports(id,submitter_id,entity_type,entity_id,reason_id,body,status,created_at) SELECT 'old_'||lpad(n::text,5,'0'),'ModSubmitter','user','ModTarget','user_incorrect','Older history','refused','2026-01-01T00:00:00.123456Z'::timestamptz FROM generate_series(1,10010)n",&[]).await.unwrap();
+    // Preserve all 10,010 pagination witnesses without retaining 10,010 unique
+    // revision/advisory locks in one seed transaction under the normal PG budget.
+    for first in (1_i32..=10010).step_by(128) {
+        let last=(first+127).min(10010);
+        db.execute("INSERT INTO platform.reports(id,submitter_id,entity_type,entity_id,reason_id,body,status,created_at) SELECT 'old_'||lpad(n::text,5,'0'),'ModSubmitter','user','ModTarget','user_incorrect','Older history','refused','2026-01-01T00:00:00.123456Z'::timestamptz FROM generate_series($1::integer,$2::integer)n",&[&first,&last]).await.unwrap();
+    }
+    assert_eq!(db.query_one("SELECT count(*) FROM platform.reports WHERE id LIKE 'old_%'",&[]).await.unwrap().get::<_,i64>(0),10010);
     db.batch_execute("INSERT INTO platform.catalog_chapters(id,manga_id,uploader_id,uploader_name,title,language,protocol_event_id) VALUES('ModSourceChapter','ModManga','ModSubmitter','Submitter','Sourced synthetic chapter','ja',repeat('45',32)); INSERT INTO platform.reports(id,submitter_id,entity_type,entity_id,reason_id,body) VALUES('source','ModSubmitter','chapter','ModSourceChapter','chapter_spam','Source witness report'); INSERT INTO capacity_reservations(id,requested,actual,state) VALUES(decode(repeat('41',32),'hex'),1,1,'settled'); INSERT INTO blob_intents(hash,generation,volume,owner,size,state,reservation,verified_at) VALUES(decode(repeat('42',32),'hex'),decode(repeat('43',16),'hex'),'moderator-fixture',decode(repeat('44',32),'hex'),1,'available',decode(repeat('41',32),'hex'),clock_timestamp()); INSERT INTO events(id,publisher,kind,created_at,raw_event,state,manifest) VALUES(decode(repeat('45',32),'hex'),decode(repeat('44',32),'hex'),1002,1,'{}','hosted',decode(repeat('42',32),'hex')); INSERT INTO publication_blobs(event_id,hash,generation,mime) VALUES(decode(repeat('45',32),'hex'),decode(repeat('42',32),'hex'),decode(repeat('43',16),'hex'),'application/cbor');").await.unwrap();
     let resolver=PostgresPublicIdResolver::new(state.db.clone());let actor=resolver.preferred(ResourceKind::User,"ModReviewer").await.unwrap().unwrap();let ordinary=resolver.preferred(ResourceKind::User,"ModSubmitter").await.unwrap().unwrap();let limited=resolver.preferred(ResourceKind::User,"ModLimited").await.unwrap().unwrap();drop(db);
     let _server=Server(tokio::spawn({let state=state.clone();async move{axum::serve(listener,weebdex_platform::router::router(state)).await.unwrap();}}));
@@ -192,6 +200,8 @@ async fn signed_moderator_decisions_are_private_atomic_and_fresh() {
     ] {
         let mut blocker=state.db.client().await.unwrap();let blocked=blocker.transaction().await.unwrap();blocked.query(lock,&[]).await.unwrap();let start=std::time::Instant::now();call(&client,&origin,"POST",&format!("{base}/source"),Some(command(&sourced,"accept")),Some(2),409).await;assert!(start.elapsed()<Duration::from_secs(3));blocked.batch_execute(withdraw).await.unwrap();blocked.commit().await.unwrap();drop(blocker);
         call(&client,&origin,"POST",&format!("{base}/source"),Some(command(&sourced,"accept")),Some(2),409).await;
+        let unchanged=state.db.client().await.unwrap().query_one("SELECT status,version,(SELECT count(*) FROM platform.report_audit WHERE report_id='source') FROM platform.reports WHERE id='source'",&[]).await.unwrap();
+        assert_eq!(unchanged.get::<_,String>(0),"waiting");assert_eq!(unchanged.get::<_,i32>(1),1);assert_eq!(unchanged.get::<_,i64>(2),0);
         let hidden=call(&client,&origin,"GET",&detail("source"),None,Some(2),200).await;assert_eq!(hidden["data"]["target"]["available"],false);assert!(!hidden.to_string().contains("Sourced synthetic chapter"));state.db.client().await.unwrap().batch_execute(restore).await.unwrap();
     }
     for report in ["claim","chapter","manga"] {let c=call(&client,&origin,"GET",&detail(report),None,Some(2),200).await;assert_eq!(c["data"]["acceptAllowed"],true,"{report}: {c}");let receipt=call(&client,&origin,"POST",&format!("{base}/{report}"),Some(command(&c,"accept")),Some(2),200).await;assert_eq!(receipt["data"]["effect"],c["data"]["acceptEffect"]);}

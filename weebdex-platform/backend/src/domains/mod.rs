@@ -7,6 +7,8 @@ pub mod catalog;
 pub mod community;
 pub mod library;
 pub mod moderation;
+pub mod staff_workspace;
+pub mod staff_authority;
 pub mod previews;
 pub mod uploads;
 pub fn api_router() -> Router<AppState> {
@@ -17,6 +19,8 @@ pub fn api_router() -> Router<AppState> {
         .merge(library::router())
         .merge(community::router())
         .merge(moderation::router())
+        .merge(staff_workspace::router())
+        .merge(staff_authority::router())
         .merge(analytics::router())
         .merge(announcements::router())
         .merge(crate::protocol::adapters::router())
@@ -217,4 +221,9 @@ pub const MIGRATIONS: &[Migration] = &[
     Migration {version:104,name:"0104_public_title_filter_groups",sql:include_str!("../../migrations/0104_public_title_filter_groups.sql")},
     Migration {version:105,name:"0105_account_disable",sql:include_str!("../../migrations/0105_account_disable.sql")},
     Migration {version:106,name:"0106_native_account_library_revision",sql:include_str!("../../migrations/0106_native_account_library_revision.sql")},
+    Migration {version:107,name:"0107_native_identity_link",sql:include_str!("../../migrations/0107_native_identity_link.sql")},
+    Migration {version:108,name:"0108_staff_authority",sql:include_str!("../../migrations/0108_staff_authority.sql")},
+    Migration {version:109,name:"0109_native_contributor_workflows",sql:include_str!("../../migrations/0109_native_contributor_workflows.sql")},
+    Migration {version:110,name:"0110_moderation_workflow",sql:include_str!("../../migrations/0110_moderation_workflow.sql")},
+    Migration {version:111,name:"0111_decision_corrections",sql:include_str!("../../migrations/0111_decision_corrections.sql")},
 ];

@@ -436,6 +436,8 @@ pub(crate) async fn manga_transition_in(
     if !["submitted", "published", "rejected"].contains(&next) {
         return Err(ApiError::bad_request("Invalid title transition"));
     }
+    let mut payload = payload.clone();
+    let (review_reason, affected_fields) = super::draft_reviews::take_feedback(&mut payload, next)?;
     v::allowed(&payload, &["version"])?;
     v::id(&id)?;
     let version = v::version(&payload)?;
@@ -495,6 +497,7 @@ pub(crate) async fn manga_transition_in(
     };
     if !replay {
         tx.execute("UPDATE platform.catalog_manga SET state=$2,published_at=CASE WHEN $2='published' THEN clock_timestamp() ELSE published_at END,version=version+1,updated_at=clock_timestamp() WHERE id=$1",&[&id,&next]).await?;
+        super::draft_reviews::record(tx, id, actor.user_id(), version + 1, next, &review_reason, &affected_fields).await?;
         audit(
             tx,
             &actor.user_id(),

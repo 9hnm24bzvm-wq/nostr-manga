@@ -101,6 +101,12 @@ impl IntoResponse for ApiError {
 
 impl From<tokio_postgres::Error> for ApiError {
     fn from(error: tokio_postgres::Error) -> Self {
+        match error.code().map(|c| c.code()) {
+            Some("P6001") => return Self::new(StatusCode::CONFLICT, "last_administrator_protected", "Appoint another enabled, verified, unrestricted administrator with Manage staff access before disabling, restricting, demoting or changing this account's email. Nothing was changed."),
+            Some("P6002") => return Self::conflict("Authority revision exhausted; contact the instance operator"),
+            Some("P6003") => return Self::new(StatusCode::CONFLICT, "authority_busy", "Account authority is changing. Refresh and review again before retrying; nothing was changed."),
+            _ => {},
+        }
         // Error codes are safe to log; SQL, parameters and server detail are not.
         tracing::warn!(
             sqlstate = error.code().map(|c| c.code()),

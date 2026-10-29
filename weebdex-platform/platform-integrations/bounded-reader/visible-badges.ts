@@ -1,7 +1,7 @@
 import { ReaderBudget } from './client';
 import type { CompletionAccess } from './completion-contract';
 export type BadgeContext = Readonly<{ key: string; target: string; ids: readonly string[] }>;
-export type BadgeView = Readonly<{ key?: string; status: 'unknown' | 'pending' | 'ready' | 'error'; message: string; values?: Readonly<Record<string, boolean>> }>;
+export type BadgeView = Readonly<{ key?: string; status: 'unknown' | 'pending' | 'ready' | 'error'; message: string; supportDetails?: string; values?: Readonly<Record<string, boolean>> }>;
 // One in-memory mutation fence survives consumer remount. It owns NO transport
 // or storage slot and never reconciles an uncertain write by reading a badge.
 let mutationFence: { token: object; uncertain: boolean } | undefined;
@@ -71,7 +71,7 @@ export class VisibleChapterBadges {
         if (changed) {
           this.key = ''; this.again = true;
           this.publish({ status: 'unknown', message: 'Updating read status for your current reading options…' });
-        } else this.publish({ status: 'error', message: error instanceof Error ? error.message : 'Read status could not be loaded. Please try again.' });
+        } else { const detail=error instanceof Error?error.message:'Read status could not be loaded.'; const cleanup=/cleanup is unconfirmed|fetch, read and cancellation/i.test(detail); this.publish({ status:'error',message:cleanup?'Your reading status is temporarily unavailable. Try again in a moment. Your saved progress has not been changed.':detail,...(cleanup?{supportDetails:detail}:{}) }); }
       }
     } finally {
       budget.close(); if (this.active === budget) this.active = undefined;

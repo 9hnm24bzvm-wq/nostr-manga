@@ -15,3 +15,10 @@ export function chapterMetadataPatch(current: {version:number; title?:string|nul
  if(JSON.stringify(fields.groups)!==JSON.stringify((current.relationships.groups??[]).map(group=>group.id)))out.groups=[...fields.groups];
  return out;
 }
+
+// Canonical choices for new writes, while imported values remain untouched.
+export function canonicalLanguageOptions(registry:Record<string,string>):[string,string][] {
+ return Object.entries({...registry,ta:'Tamil'}).filter(([code])=>publicWriteLanguagePattern.test(code)).sort((a,b)=>a[1].localeCompare(b[1]));
+}
+export function languageLabel(value:string,registry:Record<string,string>):string { return value==='tam'?'Tamil (previously saved code: tam)':value==='ta'?'Tamil':registry[value]??value; }
+export const legacyLanguageReplacement=(value:string):string|undefined=>value==='tam'?'ta':undefined;

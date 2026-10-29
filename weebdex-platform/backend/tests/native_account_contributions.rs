@@ -337,6 +337,10 @@ async fn native_contributors_use_native_cores_without_signer_or_binding() {
     assert_eq!(context["nostr"]["authentication"], "native-session");
     assert_eq!(context["nostr"]["nativeSessionAuthority"], true);
     assert!(context["nostr"].get("pubkey").is_none());
+    assert_eq!(context["upload"]["preflight"]["configured"],false);
+    assert_eq!(context["upload"]["preflight"]["eligible"],true);
+    assert!(context["upload"]["preflight"]["formats"].as_array().unwrap().contains(&json!("image/webp")));
+    assert_eq!(context["upload"]["preflight"]["limits"]["maxPixels"],20_000_000);
     f.call(
         "GET",
         "/api/v1/account/contribution-context",
@@ -449,6 +453,10 @@ async fn native_contributors_use_native_cores_without_signer_or_binding() {
             f.account
         )
     };
+    let checked=f.call("GET",&upload(&format!("/preflight/{title}")),Some(user),None,200).await;
+    assert_eq!(checked["preflight"]["eligible"],true);
+    let empty=f.call("GET",&upload("/workbench"),Some(user),None,200).await;
+    assert_eq!(empty["entries"],json!([]));
     let begin = f
         .call(
             "POST",
@@ -459,6 +467,17 @@ async fn native_contributors_use_native_cores_without_signer_or_binding() {
         )
         .await;
     let session = begin["id"].as_str().unwrap();
+    let work=f.call("GET",&upload("/workbench"),Some(user),None,200).await;
+    assert_eq!(work["entries"][0]["id"],session);
+    assert_eq!(work["entries"][0]["mangaId"],title);
+    assert_eq!(work["entries"][0]["state"],"open");
+    f.call("GET",&upload("/workbench"),Some("NativeOther"),None,409).await;
+    let db=f.state.db.client().await.unwrap();let permissions:Value=db.query_one("SELECT permissions FROM platform.users WHERE id=$1",&[&user]).await.unwrap().get(0);
+    db.execute("UPDATE platform.users SET permissions='[]' WHERE id=$1",&[&user]).await.unwrap();drop(db);
+    let denied=f.call("GET",&upload(&format!("/preflight/{title}")),Some(user),None,200).await;
+    assert_eq!(denied["preflight"]["eligible"],false);
+    f.state.db.client().await.unwrap().execute("UPDATE platform.users SET permissions=$2 WHERE id=$1",&[&user,&permissions]).await.unwrap();
+
     f.call(
         "POST",
         &upload("/begin"),
@@ -478,12 +497,12 @@ async fn native_contributors_use_native_cores_without_signer_or_binding() {
     assert_eq!(staged["nostr"]["authentication"], "native-session");
     f.call("GET", &snapshot, Some("NativeOther"), None, 409)
         .await;
-    let save = json!({"version":staged["session"]["version"],"draft":{"language":"en","title":"Saved chapter"},"pageOrder":[file]});
+    let save = json!({"version":staged["session"]["version"],"draft":{"language":"ta","title":"Saved chapter"},"pageOrder":[file]});
     f.call("PATCH", &snapshot, Some(user), Some(save.clone()), 200)
         .await;
     f.call("PATCH", &snapshot, Some(user), Some(save), 409)
         .await;
-    let commit = json!({"chapterDraft":{"volume":null,"chapter":"1","title":"Saved chapter","translatedLanguage":"en"},"pageOrder":[file],"termsAccepted":true});
+    let commit = json!({"chapterDraft":{"volume":null,"chapter":"1","title":"Saved chapter","translatedLanguage":"ta"},"pageOrder":[file],"termsAccepted":true});
     let committed = f
         .call(
             "POST",
@@ -494,6 +513,8 @@ async fn native_contributors_use_native_cores_without_signer_or_binding() {
         )
         .await;
     assert_eq!(committed["type"], "chapter");
+    assert_eq!(committed["attributes"]["translatedLanguage"], "ta");
+    assert_eq!(committed["attributes"]["pages"], 1);
     assert_eq!(committed["nostr"]["accountId"], f.account);
     let replay = f
         .call(

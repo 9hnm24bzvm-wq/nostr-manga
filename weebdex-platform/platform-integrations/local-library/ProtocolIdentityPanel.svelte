@@ -4,13 +4,18 @@
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea';
   import { message } from './library';
+  import { publicIdentityKey, publicIdentityLabel, lookupPublicIdentity } from './public-identity-input';
   import { connectSigner, disconnectSigner, signerIdentity, relayPreferences, type Relay, type SourceMapping } from './publication';
-  import { sourceResource, readMetadata, readSocial, reviewProfile, reviewFollows, reviewRelayList, reviewComment, reviewReaction, reviewWithdrawal, sendReviewed, publicActionRecords, deliverPublicAction, reconcilePublicAction, cancelPublicAction, removePublicAction, type PublicActionRecord, type SignedEvent, type PublicReview } from './protocol-identity';
-  let { resourceKind, resourceId, assertViewCurrent = () => {}, selectedOrigin = $bindable(''), settingsView = 'profile' }: { resourceKind?: 'manga' | 'chapter'; resourceId?: string; assertViewCurrent?: () => void; selectedOrigin?: string; settingsView?: 'profile' | 'follows' | 'actions' | 'connections' } = $props();
+  import { sourceResource, metadataForEditing, profileFields, relayLines, readSocial, reviewProfile, reviewFollows, reviewRelayList, reviewComment, reviewReaction, reviewWithdrawal, sendReviewed, publicActionRecords, deliverPublicAction, reconcilePublicAction, cancelPublicAction, removePublicAction, type PublicActionRecord, type SignedEvent, type PublicReview, type MetadataBase } from './protocol-identity';
+  let { resourceKind, resourceId, assertViewCurrent = () => {}, selectedOrigin = $bindable(''), settingsView = 'profile' }: { resourceKind?: 'manga' | 'chapter'; resourceId?: string; assertViewCurrent?: () => void; selectedOrigin?: string; settingsView?: 'profile' | 'follows' | 'actions' | 'connections' | 'lookup' } = $props();
   let relays = $state<Relay[]>([]), pending = $state(false), error = $state(''), notice = $state('');
   let actions = $state<PublicActionRecord[]>([]);
+  let lookupText = $state(''), lookupConsent = $state(false), lookupResult = $state<Awaited<ReturnType<typeof lookupPublicIdentity>>>();
   let profileName = $state(''), displayName = $state(''), about = $state(''), followsText = $state(''), routesText = $state('');
-  let review = $state<PublicReview>(), consent = $state(false), source = $state<SourceMapping>(), events = $state<SignedEvent[]>([]), metadata = $state<{ kind: number; event: SignedEvent | null; head: any }[]>([]), receipts = $state<any[]>([]);
+  let profileExtra = $state<Record<string, string>>({}), removedFields = $state<string[]>([]), loadedFields = $state<string[]>([]);
+  let metadataLoaded = $state(false);
+  const extraLabels: Record<string, string> = { picture: 'Profile picture URL', banner: 'Banner image URL', nip05: 'Public address (NIP-05)', lud16: 'Lightning address' };
+  let review = $state<PublicReview>(), consent = $state(false), source = $state<SourceMapping>(), events = $state<SignedEvent[]>([]), metadata = $state<MetadataBase[]>([]), receipts = $state<any[]>([]);
   let sourcePublishingOpen = $state(false), conversationOpen = $state(false), inspectedAction = $state(''), inspectedMetadata = $state('');
   const queueState = (state: string) => ({ prepared: 'Ready to send', pending: 'Waiting to send', sending: 'Sending', retryable: 'Ready to retry', refused: 'Not sent', accepted: 'Sent', superseded: 'Replaced by a newer action', outcome_unknown: 'Delivery needs checking', projection_pending: 'Updating', cancelled: 'Cancelled' }[state] ?? 'Needs attention');
   const actionName = (kind: number) => ({ 0: 'Profile update', 3: 'People you follow', 10002: 'Posting destinations', 1: 'Comment', 1111: 'Comment', 7: 'Reaction', 5: 'Removal request' }[kind] ?? 'Public action');
@@ -31,7 +36,7 @@
     if (activeKey !== contextKey) {
       generation++; activeKey = contextKey;
       clearReview(); sourcePublishingOpen = false; source = undefined; sourceContext = ''; events = []; replyParent = undefined; comment = ''; reaction = '+'; offset = 0;
-      if (activeTransportKey !== transportKey) { metadata = []; metadataContext = ''; }
+      if (activeTransportKey !== transportKey) { metadata = []; metadataContext = ''; metadataLoaded = false; lookupResult = undefined; profileName = ''; displayName = ''; about = ''; profileExtra = {}; removedFields = []; loadedFields = []; followsText = ''; routesText = ''; }
       activeTransportKey = transportKey;
     }
     return { key: activeKey, generation, kind: target.kind, id: target.id, relay: relay ? { origin: relay.origin, serviceKey: relay.serviceKey, selected: relay.selected } : undefined, owner: $signerIdentity.owner, signerGeneration: $signerIdentity.generation };
@@ -67,7 +72,7 @@
     else if (metadataContext !== transportKey || !metadata.some(row => row.event?.id === event.id)) throw new ContextChanged();
     setReview(reviewWithdrawal(contextRelay(context), $state.snapshot(event)));
   }
-  async function refreshRelays() { const preferences = await relayPreferences(), saved = await publicActionRecords(); if (disposed) return; relays = preferences.relays; actions = saved; if (!relays.some(row => row.origin === selectedOrigin)) selectedOrigin = ''; }
+  async function refreshRelays() { const preferences = await relayPreferences(), saved = await publicActionRecords(); if (disposed) return; relays = preferences.relays; actions = saved; if (!relays.some(row => row.origin === selectedOrigin)) selectedOrigin = preferences.relays.find(row => row.selected)?.origin ?? (relays.length === 1 ? relays[0].origin : ''); }
   async function refreshSocial(more = false) {
     const context = currentContext(), recipient = contextRelay(context);
     const previousSource = more ? selectedSource(context) : undefined;
@@ -79,16 +84,36 @@
     source = mapped; sourceContext = context.key; events = [...previous, ...rows]; offset = next;
     notice = 'Showing verified public source comments and reactions from the selected instance.';
   }
+  function editBase(kind: 0 | 3 | 10002) {
+    currentContext();
+    const base = metadata.find(row => row.kind === kind);
+    if (!metadataLoaded || metadataContext !== transportKey || !base) throw Error('Load your current public information before editing.');
+    return $state.snapshot(base);
+  }
+  function profilePatch() {
+    const before = profileFields(editBase(0)), patch: Record<string, string> = {};
+    // Do not turn absent or unfamiliar values into blank strings on an unrelated edit.
+    for (const [key, value] of Object.entries({ name: profileName, display_name: displayName, about, ...profileExtra })) {
+      if (value !== (typeof before[key] === 'string' ? before[key] : '')) patch[key] = value;
+    }
+    return patch;
+  }
   async function refreshMetadata() {
     const context = currentContext(), recipient = contextRelay(context), owner = context.owner;
-    if (!owner) throw Error('Connect a browser signer to select the public identity');
-    const current = [];
-    for (const kind of [0, 3, 10002] as const) {
-      try { const result = await contextResult(context, readMetadata(recipient, owner, kind)); current.push({ kind, ...result }); }
-      catch (cause) { assertContext(context); if ((cause as Error & { status?: number }).status !== 404) throw cause; }
-    }
+    if (!owner) throw Error('Connect your public identity before editing.');
+    const current: MetadataBase[] = [];
+    for (const kind of [0, 3, 10002] as const) current.push(await contextResult(context, metadataForEditing(recipient, owner, kind)));
     assertContext(context);
-    metadata = current; metadataContext = transportKey; notice = 'Verified current public metadata heads. Projection-pending heads have no verified visible event yet.';
+    if (current.some(row => row.head && !row.event)) throw Error('Your public information is still updating. Try loading it again shortly; existing data has not been changed.');
+    const fields = profileFields(current[0]), text = (key: string) => typeof fields[key] === 'string' ? fields[key] as string : '';
+    const nextFollows = [...new Set((current[1].event?.tags ?? []).filter(tag => tag[0] === 'p').map(tag => publicIdentityLabel(tag[1])))].join('\n');
+    const nextRoutes = relayLines(current[2]).join('\n');
+    // Complete every parse before replacing the current editable snapshot.
+    metadata = current; metadataContext = transportKey; metadataLoaded = true;
+    profileName = text('name'); displayName = text('display_name'); about = text('about');
+    profileExtra = Object.fromEntries(Object.keys(extraLabels).map(key => [key, text(key)])); removedFields = []; loadedFields = Object.keys(fields);
+    followsText = nextFollows; routesText = nextRoutes; clearReview();
+    notice = 'Your current public information is ready to edit. Unchanged information is preserved.';
   }
   async function sendCurrentReview() {
     const selected = review ? $state.snapshot(review) : undefined, context = reviewContext;
@@ -108,7 +133,19 @@
 </script>
 {#snippet recipientControls()}
     <label>Verified recipient <select class="rounded border px-2" bind:value={selectedOrigin} disabled={pending}><option value="">Choose instance</option>{#each relays as recipient}<option value={recipient.origin}>{recipient.origin}</option>{/each}</select></label>
-    <Button variant="outline" disabled={pending} onclick={() => run(refreshRelays)}>Refresh verified instances</Button>
+    <Button variant="outline" disabled={pending} onclick={() => run(refreshRelays)}>Refresh destinations</Button>
+    {#if !relays.length}<p class="text-sm">No destination selected yet. <a class="underline" href="/settings/library">Add a verified site in Library → Public sync</a>, then return here. Adding a site does not publish anything.</p>{/if}
+{/snippet}
+{#snippet publicLookup()}
+  <div class="space-y-2 rounded border p-3">
+    <label class="block">Find a public profile<Input bind:value={lookupText} placeholder="npub… or reader@example.com" disabled={pending} oninput={() => { lookupResult = undefined; }} /></label>
+    <p class="text-sm">Read-only: no signer, login or private key is needed. Names can be shared by different people; check the npub with the person before following.</p>
+    {#if lookupText.includes('@')}<label class="block text-sm"><input type="checkbox" bind:checked={lookupConsent} /> I approve contacting this public address’s domain. It will see my network request; no account cookie is sent.</label>{/if}
+    <Button variant="outline" disabled={pending || !relay || !lookupText.trim() || lookupText.includes('@') && !lookupConsent} onclick={() => run(async () => { const context = currentContext(), input = lookupText; const found = await lookupPublicIdentity(input, contextRelay(context), lookupConsent, () => assertContext(context)); assertContext(context); if (input !== lookupText) throw Error('The lookup changed. Search again.'); lookupResult = found; })}>Look up public profile</Button>
+    {#if lookupResult}<p class="font-medium">{lookupResult.displayName}</p><p class="whitespace-pre-wrap">{lookupResult.about}</p><p class="break-all text-xs">{lookupResult.npub}</p>{#if lookupResult.address}<p class="text-sm">Address matches this public key: {lookupResult.address}. This identifies an account, not a trusted person.</p>{/if}
+      {#if settingsView === 'follows' && metadataLoaded}<Button variant="outline" disabled={pending} onclick={() => { const key = lookupResult!.publicKey, keys = followsText.split(/\s+/).filter(Boolean).map(publicIdentityKey); if (!keys.includes(key)) followsText = [...keys, key].map(publicIdentityLabel).join('\n'); clearReview(); notice = 'Added to your unsaved follow draft. Review and approve before it becomes public.'; }}>Add this exact identity to follow draft</Button>{/if}
+    {/if}
+  </div>
 {/snippet}
 {#snippet reviewedAction()}
     {#if review}
@@ -116,14 +153,15 @@
         <p>{review.purpose}. Recipient: {review.relay.origin} · pinned service key {review.relay.serviceKey}</p>
         <p class="break-all text-xs">Author {review.owner} · kind {review.kind} · exact tags {JSON.stringify(review.tags)}</p>
         <p class="whitespace-pre-wrap break-words">{review.content || '(empty signed content)'}</p>
-        <p>{review.kind === 5 ? 'This publishes a signed withdrawal request. Copies elsewhere may remain; source publications have a separate protected policy.' : 'The content, tags and author identity become public. Replaceable lists replace the previous public list at this instance.'}</p>
+        {#if review.changes}<div data-public-change-summary><p>Added: {review.changes.added.join(', ') || 'None'}</p><p>Changed: {review.changes.changed.join(', ') || 'None'}</p><p class={review.changes.removed.length ? 'font-semibold text-destructive' : ''}>Removed: {review.changes.removed.join(', ') || 'None — all other information is preserved'}</p></div>{/if}
+        <p>{review.kind === 5 ? 'This publishes a signed withdrawal request. Copies elsewhere may remain; source publications have a separate protected policy.' : 'These exact changes become public. They replace the current profile or list at this destination; removed fields and contacts are listed above.'}</p>
         <label><input type="checkbox" bind:checked={consent} /> I approve this exact public action and recipient.</label>
         <Button disabled={pending || !consent} onclick={() => run(sendCurrentReview)}>Sign and send reviewed public action</Button>
         <Button variant="outline" disabled={pending} onclick={clearReview}>Cancel review</Button>
       </div>
     {/if}
 {/snippet}
-<section class={resourceId ? 'space-y-3' : 'space-y-5'} data-public-identity-tool={resourceId ? undefined : settingsView} data-source-conversation={resourceId ? true : undefined} data-resource-kind={resourceId ? resourceKind : undefined} data-resource-id={resourceId} data-verified-source-id={sourceContext === contextKey && source?.kind === target.kind && source?.id === target.id ? source.event_id : undefined}>
+<section oninput={(event) => { if ((event.target as HTMLElement)?.closest('[data-public-editor-fields]') && review) clearReview(); }} class={resourceId ? 'space-y-3' : 'space-y-5'} data-public-identity-tool={resourceId ? undefined : settingsView} data-source-conversation={resourceId ? true : undefined} data-resource-kind={resourceId ? resourceKind : undefined} data-resource-id={resourceId} data-verified-source-id={sourceContext === contextKey && source?.kind === target.kind && source?.id === target.id ? source.event_id : undefined}>
   {#if resourceId}
     <Button variant="ghost" size="sm" aria-expanded={conversationOpen} onclick={toggleConversation}>Comments from other sites</Button>
     {#if conversationOpen}
@@ -153,31 +191,41 @@
       </div>
     {/if}
   {:else}
-    {#if settingsView === 'connections'}
+    {#if settingsView === 'connections' || settingsView === 'lookup'}
       <p class="text-muted-foreground text-sm">Check the signing identity and verified instance used for public posts. These are separate from your site login.</p>
-      <p class="break-all text-sm">Signing public key: {$signerIdentity.owner ?? 'none connected'}</p>
+      <p class="break-all text-sm">Selected public identity: {$signerIdentity.owner ? publicIdentityLabel($signerIdentity.owner) : 'none — public lookup does not need one'}</p>
       {@render recipientControls()}
+      {@render publicLookup()}
       <p class="text-muted-foreground text-sm">Add or verify destinations from <a class="underline" href="/settings/library">Library settings</a> → Set up public sync.</p>
     {:else if settingsView === 'profile' || settingsView === 'follows'}
       <p class="text-muted-foreground text-sm">Changes are public only after you review and approve them. Choose the instance where you want them published.</p>
       {@render recipientControls()}
+      <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner} onclick={() => { if (!metadataLoaded || confirm('Reload current public information and discard your unsaved edits?')) void run(refreshMetadata); }}>{metadataLoaded ? 'Reload current information' : 'Load my current information'}</Button>
+      {#if !metadataLoaded}<p class="text-sm">Load your profile and lists first so existing information is preserved.</p>{/if}
+      <div data-public-editor-fields class="space-y-3">
       {#if settingsView === 'profile'}
-        <label class="block" for="public-profile-name">Public username <Input id="public-profile-name" class="mt-1" bind:value={profileName} maxlength={128} /></label>
-        <label class="block" for="public-profile-display-name">Public display name <Input id="public-profile-display-name" class="mt-1" bind:value={displayName} maxlength={128} /></label>
-        <label class="block" for="public-profile-bio">Public bio <Textarea id="public-profile-bio" class="mt-1" bind:value={about} maxlength={4000}></Textarea></label>
-        <Button disabled={pending || !relay || !$signerIdentity.owner} onclick={() => run(async () => { setReview(reviewProfile(selectedRelay(), { name: profileName, display_name: displayName, about })); })}>Review public profile</Button>
+        <label class="block" for="public-profile-name">Public username <Input id="public-profile-name" disabled={!metadataLoaded || pending} class="mt-1" bind:value={profileName} maxlength={128} /></label>
+        <label class="block" for="public-profile-display-name">Public display name <Input id="public-profile-display-name" disabled={!metadataLoaded || pending} class="mt-1" bind:value={displayName} maxlength={128} /></label>
+        <label class="block" for="public-profile-bio">Public bio <Textarea id="public-profile-bio" disabled={!metadataLoaded || pending} class="mt-1" bind:value={about} maxlength={4000}></Textarea></label>
+        <details class="space-y-3"><summary class="cursor-pointer">Pictures, addresses and other profile fields</summary>
+          {#each Object.entries(extraLabels) as [key, label]}<label class="block">{label}<Input bind:value={profileExtra[key]} disabled={!metadataLoaded || pending} /></label>{/each}
+          <p class="text-sm">Custom fields stay unchanged. To remove a field deliberately, select it below and check the removal summary before publishing.</p>
+          {#each loadedFields as field}<label class="block"><input type="checkbox" value={field} bind:group={removedFields} disabled={pending} /> Remove {field}</label>{/each}
+        </details>
+        <Button disabled={pending || !relay || !$signerIdentity.owner || !metadataLoaded} onclick={() => run(async () => { setReview(reviewProfile(selectedRelay(), profilePatch(), editBase(0), removedFields)); })}>Review public profile</Button>
       {:else}
-        <p class="text-muted-foreground text-sm">Public follows use signing public keys. These are people you follow, separate from your saved manga.</p>
-        <label class="block" for="public-follow-keys">Public follow keys, one 64-character hex key per line <Textarea id="public-follow-keys" class="mt-1" bind:value={followsText}></Textarea></label>
-        <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner} onclick={() => run(async () => { setReview(reviewFollows(selectedRelay(), followsText.split(/\s+/).filter(Boolean))); })}>Review replacement public follow list</Button>
-        <label class="block" for="public-write-relays">Public write relay URLs, one WSS URL per line <Textarea id="public-write-relays" class="mt-1" bind:value={routesText}></Textarea></label>
-        <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner} onclick={() => run(async () => { setReview(reviewRelayList(selectedRelay(), routesText.split(/\s+/).filter(Boolean))); })}>Review replacement public relay list</Button>
+        {@render publicLookup()}
+        <p class="text-muted-foreground text-sm">Public follows use public identities. These are people you follow, separate from your saved manga.</p>
+        <label class="block" for="public-follow-keys">People you follow, one public npub per line (public hex keys also work) <Textarea id="public-follow-keys" disabled={!metadataLoaded || pending} class="mt-1" bind:value={followsText}></Textarea></label>
+        <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner || !metadataLoaded} onclick={() => run(async () => { setReview(reviewFollows(selectedRelay(), followsText.split(/\s+/).filter(Boolean).map(publicIdentityKey), editBase(3))); })}>Review replacement public follow list</Button>
+        <label class="block" for="public-write-relays">Public relay URLs, one WSS URL per line; optionally add read or write <Textarea id="public-write-relays" disabled={!metadataLoaded || pending} class="mt-1" bind:value={routesText}></Textarea></label>
+        <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner || !metadataLoaded} onclick={() => run(async () => { setReview(reviewRelayList(selectedRelay(), routesText.split(/\n/).map(line => line.trim()).filter(Boolean), editBase(10002))); })}>Review replacement public relay list</Button>
       {/if}
-      <Button variant="outline" disabled={pending || !relay || !$signerIdentity.owner} onclick={() => run(refreshMetadata)}>Read verified current public metadata</Button>
+      </div>
       {#each metadata.filter(item => settingsView === 'profile' ? item.kind === 0 : item.kind !== 0) as item}
-        <div class="space-y-3 border-t pt-4" data-verified-metadata-kind={item.kind} data-verified-metadata-id={item.head.id}>
-          <p>{actionName(item.kind)} · {item.head.projected ? 'Current' : 'Updating'}</p>
-          {#if item.event}<Button variant="ghost" onclick={() => { inspectedMetadata = inspectedMetadata === item.head.id ? '' : item.head.id; }}>Inspect current data</Button>{#if inspectedMetadata === item.head.id}<p class="whitespace-pre-wrap break-words">{item.event.content || JSON.stringify(item.event.tags)}</p>{/if}<Button variant="outline" disabled={pending} onclick={() => run(async () => { setWithdrawal(item.event!, 'metadata'); })}>Review removal</Button>{/if}
+        <div class="space-y-3 border-t pt-4" data-verified-metadata-kind={item.kind} data-verified-metadata-id={item.head?.id}>
+          <p>{actionName(item.kind)} · {item.head?.projected ? 'Current' : item.head ? 'Updating' : 'No existing information'}</p>
+          {#if item.event}<Button variant="ghost" onclick={() => { inspectedMetadata = inspectedMetadata === item.head?.id ? '' : item.head!.id; }}>Inspect current data</Button>{#if inspectedMetadata === item.head?.id}<p class="whitespace-pre-wrap break-words">{item.event.content || JSON.stringify(item.event.tags)}</p>{/if}<Button variant="outline" disabled={pending} onclick={() => run(async () => { setWithdrawal(item.event!, 'metadata'); })}>Review removal</Button>{/if}
         </div>
       {/each}
       {@render reviewedAction()}

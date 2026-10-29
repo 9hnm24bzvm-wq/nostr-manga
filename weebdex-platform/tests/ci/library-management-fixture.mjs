@@ -34,7 +34,7 @@ function writable(initial) {
 }
 const get = store => { let value; store.subscribe(next => { value = next; })(); return value; };
 
-export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {} } = {}) {
+export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {}, fetchResponse, connectOrigins } = {}) {
   const gate = deferred(), entered = deferred();
   const calls = { kinds: [], posts: 0, worker: 0, finalRead: 0, publicKey: 0 };
   let alive = true, protocol, device, graph, codec, signerMode = gateAt;
@@ -42,7 +42,7 @@ export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {} } 
   const ownerSecret = new Uint8Array(32).fill(7), owner = Buffer.from(curves.schnorr.getPublicKey(ownerSecret)).toString('hex');
   const recipient = { origin: 'http://127.0.0.1:2', serviceKey: 'a'.repeat(64), selected: true };
   const scope = { origin: 'http://127.0.0.1:1', serviceKey: recipient.serviceKey, catalogNamespace: '0'.repeat(32) };
-  const policy = { available: true, schema_ready: true, origin: recipient.origin, service_key: recipient.serviceKey, catalog_namespace: scope.catalogNamespace, connect_origins: [recipient.origin] };
+  const policy = { available: true, schema_ready: true, origin: recipient.origin, service_key: recipient.serviceKey, catalog_namespace: scope.catalogNamespace, connect_origins: connectOrigins ?? [recipient.origin] };
   const signed = template => {
     const event = { ...clean(template), pubkey: owner };
     const digest = hashes.sha256(new TextEncoder().encode(JSON.stringify([0, owner, event.created_at, event.kind, event.tags, event.content])));
@@ -58,7 +58,7 @@ export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {} } 
   };
   const context = vm.createContext({
     console, URL, URLSearchParams, TextEncoder, TextDecoder, Uint8Array, ArrayBuffer, structuredClone, Blob, File, Date, JSON, Buffer,
-    crypto, performance, AbortSignal, btoa, atob, setTimeout, clearTimeout, queueMicrotask,
+    crypto, performance, AbortSignal, AbortController, btoa, atob, setTimeout, clearTimeout, queueMicrotask,
     indexedDB: new IDBFactory(), IDBKeyRange,
     window: { location: { origin: scope.origin }, nostr: signer },
     navigator: { locks: { request: async (_name, options, callback) => (callback ?? options)({ mode: 'exclusive' }) } },
@@ -66,7 +66,7 @@ export async function fixture({ gateAt, changeDuringSign, moduleAdapters = {} } 
       terminate() {}
       postMessage(data) { calls.worker++; void (async () => { if (gateAt === 'worker') { entered.resolve(); await gate.promise; } this.onmessage({ data: data.fingerprintOnly ? { mappingProof: 'same' } : { mappingProof: 'same', deviceRevision: await device.revision(), protocolRevision: (await protocol.counts()).revision, graph, excluded: [] } }); })(); }
     },
-    fetch: async () => { calls.posts++; throw Error('Synthetic transport boundary reached'); },
+    fetch: async (...args) => { if (fetchResponse) return fetchResponse(...args); calls.posts++; throw Error('Synthetic transport boundary reached'); },
   });
   const modules = new Map();
   function synthetic(name, values) {

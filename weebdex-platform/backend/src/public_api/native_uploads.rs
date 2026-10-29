@@ -25,6 +25,8 @@ use tokio_postgres::Transaction;
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/account/upload", get(get_current))
+        .route("/account/upload/preflight/{manga}", get(preflight))
+        .route("/account/upload/workbench", get(workbench))
         .route("/account/upload/begin", post(begin))
         .route("/account/upload/begin/{p0}", post(begin_edit))
         .route(
@@ -149,6 +151,42 @@ async fn get_current(
     super::native_account_profile_settings::provenance(&mut result, cap.account.as_str());
     tx.commit().await?;
     Ok(Json(result))
+}
+
+// These discovery endpoints only read current authority and account-owned work.
+async fn preflight(State(state): State<AppState>, OriginalUri(uri): OriginalUri, Path(manga): Path<String>, headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
+    let q = super::query::PublicQuery::parse_unchecked(uri.query())?;
+    q.require_allowed(&["expectedAccountId", "groups[]"])?;
+    let account = PublicUuid::parse(q.first("expectedAccountId").ok_or_else(||PublicApiError::bad_request("expectedAccountId required"))?)?;
+    let groups = q.values("groups[]");
+    if groups.len()>10 || groups.iter().collect::<BTreeSet<_>>().len()!=groups.len() { return Err(PublicApiError::bad_request("Select at most ten distinct groups")); }
+    super::native_account_profile_settings::body(request,&headers,false,1).await?;
+    let cap=NativeRequest{headers,account};
+    let mut db=state.db.client().await?; let tx=db.transaction().await?;
+    let actor=authority(&state,&tx,&cap,false).await?;
+    let manga=resolve(&tx,ResourceKind::Manga,&PublicUuid::parse(&manga)?).await?;
+    let mut native_groups=Vec::new();
+    for group in groups { native_groups.push(resolve(&tx,ResourceKind::Group,&PublicUuid::parse(group)?).await?); }
+    let mut result=crate::protocol::publication::native_upload_preflight(&state,&tx,&actor,&native_groups).await?;
+    if let Err(error)=CatalogRepository::ensure_upload_target(&tx,&manga,&actor,&native_groups).await { result["eligible"]=json!(false);result["reason"]=json!(error.message); }
+    result=json!({"result":"ok","preflight":result});
+    super::native_account_profile_settings::provenance(&mut result,cap.account.as_str());tx.commit().await?;Ok(Json(result))
+}
+async fn workbench(State(state): State<AppState>, OriginalUri(uri): OriginalUri, headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
+    let (cap,_)=authorize_account_query(&state,&uri,&headers,request).await?;
+    let mut db=state.db.client().await?;let tx=db.transaction().await?;let actor=authority(&state,&tx,&cap,false).await?;
+    let rows=tx.query("SELECT s.id,s.manga_id,s.chapter_id,s.state,platform.catalog_timestamp(s.updated_at),s.committed_chapter_id,m.title FROM platform.upload_sessions s LEFT JOIN platform.catalog_manga m ON m.id=s.manga_id WHERE s.owner_id=$1 AND (s.state IN ('open','scheduled','committed') OR EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.state IN ('prepared','source_accepted'))) ORDER BY (s.state IN ('open','scheduled')) DESC,s.updated_at DESC,s.id LIMIT 51",&[&actor.user_id()]).await?;
+    let mut entries=Vec::new();let more=rows.len()>50;
+    for row in rows.into_iter().take(50) {
+        let id:String=row.get(0);let manga:String=row.get(1);let chapter:Option<String>=row.get(2);
+        let public_id=super::uploads::preferred(&tx,ResourceKind::UploadSession,&id).await?;
+        let public_manga=super::uploads::preferred(&tx,ResourceKind::Manga,&manga).await?;
+        let chapter=match chapter {Some(id)=>Some(super::uploads::preferred(&tx,ResourceKind::Chapter,&id).await?),None=>None};
+        let committed:Option<String>=row.get(5);let result_chapter=match committed {Some(id)=>Some(super::uploads::preferred(&tx,ResourceKind::Chapter,&id).await?),None=>None};
+        let pending:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.protocol_publication_commands WHERE upload_session_id=$1 AND state IN ('prepared','source_accepted'))",&[&id]).await?.get(0);
+        entries.push(json!({"id":public_id,"mangaId":public_manga,"chapterId":chapter,"resultChapterId":result_chapter,"state":row.get::<_,String>(3),"updatedAt":row.get::<_,String>(4),"needsReconciliation":pending,"title":row.get::<_,Option<String>>(6)}));
+    }
+    let mut result=json!({"result":"ok","entries":entries,"hasMore":more});super::native_account_profile_settings::provenance(&mut result,cap.account.as_str());tx.commit().await?;Ok(Json(result))
 }
 
 #[derive(Deserialize)]

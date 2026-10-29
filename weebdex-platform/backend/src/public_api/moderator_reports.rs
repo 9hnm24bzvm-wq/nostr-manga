@@ -135,7 +135,14 @@ async fn target_base(tx:&Transaction<'_>,category:&str,id:&str,write:bool)->Publ
     let Some(row)=row else {return Ok(json!({"category":category,"id":id,"available":false}));};
     let available:bool=row.get(5);
     if !available{return Ok(json!({"category":category,"id":id,"available":false,"version":row.get::<_,Option<i32>>(0),"updatedAt":row.get::<_,String>(1)}));}
-    source_fence(tx,category,id).await?;
+    if let Err(error)=source_fence(tx,category,id).await {
+        // A stored private report remains reviewable when its target or parent
+        // becomes invisible. Do not expose the hidden target label/body, and do
+        // not translate lock contention or unknown source failures into absence.
+        // A stale decision then conflicts against this changed redacted context.
+        if error.status!=axum::http::StatusCode::NOT_FOUND {return Err(error);}
+        return Ok(json!({"category":category,"id":id,"available":false,"version":row.get::<_,Option<i32>>(0),"updatedAt":row.get::<_,String>(1)}));
+    }
     let label:String=row.get::<_,Option<String>>(2).ok_or_else(PublicApiError::unavailable)?;
     let body:String=row.get::<_,Option<String>>(3).ok_or_else(PublicApiError::unavailable)?;
     let extra:Value=row.get(4);
@@ -143,7 +150,7 @@ async fn target_base(tx:&Transaction<'_>,category:&str,id:&str,write:bool)->Publ
     for key in ["parentId","threadId"] {if let Some(value)=extra.get(key){v::id(value.as_str().ok_or_else(PublicApiError::unavailable)?).map_err(|_|PublicApiError::unavailable())?;}}
     Ok(json!({"category":category,"id":id,"available":true,"version":row.get::<_,Option<i32>>(0),"updatedAt":row.get::<_,String>(1),"label":label,"body":body,"state":extra}))
 }
-async fn context(tx:&Transaction<'_>,id:&str,write:bool,has:impl Fn(&str)->bool)->PublicApiResult<Value>{
+pub(crate) async fn context(tx:&Transaction<'_>,id:&str,write:bool,has:impl Fn(&str)->bool)->PublicApiResult<Value>{
     let lock=if write {"FOR UPDATE NOWAIT"} else {"FOR SHARE NOWAIT"};
     // Preserve the native title-before-report lock graph. Re-read the report
     // identity under its lock; an untrusted pre-read can never redirect a target.
@@ -180,19 +187,33 @@ async fn context(tx:&Transaction<'_>,id:&str,write:bool,has:impl Fn(&str)->bool)
     let version=target["version"].as_i64();let submitted=report["submittedTargetVersion"].as_i64();
     let mut allowed=report["status"]=="waiting";let mut effect=json!({});
     match reason_id {
-        "scanlation_group_claim"=>{allowed &= category=="scanlation_group"&&has("scanlation_group.update")&&target["available"]==true&&target["state"]["locked"]==false&&target["hasLeader"]==false&&claimant["eligible"]==true&&version.is_some()&&submitted==version;effect=json!({"action":"grant_group_leadership","group_id":target_id,"claimant_id":report["submitterId"],"old_group_version":version,"new_group_version":version.map(|v|v+1)});}
-        "chapter_removal_request"=>{allowed &= category=="chapter"&&has("chapter.remove")&&target["available"]==true&&target["parent"]["available"]==true&&version.is_some()&&submitted==version;effect=json!({"action":"instance_soft_hide","chapter_id":target_id,"source_deletion":"independent_original_moderation"});}
-        "manga_removal_request"=>{allowed &= category=="manga"&&has("manga.delete")&&target["available"]==true&&version.is_some()&&submitted==version;effect=json!({"action":"instance_soft_hide","manga_id":target_id,"old_version":version,"new_version":version.map(|v|v+1),"source_deletion":"not_requested","original_event_rewritten":false});}
+        "scanlation_group_claim"=>{allowed &= category=="scanlation_group"&&has("scanlation_group.update")&&target["available"]==true&&target["state"]["locked"]==false&&target["hasLeader"]==false&&claimant["eligible"]==true&&version.is_some()&&submitted==version;let previous=if target["available"]==true {tx.query_opt("SELECT name,is_leader,is_officer FROM platform.catalog_group_members WHERE group_id=$1 AND user_id=$2 FOR SHARE NOWAIT",&[&target_id,&report["submitterId"].as_str().unwrap()]).await.map_err(lock_error)?.map(|r|json!({"name":r.get::<_,String>(0),"is_leader":r.get::<_,bool>(1),"is_officer":r.get::<_,bool>(2)}))}else{None};effect=json!({"action":"grant_group_leadership","group_id":target_id,"claimant_id":report["submitterId"],"old_group_version":version,"new_group_version":version.map(|v|v+1),"previous_membership":previous,"new_member_name":claimant["name"]});}
+        "chapter_removal_request"=>{allowed &= category=="chapter"&&has("chapter.remove")&&target["available"]==true&&target["parent"]["available"]==true&&version.is_some()&&submitted==version;effect=json!({"action":"instance_soft_hide","chapter_id":target_id,"source_deletion":"independent_original_moderation","old_version":version,"new_version":version.map(|v|v+1),"previous_deleted":false});}
+        "manga_removal_request"=>{allowed &= category=="manga"&&has("manga.delete")&&target["available"]==true&&version.is_some()&&submitted==version;effect=json!({"action":"instance_soft_hide","manga_id":target_id,"old_version":version,"new_version":version.map(|v|v+1),"source_deletion":"not_requested","original_event_rewritten":false,"previous_deleted":false});}
         _=>{}
     }
     let target_revision=digest(&json!({"target":target,"claimant":claimant}))?;
     let mut context=json!({"report":report,"reason":reason,"target":target,"claimant":claimant,"targetRevision":target_revision,"acceptAllowed":allowed,"acceptEffect":effect});
     context["contextHash"]=json!(digest(&context)?);super::native_user_reports::require_context_budget(&context)?;Ok(context)
 }
+/// A local correction may unhide a native row, never override withdrawn source
+/// authority. Reuse the event/blob lifecycle fence rather than an unlocked read.
+pub(crate) async fn correction_source_fences(tx:&Transaction<'_>,sources:Vec<Option<String>>)->PublicApiResult<()> {
+    super::native_discussion::source_fences(tx,sources).await
+}
+pub(crate) async fn correction_group_source_fence(tx:&Transaction<'_>,id:&str)->PublicApiResult<()> {
+    source_fence(tx,"scanlation_group",id).await
+}
+pub(crate) async fn native_target_label(tx:&Transaction<'_>,category:&str,id:&str)->PublicApiResult<String> {
+    if category=="thread" {return Ok("Discussion thread".into());}
+    if category=="reply" {return Ok("Discussion reply".into());}
+    let target=target_base(tx,category,id,false).await?;
+    Ok(if target["available"]==true {target["label"].as_str().unwrap_or("Reported subject").chars().take(200).collect()}else{"Unavailable subject".into()})
+}
 // Deletion intentionally does not use the rich review context: unavailable,
 // orphaned and already reviewed reports remain deletable with report.delete.
 // Authority is read from the actor row already locked by bound_account_*.
-async fn deletion_authority(tx:&Transaction<'_>,user:&str,account:&str)->PublicApiResult<Value>{
+pub(crate) async fn deletion_authority(tx:&Transaction<'_>,user:&str,account:&str)->PublicApiResult<Value>{
     let row=tx.query_one("SELECT version,CASE WHEN octet_length(roles::text)<=8192 THEN roles END,CASE WHEN octet_length(permissions::text)<=8192 THEN permissions END FROM platform.users WHERE id=$1",&[&user]).await.map_err(lock_error)?;
     let roles:Value=row.get::<_,Option<Value>>(1).ok_or_else(PublicApiError::unavailable)?;
     let permissions:Value=row.get::<_,Option<Value>>(2).ok_or_else(PublicApiError::unavailable)?;
@@ -200,7 +221,7 @@ async fn deletion_authority(tx:&Transaction<'_>,user:&str,account:&str)->PublicA
     let authority=json!({"accountId":account,"version":positive(row.get(0))?,"roles":normalize(roles)?,"permissions":normalize(permissions)?});
     Ok(json!({"accountId":account,"version":authority["version"],"revision":digest(&authority)?}))
 }
-async fn deletion_context(tx:&Transaction<'_>,id:&str,write:bool,authority:Value)->PublicApiResult<Value>{
+pub(crate) async fn deletion_context(tx:&Transaction<'_>,id:&str,write:bool,authority:Value)->PublicApiResult<Value>{
     let lock=if write {"FOR UPDATE NOWAIT"} else {"FOR SHARE NOWAIT"};
     let row=tx.query_opt(&format!("SELECT CASE WHEN octet_length(id) BETWEEN 1 AND 128 THEN id END,entity_type,CASE WHEN octet_length(entity_id) BETWEEN 1 AND 128 THEN entity_id END,status,version,CASE WHEN octet_length(reason_id) BETWEEN 1 AND 128 THEN reason_id END FROM platform.reports WHERE id=$1 AND deleted_at IS NULL {lock}"),&[&id]).await.map_err(lock_error)?.ok_or_else(PublicApiError::not_found)?;
     let category:String=row.get(1);let status:String=row.get(3);let version=positive(row.get(4))?;

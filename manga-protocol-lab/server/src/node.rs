@@ -3176,8 +3176,14 @@ async fn submit_account_metadata(
         )
     })?;
     let body = group_body(&a, &uri, &authorization, request, 1_048_576).await?;
-    let event: auth::Event =
-        serde_json::from_slice(&body).map_err(|_| bad("invalid signed metadata"))?;
+    let value: Value = serde_json::from_slice(&body).map_err(|_| bad("invalid signed metadata"))?;
+    let expected_head = match value.get("expectedHead") {
+        None => None,
+        Some(Value::Null) => Some(None),
+        Some(Value::String(value)) => Some(Some(id(value).map_err(|_| bad("invalid expected metadata head"))?)),
+        Some(_) => return Err(bad("expectedHead must be a prior event ID or null")),
+    };
+    let event: auth::Event = serde_json::from_value(value).map_err(|_| bad("invalid signed metadata"))?;
     if event.pubkey != authorization.pubkey {
         return Err(forbidden("request signer must be the event author"));
     }
@@ -3186,9 +3192,12 @@ async fn submit_account_metadata(
     }
     let outcome = a
         .repo
-        .stage_account_metadata(&authority, &event)
+        .stage_account_metadata_expected(&authority, &event, expected_head)
         .await
         .map_err(|error| {
+            if error.downcast_ref::<crate::accounts::AccountHeadChanged>().is_some() {
+                return (StatusCode::CONFLICT, Json(json!({"id":event.id,"headChanged":true,"expectedHeadSupported":true})));
+            }
             tracing::debug!(error=%error,"account metadata rejected");
             validation_error(error, "invalid metadata or changed account permission")
         })?;
@@ -3224,9 +3233,9 @@ async fn account_head(
     }
     let client = a.repo.pool.get().await.map_err(|_| unavailable())?;
     let kind = kind as i32;
-    let row=client.query_opt("SELECT h.event_id,h.winner_at,NOT EXISTS(SELECT 1 FROM backend_outbox o WHERE o.event_id=h.event_id AND o.completed_at IS NULL) FROM account_heads h JOIN events e ON e.id=h.event_id WHERE h.publisher=$1 AND h.kind=$2 AND e.state='hosted'", &[&publisher.as_slice(),&kind]).await.map_err(|_|unavailable())?.ok_or_else(||(StatusCode::NOT_FOUND,Json(json!({"error":"no_current_head"}))))?;
+    let row=client.query_opt("SELECT h.event_id,h.winner_at,NOT EXISTS(SELECT 1 FROM backend_outbox o WHERE o.event_id=h.event_id AND o.completed_at IS NULL) FROM account_heads h JOIN events e ON e.id=h.event_id WHERE h.publisher=$1 AND h.kind=$2 AND e.state='hosted'", &[&publisher.as_slice(),&kind]).await.map_err(|_|unavailable())?.ok_or_else(||(StatusCode::NOT_FOUND,Json(json!({"error":"no_current_head","expectedHeadSupported":true}))))?;
     Ok(Json(
-        json!({"publisher":key,"kind":kind,"id":hex::encode(row.get::<_,Vec<u8>>(0)),"created_at":row.get::<_,i64>(1),"projected":row.get::<_,bool>(2)}),
+        json!({"expectedHeadSupported":true,"publisher":key,"kind":kind,"id":hex::encode(row.get::<_,Vec<u8>>(0)),"created_at":row.get::<_,i64>(1),"projected":row.get::<_,bool>(2)}),
     ))
 }
 
