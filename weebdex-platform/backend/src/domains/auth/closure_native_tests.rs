@@ -36,7 +36,7 @@ async fn stale_principal_core_families_refuse_after_disable() {
  let mut record=crate::domains::catalog::ChapterPublication{id:"UnusedChapter".into(),manga_id:"UnusedManga".into(),uploader_id:actor.user_id.clone(),uploader_name:actor.username.clone(),title:None,volume:None,chapter:None,language:"en".into(),node:"fixture".into(),pages:vec![],optimized_pages:vec![],groups:vec![],source_id:None,protocol_event_id:None};
  refused!(tx,crate::protocol::publication::publish_native_upload(&state,&tx,&actor,"UnusedUpload","unused-hash",&mut record,&[],&json!({})));
  let input=crate::protocol::publication::PublicationInput{kind:0,canonical_manifest:vec![],originals:std::collections::BTreeMap::new(),created_at:None};
- refused!(tx,state.protocol.publish_for_native_user(&tx,&actor.user_id,None,input));
+ refused!(tx,state.protocol.publish_for_native_user(&state,&tx,&actor,None,None,input));
  let failure=crate::protocol::deletions::request_native_chapter_deletion(&state,&actor,"UnusedChapter").await.unwrap_err();assert_eq!(failure.status.as_u16(),403);assert_eq!(failure.message,"This account is no longer active");
  assert_eq!(db.query_one("SELECT count(*) FROM platform.catalog_audit WHERE actor_id='ClosedCore1'",&[]).await.unwrap().get::<_,i64>(0),0);
  assert_eq!(db.query_one("SELECT count(*) FROM platform.upload_sessions WHERE owner_id='ClosedCore1'",&[]).await.unwrap().get::<_,i64>(0),0);

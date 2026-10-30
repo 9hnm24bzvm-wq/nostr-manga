@@ -45,3 +45,37 @@ test('current upload preflight and workbench keep exact account/group query keys
  const workbench=await api('upload-workbench'),g=fixture({request:(r,next)=>{assertCanonicalQuery(assert,r.url);if(r.route==='/upload/workbench'){assert.deepEqual([...r.url.searchParams.keys()],['expectedAccountId']);assert.equal(r.url.searchParams.get('expectedAccountId'),USER);return response({result:'ok',entries:[],hasMore:false});}return next(r);}}),client=await workbench.createUploadWorkbench('Reader1234',g.check,g.deps);
  try{assert.equal((await client.list()).entries.length,0);}finally{client.dispose();}
 });
+
+test('scheduling capability is a strict independent server fact, never inferred from configuration',()=>{
+ const base=structuredClone(fixture().account.upload.preflight);Object.assign(base,{configured:true,scope:'original-protocol',formats:['image/jpeg','image/png','image/webp']});
+ assert.equal(eligibility.uploadEligibility(base).scheduling.available,false);
+ for(const scheduling of [undefined,null,{}, {available:'true',reason:null},{available:true},{available:false,reason:7},{available:false,reason:'x'.repeat(2049)}])assert.throws(()=>eligibility.uploadEligibility({...base,scheduling}));
+ assert.throws(()=>eligibility.uploadEligibility({...base,eligible:false,scheduling:{available:true,reason:null}}));
+ assert.throws(()=>eligibility.uploadEligibility({...base,configured:false,scope:'instance-local',scheduling:{available:true,reason:null}}));
+ assert.equal(eligibility.uploadEligibility({...base,scheduling:{available:true,reason:null}}).scheduling.available,true);
+});
+test('configured immediate-only account completes upload but future date cannot create a fence or command',async()=>{
+ const f=await ready({account:a=>{a.upload.publication.configured=true;Object.assign(a.upload.preflight,{configured:true,scope:'original-protocol',formats:['image/jpeg','image/png','image/webp'],scheduling:{available:false,reason:'Publishing now is available; scheduling is not available for this account.'}});}}),{payload}=await stagedCommit(f);
+ const dated={...payload,publishAt:'2026-12-01T00:00:00'},before=structuredClone(f.state.sessions.get(SESSION));
+ await assert.rejects(f.owner.request(`/upload/${SESSION}/commit`,'POST',dated),/scheduling is not available/);
+ assert.equal(dated.publishAt,'2026-12-01T00:00:00');assert.equal(f.owner.schedulingAvailable,false);assert.match(f.owner.schedulingReason,/scheduling is not available/);assert.equal(f.owner.commitState(),undefined);assert.equal(f.storage.size,0);assert.deepEqual(f.state.sessions.get(SESSION),before);assert.equal(f.calls.filter(r=>r.route.endsWith('/commit')).length,0);
+ const accepted=await f.owner.request(`/upload/${SESSION}/commit`,'POST',payload);assert.equal(accepted.accepted,true);assert.equal(f.state.commits,1);f.owner.dispose();
+});
+test('fresh exact-group scheduling revocation refuses before dispatch and preserves staged pages',async()=>{
+ const f=await ready({account:a=>{a.upload.publication.configured=true;Object.assign(a.upload.preflight,{configured:true,scope:'original-protocol',formats:['image/jpeg','image/png','image/webp'],scheduling:{available:true,reason:null}});}}),{payload}=await stagedCommit(f);
+ await f.owner.preflight([]);assert.equal(f.owner.schedulingAvailable,true);
+ f.account.upload.preflight.scheduling={available:false,reason:'Scheduling permission changed. Your pages are kept.'};
+ await assert.rejects(f.owner.request(`/upload/${SESSION}/commit`,'POST',{...payload,publishAt:'2026-12-01T00:00:00'}),/permission changed/);
+ assert.equal(f.owner.schedulingAvailable,false);assert.equal(f.owner.commitState(),undefined);assert.equal(f.calls.filter(r=>r.route.endsWith('/commit')).length,0);assert.equal(f.state.sessions.get(SESSION).files.length,1);f.owner.dispose();
+});
+test('missing scheduling schema fails closed without a native write or configured fallback',async()=>{
+ const f=fixture({account:a=>{a.upload.publication.configured=true;delete a.upload.preflight.scheduling;}});await assert.rejects(f.owner());assert.equal(f.calls.filter(r=>r.method!=='GET').length,0);
+});
+
+test('a late older per-group scheduling observation cannot replace a newer refusal',async()=>{
+ const held=deferred(),entered=deferred();let reads=0;
+ const f=fixture({account:a=>{a.upload.publication.configured=true;Object.assign(a.upload.preflight,{configured:true,scope:'original-protocol',formats:['image/jpeg','image/png','image/webp'],scheduling:{available:true,reason:null}});},request:async(r,next)=>{if(r.route.startsWith('/upload/preflight/')){const result=await next(r);if(++reads===1){entered.release();await held.promise;}return result;}return next(r);}}),{owner}=await f.owner();
+ assert.equal(owner.schedulingAvailable,false);const older=owner.preflight([]);await entered.promise;
+ f.account.upload.preflight.scheduling={available:false,reason:'Current group is not eligible for scheduling.'};await owner.preflight([FILE]);assert.equal(owner.schedulingAvailable,false);
+ held.release();await assert.rejects(older,/newer publishing access check/);assert.equal(owner.schedulingAvailable,false);assert.match(owner.schedulingReason,/Current group/);assert.equal(f.calls.filter(r=>r.method!=='GET').length,0);owner.dispose();
+});

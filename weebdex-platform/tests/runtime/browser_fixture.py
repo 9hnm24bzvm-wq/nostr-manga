@@ -28,6 +28,18 @@ def resolve_pg_bin(environment, default):
     return Path(value)
 
 
+def independent_signer_relay_origin(value):
+    """One explicitly reviewed, separately supervised local relay; no URI secret."""
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise ValueError('Independent signer relay must be an exact IPv4 loopback WS origin')
+    match = re.fullmatch(r'ws://127\.0\.0\.1:([1-9][0-9]{3,4})', value)
+    if match is None or not 1024 <= int(match.group(1)) <= 65535:
+        raise ValueError('Independent signer relay must be an exact unprivileged IPv4 loopback WS origin')
+    return value
+
+
 PG_BIN = resolve_pg_bin(os.environ, ROOT.parent / 'manga-protocol-lab/vendor/pgsql/bin')
 NORMAL_PERMISSIONS = [
     'self.library.read','self.user.update','self.preferences.update','client.create','self.client.update','self.client.delete',
@@ -230,10 +242,11 @@ def public_upload_payload(action,payload):
 
 class Fixture:
     def __init__(self,args):
+        self.independent_signer_relay_origin=independent_signer_relay_origin(getattr(args,'independent_signer_relay_origin',None))
         self.args=args; self.run=Path(tempfile.mkdtemp(prefix='browser-final-',dir=ROOT/'test-runtime'))
         self.run.chmod(0o700); self.stop=threading.Event(); self.lock=threading.Lock()
         self.mail=collections.deque(maxlen=128); self.mail_count=0; self.provisions=0
-        ports=set()
+        ports={int(self.independent_signer_relay_origin.rsplit(':',1)[1])} if self.independent_signer_relay_origin else set()
         def reserve():
             while True:
                 port=free_port()
@@ -433,6 +446,9 @@ class Fixture:
         config=json.loads((self.run/'platform.json').read_text())
         config['protocol_publication']=json.loads((self.run/'protocol-runtime.json').read_text())
         config['protocol_connect_origins']=[self.protocol_origin,self.protocol_origin.replace('http://','ws://',1)]
+        if self.independent_signer_relay_origin:
+            config['protocol_connect_origins'].append(self.independent_signer_relay_origin)
+            self.receipt['independent_signer_relay']={'fixture_only':True,'relay_origin':self.independent_signer_relay_origin,'separate_supervisor_required':True,'signer_started_by_fixture':False,'private_signer_material_received':False,'account_authority_granted':False}
         write_json(self.run/'platform.json',config)
         self.receipt.update(protocol_origin=self.protocol_origin,relay_origin=setup['relay_origin'],service_key=setup['service_key'],operator_pubkey=setup['operator_pubkey'])
         self.receipt['protocol_setup']=setup
@@ -1417,11 +1433,13 @@ def main():
     parser.add_argument('--signed-feature-controls',action='store_true',help='Enable bounded synthetic signed report/draft/chapter fixtures, separate from upload grants')
     parser.add_argument('--pg-home-fault-controls',action='store_true',help='Enable one named real fixed-cluster PG outage/restart for the reviewed homepage failure phase')
     parser.add_argument('--reader-verification-control',action='store_true',help='Allow one explicitly simulated verification precondition for the fixed synthetic native reader; never organic email verification')
+    parser.add_argument('--independent-signer-relay-origin',type=independent_signer_relay_origin,help='Explicitly allow one separately supervised ws://127.0.0.1:PORT signer relay in this fresh synthetic fixture; never a bunker URI or secret')
     parser.add_argument('--ubunchu-noncommercial',action='store_true',help='Use licensed originals only for a genuinely noncommercial local fixture; exclude artwork/screenshots from uploads')
     args=parser.parse_args()
     if not 600<=args.lifetime_seconds<=3600:parser.error('fixture lifetime must be600..3600seconds')
     if not args.frontend_artifact_manifest_sha256 or not args.frontend_index_sha256:parser.error('fixture requires exact complete frontend manifest and index hashes')
     if args.reader_verification_control and args.ubunchu_noncommercial:parser.error('reader verification precondition requires the synthetic disposable fixture')
+    if args.independent_signer_relay_origin and (not args.protocol_provisioner or args.ubunchu_noncommercial):parser.error('independent signer relay requires a fresh combined synthetic fixture')
     if args.ubunchu_noncommercial and not args.protocol_provisioner:parser.error('Ubunchu input requires combined real-protocol fixture')
     if args.second_protocol_recipient and not args.protocol_provisioner:parser.error('second recipient requires combined real-protocol fixture')
     if args.ui_regression_controls and not args.protocol_provisioner:parser.error('native UI regression controls require the reviewed disposable fixture provisioner')

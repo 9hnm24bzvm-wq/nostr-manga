@@ -39,7 +39,7 @@ type ReplacementFile = { id: string; name: string; hash: string; size: number; m
 type ReplacementFence = UploadReplacementStatus & { attempt: string; targetId: string; targetKind: 'manga' | 'chapter'; mangaId: string; chapterId?: string; draftHash: string; groupIds: string[]; order: string[]; before: ReplacementFile[]; replacement: ReplacementFile };
 export interface UploadFenceStore { get(key: string): string | null; set(key: string, value: string): void; delete(key: string): void }
 export interface PublicUploadOwner {
-  readonly id: string; readonly actor: string; readonly schedulingAvailable:boolean; readonly schedules: UploadSchedules;
+  readonly id: string; readonly actor: string; readonly schedulingAvailable:boolean; readonly schedulingReason:string|null; readonly schedules: UploadSchedules;
   assert(): void; alive(): boolean; dispose(): void;
   preflight(groups: string[]): Promise<UploadEligibility>;
   capabilities(): UploadEligibility | undefined;
@@ -395,11 +395,14 @@ export function createNativeUploadAdapter(injected: Partial<PublicUploadDependen
       request: async (path, method, guard) => { assert(); guard(); const request = transport(account, () => { assert(); guard(); }); const response = await request({ url: account.scope.origin + '/api/v1' + path, method }); assert(); guard(); return response; },
       present: async receipt => { const parents = receipt.relationships.filter(row => row.type === 'manga'); if (parents.length !== 1) fail('Scheduled reader parent is unavailable'); return (await presentation(owned, receipt, publicUuid(parents[0].id))).body; },
     });
+    let latestPreflight:UploadEligibility|undefined,preflightRevision=0;
     const preflight = async (groups: string[]): Promise<UploadEligibility> => {
+      const revision=++preflightRevision;latestPreflight=undefined;
       assert(); const selected=ids(groups,10), query=new URLSearchParams();for(const group of selected)query.append('groups[]',group);
       const url=new URL(account.scope.origin+'/api/v1/upload/preflight/'+id);url.search=query.toString().replace(/^\?/,'');
       const response=await owned.request({url:url.href,method:'GET'});assert();if(response.status!==200)throw resumeError(response.status,response.body);
-      const result=uploadEligibility(record(response.body).preflight);account.facts.preflight=result;return structuredClone(result);
+      if(revision!==preflightRevision)fail('A newer publishing access check replaced this selection. Check the selected groups again.',409);
+      const result=uploadEligibility(record(response.body).preflight);latestPreflight=result;account.facts.preflight=result;return structuredClone(result);
     };
     const capabilities = (): UploadEligibility | undefined => {
       if(!account.facts.preflight)return undefined;
@@ -407,9 +410,9 @@ export function createNativeUploadAdapter(injected: Partial<PublicUploadDependen
       // Native page replacement is a local edit, not a new source publication.
       // Its existing chapter-access/version gates remain mandatory at dispatch.
       const limits={...account.facts.preflight.limits,...account.facts.limits};limits.maxFileBytes=Math.min(Number(limits.maxFileBytes),25*1024*1024);limits.maxUniqueBytes=Number(limits.maxSessionBytes);
-      return uploadEligibility({...account.facts.preflight,configured:false,scope:'instance-local',eligible:account.facts.canManage,reason:account.facts.canManage?null:'This account cannot edit chapter pages.',formats:['image/jpeg','image/png','image/webp','image/gif'],limits});
+      return uploadEligibility({...account.facts.preflight,configured:false,scope:'instance-local',eligible:account.facts.canManage,reason:account.facts.canManage?null:'This account cannot edit chapter pages.',scheduling:{available:false,reason:'Chapter page edits cannot be scheduled.'},formats:['image/jpeg','image/png','image/webp','image/gif'],limits});
     };
-    const owner: PublicUploadOwner = { id, actor: account.actor, preflight, capabilities, schedulingAvailable:account.facts.publication.configured===true, schedules: owned.schedules.manager, assert, alive: () => { try { assert(); return true; } catch { return false; } }, dispose: () => { disposed = true; account.access.dispose(); }, commitState: () => (owned.fence ?? readFence(account))?.state, pendingCommitSession: () => (owned.fence ?? readFence(account))?.sessionId, pendingReplacement: () => { const value = replacementPending(owned); return value ? Object.freeze({ state: value.state, sessionId: value.sessionId, fileId: value.fileId, expectedVersion: value.expectedVersion }) : undefined; }, chapterPagesPending: () => !!owned.sessionId || !!readChapterBegin(account) || !!readFence(account) || !!readReplacement(account), chapterBeginPending: () => !!readChapterBegin(account), reconcileChapterBegin: async () => {
+    const owner: PublicUploadOwner = { id, actor: account.actor, preflight, capabilities, get schedulingAvailable(){return targetKind==='manga'&&latestPreflight?.scheduling.available===true;}, get schedulingReason(){return latestPreflight?.scheduling.reason??'Check publishing access to see whether scheduling is available.';}, schedules: owned.schedules.manager, assert, alive: () => { try { assert(); return true; } catch { return false; } }, dispose: () => { disposed = true; account.access.dispose(); }, commitState: () => (owned.fence ?? readFence(account))?.state, pendingCommitSession: () => (owned.fence ?? readFence(account))?.sessionId, pendingReplacement: () => { const value = replacementPending(owned); return value ? Object.freeze({ state: value.state, sessionId: value.sessionId, fileId: value.fileId, expectedVersion: value.expectedVersion }) : undefined; }, chapterPagesPending: () => !!owned.sessionId || !!readChapterBegin(account) || !!readFence(account) || !!readReplacement(account), chapterBeginPending: () => !!readChapterBegin(account), reconcileChapterBegin: async () => {
       assert(); const pending = readChapterBegin(account);
       if (!pending || targetKind !== 'chapter' || pending.chapterId !== id) fail('No page-edit admission belongs to this chapter', 409);
       // Current ownership/target/version cannot identify an uncertain admission:
@@ -553,7 +556,7 @@ export function createNativeUploadAdapter(injected: Partial<PublicUploadDependen
         const current = await exact(owned, sessionId); if (!current.can_mutate || !current.can_retry_commit || !sameDraft(current.draft, candidate.draft) || JSON.stringify(current.page_order) !== JSON.stringify(candidate.page_order)) fail('Commit must match the acknowledged private draft and exact page order', 409);
         if (targetKind === 'chapter' && (current.chapter_id !== id || current.edit_version === undefined || value.publishAt !== undefined)) fail('Local page commits require their exact edit binding and cannot be scheduled',409);
         if (targetKind === 'manga') { const eligibility=await preflight(current.public_upload.groupIds);owned.assert();assertMutable(owned);assertUploadBudget(eligibility,current.relationships.files??[]); }
-        if(value.publishAt!==undefined&&account.facts.publication.configured!==true)fail('This site does not support scheduled publishing. You can upload now instead.',409);
+        if(value.publishAt!==undefined&&latestPreflight?.scheduling.available!==true)fail(latestPreflight?.scheduling.reason??'Scheduling is not available for this account. Clear the chosen date deliberately to publish now.',409);
         const publishAt = value.publishAt === undefined ? undefined : scheduledUtc(value.publishAt);
         const schedule = publishAt === undefined ? undefined : { accountId: account.actor, publishAt, fingerprint: await scheduleFingerprint(current) }; owned.assert();
         const body = { chapterDraft: { ...(publishAt === undefined ? {} : { publishAt }), volume: candidate.draft.volume || null, chapter: candidate.draft.chapter || null, title: candidate.draft.title || null, translatedLanguage: publicWriteLanguage(candidate.draft.language) }, pageOrder: candidate.page_order, termsAccepted: true };

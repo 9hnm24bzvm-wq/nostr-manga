@@ -73,12 +73,12 @@ async fn snapshot(
     let tx = client.transaction().await?;
     let actor = authority(&state, &tx, &cap, false).await?;
     let native_id = resolve(&tx, ResourceKind::UploadSession, &session).await?;
-    let native = core::owner_snapshot_in(
+    let native = core::owner_snapshot_with_native_in(
         &state,
         &tx,
         &native_id,
         actor.user_id(),
-        actor.has_perm("self.chapter.update"),
+        actor.has_perm("self.chapter.update"), actor.native_publication_session(), false,
     )
     .await?;
     let mut result = snapshot_resource(&tx, &native).await?;
@@ -152,7 +152,7 @@ async fn stage(
         },
     )
     .await?;
-    let native = core::owner_snapshot_in(&state, &tx, &native_id, actor.user_id(), true).await?;
+    let native = core::owner_snapshot_with_native_in(&state, &tx, &native_id, actor.user_id(), true, actor.native_publication_session(), true).await?;
     let mut result = snapshot_resource(&tx, &native).await?;
     super::native_account_profile_settings::provenance(
         &mut result,

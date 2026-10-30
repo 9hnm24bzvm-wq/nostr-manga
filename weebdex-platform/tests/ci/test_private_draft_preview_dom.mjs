@@ -1,15 +1,16 @@
 // Actual current composed route parent + private preview + native read/cover/relation
 // clients. DOM, HTTP and unrelated public-child I/O probes are finite boundaries.
 // This is not live browser/HTTP/DB qualification; historical route tests stay intact.
-import fs from 'node:fs';import path from 'node:path';import test from 'node:test';import assert from 'node:assert/strict';
+import fs from 'node:fs';import path from 'node:path';import vm from 'node:vm';import {stripTypeScriptTypes} from 'node:module';import test from 'node:test';import assert from 'node:assert/strict';
 import {root,component,module,mounted,settle,writable,get,window} from './account-fixpass-dom-fixture.mjs';
 import {composed,composedBaseline} from './composed-account-library-fixture.mjs';
 import {fixture,api,covers,relations,signerActivations,MANGA,USER,FILE,SECOND_FILE,PNG,digest,NATIVE,titleRow,response,entity,refusal,deferred,installRetainedQueryOverride} from './native-contribution-fixture.mjs';
-const previewClient=await api('session-draft-preview'),normalize=await api('normalize'),validation=await api('validation');
+const nativeAccount=await api('native-account-scope'),previewClient=await api('session-draft-preview'),normalize=await api('normalize'),validation=await api('validation');
 const read=name=>fs.readFileSync(path.join(root,'platform-integrations/public-api',name+'.svelte'),'utf8');
 // Qualify the exact integrated final-stage output; only the negative control uses its predecessor.
 async function source(relative,fixed=true){return fixed?composed(relative):composedBaseline(relative);}
-const Preview=await component('PrivateDraftPreview',read('PrivateDraftPreview'));
+const Preview=await component('PrivateDraftPreview',read('PrivateDraftPreview')),AccountGate=await component('PrivatePreviewAccountGate',read('AccountActionGate'));
+const Button=await component('PrivatePreviewButton','<script>let{children,type="button",...rest}=$props();</script><button {type} {...rest}>{@render children?.()}</button>');
 const Empty=await component('PreviewEmpty','<span/>'),Generic=await component('PreviewGeneric','<script>let{children}=$props();</script><div>{@render children?.()}</div>');
 const Manga=await component('PreviewPublicManga',await source('src/routes/(app)/title/Manga.svelte'));
 const Actions=await component('PreviewPublicActions','<script>import {onMount,onDestroy} from "svelte";onMount(()=>globalThis.__accountFixpass.publicIO.push("library"));onDestroy(()=>globalThis.__accountFixpass.closed.push("library"));</script><button>Checking library…</button>');
@@ -30,20 +31,21 @@ async function ui(options={}){
   if(r.route===`/manga/${MANGA}/relations`)return relationPage();return next(r);
  }});
  const url=`https://catalog.example/title/${MANGA}${options.slug?'/private-title':''}${options.public?'':'?draft=true'}`;window.history.replaceState({},'',url);
- const Session=writable(options.guest?undefined:{identity:{id:NATIVE}}),routeUrl=writable(new URL(url)),publicIO=[],closed=[],created=[],revoked=[];
+ const Session=options.Session??writable(options.guest?undefined:{identity:{id:NATIVE}}),routeUrl=writable(new URL(url)),publicIO=[],closed=[],created=[],revoked=[];
  URL.createObjectURL=blob=>{assert.equal(blob.type,'image/png');const url='blob:private-preview-'+created.length;created.push(url);return url;};URL.revokeObjectURL=url=>revoked.push(url);
- const row=normalize.normalizeManga(options.public?{...titleRow('published'),attributes:{...titleRow('published').attributes,title:{en:'Public title'}}}:native.state.title),routeData=writable({id:MANGA,manga:row,...(options.public?{}:{draftPreview:true})});
+ const row=normalize.normalizeManga(options.public?{...titleRow('published'),attributes:{...titleRow('published').attributes,title:{en:'Public title'}}}:native.state.title),routeData=writable(options.routeData??{id:MANGA,manga:row,...(options.public?{}:{draftPreview:true})});
  const env={modules:{},publicIO,closed,location:()=>get(routeUrl)};
  const Constants={State:{Published:'published'},Manga:{PublicationStatus:{Ongoing:'ongoing'},PublicationStatusText:{ongoing:'Ongoing'},ContentRating:{Safe:'safe'},ContentRatingText:{safe:'Safe'}},Tag:{GroupText:{}}};
  env.modules={
   './PreviewRoute':{default:options.old?OldPage:options.slug?Slug:Page},'./PreviewRouteState':{routeData,routeUrl},'$publicApi/PrivateDraftPreview.svelte':{default:Preview},
   '$app/state':{page:{get url(){return env.location();},state:{}}},'$app/navigation':{replaceState:()=>assert.fail('Unexpected public tab reset')},'$lib/stores':{Session,isMobile:{current:false}},'$env/static/public':{PUBLIC_SITE_NAME:'Fixture',PUBLIC_COVER_URL:'/covers'},
+  './AccountActionGate.svelte':{default:AccountGate},'./native-account-scope':nativeAccount,
   './session-draft-preview':{...previewClient,createSessionDraftPreview:(n,id,c)=>previewClient.createSessionDraftPreview(n,id,c,native.deps)},
   './session-cover-client':{...covers,createSessionCoverController:(n,c,t,a)=>covers.createSessionCoverController(n,c,t,a,native.deps)},
   './session-relation-client':{...relations,createSessionRelationController:(n,id,a,c)=>relations.createSessionRelationController(n,id,a,c,native.deps)},'./validation':validation,
-  '$lib':{Constants,Locale:{Languages:{en:'English',ja:'Japanese'}},API:{Statistics:{Manga:async()=>{publicIO.push('statistics');return{status:200};}},ChapterHistory:{List:async()=>{publicIO.push('history');return{status:200};}}},Utils:{makeSlug:()=>'',parseDescription:value=>value,groupTags:()=>({})},Typography:{exec(){}},ExternalLink:{group:()=>({})}},
+  '$lib':{Constants,Locale:{Languages:{en:'English',ja:'Japanese'}},API:{Auth:{Check:async()=>options.accountCheck?.()??{status:401}},Statistics:{Manga:async()=>{publicIO.push('statistics');return{status:200};}},ChapterHistory:{List:async()=>{publicIO.push('history');return{status:200};}}},Utils:{makeSlug:()=>'',parseDescription:value=>value,groupTags:()=>({})},Typography:{exec(){}},ExternalLink:{group:()=>({})}},
   '../Manga.svelte':{default:Manga},'../../Manga.svelte':{default:Manga},'$lib/components/comments':{Provider:Generic},'$lib/components/comments/context.svelte':{useComments:()=>({})},
-  '$lib/components/ui/badge':{Badge:Generic,badgeVariants:()=>''},'$lib/components/ui/breadcrumb/index.js':Object.fromEntries(['Root','List','Item','Link','Separator'].map(k=>[k,Generic])),'$lib/components/ui/button':{buttonVariants:()=>''},'$lib/components/ui/lightbox':{useLightbox:()=>({set(){},open(){}})},'$lib/Context':{setManga(){},setReadHistory(){}},'$lib/Utils':{cn:()=>''},'@lucide/svelte':Object.fromEntries(['Bookmark','Expand','Eye','FilesIcon','Images','LinkIcon','MessageSquare','MessagesSquare','Star','StarIcon'].map(k=>[k,Empty])),'http-status-codes':{StatusCodes:{OK:200}},pluralize:{default:x=>x},
+  '$lib/components/ui/badge':{Badge:Generic,badgeVariants:()=>''},'$lib/components/ui/breadcrumb/index.js':Object.fromEntries(['Root','List','Item','Link','Separator'].map(k=>[k,Generic])),'$lib/components/ui/button':{Button,buttonVariants:()=>''},'$lib/components/ui/lightbox':{useLightbox:()=>({set(){},open(){}})},'$lib/Context':{setManga(){},setReadHistory(){}},'$lib/Utils':{cn:()=>''},'@lucide/svelte':Object.fromEntries(['Bookmark','Expand','Eye','FilesIcon','Images','LinkIcon','MessageSquare','MessagesSquare','Star','StarIcon'].map(k=>[k,Empty])),'http-status-codes':{StatusCodes:{OK:200}},pluralize:{default:x=>x},
   '$publicApi/media':{retainedCoverUrl:()=>{publicIO.push('public-cover-url');return'/covers/private.png';}},'$publicApi/rating-summary':{instanceRatingLabel:()=>null},'$localLibrary/library':{libraryIdentity:writable({canUse:false}),libraryViewKey:writable('fixture'),captureLibraryView:()=> 'fixture'},
   './MangaActions.svelte':{default:Actions},'./MangaChapterListSection.svelte':{default:Chapters}
  };
@@ -61,10 +63,61 @@ test('account exit synchronously hides private metadata and revokes the verified
 for(const stage of ['title','cover','relations'])test(`late ${stage} private result after account exit cannot reattach data or object URLs`,async()=>{const gate=deferred(),entered=deferred(),route=stage==='title'?`/manga/draft/${MANGA}`:stage==='cover'?`/covers/${FILE}/original`:`/manga/${MANGA}/relations`;const f=await ui({request:async r=>{if(r.route===route){entered.release();await gate.promise;}}});try{await entered.promise;f.Session.set(undefined);await settle();gate.release();await settle();assert.doesNotMatch(f.host.textContent,/Private saved title|Private review|Named saved relation/);assert.equal(f.host.querySelector('img'),null);assert.deepEqual(f.revoked,f.created);assert.equal(f.calls.find(r=>r.route===route).init.signal.aborted,true);assert.deepEqual(f.publicIO,[]);}finally{gate.release();await f.dispose();}});
 test('corrupt private cover bytes stay unverified without a public cover fallback',async()=>{const f=await ui({request:r=>r.route===`/covers/${FILE}/original`?response(PNG.slice().fill(1),200,'image/png'):undefined});try{assert.match(f.host.textContent,/saved cover could not be verified/);assert.equal(f.host.querySelector('img'),null);assert.deepEqual(f.publicIO,[]);assert.match(f.host.textContent,/Named saved relation/);}finally{await f.dispose();}});
 test('private reader rejects published or foreign DTOs and has no mutation interface',async()=>{for(const mode of ['published','foreign']){const f=fixture({request:(r,next)=>{if(r.route===`/manga/draft/${MANGA}`){const value=privateRow(mode==='published'?'published':'draft');if(mode==='foreign')value.relationships=value.relationships.filter(r=>r.type!=='creator');return entity(value);}return next(r);}}),reader=await previewClient.createSessionDraftPreview(NATIVE,MANGA,f.check,f.deps);try{assert.equal('mutate'in reader,false);await assert.rejects(()=>reader.read());assert.ok(f.calls.every(r=>r.method==='GET'));assert.equal(f.storage.size,0);}finally{reader.dispose();}}});
-test('new loader mode is granted only after successful existing private read; public branch stays public',async()=>{const calls=[];globalThis.__accountFixpass={modules:{'$publicApi/session-title-route':{publicTitleRead:async id=>{calls.push('private');return{status:200,body:{id}};}},'$lib':{API:{Manga:{Get:async id=>{calls.push('public');return{status:200,body:{id}};}}},Permission:{}},'$lib/stores/index.js':{Session:{}},'@sveltejs/kit':{error:status=>{throw Error('HTTP '+status);}},'http-status-codes':{StatusCodes:{OK:200,FORBIDDEN:403,INTERNAL_SERVER_ERROR:500}}}};const loader=await module('PrivatePreviewLoader',await source('src/routes/(app)/title/[id]/+page.ts'));assert.equal((await loader.load({params:{id:MANGA},url:new URL('https://catalog.example/title/'+MANGA+'?draft=true')})).draftPreview,true);assert.equal((await loader.load({params:{id:MANGA},url:new URL('https://catalog.example/title/'+MANGA)})).draftPreview,undefined);assert.deepEqual(calls,['private','public']);});
+test('new loader returns routing intent without metadata or account authority; public branch stays public',async()=>{const calls=[];globalThis.__accountFixpass={modules:{'$publicApi/validation':validation,'$lib':{API:{Manga:{Get:async id=>{calls.push('public');return{status:200,body:{id}};}}},Permission:{}},'$lib/stores/index.js':{Session:{isValid:()=>assert.fail('Loader must not race Session initialization')}},'@sveltejs/kit':{error:status=>{throw Error('HTTP '+status);}},'http-status-codes':{StatusCodes:{OK:200,FORBIDDEN:403,INTERNAL_SERVER_ERROR:500}}}};const loader=await module('PrivatePreviewLoader',await source('src/routes/(app)/title/[id]/+page.ts'));const data=await loader.load({params:{id:MANGA},url:new URL('https://catalog.example/title/'+MANGA+'?draft=true')});assert.deepEqual(data,{id:MANGA,manga:undefined,draftPreview:true});assert.equal((await loader.load({params:{id:MANGA},url:new URL('https://catalog.example/title/'+MANGA)})).draftPreview,undefined);assert.deepEqual(calls,['public']);});
 
 test('guest preview never shows private loader data or invokes any account/public client',async()=>{const f=await ui({guest:true});try{assert.match(f.host.textContent,/Sign in to view this private draft/);assert.equal(f.calls.length,0);assert.deepEqual(f.publicIO,[]);assert.doesNotMatch(f.host.textContent,/Private saved title/);}finally{await f.dispose();}});
 test('explicit reload after revoked access clears prior private title, feedback and verified image',async()=>{let revoked=false;const f=await ui({state:'rejected',request:r=>revoked&&r.route===`/manga/draft/${MANGA}`?refusal(403):undefined});try{assertPrivate(f);revoked=true;[...f.host.querySelectorAll('button')].find(b=>b.textContent==='Reload preview').click();await settle();assert.match(f.host.textContent,/unavailable for the current account/);assert.doesNotMatch(f.host.textContent,/Private saved title|Private review|Named saved relation/);assert.equal(f.host.querySelector('img'),null);assert.deepEqual(f.revoked,f.created);assert.deepEqual(f.publicIO,[]);}finally{await f.dispose();}});
 for(const ending of ['route','unmount'])test(`delayed private original is disposed on ${ending} change, never attached to public title`,async()=>{const gate=deferred(),entered=deferred(),f=await ui({request:async r=>{if(r.route===`/covers/${FILE}/original`){entered.release();await gate.promise;}}});try{await entered.promise;if(ending==='route')await f.navigate(true);else await f.dispose();gate.release();await settle();assert.equal(f.created.length,0);assert.equal(f.calls.find(r=>r.route===`/covers/${FILE}/original`).init.signal.aborted,true);assert.doesNotMatch(f.host.textContent,/Private saved title|Named saved relation/);}finally{gate.release();if(ending!=='unmount')await f.dispose();}});
 test('private reader rejects blank-title and malformed feedback responses rather than inventing a preview',async()=>{for(const mode of ['title','feedback']){const f=fixture({request:(r,next)=>{if(r.route===`/manga/draft/${MANGA}`){const value=privateRow();if(mode==='title')value.attributes.title={en:' '};else value.attributes.reviewTimeline={events:'not-an-array',hasEarlier:false};return entity(value);}return next(r);}}),reader=await previewClient.createSessionDraftPreview(NATIVE,MANGA,f.check,f.deps);try{await assert.rejects(()=>reader.read());assert.ok(f.calls.every(r=>r.method==='GET'));}finally{reader.dispose();}}});
 test('metadata-only staff role cannot broaden the private draft reviewer scope',async()=>{const f=fixture({account:a=>{a.user.roles=['moderator'];a.user.permissions=['manga.update'];},request:(r,next)=>r.route===`/manga/draft/${MANGA}`?entity(privateRow()):next(r)}),reader=await previewClient.createSessionDraftPreview(NATIVE,MANGA,f.check,f.deps);try{await assert.rejects(()=>reader.read(),e=>e.status===403);assert.ok(f.calls.every(r=>r.method==='GET'));}finally{reader.dispose();}});
+
+
+let bootstrapNumber=0;
+async function actualBootstrap(){
+ const ready=deferred(),started=deferred(),index=++bootstrapNumber;let checks=0;
+ globalThis.__accountFixpass={modules:{}};
+ const Mutex=(await module('PrivatePreviewBootstrapMutex'+index,await composedBaseline('src/lib/Mutex.ts'))).default;
+ globalThis.__accountFixpass.modules={'$lib/API/Auth':{Check:async()=>{checks++;started.release();return ready.promise;}},'$platform/mutation-authority':{bindNativeMutationAuthority(){}},'$lib/Mutex':{default:Mutex},'./prefs':{prefs:writable({})},'http-status-codes':{StatusCodes:{OK:200,UNAUTHORIZED:401,FORBIDDEN:403}}};
+ const Session=(await module('PrivatePreviewActualSession'+index,await composedBaseline('src/lib/stores/Session.ts'))).default;
+ await started.promise;assert.equal(get(Session),undefined);return{Session,ready,checks:()=>checks};
+}
+async function routeWithoutBrowserGlobals(){
+ const context=vm.createContext({}),calls=[];
+ const stub=exports=>new vm.SyntheticModule(Object.keys(exports),function(){for(const[k,v]of Object.entries(exports))this.setExport(k,v);},{context});
+ const direct=new vm.SourceTextModule(stripTypeScriptTypes(await source('src/routes/(app)/title/[id]/+page.ts'),{mode:'transform'}),{context});
+ await direct.link(name=>{
+  if(name==='$publicApi/validation')return stub({publicUuid:validation.publicUuid});
+  if(name==='$lib')return stub({API:{Manga:{Get(){calls.push('public');throw Error('Unexpected public read');}}},Permission:{}});
+  if(name==='$lib/stores/index.js')return stub({Session:{isValid(){calls.push('Session');throw Error('Unexpected pre-hydration Session read');}}});
+  if(name==='@sveltejs/kit')return stub({error:status=>{throw Object.assign(Error('HTTP '+status),{status});}});
+  if(name==='http-status-codes')return stub({StatusCodes:{OK:200,FORBIDDEN:403,INTERNAL_SERVER_ERROR:500}});
+  throw Error('Unexpected loader import '+name);
+ });await direct.evaluate();
+ const slug=new vm.SourceTextModule(stripTypeScriptTypes(await source('src/routes/(app)/title/[id]/[slug]/+page.ts'),{mode:'transform'}),{context});await slug.link(name=>{assert.equal(name,'../+page');return direct;});await slug.evaluate();assert.equal(direct.namespace.load,slug.namespace.load);
+ return{load:slug.namespace.load,calls};
+}
+for(const slug of [false,true])for(const entry of ['cold direct entry','full refresh'])test(`actual ${slug?'slug':'direct'} ${entry} admits route shell before actual delayed Session bootstrap, then privately verifies data`,async()=>{
+ const boot=await actualBootstrap(),loader=await routeWithoutBrowserGlobals(),url=new URL(`https://catalog.example/title/${MANGA}${slug?'/private-title':''}?draft=true`),data=await loader.load({params:{id:MANGA},url});
+ assert.equal(data.manga,undefined);assert.deepEqual(loader.calls,[]);const f=await ui({slug,Session:boot.Session,routeData:data});
+ try{assert.ok(f.host.querySelector('[aria-label="Private draft preview"]'));assert.ok(f.host.querySelector('a[href="/auth/login"]'));assert.equal(f.calls.length,0);assert.doesNotMatch(f.host.textContent,/Private saved title|Unknown Error|Something went wrong/);
+ boot.ready.release({status:200,body:{identity:{id:NATIVE,username:'Reader'}}});await settle();assertPrivate(f);assert.equal(boot.checks(),1);assert.equal(f.host.querySelector('[aria-label="Account access"]'),null);
+ }finally{boot.ready.release({status:401});await f.dispose();}assert.deepEqual(f.revoked,f.created);
+});
+test('old direct-entry loader reproduces NativeAccountError401 before asynchronous Session hydration',async()=>{
+ const boot=await actualBootstrap();globalThis.__accountFixpass={modules:{'$lib/stores':{Session:boot.Session},'./session-title-client':{createSessionTitleController:()=>assert.fail('Unexpected authority before Session hydration')},'./native-account-scope':nativeAccount}};
+ const route=(await module('PrivatePreviewOldSessionRoute',fs.readFileSync(path.join(root,'platform-integrations/public-api/session-title-route.ts'),'utf8')));
+ try{await assert.rejects(()=>route.publicTitleRead(MANGA),error=>error.status===401&&/Sign in/.test(error.message));}finally{boot.ready.release({status:401});await settle();}
+});
+test('settled anonymous initial navigation keeps app preview shell and sign-in action without private or public requests',async()=>{
+ const boot=await actualBootstrap(),loader=await routeWithoutBrowserGlobals(),data=await loader.load({params:{id:MANGA},url:new URL('https://catalog.example/title/'+MANGA+'?draft=true')}),f=await ui({Session:boot.Session,routeData:data});
+ try{boot.ready.release({status:401});await settle();assert.ok(f.host.querySelector('a[href="/auth/login"]'));assert.ok([...f.host.querySelectorAll('button')].some(b=>b.textContent==='Continue here'));assert.equal(f.calls.length,0);assert.deepEqual(f.publicIO,[]);assert.doesNotMatch(f.host.textContent,/Private saved title|Unknown Error|Something went wrong/);}finally{boot.ready.release({status:401});await f.dispose();}
+});
+test('late initial-session success after navigation cannot mount old private preview or fetch its data',async()=>{
+ const boot=await actualBootstrap(),loader=await routeWithoutBrowserGlobals(),data=await loader.load({params:{id:MANGA},url:new URL('https://catalog.example/title/'+MANGA+'?draft=true')}),f=await ui({Session:boot.Session,routeData:data});
+ try{await f.navigate(true);boot.ready.release({status:200,body:{identity:{id:NATIVE,username:'Reader'}}});await settle();assert.equal(f.calls.length,0);assert.equal(f.host.querySelector('[aria-label="Private draft preview"]'),null);assert.doesNotMatch(f.host.textContent,/Private saved title|Named saved relation/);}finally{boot.ready.release({status:401});await f.dispose();}
+});
+test('direct-entry route validates IDs/ambiguous draft query without browser globals; application SSR policy is unchanged',async()=>{
+ assert.match(fs.readFileSync(path.join(root,'frontend/src/routes/+layout.ts'),'utf8'),/export const ssr = false/);const loader=await routeWithoutBrowserGlobals();
+ for(const [id,query]of [['not-a-uuid','draft=true'],[MANGA,'draft=true&draft=true'],[MANGA,'draft=true&draft=false']])await assert.rejects(()=>loader.load({params:{id},url:new URL('https://catalog.example/title/'+id+'?'+query)}),e=>e.status===400);
+ assert.deepEqual(loader.calls,[]);
+});

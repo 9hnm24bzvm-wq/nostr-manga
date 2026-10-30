@@ -3,8 +3,8 @@
   "baseline_commit_local": "9a70b771bfa8cb1b20f82c926f65956b93c2d5e6",
   "baseline_tree": "a035b00056557f83348db13c6288a680fd35aca8",
   "qualification": "Source composition only; no runtime, browser or release acceptance inherited.",
-  "patch_count": 101,
-  "patch_registry_sha256": "fdeb615c5434e20e382ef755c8c5216da5a10eb649ba06162256c947f48d08a6",
+  "patch_count": 110,
+  "patch_registry_sha256": "f256e7baebcfb95d53a450ff7561138647462fabe33f49a506f53511335a2415",
   "rows": [
     {
       "path": "src/lib/Locale.ts",
@@ -58,7 +58,7 @@
       "path": "src/lib/components/upload/UploadChapter.svelte",
       "original_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
       "input_sha256": "cd7c05c772868f13e30268aada620ed994ba8a760a41cf4de8f97f3d9c45449a",
-      "output_sha256": "4914120ab8ed9aad951f0214be573465ee0d62bcee282e294f52db2c7e9efe4d"
+      "output_sha256": "e30c967f160d2ed9a7b13124ab8e8c65c571e34843206b5bae94ada676b5fef8"
     },
     {
       "path": "src/lib/components/upload/UploadChapterGroups.svelte",
@@ -184,19 +184,19 @@
       "path": "src/routes/(app)/title/[id]/+page.svelte",
       "original_sha256": "8e42628444259720812e98f08678248bfdeaedc681154e34ae328641ae834a05",
       "input_sha256": "8e42628444259720812e98f08678248bfdeaedc681154e34ae328641ae834a05",
-      "output_sha256": "5f0075c39c901e90bd448ec131398e8da96eea29a10cd64b8570b4ea62db4914"
+      "output_sha256": "7d8c7bb637bb0e4dca61709847c0673b8964b74a0004c4f9293a1a2d2f8c9566"
     },
     {
       "path": "src/routes/(app)/title/[id]/+page.ts",
       "original_sha256": "f766c71a4ee390b02e835747361caf935a7170f20b457f09242b23f0ea1e0a05",
       "input_sha256": "5353a60056d0eb3d3c926f64eb15c97a80b654220fd3d8e2b3ec0352b050cbb0",
-      "output_sha256": "58241586fbdb6d9f04150b3bf3fbed9621a7e76711d5fba0df41aac9a0d10c36"
+      "output_sha256": "e97a3c83f0830d8ea63e02b43837c221f036238fce03f8fddff0c94211018046"
     },
     {
       "path": "src/routes/(app)/title/[id]/[slug]/+page.svelte",
       "original_sha256": "45ad2a97778a646a142eefb7b54bfef851e02b1c3b3af5ce958d9e89b250eebb",
       "input_sha256": "45ad2a97778a646a142eefb7b54bfef851e02b1c3b3af5ce958d9e89b250eebb",
-      "output_sha256": "b7a33701cc8c6d1de58ad28cb5b0c32751d3dfc7cbefa13643c3ef712147c149"
+      "output_sha256": "c6601c8c4f0e31577c87487dd38d34161af530b075339006dde3a7b8a6986353"
     },
     {
       "path": "src/routes/(app)/user/[id]/settings/+page.svelte",

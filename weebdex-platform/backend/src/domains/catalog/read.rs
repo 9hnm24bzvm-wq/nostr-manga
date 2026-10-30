@@ -209,7 +209,7 @@ pub async fn draft_get(
     }
     let data = if row.get::<_, String>(1) == "published" {
         if !crate::protocol::publication::pending_native_manga_receipt_allowed(
-            &state, &tx, &id, &actor,
+            &state, &tx, &id, &actor, false,
         )
         .await?
         {

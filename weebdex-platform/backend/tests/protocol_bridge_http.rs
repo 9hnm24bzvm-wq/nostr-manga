@@ -513,6 +513,24 @@ fn proof(secret: &str, url: &str, body: &[u8]) -> String {
     )
 }
 
+/// Dedicated publish-now access must not confer the original signer binding
+/// required by kind-5 withdrawal. Uses a truly projected source, not the earlier
+/// unavailable-source 404 seam, and a real guarded loopback HTTP listener.
+async fn delegated_native_cannot_withdraw_projected(f:&Fixture,chapter:&str,publisher:&str){
+    struct Server(tokio::task::JoinHandle<()>);impl Drop for Server{fn drop(&mut self){self.0.abort();}}
+    let user=format!("Pd{}",&f.owner_id[2..]);let token=format!("synthetic-delegated-delete-{user}");
+    let db=f.state.db.client().await.unwrap();
+    db.execute("INSERT INTO platform.users(id,username,email,password_hash,verified,roles,permissions) VALUES($1,$1,$2,'synthetic-no-password',TRUE,'[\"moderator\"]','[\"chapter.remove\"]')",&[&user,&format!("{user}@fixture.invalid")]).await.unwrap();
+    db.execute("INSERT INTO platform.sessions(id,user_id,token_hash,expires_at) VALUES($1,$1,$2,clock_timestamp()+interval '1 hour')",&[&user,&Sha256::digest(token.as_bytes()).to_vec()]).await.unwrap();
+    let before=db.query_one("SELECT (SELECT count(*) FROM deletion_requests),(SELECT count(*) FROM platform.protocol_deletion_intents),version FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL",&[&chapter]).await.unwrap();drop(db);
+    let reviewed=domains::publication_access::cli::review(&f.state,"grant",&user,publisher,"disposable projected-source test","Publication-only grant must not authorize source withdrawal").await.unwrap();
+    let receipt=domains::publication_access::cli::settle(&f.state,reviewed["reviewId"].as_str().unwrap(),"disposable projected-source test",reviewed["digest"].as_str().unwrap(),false).await.unwrap();assert_eq!(receipt["delegation"]["revoked"],false);
+    let listener=tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();let address=listener.local_addr().unwrap();let app=f.app.clone();let server=Server(tokio::spawn(async move{axum::serve(listener,app).await.unwrap()}));
+    let response=reqwest::Client::builder().no_proxy().timeout(Duration::from_secs(5)).build().unwrap().delete(format!("http://{address}/api/chapter/{chapter}")).header("origin",ORIGIN).header("cookie",format!("weebdex_session={token}")).header("x-weebdex-expected-account",&user).send().await.unwrap();let status=response.status();let body:Value=response.json().await.unwrap();drop(server);
+    assert_eq!(status,StatusCode::FORBIDDEN,"Projected deletion: {body}");assert_eq!(body["code"],"source_deletion_not_authorized");
+    let db=f.state.db.client().await.unwrap();let after=db.query_one("SELECT (SELECT count(*) FROM deletion_requests),(SELECT count(*) FROM platform.protocol_deletion_intents),version FROM platform.catalog_chapters WHERE id=$1 AND deleted_at IS NULL",&[&chapter]).await.unwrap();assert_eq!((before.get::<_,i64>(0),before.get::<_,i64>(1),before.get::<_,i32>(2)),(after.get::<_,i64>(0),after.get::<_,i64>(1),after.get::<_,i32>(2)));assert!(!db.query_one("SELECT EXISTS(SELECT 1 FROM platform.protocol_identity_bindings WHERE user_id=$1)",&[&user]).await.unwrap().get::<_,bool>(0));
+}
+
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 #[ignore = "Requires isolated PostgreSQL and the existing real strfry binary; compiler owner runs after source freeze"]
 async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_embedded_owner_lifecycle()
@@ -1262,6 +1280,7 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
     assert_eq!(public["id"], cid);
     assert_eq!(public["protocol_event_id"], event);
     assert_eq!(public["publication_status"], "locally_hosted");
+    delegated_native_cannot_withdraw_projected(&f,&cid,&publisher).await;
     assert_eq!(public["data"].as_array().unwrap().len(), 3);
     assert_eq!(public["data"][1]["name"], public["data"][2]["name"]);
     let replay = api(

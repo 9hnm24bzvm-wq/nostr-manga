@@ -31,18 +31,18 @@
     finally { if (current(captured, run)) busy = false; }
   }
 </script>
-{#if (owner as PublicUploadOwner & {schedulingAvailable?:boolean}).schedulingAvailable===false}<p class="text-sm text-muted-foreground">Scheduled publishing is not available on this site. You can upload now instead.</p>{/if}
 <details bind:open={expanded} class="rounded border px-4 py-2">
   <summary class="cursor-pointer font-medium">Scheduled uploads{#if entries.length + recent.length}{' '}({entries.length + recent.length}){/if}{#if message || entries.some(entry => entry.uncertain || entry.receipt.state === 'blocked') || recent.some(entry => entry.uncertain)}{' '}· Needs attention{/if}</summary>
   {#if expanded}
   <section aria-label="Private scheduled uploads" class="space-y-3 pt-3">
+  <p class="text-sm text-muted-foreground">You can check saved schedules here even when creating a new schedule is unavailable.</p>
   {#if entries.length || recent.length}
   <p>Scheduled pages stay private until publishing begins, at or after the time you chose. A schedule does not guarantee that the chapter is published.</p>
   <p>You cannot change a scheduled upload. To make changes, cancel it before publishing starts and create a new upload. You can keep uploading other chapters meanwhile.</p>
   {/if}
   <button type="button" class="underline" disabled={busy} onclick={refresh}>{busy ? 'Checking…' : 'Refresh schedules'}</button>
   {#if message}<p role="status">{message}</p>{/if}
-  {#if !entries.length && !recent.length && !busy && !message}<p>No scheduled uploads. Upload a chapter and choose a publishing time to add one.</p>{/if}
+  {#if !entries.length && !recent.length && !busy && !message}<p>No scheduled uploads. Check Publishing access on a title’s upload page to see whether you can schedule a chapter.</p>{/if}
   <ul class="space-y-4">
     {#each entries as entry (entry.sessionId)}
       <li class="space-y-1 border-t pt-3">

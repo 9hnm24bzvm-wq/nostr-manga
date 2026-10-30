@@ -446,5 +446,40 @@
     "before": "<Guidelines />",
     "after": "<Guidelines uploadRequirementsHref=\"#publishing-access\" />",
     "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "separate current scheduling capability from immediate publication",
+    "before": "\tconst scheduleValid = $derived.by(",
+    "after": "\tconst schedulingAvailable = $derived(!checkingAccess && eligibility?.scheduling.available === true && checkedGroups === JSON.stringify(groups.map(group=>group.id)));\r\n\tconst scheduleValid = $derived.by(",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "retain chosen schedule and block commit when capability disappears",
+    "before": "selectionReady && scheduleValid && resumeReady &&",
+    "after": "selectionReady && scheduleValid && (!scheduleEnabled || schedulingAvailable) && resumeReady &&",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "recheck scheduling observation before any submit preparation",
+    "before": "\t\t\t\tdurableIssue=undefined;\r\n\t\t\t\tawait persistCurrentUpload();",
+    "after": "\t\t\t\tdurableIssue=undefined;\r\n\t\t\t\tif (!await checkPublishingAccess()) return;\r\n\t\t\t\tif (scheduleEnabled && !schedulingAvailable) throw new Error(eligibility?.scheduling.reason ?? \"Scheduling is not available. Your chosen date and staged pages are kept.\");\r\n\t\t\t\tawait persistCurrentUpload();",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "publication eligibility describes immediate capability",
+    "before": "\"Ready to publish with the selected group credits.\"",
+    "after": "\"Ready to publish now with the selected group credits.\"",
+    "count": 1
+  },
+  {
+    "path": "src/lib/components/upload/UploadChapter.svelte",
+    "label": "truthful unavailable scheduling with preserved chosen date",
+    "before": "\t\t\t{#if owner.schedulingAvailable}\r\n\t\t\t<fieldset class=\"space-y-2 rounded border p-3\" disabled={$mutex || uploadSession.can_mutate === false}>\r\n\t\t\t\t<legend>Publication timing</legend>\r\n\t\t\t\t<label class=\"flex gap-2\"><input type=\"checkbox\" bind:checked={scheduleEnabled} />Schedule for later</label>\r\n\t\t\t\t{#if scheduleEnabled}\r\n\t\t\t\t\t<label for=\"publish-at-utc\">Publishing date and time (your local timezone)</label>\r\n\t\t\t\t\t<input id=\"publish-at-utc\" type=\"datetime-local\" class=\"block w-full rounded border p-2\" bind:value={publishAt} aria-describedby=\"publish-at-help\" aria-invalid={!scheduleValid} />\r\n\t\t\t\t\t<p id=\"publish-at-help\">Pages stay private until publishing starts. You cannot change pages or details after scheduling. A past time publishes immediately. Group preferred delays are informational only and do not change this time.</p>\r\n\t\t\t\t\t{#if !scheduleValid}<p role=\"status\">Choose a real publishing date and time.</p>{:else}<p>Publishing starts at or after {new Date(localScheduleUtc(publishAt)+\"Z\").toLocaleString(undefined,{dateStyle:\"medium\",timeStyle:\"long\"})}.</p>{/if}\r\n\t\t\t\t{:else}<p>Publish when this upload is ready.</p>{/if}\r\n\t\t\t</fieldset>\r\n\t\t\t{/if}",
+    "after": "\t\t\t<fieldset class=\"space-y-2 rounded border p-3\" disabled={$mutex || uploadSession.can_mutate === false}>\r\n\t\t\t\t<legend>Publication timing</legend>\r\n\t\t\t\t{#if schedulingAvailable || scheduleEnabled}<label class=\"flex gap-2\"><input type=\"checkbox\" bind:checked={scheduleEnabled} disabled={!schedulingAvailable} />Schedule for later</label>{/if}\r\n\t\t\t\t{#if !schedulingAvailable}<p role=\"status\">{eligibility?.scheduling.reason ?? \"Check publishing access to see whether scheduling is available.\"}</p>{/if}\r\n\t\t\t\t{#if scheduleEnabled}\r\n\t\t\t\t\t{#if !schedulingAvailable}<p role=\"status\">Your chosen date and pages are kept. Check access again, or deliberately clear the date to publish now.</p><button type=\"button\" class=\"underline\" onclick={()=>{scheduleEnabled=false;publishAt=\"\";}}>Clear scheduled date</button>{/if}\r\n\t\t\t\t\t<label for=\"publish-at-utc\">Publishing date and time (your local timezone)</label>\r\n\t\t\t\t\t<input id=\"publish-at-utc\" type=\"datetime-local\" class=\"block w-full rounded border p-2\" bind:value={publishAt} aria-describedby=\"publish-at-help\" aria-invalid={!scheduleValid} />\r\n\t\t\t\t\t<p id=\"publish-at-help\">Pages stay private until publishing starts. You cannot change pages or details after scheduling. A past time publishes immediately. Group preferred delays are informational only and do not change this time.</p>\r\n\t\t\t\t\t{#if !scheduleValid}<p role=\"status\">Choose a real publishing date and time.</p>{:else if schedulingAvailable}<p>Publishing starts at or after {new Date(localScheduleUtc(publishAt)+\"Z\").toLocaleString(undefined,{dateStyle:\"medium\",timeStyle:\"long\"})}.</p>{/if}\r\n\t\t\t\t{:else}<p>Publish when this upload is ready.</p>{/if}\r\n\t\t\t</fieldset>",
+    "count": 1
   }
 ]

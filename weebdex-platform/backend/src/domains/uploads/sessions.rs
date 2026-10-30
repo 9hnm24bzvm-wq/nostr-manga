@@ -260,7 +260,7 @@ async fn current_committed_result(
     actor: &impl CatalogMutationActor,
 ) -> ApiResult<Value> {
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
-    current_committed_result_for_owner(state, tx, chapter, session, actor.user_id()).await
+    current_committed_result_for_owner(state, tx, chapter, session, actor.user_id(), actor.native_publication_session(), true).await
 }
 async fn current_committed_result_for_owner(
     state: &AppState,
@@ -268,13 +268,15 @@ async fn current_committed_result_for_owner(
     chapter: &str,
     session: &str,
     owner: &str,
+    native: Option<&SessionPrincipal>,
+    write: bool,
 ) -> ApiResult<Value> {
     if let Some(value) = tx.query_opt(
         "SELECT platform.catalog_chapter_json(c.id) FROM platform.catalog_chapters c JOIN platform.catalog_manga m ON m.id=c.manga_id WHERE c.id=$1 AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND m.protocol_source_visible AND platform.protocol_source_is_visible(c.protocol_event_id) AND platform.protocol_source_is_visible(m.protocol_series_id)",
         &[&chapter],
     ).await?.and_then(|r|r.get::<_,Option<Value>>(0)) { return Ok(value); }
     if !crate::protocol::publication::pending_native_receipt_allowed_for_owner(
-        state, tx, chapter, session, owner,
+        state, tx, chapter, session, owner, native, write,
     )
     .await?
     {
@@ -339,6 +341,14 @@ pub(crate) async fn owner_snapshot_in(
     owner: &str,
     can_manage: bool,
 ) -> ApiResult<Value> {
+    owner_snapshot_with_native_in(state,tx,id,owner,can_manage,None,false).await
+}
+/// Only a genuine native session may resolve dedicated publication receipts.
+/// Signed readers continue through owner_snapshot_in and never borrow this grant.
+pub(crate) async fn owner_snapshot_with_native_in(
+    state:&AppState,tx:&Transaction<'_>,id:&str,owner:&str,can_manage:bool,
+    native:Option<&SessionPrincipal>,write:bool,
+)->ApiResult<Value>{
     session_id(id)?;
     tx.query_opt(
         "SELECT id FROM platform.upload_sessions WHERE id=$1 AND owner_id=$2 FOR SHARE",
@@ -359,7 +369,7 @@ pub(crate) async fn owner_snapshot_in(
         let chapter_id = value["chapter_id"]
             .as_str()
             .ok_or_else(ApiError::unavailable)?;
-        match current_committed_result_for_owner(state, tx, chapter_id, session_id, owner).await {
+        match current_committed_result_for_owner(state, tx, chapter_id, session_id, owner, native, write).await {
             Ok(receipt) => {
                 if value["target_manga"].is_null() && receipt["is_unavailable"] == true {
                     if let Some(target)=tx.query_opt("SELECT id,title FROM platform.catalog_manga WHERE id=$1 AND deleted_at IS NULL AND state='published'", &[&value["manga_id"].as_str().ok_or_else(ApiError::unavailable)?]).await? {
@@ -406,8 +416,8 @@ pub async fn get(State(state): State<AppState>, headers: HeaderMap) -> ApiResult
     let row=tx.query_opt("SELECT id FROM platform.upload_sessions s WHERE owner_id=$1 AND ((state='open' AND (expires_at>clock_timestamp() OR EXISTS(SELECT 1 FROM platform.protocol_publication_commands p WHERE p.upload_session_id=s.id AND p.user_id=s.owner_id AND p.state IN ('prepared','source_accepted')))) OR (state='committed' AND committed_result->>'publication_status' IN ('accepted_pending_projection','pending_projection') AND EXISTS(SELECT 1 FROM platform.catalog_chapters c WHERE c.id=s.committed_chapter_id AND c.deleted_at IS NULL))) ORDER BY (state='open') DESC,updated_at DESC,id LIMIT 1",&[&actor.user_id]).await?;
     let response = match row {
         Some(row) => {
-            let value = owner_snapshot_in(&state, &tx, &row.get::<_, String>(0),
-                &actor.user_id, actor.verified && actor.has_perm("self.chapter.update")).await?;
+            let value = owner_snapshot_with_native_in(&state, &tx, &row.get::<_, String>(0),
+                &actor.user_id, actor.verified && actor.has_perm("self.chapter.update"),Some(&actor),false).await?;
             Json(value).into_response()
         }
         None => StatusCode::NO_CONTENT.into_response(),

@@ -30,6 +30,7 @@ use tokio_postgres::Transaction;
 pub(super) struct NativeActor(pub(super) SessionPrincipal);
 impl entity_mutations::sealed::Sealed for NativeActor {}
 impl CatalogMutationActor for NativeActor {
+    fn native_publication_session(&self) -> Option<&SessionPrincipal> { Some(&self.0) }
     fn language_contract(&self) -> crate::domains::catalog::validation::LanguageContract {
         crate::domains::catalog::validation::LanguageContract::Public
     }
@@ -272,7 +273,7 @@ async fn transition(
     if !visible
         && !(next == "published"
             && crate::protocol::publication::pending_native_manga_receipt_allowed(
-                &state, &tx, &id, &actor,
+                &state, &tx, &id, &actor, true,
             )
             .await?)
     {

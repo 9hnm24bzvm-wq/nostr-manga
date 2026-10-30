@@ -13,6 +13,8 @@ pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
     // Contract selection follows the sealed authenticated transport, never JSON
     // input or a UUID. Native principals keep their historical validation.
     fn language_contract(&self) -> v::LanguageContract { v::LanguageContract::Native }
+    // Sealed transport provenance, never inferred from an account ID or JSON.
+    fn native_publication_session(&self) -> Option<&SessionPrincipal> { None }
     fn user_id(&self) -> &str;
     fn username(&self) -> &str;
     fn is_moderator(&self) -> bool;
@@ -24,6 +26,7 @@ pub(crate) trait CatalogMutationActor: sealed::Sealed + Sync {
 }
 impl sealed::Sealed for SessionPrincipal {}
 impl CatalogMutationActor for SessionPrincipal {
+    fn native_publication_session(&self) -> Option<&SessionPrincipal> { (!self.is_api_client && !self.recovery_session).then_some(self) }
     fn user_id(&self) -> &str { &self.user_id }
     fn username(&self) -> &str { &self.username }
     fn is_moderator(&self) -> bool { SessionPrincipal::is_moderator(self) }

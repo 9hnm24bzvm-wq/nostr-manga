@@ -5,6 +5,8 @@
  import {Locale} from '$lib';
  import {PUBLIC_SITE_NAME} from '$env/static/public';
  import {createSessionDraftPreview} from './session-draft-preview';
+ import AccountActionGate from './AccountActionGate.svelte';
+ import {nativeAccountIssue,type NativeAccountIssue} from './native-account-scope';
  import {createSessionCoverController,type SignedCoverController} from './session-cover-client';
  import {createSessionRelationController,type RelationController} from './session-relation-client';
  import {reviewTimeline} from './draft-feedback';
@@ -14,17 +16,18 @@
  let {target}:{target:string}=$props();
  let title=$state<MangaView>(),busy=$state(false),failure=$state(''),coverUrl=$state(''),coverNotice=$state(''),relationNotice=$state(''),relations=$state<Resource[]>([]),relationTotal=$state(0),relationsReady=$state(false),retry=$state(0);
  let generation=0,disposeCurrent=()=>{};
+ let issue=$state<NativeAccountIssue>();
  let admittedSession=$state.raw<typeof $Session>(),admittedRoute=$state('');
  const current=$derived(!!title&&title.id===target&&admittedSession===$Session&&admittedRoute===page.url.href&&page.url.searchParams.get('draft')==='true');
  const feedback=$derived(title?reviewTimeline(title.public_api.resource.attributes.reviewTimeline):{events:[],hasEarlier:false});
- function clear(){disposeCurrent();disposeCurrent=()=>{};if(coverUrl)URL.revokeObjectURL(coverUrl);coverUrl='';title=undefined;relations=[];relationTotal=0;relationsReady=false;coverNotice='';relationNotice='';failure='';busy=false;admittedSession=undefined;admittedRoute='';}
+ function clear(){issue=undefined;disposeCurrent();disposeCurrent=()=>{};if(coverUrl)URL.revokeObjectURL(coverUrl);coverUrl='';title=undefined;relations=[];relationTotal=0;relationsReady=false;coverNotice='';relationNotice='';failure='';busy=false;admittedSession=undefined;admittedRoute='';}
  $effect(()=>{
   const session=$Session,href=page.url.href,id=target,preview=page.url.searchParams.get('draft')==='true';
   retry;
   untrack(()=>{
    generation++;clear();const token=generation;
    if(!preview)return;
-   if(!session?.identity?.id){failure='Sign in to view this private draft.';return;}
+   if(!session?.identity?.id){issue='signin';failure='Sign in to view this private draft.';return;}
    let reader:Awaited<ReturnType<typeof createSessionDraftPreview>>|undefined,covers:SignedCoverController|undefined,edges:RelationController|undefined,disposed=false;
    const check=()=>{if(disposed||token!==generation||$Session!==session||window.location.href!==href||target!==id)throw Error('The private preview account or route changed.');};
    disposeCurrent=()=>{disposed=true;reader?.dispose();covers?.dispose();edges?.dispose();};
@@ -51,7 +54,7 @@
      const next=await createSessionDraftPreview(session.identity.id,id,check);try{check();}catch(error){next.dispose();throw error;}reader=next;
      const value=await reader.read();check();title=value;admittedSession=session;admittedRoute=href;busy=false;
      await Promise.all([readCover(value),readRelations(value)]);
-    }catch{if(!disposed&&token===generation){title=undefined;failure='This private draft is unavailable for the current account. Return to your drafts or reload after checking access.';}}
+    }catch(error){if(!disposed&&token===generation){title=undefined;issue=nativeAccountIssue(error);failure='This private draft is unavailable for the current account. Return to your drafts or reload after checking access.';}}
     finally{if(!disposed&&token===generation)busy=false;}
    })();
   });
@@ -62,6 +65,7 @@
 </script>
 <svelte:head><title>{current&&title?`${title.title} — Private draft preview`:'Private draft preview'} - {PUBLIC_SITE_NAME}</title><meta name="robots" content="noindex, nofollow" /></svelte:head>
 <section class="space-y-5" aria-label="Private draft preview">
+ <AccountActionGate {issue} />
  <nav class="flex flex-wrap gap-4"><a class="underline" href="/drafts/title">My Title Drafts</a>{#if current&&title}<a class="underline" href={`/title/${title.id}/edit?draft=true`}>Edit draft</a>{/if}<button type="button" class="rounded border px-3 py-1" disabled={busy||!$Session?.identity?.id} onclick={()=>retry++}>Reload preview</button></nav>
  {#if busy}<p role="status">Loading private draft…</p>{/if}
  {#if failure}<p role="alert">{failure}</p>{/if}

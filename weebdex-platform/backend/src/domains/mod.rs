@@ -9,6 +9,7 @@ pub mod library;
 pub mod moderation;
 pub mod staff_workspace;
 pub mod staff_authority;
+pub mod publication_access;
 pub mod previews;
 pub mod uploads;
 pub fn api_router() -> Router<AppState> {
@@ -226,4 +227,5 @@ pub const MIGRATIONS: &[Migration] = &[
     Migration {version:109,name:"0109_native_contributor_workflows",sql:include_str!("../../migrations/0109_native_contributor_workflows.sql")},
     Migration {version:110,name:"0110_moderation_workflow",sql:include_str!("../../migrations/0110_moderation_workflow.sql")},
     Migration {version:111,name:"0111_decision_corrections",sql:include_str!("../../migrations/0111_decision_corrections.sql")},
+    Migration {version:112,name:"0112_publication_access",sql:include_str!("../../migrations/0112_publication_access.sql")},
 ];

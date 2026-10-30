@@ -168,7 +168,7 @@ async fn preflight(State(state): State<AppState>, OriginalUri(uri): OriginalUri,
     let mut native_groups=Vec::new();
     for group in groups { native_groups.push(resolve(&tx,ResourceKind::Group,&PublicUuid::parse(group)?).await?); }
     let mut result=crate::protocol::publication::native_upload_preflight(&state,&tx,&actor,&native_groups).await?;
-    if let Err(error)=CatalogRepository::ensure_upload_target(&tx,&manga,&actor,&native_groups).await { result["eligible"]=json!(false);result["reason"]=json!(error.message); }
+    if let Err(error)=CatalogRepository::ensure_upload_target(&tx,&manga,&actor,&native_groups).await { result["eligible"]=json!(false);result["reason"]=json!(error.message);result["scheduling"]=json!({"available":false,"reason":"The current upload target is not eligible for scheduling."}); }
     result=json!({"result":"ok","preflight":result});
     super::native_account_profile_settings::provenance(&mut result,cap.account.as_str());tx.commit().await?;Ok(Json(result))
 }

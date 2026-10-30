@@ -148,4 +148,33 @@ export const contributorRoutePatches = [
   "after": "\t\t{#if data.draftPreview}\r\n\t\t\t<PrivateDraftPreview target={data.id} />\r\n\t\t{:else if data.manga.relationships.thread}",
   "count": 1
 }
+,
+{
+  "path": "src/routes/(app)/title/[id]/+page.ts",
+  "label": "private-preview-direct-entry-route-intent-only",
+  "before": "\tif (isDraft) {\r\n\t\tconst response = await publicTitleRead(params.id);\r\n\t\tif (response.status !== StatusCodes.OK || !response.body) error(response.status >= 400 ? response.status : 502);\r\n\t\treturn { id: response.body.id, manga: response.body as unknown as Manga, draftPreview: true };\r\n\t}",
+  "after": "\tif (isDraft) {\r\n\t\t// Routing intent only. The mounted preview owns current native authorization.\r\n\t\tif (url.searchParams.getAll(\"draft\").length !== 1) error(400);\r\n\t\ttry { return { id: publicUuid(params.id), manga: undefined, draftPreview: true as const }; }\r\n\t\tcatch { error(400); }\r\n\t}",
+  "count": 1
+},
+{
+  "path": "src/routes/(app)/title/[id]/+page.ts",
+  "label": "private-preview-loader-does-not-import-account-bootstrap",
+  "before": "import { publicTitleRead } from \"$publicApi/session-title-route\";",
+  "after": "import { publicUuid } from \"$publicApi/validation\";",
+  "count": 1
+},
+{
+  "path": "src/routes/(app)/title/[id]/+page.svelte",
+  "label": "private-preview-direct-entry-no-loader-entity-id",
+  "before": "{#key data.manga}\r\n\t{#if data.manga}\r\n\t\t{#if data.draftPreview}\r\n\t\t\t<PrivateDraftPreview target={data.id} />\r\n\t\t{:else if data.manga.relationships.thread}",
+  "after": "{#key data}\r\n\t{#if data.draftPreview}\r\n\t\t<PrivateDraftPreview target={data.id} />\r\n\t{:else if data.manga}\r\n\t\t{#if data.manga.relationships.thread}",
+  "count": 1
+},
+{
+  "path": "src/routes/(app)/title/[id]/[slug]/+page.svelte",
+  "label": "private-preview-direct-entry-no-loader-entity-slug",
+  "before": "{#key data.manga}\r\n\t{#if data.manga}\r\n\t\t{#if data.draftPreview}\r\n\t\t\t<PrivateDraftPreview target={data.id} />\r\n\t\t{:else if data.manga.relationships.thread}",
+  "after": "{#key data}\r\n\t{#if data.draftPreview}\r\n\t\t<PrivateDraftPreview target={data.id} />\r\n\t{:else if data.manga}\r\n\t\t{#if data.manga.relationships.thread}",
+  "count": 1
+}
 ];

@@ -2,6 +2,8 @@
 //! This runtime must be the sole mutation owner of its original storage volume.
 use super::ProtocolFacade;
 use crate::error::{ApiError, ApiResult};
+use crate::domains::publication_access::{self, Capture as DelegationCapture};
+use crate::domains::catalog::entity_mutations::CatalogMutationActor;
 use anyhow::{Context, Result, ensure};
 use manga_node::{
     auth::{self, Event},
@@ -101,6 +103,11 @@ pub struct NativeListener {
     pub task: tokio::task::JoinHandle<Result<()>>,
     pub shutdown: Option<tokio::sync::oneshot::Sender<()>>,
 }
+#[derive(Debug)]
+struct NativePublicationGateError(ApiError);
+impl std::fmt::Display for NativePublicationGateError { fn fmt(&self,f:&mut std::fmt::Formatter<'_>)->std::fmt::Result { f.write_str("Current native publication authority is unavailable") } }
+impl std::error::Error for NativePublicationGateError {}
+
 impl PublicationRuntime {
     /// Never generates credentials, admits a publisher, approves a peer, or binds
     /// a platform login to a signer. Those are authenticated operator provisions.
@@ -346,6 +353,16 @@ impl PublicationRuntime {
         Ok(pages)
     }
     pub async fn publish_operator(&self, input: PublicationInput) -> Result<PublicationReceipt> {
+        self.publish_operator_checked(input,None).await
+    }
+    async fn check_native_publication_clock(native:Option<(&crate::AppState,&tokio_postgres::Transaction<'_>,&crate::domains::auth::SessionPrincipal,&DelegationCapture)>)->Result<()> {
+        if let Some((state,tx,principal,capture))=native {
+            let current=publication_access::resolve_native_in(state,tx,Some(principal),true).await.map_err(NativePublicationGateError)?;
+            ensure!(current.as_ref()==Some(capture),"Native publication authority changed before source acceptance");
+        }
+        Ok(())
+    }
+    async fn publish_operator_checked(&self,input:PublicationInput,native:Option<(&crate::AppState,&tokio_postgres::Transaction<'_>,&crate::domains::auth::SessionPrincipal,&DelegationCapture)>)->Result<PublicationReceipt>{
         let _slot = tokio::time::timeout(
             std::time::Duration::from_secs(2),
             self.publications.slots.clone().acquire_owned(),
@@ -356,6 +373,10 @@ impl PublicationRuntime {
             .repository
             .publisher_permit(identity(&self.publisher)?)
             .await?;
+        // Waits do not extend an ordinary session. Check before signing and
+        // again after staging at the original publication API handoff. The original
+        // module owns its internal acceptance transaction and subsequent waits.
+        Self::check_native_publication_clock(native).await?;
         let manifest = auth::hash(&input.canonical_manifest);
         let event = manga_node::platform_bridge::sign_publication_at(
             &self.secret,
@@ -369,6 +390,7 @@ impl PublicationRuntime {
             .await?
             .is_some()
         {
+            Self::check_native_publication_clock(native).await?;
             let newly_hosted = self
                 .publications
                 .publish_with_permit(&event, permit)
@@ -383,6 +405,7 @@ impl PublicationRuntime {
         self.storage
             .put_for_publisher(&permit, identity(&manifest)?, &input.canonical_manifest)
             .await?;
+        Self::check_native_publication_clock(native).await?;
         let newly_hosted = self
             .publications
             .publish_with_permit(&event, permit)
@@ -534,15 +557,21 @@ impl ProtocolFacade {
     }
     pub(crate) async fn publish_for_native_user(
         &self,
+        state: &crate::state::AppState,
         account_tx: &tokio_postgres::Transaction<'_>,
-        user_id: &str,
+        actor: &impl CatalogMutationActor,
         group_id: Option<&str>,
+        expected_delegation: Option<&DelegationCapture>,
         input: PublicationInput,
     ) -> ApiResult<PublicationReceipt> {
+        let user_id=actor.user_id();
         crate::domains::auth::closure::active_in(account_tx,user_id).await?;
+        let delegated=publication_access::resolve_native_in(state,account_tx,actor.native_publication_session(),true).await?;
 
         let runtime = self.publication_runtime().await?;
-        let member = self
+        if delegated.as_ref()!=expected_delegation{return Err(ApiError::conflict("Native publication delegation changed; the original command cannot adopt new authority"));}
+        if delegated.is_some()&&group_id.is_some(){return Err(ApiError::forbidden("Dedicated publish-now access does not authorize publishing-enabled groups"));}
+        let member = if let Some(capture)=&delegated{capture.publisher.clone()}else{self
             .repository
             .pool
             .get()
@@ -558,7 +587,7 @@ impl ProtocolFacade {
                 ApiError::forbidden(
                     "No operator-provisioned protocol signer identity is bound to this account",
                 )
-            })?;
+            })?};
         if let Some(group_id) = group_id {
             let group = self
                 .repository
@@ -584,10 +613,8 @@ impl ProtocolFacade {
                     "This account is not bound to the configured operator signer",
                 ));
             }
-            runtime
-                .publish_operator(input)
-                .await
-                .map_err(|_| ApiError::unavailable())
+            let native=delegated.as_ref().and_then(|c|actor.native_publication_session().map(|a|(state,account_tx,a,c)));
+            runtime.publish_operator_checked(input,native).await.map_err(|e|e.downcast::<NativePublicationGateError>().map(|e|e.0).unwrap_or_else(|_|ApiError::unavailable()))
         }
     }
 }
@@ -793,6 +820,7 @@ pub(crate) async fn native_upload_preflight(
     let mut limits = serde_json::json!({"maxFiles":storage::MAX_FILES,"maxFilesPerRequest":5,"maxFileBytes":storage::MAX_FILE_BYTES.min(25*1024*1024),"maxSessionBytes":storage::MAX_SESSION_BYTES,"maxUniqueBytes":storage::MAX_SESSION_BYTES,"maxPixels":storage::MAX_PIXELS,"maxDimension":storage::MAX_DIMENSION});
     let formats = if configured { NATIVE_UPLOAD_SOURCE_FORMATS.to_vec() } else { vec!["image/jpeg","image/png","image/webp","image/gif"] };
     if configured { limits["maxUniqueBytes"] = serde_json::json!(NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES); }
+    let mut scheduling = serde_json::json!({"available":false,"reason":"Scheduling is unavailable for this account or publication target."});
     let eligibility: ApiResult<()> = async {
         actor.require_permission("chapter.create")?;
         actor.require_permission("self.chapter.update")?;
@@ -803,7 +831,13 @@ pub(crate) async fn native_upload_preflight(
         limits["maxFileBytes"] = serde_json::json!(storage::MAX_FILE_BYTES.min(25*1024*1024).min(runtime.storage.max_blob_bytes));
         let bound = tx.query("SELECT publisher FROM platform.protocol_identity_bindings WHERE group_id=ANY($1) AND revoked_at IS NULL", &[&selected_groups]).await?;
         if bound.len() > 1 { return Err(ApiError::bad_request("Select at most one publishing-enabled group. Other group credits do not grant publishing access.")); }
-        let member: String = tx.query_opt("SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL", &[&actor.user_id()]).await?.ok_or_else(||ApiError::forbidden("This account needs publishing access from the site operator. Connecting a portable identity alone does not grant it."))?.get(0);
+        let delegated = publication_access::resolve_native_in(state,tx,actor.native_publication_session(),false).await?;
+        if delegated.is_some() && !bound.is_empty() { return Err(ApiError::forbidden("Dedicated publish-now access does not authorize publishing-enabled groups. Choose an unbound group credit or ask the operator; no operator fallback was used.")); }
+        let member = if let Some(c)=delegated.as_ref() { c.publisher.clone() } else {
+            let members=tx.query("SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL ORDER BY publisher LIMIT 2", &[&actor.user_id()]).await?;
+            if members.len()!=1 { return Err(ApiError::forbidden("This account needs unique publishing access from the site operator. Connecting a portable identity alone does not grant it.")); }
+            members[0].get::<_,String>(0)
+        };
         if let Some(group) = bound.first() {
             let publisher: String = group.get(0);
             runtime.groups.as_ref().ok_or_else(||ApiError::forbidden("Group publishing is not configured on this site."))?.authorize(identity(&publisher).map_err(|_|ApiError::unavailable())?,identity(&member).map_err(|_|ApiError::unavailable())?,"publish").await.map_err(|_|ApiError::forbidden("Your account does not currently have this group's publishing permission. Ask a group manager or choose an authorized group."))?;
@@ -811,10 +845,20 @@ pub(crate) async fn native_upload_preflight(
             if member != runtime.publisher { return Err(ApiError::forbidden("Choose a group you are authorized to publish for, or ask the site operator for publishing access.")); }
             runtime.repository.publisher_permit(identity(&member).map_err(|_|ApiError::unavailable())?).await.map_err(|_|ApiError::forbidden("Your publishing access is not currently active. Ask the site operator to review it."))?;
         }
+        if delegated.is_some() {
+            scheduling = serde_json::json!({"available":false,"reason":"Publishing now is available; scheduling is not available for this account. Clear the scheduled time deliberately to publish now."});
+        } else if let Some(config)=state.config.protocol_publication.as_ref().filter(|c|c.native_node.is_some()) {
+            // Read-only inspection of the same legacy service/account gates. Do
+            // not manufacture a signed principal or upgrade the account lock.
+            let member_bytes=hex::decode(&member).map_err(|_|ApiError::unavailable())?;
+            let admission=tx.query_opt("SELECT allowed FROM account_permissions WHERE publisher=$1", &[&member_bytes]).await?.is_some_and(|r|r.get::<_,bool>(0));
+            let service=tx.query_opt("SELECT service_key FROM node_identity WHERE singleton", &[]).await?.is_some_and(|r|hex::encode(r.get::<_,Vec<u8>>(0))==config.storage_holder);
+            if admission&&service { scheduling=serde_json::json!({"available":true,"reason":null}); }
+        }
         Ok(())
     }.await;
     let (eligible, reason) = match eligibility { Ok(()) => (true, None), Err(error) => (false, Some(if error.status.is_server_error() { "Publishing access could not be checked. Please try again or contact the site operator.".to_owned() } else { error.message })) };
-    Ok(serde_json::json!({"configured":configured,"scope":if configured {"original-protocol"} else {"instance-local"},"eligible":eligible,"reason":reason,"formats":formats,"limits":limits,"requiresOperatorOrAuthorizedGroup":configured,"checkedAt":tx.query_one("SELECT platform.catalog_timestamp(clock_timestamp())",&[]).await?.get::<_,String>(0),"informationalGroupDelay":true}))
+    Ok(serde_json::json!({"configured":configured,"scope":if configured {"original-protocol"} else {"instance-local"},"eligible":eligible,"reason":reason,"scheduling":scheduling,"formats":formats,"limits":limits,"requiresOperatorOrAuthorizedGroup":configured,"checkedAt":tx.query_one("SELECT platform.catalog_timestamp(clock_timestamp())",&[]).await?.get::<_,String>(0),"informationalGroupDelay":true}))
 }
 
 async fn command_publish(
@@ -833,6 +877,9 @@ async fn command_publish(
     scheduled_session: Option<&str>,
 ) -> ApiResult<PublicationReceipt> {
     let runtime = state.protocol.publication_runtime().await?;
+    let delegated=publication_access::resolve_native_in(state,account_tx,actor.native_publication_session(),true).await?;
+    if delegated.is_some()&&group.is_some(){return Err(ApiError::forbidden("Dedicated publish-now access does not authorize publishing-enabled groups; no operator fallback was used"));}
+    if !publication_access::capture_matches_in(account_tx,command,delegated.as_ref()).await?{return Err(ApiError::conflict("This exact publication command belongs to an earlier authority revision. Its uncertain/accepted state remains; no new signing or adoption is allowed."));}
     let publisher = if let Some(group) = group {
         state
             .db
@@ -854,7 +901,7 @@ async fn command_publish(
     // Reject absent/revoked signer authority before allocating a durable command.
     // Otherwise an unsigned native account could reserve another title's stable
     // source command and block the genuinely configured publisher forever.
-    let member = state
+    let member = if let Some(capture)=&delegated{capture.publisher.clone()}else{state
         .db
         .client()
         .await?
@@ -868,7 +915,7 @@ async fn command_publish(
             ApiError::forbidden(
                 "No operator-provisioned protocol signer identity is bound to this account",
             )
-        })?;
+        })?};
     if group.is_some() {
         let groups = runtime.groups.as_ref().ok_or_else(|| {
             ApiError::forbidden("Original managed group publication runtime is not configured")
@@ -896,7 +943,10 @@ async fn command_publish(
             .map_err(|_| ApiError::forbidden("Current original publisher admission is required"))?;
     }
     let manifest = auth::hash(&input.canonical_manifest);
-    let input_hash=auth::hash(serde_json::json!({"kind":input.kind,"manifest":manifest,"user":actor.user_id(),"group":group}).to_string().as_bytes());
+    let mut hash_body=serde_json::json!({"kind":input.kind,"manifest":manifest,"user":actor.user_id(),"group":group});
+    // Preserve every existing legacy hash byte; delegated intents add exact authority capture.
+    if let Some(capture)=&delegated{hash_body["nativePublicationDelegation"]=serde_json::to_value(capture).map_err(|_|ApiError::unavailable())?;}
+    let input_hash=auth::hash(hash_body.to_string().as_bytes());
     let timestamp = auth::now();
     let mut unsigned = Event {
         id: String::new(),
@@ -912,7 +962,13 @@ async fn command_publish(
     {
         let mut client = state.db.client().await?;
         let tx = client.transaction().await?;
-        tx.execute("INSERT INTO platform.protocol_publication_commands(command_id,user_id,group_id,input_hash,created_at,resource_kind,catalog_id,upload_session_id,native_commit_hash,native_commit_payload,source_manifest,scheduled_session_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) ON CONFLICT(command_id) DO NOTHING",&[&command,&actor.user_id(),&group,&input_hash,&(timestamp as i64),&kind,&*catalog_id,&session,&commit_hash,&native_payload,&input.canonical_manifest,&scheduled_session]).await?;
+        let authority_kind=if delegated.is_some(){"native-delegation"}else{"legacy"};
+        let delegation_revision=delegated.as_ref().map(|c|c.delegation_revision);
+        let delegation_publisher=delegated.as_ref().map(|c|c.publisher.as_str());
+        let delegation_admission=delegated.as_ref().map(|c|c.publisher_admission_version);
+        let delegation_lifecycle=delegated.as_ref().map(|c|c.lifecycle_id.as_str());
+        tx.execute("INSERT INTO platform.protocol_publication_commands(command_id,user_id,group_id,input_hash,created_at,resource_kind,catalog_id,upload_session_id,native_commit_hash,native_commit_payload,source_manifest,scheduled_session_id,authority_kind,delegation_revision,delegation_publisher,delegation_admission_version,delegation_lifecycle_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17::text::uuid) ON CONFLICT(command_id) DO NOTHING",&[&command,&actor.user_id(),&group,&input_hash,&(timestamp as i64),&kind,&*catalog_id,&session,&commit_hash,&native_payload,&input.canonical_manifest,&scheduled_session,&authority_kind,&delegation_revision,&delegation_publisher,&delegation_admission,&delegation_lifecycle]).await?;
+        if !publication_access::capture_matches_in(&tx,command,delegated.as_ref()).await?{return Err(ApiError::conflict("Prepared publication authority capture differs; no command was adopted"));}
         let row=tx.query_one("SELECT user_id,group_id,input_hash,created_at,catalog_id,event_id,native_commit_hash,upload_session_id,native_commit_payload,source_manifest,scheduled_session_id FROM platform.protocol_publication_commands WHERE command_id=$1 FOR UPDATE",&[&command]).await?;
         if row.get::<_, Option<String>>(10).as_deref() != scheduled_session
             || row.get::<_, String>(0) != actor.user_id()
@@ -966,7 +1022,7 @@ async fn command_publish(
     let expected_id = hex::encode(unsigned.digest());
     let receipt = state
         .protocol
-        .publish_for_native_user(account_tx,&actor.user_id(), group, input)
+        .publish_for_native_user(state,account_tx,actor, group,delegated.as_ref(), input)
         .await?;
     if receipt.event.id != expected_id {
         return Err(ApiError::unavailable());
@@ -1101,7 +1157,7 @@ pub(crate) async fn publish_native_manga_with_cover_requirement(
             (event,false)
         };
         event.verify().map_err(|_|ApiError::unavailable())?;
-        if event.kind!=1002 || event.id!=source || !current_operator_receipt_authority(state,tx,actor,&event.pubkey).await? {return Err(ApiError::forbidden("Current original title publication authority is required"));}
+        if event.kind!=1002 || event.id!=source || !current_operator_receipt_authority(state,tx,actor,&event.pubkey,&command,true).await? {return Err(ApiError::forbidden("Current original title publication authority is required"));}
         return Ok(Some(PublicationReceipt{event,newly_hosted:false,locally_visible,state:if locally_visible{"locally_hosted"}else{"accepted_pending_projection"}}));
     }
     let _input = tokio::time::timeout(
@@ -1472,34 +1528,26 @@ async fn current_operator_receipt_authority(
     tx: &tokio_postgres::Transaction<'_>,
     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
     publisher: &str,
+    command: &str,
+    write: bool,
 ) -> ApiResult<bool> {
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
-    let Ok(runtime) = state.protocol.publication_runtime().await else {
-        return Ok(false);
+    let Ok(runtime) = state.protocol.publication_runtime().await else { return Ok(false); };
+    let delegated = match publication_access::resolve_native_in(state,tx,actor.native_publication_session(),write).await {
+        Ok(value)=>value, Err(e) if e.status==axum::http::StatusCode::FORBIDDEN=>return Ok(false), Err(e)=>return Err(e)
     };
-    let Some(binding) = tx
-        .query_opt(
-            "SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL",
-            &[&actor.user_id()],
-        )
-        .await?
-    else {
-        return Ok(false);
+    if !publication_access::capture_matches_in(tx,command,delegated.as_ref()).await? { return Ok(false); }
+    let member = if let Some(c)=delegated { c.publisher } else {
+        let bindings=tx.query("SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL ORDER BY publisher LIMIT 2", &[&actor.user_id()]).await?;
+        if bindings.len()!=1 { return Ok(false); } bindings[0].get::<_,String>(0)
     };
-    let member: String = binding.get(0);
-    Ok(member == publisher
-        && member == runtime.publisher
-        && runtime
-            .repository
-            .publisher_permit(identity(&member).map_err(|_| ApiError::unavailable())?)
-            .await
-            .is_ok())
+    Ok(member == publisher && member == runtime.publisher && runtime.repository.publisher_permit(identity(&member).map_err(|_|ApiError::unavailable())?).await.is_ok())
 }
 /// Native source publisher may reload only a small pending draft receipt. A
 /// staff role alone cannot turn retired/hidden source data into a cached DTO.
 /// This is a retry capability for the exact owned native intent, never evidence
 /// that a prepared digest has been accepted or become publicly visible.
-pub async fn native_manga_publication_retry_allowed(
+pub(crate) async fn native_manga_publication_retry_allowed(
     state: &crate::state::AppState,
     tx: &tokio_postgres::Transaction<'_>,
     manga: &str,
@@ -1524,14 +1572,15 @@ pub async fn native_manga_publication_retry_allowed(
     let Ok(runtime) = state.protocol.publication_runtime().await else {
         return Ok(false);
     };
-    current_operator_receipt_authority(state, tx, actor, runtime.publisher_identity()).await
+    current_operator_receipt_authority(state, tx, actor, runtime.publisher_identity(), &format!("manga:{manga}"),false).await
 }
 
-pub async fn pending_native_manga_receipt_allowed(
+pub(crate) async fn pending_native_manga_receipt_allowed(
     state: &crate::state::AppState,
     tx: &tokio_postgres::Transaction<'_>,
     manga: &str,
     actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+    write: bool,
 ) -> ApiResult<bool> {
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     if !state.protocol.is_ready() || state.config.protocol_publication.is_none() {
@@ -1550,21 +1599,9 @@ pub async fn pending_native_manga_receipt_allowed(
     else {
         return Ok(false);
     };
-    current_operator_receipt_authority(state, tx, actor, &event.pubkey).await
+    current_operator_receipt_authority(state, tx, actor, &event.pubkey, &format!("manga:{manga}"),write).await
 }
 
-/// Authenticated upload retry may expose a minimal pending receipt only while
-/// original acceptance is current. Historical DTO snapshots never grant reads.
-pub async fn pending_native_receipt_allowed(
-    state: &crate::state::AppState,
-    tx: &tokio_postgres::Transaction<'_>,
-    chapter: &str,
-    session: &str,
-    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
-) -> ApiResult<bool> {
-    crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
-    pending_native_receipt_allowed_for_owner(state, tx, chapter, session, actor.user_id()).await
-}
 /// Read-only receipt policy. The caller authenticates and locks the account and
 /// exact session owner in this transaction; no catalogue mutation actor is needed.
 pub(crate) async fn pending_native_receipt_allowed_for_owner(
@@ -1573,11 +1610,13 @@ pub(crate) async fn pending_native_receipt_allowed_for_owner(
     chapter: &str,
     session: &str,
     owner: &str,
+    native: Option<&crate::domains::auth::SessionPrincipal>,
+    write: bool,
 ) -> ApiResult<bool> {
     if !state.protocol.is_ready() || state.config.protocol_publication.is_none() {
         return Ok(false);
     }
-    let Some(row)=tx.query_opt("SELECT c.protocol_event_id,m.protocol_series_id,p.group_id,b.publisher FROM platform.upload_sessions s JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id JOIN platform.catalog_manga m ON m.id=c.manga_id JOIN platform.protocol_publication_commands p ON p.upload_session_id=s.id AND p.catalog_id=c.id AND p.event_id=c.protocol_event_id AND p.user_id=s.owner_id JOIN platform.protocol_identity_bindings b ON b.user_id=s.owner_id AND b.revoked_at IS NULL WHERE s.id=$1 AND s.owner_id=$2 AND c.id=$3 AND s.state='committed' AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND p.state IN('source_accepted','materialized')", &[&session,&owner,&chapter]).await? else{return Ok(false)};
+    let Some(row)=tx.query_opt("SELECT c.protocol_event_id,m.protocol_series_id,p.group_id,p.command_id FROM platform.upload_sessions s JOIN platform.catalog_chapters c ON c.id=s.committed_chapter_id JOIN platform.catalog_manga m ON m.id=c.manga_id JOIN platform.protocol_publication_commands p ON p.upload_session_id=s.id AND p.catalog_id=c.id AND p.event_id=c.protocol_event_id AND p.user_id=s.owner_id WHERE s.id=$1 AND s.owner_id=$2 AND c.id=$3 AND s.state='committed' AND c.deleted_at IS NULL AND m.deleted_at IS NULL AND m.state='published' AND p.state IN('source_accepted','materialized')", &[&session,&owner,&chapter]).await? else{return Ok(false)};
     let Some(source) = row.get::<_, Option<String>>(0) else {
         return Ok(false);
     };
@@ -1597,8 +1636,17 @@ pub(crate) async fn pending_native_receipt_allowed_for_owner(
     let Ok(runtime) = state.protocol.publication_runtime().await else {
         return Ok(false);
     };
-    let member: String = row.get(3);
+    if native.is_some_and(|a|a.user_id!=owner) { return Ok(false); }
+    let delegated = match publication_access::resolve_native_in(state,tx,native,write).await {
+        Ok(value)=>value, Err(e) if e.status==axum::http::StatusCode::FORBIDDEN=>return Ok(false), Err(e)=>return Err(e)
+    };
+    if !publication_access::capture_matches_in(tx,&row.get::<_,String>(3),delegated.as_ref()).await? { return Ok(false); }
+    let member = if let Some(c)=delegated.as_ref() { c.publisher.clone() } else {
+        let bindings=tx.query("SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL ORDER BY publisher LIMIT 2", &[&owner]).await?;
+        if bindings.len()!=1 { return Ok(false); } bindings[0].get::<_,String>(0)
+    };
     if let Some(group) = row.get::<_, Option<String>>(2) {
+        if delegated.is_some() { return Ok(false); }
         let Some(binding) = tx
             .query_opt(
                 "SELECT publisher FROM platform.protocol_identity_bindings WHERE group_id=$1 AND revoked_at IS NULL",

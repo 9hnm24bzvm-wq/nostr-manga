@@ -130,6 +130,9 @@ pub(super) async fn admit_native(
     if !super::publish_at::valid_publish_at(time){return Err(PublicApiError::bad_request("publishAt must be a real UTC timestamp"));}
     let future:bool=tx.query_one("SELECT ($1::text::timestamp AT TIME ZONE 'UTC')>clock_timestamp()",&[&time]).await?.get(0);
     if !future{return Ok(None)}
+    if crate::domains::publication_access::delegation_in(tx,actor.user_id(),false).await?.is_some() {
+        return Err(PublicApiError::forbidden("Dedicated native publication access supports Publish now only; scheduling is unavailable. No schedule or publication command was created. Clear the chosen time deliberately to publish now."));
+    }
     let config=state.config.protocol_publication.as_ref().filter(|c|c.native_node.is_some()).ok_or_else(||PublicApiError::forbidden("Scheduled publication is not configured on this site"))?;
     let bindings=tx.query("SELECT publisher FROM platform.protocol_identity_bindings WHERE user_id=$1 AND revoked_at IS NULL ORDER BY publisher FOR SHARE",&[&actor.user_id()]).await?;
     if bindings.len()!=1{return Err(PublicApiError::forbidden("Your account has no unique site-configured publication role; ask the site team"));}

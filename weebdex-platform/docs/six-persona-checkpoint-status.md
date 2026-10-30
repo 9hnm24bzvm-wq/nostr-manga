@@ -1,18 +1,19 @@
-# Authenticated-finding successor checkpoint — browser confirmation pending
+# Publication-access and cold-preview successor — browser acceptance pending
 
-The five defects found in the actual authenticated predecessor walkthrough are fixed and have current automated qualification. **The new artifact still requires targeted browser confirmation.** Do not describe this checkpoint as full 21-finding/94-criterion acceptance or production release.
+Current source passes the full automated gates. **The cold private-preview reload correction and broader publication, content-reversal, organic-verification and independent-signer browser scenarios remain open.** This is not full 21-finding/94-criterion acceptance or a production release.
 
-- Full applicable frontend suite: **6,008 passed, 0 failed, 6 unchanged historical skips**; 1,737 inputs unchanged.
+- Frontend: **6,028 passed, 0 failed, 6 unchanged historical skips**; 1,742 inputs unchanged.
 - Strict frontend: **0 errors, 21 retained warnings**; 679 canonical files unchanged.
-- Static frontend: **487 files, 7,920,832 bytes**; 1,179 build inputs unchanged and emitted CSS/source checks passed.
-- Backend: **227 unit cases, 3 owned-database library cases and 49 HTTP-router/PostgreSQL fixture invocations**, recorded as 53 successful source-checked invocations. Router versus real TCP boundaries are explicit.
-- Platform server, administrator CLI and browser provisioner rebuilt. Standalone node retained only with exact unchanged-source/binary proof.
-- Fixes cover confirmed POST logout, status-preserving chapter updates, isolated private draft preview, current upload guidance and completion-only History copy.
+- Static frontend: **488 files, 7,924,456 bytes**; 1,182 build inputs unchanged; emitted CSS/source checks passed.
+- Backend: **227 normal unit cases, 3 owned-database library cases, 50 HTTP-router/PostgreSQL fixture invocations**, 54 successful source-checked invocations across 392 unchanged inputs.
+- Three platform binaries rebuilt; standalone node retained only after exact unchanged-source/binary proof.
 
-The authenticated predecessor run did execute signup, reauthentication and scoped ordinary/staff workflows, including actual private CSV delivery. It used explicitly simulated verification and approved disposable role setup. It found five defects; those failed records remain distinct from the current automated fixes. The 94-entry tracker reports scoped subsets, not 94 successful exercises. Targeted successor browser acceptance is the remaining gate.
+The prior actual authenticated successor passed Follow/Unfollow preservation, completion-only History wording, current upload guidance and server-confirmed logout with a protected reload witness. It still failed private-preview direct reload. The current correction defers private authorization/data reads until normal Session initialization; the metadata-free route marker grants no authority. Its 32 focused cases and current aggregate pass, but no new browser reload pass is inherited.
 
-The preceding source payload is published at `4410d118368a1747f4074809580e43668aed3333`. This newer payload is not yet published; source durability, encrypted recovery and public GitHub publication are separate facts. The immutable checkpoint receipt records the containing source commit/tree and artifact hashes.
+The new supported operator CLI grants **immediate-only native publication access**, separately from signer/native login bindings and portable identity links. It changes no native roles or original admission, creates no keys and grants no source-deletion or scheduling authority. Actual CLI/HTTP tests cover reviewed confirmation/cancellation, immutable captures, publication/recovery, containment revocation, advancing-clock staging refusal and closure controls. Installing it does not authorize any live grant. See [operator workflow](native-publication-access-cli.md).
 
-Original failed test attempts are preserved. Two fixture integration corrections retain all assertions; the expired-flow fixture respects the existing timestamp constraint; one quiet authentication race rerun preserves timeouts/security checks. No exclusion or historical source pin was weakened.
+The official independent nak test signer is downloaded/checksummed, with a bounded loopback-only helper and validated fixture origin option. It has not been executed and no disposable signer identity has yet been generated. User-mediated verification remains unconfirmed after a blocked browser handoff; no agent retrieved a verification code.
 
-Credentials, personal data, private browser records, runtime databases and raw runtime evidence are excluded from public source backups. No production deployment, main merge or CI run is implied. See [verification details](six-persona-verification-summary.md), [artifact hashes](six-persona-qualified-artifacts-20261029.json), [source provenance](six-persona-source-provenance.md) and [administrator recovery](native-administrator-runbook.md).
+The last verified remote source is `ae5ea82a805a931cded217f80bb882c99c56dfc9`, the preceding 30-path checkpoint. This newer payload is not yet published. Source durability, encrypted recovery, public publication and browser acceptance are separate facts. Historical failed receipts remain preserved.
+
+Credentials, private connection URIs, personal data, raw private browser evidence and runtime databases are excluded from public backups. See [verification details](six-persona-verification-summary.md), [artifact hashes](six-persona-qualified-artifacts-20261029.json), [source provenance](six-persona-source-provenance.md) and [administrator recovery](native-administrator-runbook.md).

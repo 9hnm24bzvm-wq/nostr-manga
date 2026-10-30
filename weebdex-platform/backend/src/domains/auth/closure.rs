@@ -241,6 +241,7 @@ pub(crate) async fn confirm_in(tx:&Transaction<'_>,user:&str,authority:&str,comm
     ] {
         if tx.query(sql,&[&user]).await.map_err(lock_error)?.len()>10000 {return Err(ApiError::conflict("Account credential history requires administrator-assisted disable"));}
     }
+    crate::domains::publication_access::revoke_for_account_closure_in(tx,user,&command.confirmation_id).await?;
     tx.execute("UPDATE platform.auth_flows SET used_at=COALESCE(used_at,clock_timestamp()) WHERE session_id IN (SELECT id FROM platform.sessions WHERE user_id=$1) OR id IN (SELECT flow_id FROM platform.auth_email_tokens WHERE user_id=$1)",&[&user]).await?;
     tx.execute("UPDATE platform.sessions SET revoked_at=COALESCE(revoked_at,clock_timestamp()) WHERE user_id=$1",&[&user]).await?;
     tx.execute("UPDATE platform.api_clients SET revoked_at=clock_timestamp(),updated_at=clock_timestamp(),version=version+1 WHERE user_id=$1 AND revoked_at IS NULL",&[&user]).await?;
