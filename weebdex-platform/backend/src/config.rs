@@ -21,6 +21,8 @@ pub struct Config {
     pub fixture_feed_diagnostics: bool,
     /// An explicitly limited protocol reader does not need a publisher signer.
     pub protocol_read_only: bool,
+    /// Offline restore fence. Only explicit operator review may release it.
+    pub restore_review_required: bool,
     pub json_body_timeout_seconds: u64,
     pub upload_body_timeout_seconds: u64,
     pub shutdown_grace_seconds: u64,
@@ -62,6 +64,7 @@ impl Default for Config {
             production: false,
             fixture_feed_diagnostics: false,
             protocol_read_only: false,
+            restore_review_required: false,
             json_body_timeout_seconds: 30,
             upload_body_timeout_seconds: 180,
             shutdown_grace_seconds: 210,
