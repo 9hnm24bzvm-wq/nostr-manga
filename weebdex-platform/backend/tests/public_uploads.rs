@@ -116,7 +116,8 @@ async fn fixture_full(limits:Config,original:bool,projection:bool)->Fixture {
             "staging_bytes":64*1024*1024,"max_blob_bytes":8*1024*1024,"upload_slots":2}),group_keys_dir:None,backend:None,
         native_node:Some(json!({"bind":"127.0.0.1:9","base_url":"http://127.0.0.1:9","service_key_file":service,"admin_pubkey":public(1),
             "database_plaintext_local":true,"read_policy":"public","sync_worker_enabled":false})) };
-    let state=AppState::connect(Config{public_origin:origin.clone(),database_plaintext_local:true,database_connections:10,
+    let state=AppState::connect(Config{
+            instance: weebdex_platform::domains::staff_workspace::InstanceInformation { terms: "Synthetic test terms".into(), privacy: "Synthetic test privacy".into(), guidelines: "Synthetic test guidelines".into(), ..Default::default() },public_origin:origin.clone(),database_plaintext_local:true,database_connections:10,
         scheduled_upload_maximum:limits.scheduled_upload_maximum,scheduled_upload_bytes:limits.scheduled_upload_bytes,
         scheduled_upload_retry_seconds:limits.scheduled_upload_retry_seconds,
         uploads_dir:storage.path().join("native-images"),protocol_publication:Some(publication.clone()),..Config::default()},dsn.clone()).await.unwrap();
@@ -984,7 +985,8 @@ async fn scheduled_transient_retry_parent_acceptance_restart_and_receipts() {
 #[tokio::test(flavor="multi_thread",worker_threads=4)]
 #[ignore="Owned disposable PostgreSQL; real two-second configured deadline, run alone"]
 async fn scheduled_captured_deadline_restart_and_blocked_quota() {
-    let mut f=fixture_options(Config{scheduled_upload_retry_seconds:2,scheduled_upload_maximum:1,..Config::default()},false).await;
+    let mut f=fixture_options(Config{
+            instance: weebdex_platform::domains::staff_workspace::InstanceInformation { terms: "Synthetic test terms".into(), privacy: "Synthetic test privacy".into(), guidelines: "Synthetic test guidelines".into(), ..Default::default() },scheduled_upload_retry_seconds:2,scheduled_upload_maximum:1,..Config::default()},false).await;
     let (session,native,initial,_)=scheduled_upload(&f,&png(),2).await;
     assert_eq!(initial["nostr"]["retryWindowSeconds"],2);
     let saved:f64=f.state.db.client().await.unwrap().query_one("SELECT extract(epoch FROM retry_until)::float8 FROM platform.scheduled_uploads WHERE session_id=$1",&[&native]).await.unwrap().get(0);
@@ -1590,4 +1592,33 @@ async fn native_duplicate_originals_and_webp_remain_readable_in_exact_page_order
     let source_hashes=entry.metadata["pages"].as_array().unwrap().iter().map(|page|page["sha256"].as_str().unwrap()).collect::<Vec<_>>();
     assert_eq!(source_hashes,vec![png_hash.as_str(),webp_hash.as_str(),png_hash.as_str()]);
     assert_eq!(source_hashes.iter().collect::<std::collections::BTreeSet<_>>().len(),2);
+}
+
+#[tokio::test]
+#[ignore="Owned isolated PostgreSQL fixture required"]
+async fn policy_loss_blocks_signed_and_native_commits_and_new_schedules() {
+    use tower::ServiceExt;
+    let f=fixture().await;
+    let session=f.begin(1).await;
+    let image=png();
+    let files=f.multipart(1,&session,&[("policy.png","image/png",image.as_slice())],200).await;
+    let payload=commit(files["data"].as_array().unwrap());
+    let account=PostgresPublicIdResolver::new(f.state.db.clone()).preferred(ResourceKind::User,"PublicUploadUser1").await.unwrap().unwrap().to_string();
+    let mut state=f.state.clone();let mut config=(*state.config).clone();config.instance.terms.clear();state.config=std::sync::Arc::new(config);
+    let app=weebdex_platform::router::router(state);
+    for (native,scheduled) in [(false,false),(false,true),(true,false),(true,true)] {
+        let path=if native{format!("/api/v1/account/upload/{session}/commit?expectedAccountId={account}")}else{format!("/api/v1/upload/{session}/commit")};
+        let mut body=payload.clone();
+        if scheduled { body["chapterDraft"]["publishAt"]=json!(schedule_time(&f,3600).await); }
+        let bytes=serde_json::to_vec(&body).unwrap();
+        let mut request=axum::http::Request::builder().method("POST").uri(&path).header("origin",&f.origin).header("content-type","application/json");
+        if native { request=request.header("cookie","weebdex_session=synthetic-public-upload-cookie").header("x-weebdex-expected-account","PublicUploadUser1"); }
+        else { request=request.header("authorization",proof(1,11,&format!("{}{path}",f.origin),"POST",&bytes)); }
+        let response=app.clone().oneshot(request.body(axum::body::Body::from(bytes)).unwrap()).await.unwrap();
+        let status=response.status().as_u16();let bytes=axum::body::to_bytes(response.into_body(),1024*1024).await.unwrap();
+        assert_eq!(status,503,"native={native}, scheduled={scheduled}: {}",String::from_utf8_lossy(&bytes));
+    }
+    let native=f.native(ResourceKind::UploadSession,&session).await;
+    let row=f.state.db.client().await.unwrap().query_one("SELECT (SELECT count(*) FROM platform.protocol_publication_commands WHERE upload_session_id=$1),(SELECT count(*) FROM platform.scheduled_uploads WHERE session_id=$1),state FROM platform.upload_sessions WHERE id=$1",&[&native]).await.unwrap();
+    assert_eq!(row.get::<_,i64>(0),0);assert_eq!(row.get::<_,i64>(1),0);assert_eq!(row.get::<_,String>(2),"open");
 }

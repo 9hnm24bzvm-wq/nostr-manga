@@ -1,0 +1,17 @@
+[
+  {
+    "case": "domains::auth::closure::native_fence_tests::stale_principal_core_families_refuse_after_disable",
+    "exit": 0,
+    "log": "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/recovery/nov01-build/lib-db/1.log"
+  },
+  {
+    "case": "domains::catalog::entity_mutations::tests::public_group_creator_is_real_account_and_core_never_commits",
+    "exit": 0,
+    "log": "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/recovery/nov01-build/lib-db/2.log"
+  },
+  {
+    "case": "public_api::uploads::tests::unavailable_chapter_presentation_does_not_hide_database_errors",
+    "exit": 0,
+    "log": "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/recovery/nov01-build/lib-db/3.log"
+  }
+]

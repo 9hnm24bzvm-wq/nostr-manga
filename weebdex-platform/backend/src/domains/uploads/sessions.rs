@@ -391,6 +391,10 @@ pub(crate) async fn owner_snapshot_with_native_in(
     if value["target_status"] == "unavailable" {
         value["can_retry_commit"] = json!(false);
     }
+    value["policies_available"] = json!(state.config.instance.upload_policies_available());
+    if !state.config.instance.upload_policies_available() {
+        value["can_mutate"] = json!(false);
+    }
     if !can_manage {
         value["can_mutate"] = json!(false);
         value["can_cancel"] = json!(false);
@@ -435,13 +439,14 @@ pub async fn save_resume(
     let actor = actor(&state, &headers).await?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    let result = save_resume_in(&tx, &actor, &id, &payload).await?;
+    let result = save_resume_in(&state, &tx, &actor, &id, &payload).await?;
     tx.commit().await?;
     Ok(Json(result))
 }
 /// Persist only private draft/order metadata under the same version, ownership,
 /// expiry and prepared-command fences for native and public transports.
 pub(crate) async fn save_resume_in(
+    state: &AppState,
     tx: &Transaction<'_>,
     actor: &impl CatalogMutationActor,
     id: &str,
@@ -449,6 +454,7 @@ pub(crate) async fn save_resume_in(
 ) -> ApiResult<Value> {
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
+    state.config.instance.require_upload_policies()?;
     let v = &payload.draft;
     if payload.version <= 0 {
         return Err(ApiError::bad_request("Invalid upload session version"));
@@ -506,18 +512,20 @@ pub async fn begin(
     actor.require_permission("chapter.create")?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    let result = begin_in(&tx, &actor, &payload).await?;
+    let result = begin_in(&state, &tx, &actor, &payload).await?;
     tx.commit().await?;
     cleanup(&state).await;
     Ok((StatusCode::CREATED, Json(result)))
 }
 pub(crate) async fn begin_in(
+    state: &AppState,
     tx: &Transaction<'_>,
     actor: &impl CatalogMutationActor,
     payload: &Begin,
 ) -> ApiResult<Value> {
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("chapter.create")?;
+    state.config.instance.require_upload_policies()?;
     CatalogRepository::ensure_upload_target(&tx, &payload.manga, actor, &payload.groups).await?;
     expire_owner(&tx, &actor.user_id()).await?;
     if tx
@@ -551,18 +559,20 @@ pub async fn begin_edit(
     actor.require_permission("self.chapter.update")?;
     let mut client = state.db.client().await?;
     let tx = client.transaction().await?;
-    let result = begin_edit_in(&tx, &actor, &chapter, &payload).await?;
+    let result = begin_edit_in(&state, &tx, &actor, &chapter, &payload).await?;
     tx.commit().await?;
     cleanup(&state).await;
     Ok((StatusCode::CREATED, Json(result)))
 }
 pub(crate) async fn begin_edit_in(
+    state: &AppState,
     tx: &Transaction<'_>,
     actor: &impl CatalogMutationActor,
     chapter: &str, payload: &Edit,
 ) -> ApiResult<Value> {
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
+    state.config.instance.require_upload_policies()?;
     // Expiry may lock the owner's old OPEN session and media references. Take
     // those locks before the chapter, matching commit/scheduling admission.
     // Authorization/version failures roll this entire transaction back; no
@@ -622,6 +632,7 @@ pub async fn upload(
 ) -> ApiResult<Json<Value>> {
     let actor = actor(&state, &headers).await?;
     actor.require_permission("self.chapter.update")?;
+    state.config.instance.require_upload_policies()?;
     {
         let mut client = state.db.client().await?;
         let tx = client.transaction().await?;
@@ -681,6 +692,7 @@ pub async fn replace_file(
 ) -> ApiResult<Json<Value>> {
     let actor = actor(&state, &headers).await?;
     actor.require_permission("self.chapter.update")?;
+    state.config.instance.require_upload_policies()?;
     session_id(&id)?;
     if !storage::valid_id(&file) {
         return Err(ApiError::bad_request("Invalid upload file identifier"));
@@ -788,6 +800,7 @@ pub(crate) async fn replace_file_in(
 ) -> ApiResult<FileReplacement> {
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
+    state.config.instance.require_upload_policies()?;
     if !storage::valid_id(file) || expected < 1 {
         return Err(ApiError::bad_request("Invalid replacement file or version"));
     }
@@ -883,6 +896,7 @@ pub(crate) async fn attach_in(
 ) -> ApiResult<Value> {
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
     actor.require_permission("self.chapter.update")?;
+    state.config.instance.require_upload_policies()?;
     open_session(&tx, id, &actor.user_id()).await?;
     require_mutable_session(&tx, id).await?;
     let row=tx.query_one("SELECT count(*) AS count,COALESCE(sum(o.bytes),0)::BIGINT AS bytes,COALESCE(max(f.position),-1)::INTEGER AS position FROM platform.upload_files f JOIN platform.media_objects o ON o.id=f.object_id WHERE f.session_id=$1",&[&id]).await?;
@@ -981,6 +995,13 @@ async fn commit_impl(
             .ok_or_else(ApiError::unavailable)?;
         let value = current_committed_result(&state, &tx, &chapter, &id, actor).await?;
         return Ok(value);
+    }
+    // New effects fail closed. A prepared/uncertain source command is not consent.
+    // Only a separately verified exact accepted source receipt may be materialized.
+    if !state.config.instance.upload_policies_available() {
+        crate::protocol::publication::require_accepted_upload_recovery(
+            state, tx, actor, id, &hash, &serde_json::to_value(payload).map_err(|_| ApiError::unavailable())?
+        ).await?;
     }
     let session = match scheduled {
         Some(schedule) => schedule.session_for(tx, id, &hash).await?,

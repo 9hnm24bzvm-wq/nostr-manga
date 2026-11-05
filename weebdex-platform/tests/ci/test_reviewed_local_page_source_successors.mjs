@@ -1,4 +1,4 @@
-import {readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
+import {readSixPersonaSourceAssociation,restoreSixPersonaSourcePredecessor,readReaderUxAssociation,readReaderUxFixpassAssociation,restoreReaderUxFixpassPredecessor,restoreReaderUxPredecessor} from './reviewed-six-persona-source-successor.mjs';
 import {localPageDriverPath,localPageDriverAssociationSha256,readLocalPageDriverAssociation,restoreLocalPageDriverSource} from './reviewed-local-page-driver-source-successor.mjs';
 import {restoreIntegratedSource} from './reviewed-integration-source-successors.mjs';
 import {restoreHistorySource} from './reviewed-history-source-successors.mjs';
@@ -17,6 +17,7 @@ const project = path.join(root, 'weebdex-platform');
 const digest = value => createHash('sha256').update(value).digest('hex');
 // Source-only historical inputs: first undo the exact second pass, then the
 // exact published first pass where applicable. Runtime tests read live files.
+const sixPersonaPaths = new Set(readSixPersonaSourceAssociation().rows.map(row => row.path));
 const firstReaderPaths = new Set(readReaderUxAssociation().rows.map(row => row.path));
 const secondReaderPaths = new Set(readReaderUxFixpassAssociation().rows.map(row => row.path));
 // This test was already published in e3a8ca8 but was not a product row in the
@@ -92,7 +93,11 @@ const currentSourceSuccessors = Object.freeze([
   }
 ].map(row => Object.freeze(row)));
 function exactCurrentFile(row) {
-  const live = read(row.path), comparison = beforeReaderUx(row.path, live);
+  const live = read(row.path);
+  // Backend bindings untouched by older reader layers still need the exact
+  // newest source reversal. Keep graph parsing below on physical live bytes.
+  const comparison = !firstReaderPaths.has(row.path) && !secondReaderPaths.has(row.path) && sixPersonaPaths.has(row.path)
+    ? restoreSixPersonaSourcePredecessor(row.path, live) : beforeReaderUx(row.path, live);
   const successor = currentSourceSuccessors.find(value => value.path === row.path);
   const pin = successor ? {...row, bytes: successor.currentBytes, sha256: successor.currentSha256} : row;
   if (successor) {
@@ -101,7 +106,8 @@ function exactCurrentFile(row) {
   }
   assert.equal(Buffer.byteLength(comparison), pin.bytes, row.path + ' associated predecessor length');
   assert.equal(digest(comparison), pin.sha256, row.path + ' associated predecessor digest');
-  if (firstReaderPaths.has(row.path)||secondReaderPaths.has(row.path)||row.path===publishedRemovalTest) assert.throws(()=>beforeReaderUx(row.path,live+' '));
+  if (!firstReaderPaths.has(row.path) && !secondReaderPaths.has(row.path) && sixPersonaPaths.has(row.path)) assert.throws(()=>restoreSixPersonaSourcePredecessor(row.path,live+' '));
+  else if (firstReaderPaths.has(row.path)||secondReaderPaths.has(row.path)||row.path===publishedRemovalTest) assert.throws(()=>beforeReaderUx(row.path,live+' '));
   // Actual graph/eligibility checks below parse current code, never restored code.
   return live;
 }

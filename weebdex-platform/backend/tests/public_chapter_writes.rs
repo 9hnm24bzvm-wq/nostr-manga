@@ -92,7 +92,8 @@ async fn fixture()->Fixture {
         native_node:Some(json!({"bind":native_bind.to_string(),"base_url":format!("http://{native_bind}"),"service_key_file":service,"admin_pubkey":public(1),
             "database_plaintext_local":true,"read_policy":"public","sync_worker_enabled":false,"auto_approve_publication_deletions":false,
             "backend":{"binary":binary,"data_dir":storage.path().join("real-projection"),"map_bytes":67108864,"timeout_seconds":5}})) };
-    let state=AppState::connect(Config{public_origin:origin.clone(),database_plaintext_local:true,database_connections:6,
+    let state=AppState::connect(Config{
+            instance: weebdex_platform::domains::staff_workspace::InstanceInformation { terms: "Synthetic test terms".into(), privacy: "Synthetic test privacy".into(), guidelines: "Synthetic test guidelines".into(), ..Default::default() },public_origin:origin.clone(),database_plaintext_local:true,database_connections:6,
         uploads_dir:storage.path().join("native-images"),protocol_publication:Some(publication.clone()),..Config::default()},dsn.clone()).await.unwrap();
     let mut repository=Repository::connect(DbConfig{dsn,connections:1,acquisition_timeout:Duration::from_secs(2),cache_weight:1048576,plaintext_local:true}).await.unwrap();
     repository.pool=state.db.pool().clone();repository.migrate().await.unwrap();repository.bind_instance(id(11),id(1)).await.unwrap();

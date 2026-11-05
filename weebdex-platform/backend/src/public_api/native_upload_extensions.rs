@@ -142,6 +142,7 @@ async fn stage(
         page_order.push(resolve(&tx, ResourceKind::UploadFile, &file).await?);
     }
     core::save_resume_in(
+        &state,
         &tx,
         &actor,
         &native_id,
@@ -173,6 +174,7 @@ async fn replace(
     headers: HeaderMap,
     request: Request,
 ) -> PublicApiResult<Json<Value>> {
+    state.config.instance.require_upload_policies()?;
     let session = PublicUuid::parse(&session)?;
     let file = PublicUuid::parse(&file)?;
     no_query(&uri)?;

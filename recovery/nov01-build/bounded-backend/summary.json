@@ -1,0 +1,1106 @@
+[
+  {
+    "target": "auth_http",
+    "case": "actual_browser_flows_sessions_csrf_expiry_preferences_and_client_revocation",
+    "exit": 0,
+    "seconds": 6.7480857372283936,
+    "binary_sha256": "cedbd68dde01316ad9bc20273f6d03ec6c539d2b1154fd0df76e1ccc6ec5cd57",
+    "log": "recovery/nov01-build/bounded-backend/01-auth_http.log",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_timeout_seconds": 180,
+      "captured_births": [
+        {
+          "pid": 20,
+          "start_ticks": 8934305,
+          "group": 20,
+          "session": 20
+        },
+        {
+          "pid": 29,
+          "start_ticks": 8934319,
+          "group": 20,
+          "session": 20
+        },
+        {
+          "pid": 30,
+          "start_ticks": 8934319,
+          "group": 20,
+          "session": 20
+        },
+        {
+          "pid": 33,
+          "start_ticks": 8934382,
+          "group": 33,
+          "session": 33
+        },
+        {
+          "pid": 34,
+          "start_ticks": 8934383,
+          "group": 34,
+          "session": 34
+        },
+        {
+          "pid": 35,
+          "start_ticks": 8934383,
+          "group": 35,
+          "session": 35
+        },
+        {
+          "pid": 36,
+          "start_ticks": 8934383,
+          "group": 36,
+          "session": 36
+        },
+        {
+          "pid": 37,
+          "start_ticks": 8934383,
+          "group": 37,
+          "session": 37
+        },
+        {
+          "pid": 38,
+          "start_ticks": 8934383,
+          "group": 38,
+          "session": 38
+        },
+        {
+          "pid": 40,
+          "start_ticks": 8934383,
+          "group": 40,
+          "session": 40
+        },
+        {
+          "pid": 41,
+          "start_ticks": 8934383,
+          "group": 41,
+          "session": 41
+        },
+        {
+          "pid": 42,
+          "start_ticks": 8934383,
+          "group": 42,
+          "session": 42
+        },
+        {
+          "pid": 43,
+          "start_ticks": 8934387,
+          "group": 43,
+          "session": 43
+        },
+        {
+          "pid": 45,
+          "start_ticks": 8934390,
+          "group": 45,
+          "session": 45
+        },
+        {
+          "pid": 47,
+          "start_ticks": 8934396,
+          "group": 47,
+          "session": 47
+        },
+        {
+          "pid": 49,
+          "start_ticks": 8934400,
+          "group": 49,
+          "session": 49
+        },
+        {
+          "pid": 51,
+          "start_ticks": 8934506,
+          "group": 51,
+          "session": 51
+        }
+      ],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": [],
+      "test_returncode": 0,
+      "postgres_returncode": 0,
+      "startup_timeout_seconds": 10,
+      "cleanup_phase_seconds": [
+        15,
+        5,
+        5
+      ]
+    }
+  },
+  {
+    "target": "auth_http",
+    "case": "actual_email_delivery_one_time_verification_and_restricted_recovery",
+    "exit": 0,
+    "seconds": 3.3220126628875732,
+    "binary_sha256": "cedbd68dde01316ad9bc20273f6d03ec6c539d2b1154fd0df76e1ccc6ec5cd57",
+    "log": "recovery/nov01-build/bounded-backend/02-auth_http.log",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_timeout_seconds": 180,
+      "captured_births": [
+        {
+          "pid": 55,
+          "start_ticks": 8934988,
+          "group": 55,
+          "session": 55
+        },
+        {
+          "pid": 64,
+          "start_ticks": 8935002,
+          "group": 55,
+          "session": 55
+        },
+        {
+          "pid": 65,
+          "start_ticks": 8935002,
+          "group": 55,
+          "session": 55
+        },
+        {
+          "pid": 68,
+          "start_ticks": 8935068,
+          "group": 68,
+          "session": 68
+        },
+        {
+          "pid": 69,
+          "start_ticks": 8935069,
+          "group": 69,
+          "session": 69
+        },
+        {
+          "pid": 70,
+          "start_ticks": 8935069,
+          "group": 70,
+          "session": 70
+        },
+        {
+          "pid": 71,
+          "start_ticks": 8935069,
+          "group": 71,
+          "session": 71
+        },
+        {
+          "pid": 72,
+          "start_ticks": 8935069,
+          "group": 72,
+          "session": 72
+        },
+        {
+          "pid": 73,
+          "start_ticks": 8935069,
+          "group": 73,
+          "session": 73
+        },
+        {
+          "pid": 75,
+          "start_ticks": 8935069,
+          "group": 75,
+          "session": 75
+        },
+        {
+          "pid": 76,
+          "start_ticks": 8935069,
+          "group": 76,
+          "session": 76
+        },
+        {
+          "pid": 77,
+          "start_ticks": 8935069,
+          "group": 77,
+          "session": 77
+        },
+        {
+          "pid": 78,
+          "start_ticks": 8935074,
+          "group": 78,
+          "session": 78
+        },
+        {
+          "pid": 80,
+          "start_ticks": 8935076,
+          "group": 80,
+          "session": 80
+        },
+        {
+          "pid": 82,
+          "start_ticks": 8935082,
+          "group": 82,
+          "session": 82
+        },
+        {
+          "pid": 84,
+          "start_ticks": 8935085,
+          "group": 84,
+          "session": 84
+        }
+      ],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": [],
+      "test_returncode": 0,
+      "postgres_returncode": 0,
+      "startup_timeout_seconds": 10,
+      "cleanup_phase_seconds": [
+        15,
+        5,
+        5
+      ]
+    }
+  },
+  {
+    "target": "auth_http",
+    "case": "native_logout_post_no_referrer_origin_session_and_replay_fences",
+    "exit": 0,
+    "seconds": 2.6323065757751465,
+    "binary_sha256": "cedbd68dde01316ad9bc20273f6d03ec6c539d2b1154fd0df76e1ccc6ec5cd57",
+    "log": "recovery/nov01-build/bounded-backend/03-auth_http.log",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_timeout_seconds": 180,
+      "captured_births": [
+        {
+          "pid": 89,
+          "start_ticks": 8935329,
+          "group": 89,
+          "session": 89
+        },
+        {
+          "pid": 98,
+          "start_ticks": 8935340,
+          "group": 89,
+          "session": 89
+        },
+        {
+          "pid": 99,
+          "start_ticks": 8935340,
+          "group": 89,
+          "session": 89
+        },
+        {
+          "pid": 102,
+          "start_ticks": 8935400,
+          "group": 102,
+          "session": 102
+        },
+        {
+          "pid": 103,
+          "start_ticks": 8935401,
+          "group": 103,
+          "session": 103
+        },
+        {
+          "pid": 104,
+          "start_ticks": 8935401,
+          "group": 104,
+          "session": 104
+        },
+        {
+          "pid": 105,
+          "start_ticks": 8935401,
+          "group": 105,
+          "session": 105
+        },
+        {
+          "pid": 106,
+          "start_ticks": 8935401,
+          "group": 106,
+          "session": 106
+        },
+        {
+          "pid": 107,
+          "start_ticks": 8935401,
+          "group": 107,
+          "session": 107
+        },
+        {
+          "pid": 109,
+          "start_ticks": 8935402,
+          "group": 109,
+          "session": 109
+        },
+        {
+          "pid": 110,
+          "start_ticks": 8935402,
+          "group": 110,
+          "session": 110
+        },
+        {
+          "pid": 111,
+          "start_ticks": 8935402,
+          "group": 111,
+          "session": 111
+        },
+        {
+          "pid": 112,
+          "start_ticks": 8935406,
+          "group": 112,
+          "session": 112
+        },
+        {
+          "pid": 114,
+          "start_ticks": 8935408,
+          "group": 114,
+          "session": 114
+        },
+        {
+          "pid": 116,
+          "start_ticks": 8935415,
+          "group": 116,
+          "session": 116
+        },
+        {
+          "pid": 118,
+          "start_ticks": 8935417,
+          "group": 118,
+          "session": 118
+        }
+      ],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": [],
+      "test_returncode": 0,
+      "postgres_returncode": 0,
+      "startup_timeout_seconds": 10,
+      "cleanup_phase_seconds": [
+        15,
+        5,
+        5
+      ]
+    }
+  },
+  {
+    "target": "auth_http",
+    "case": "password_rotation_revokes_outstanding_recovery_links_and_overlapping_redemption",
+    "exit": 0,
+    "seconds": 3.182852268218994,
+    "binary_sha256": "cedbd68dde01316ad9bc20273f6d03ec6c539d2b1154fd0df76e1ccc6ec5cd57",
+    "log": "recovery/nov01-build/bounded-backend/04-auth_http.log",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_timeout_seconds": 180,
+      "captured_births": [
+        {
+          "pid": 123,
+          "start_ticks": 8935600,
+          "group": 123,
+          "session": 123
+        },
+        {
+          "pid": 132,
+          "start_ticks": 8935614,
+          "group": 123,
+          "session": 123
+        },
+        {
+          "pid": 133,
+          "start_ticks": 8935614,
+          "group": 123,
+          "session": 123
+        },
+        {
+          "pid": 136,
+          "start_ticks": 8935687,
+          "group": 136,
+          "session": 136
+        },
+        {
+          "pid": 137,
+          "start_ticks": 8935688,
+          "group": 137,
+          "session": 137
+        },
+        {
+          "pid": 138,
+          "start_ticks": 8935688,
+          "group": 138,
+          "session": 138
+        },
+        {
+          "pid": 139,
+          "start_ticks": 8935688,
+          "group": 139,
+          "session": 139
+        },
+        {
+          "pid": 140,
+          "start_ticks": 8935688,
+          "group": 140,
+          "session": 140
+        },
+        {
+          "pid": 141,
+          "start_ticks": 8935688,
+          "group": 141,
+          "session": 141
+        },
+        {
+          "pid": 143,
+          "start_ticks": 8935688,
+          "group": 143,
+          "session": 143
+        },
+        {
+          "pid": 144,
+          "start_ticks": 8935688,
+          "group": 144,
+          "session": 144
+        },
+        {
+          "pid": 145,
+          "start_ticks": 8935688,
+          "group": 145,
+          "session": 145
+        },
+        {
+          "pid": 146,
+          "start_ticks": 8935693,
+          "group": 146,
+          "session": 146
+        },
+        {
+          "pid": 147,
+          "start_ticks": 8935693,
+          "group": 147,
+          "session": 147
+        },
+        {
+          "pid": 148,
+          "start_ticks": 8935694,
+          "group": 148,
+          "session": 148
+        },
+        {
+          "pid": 150,
+          "start_ticks": 8935701,
+          "group": 150,
+          "session": 150
+        },
+        {
+          "pid": 152,
+          "start_ticks": 8935703,
+          "group": 152,
+          "session": 152
+        },
+        {
+          "pid": 154,
+          "start_ticks": 8935770,
+          "group": 154,
+          "session": 154
+        },
+        {
+          "pid": 155,
+          "start_ticks": 8935770,
+          "group": 155,
+          "session": 155
+        },
+        {
+          "pid": 156,
+          "start_ticks": 8935859,
+          "group": 156,
+          "session": 156
+        }
+      ],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": [],
+      "test_returncode": 0,
+      "postgres_returncode": 0,
+      "startup_timeout_seconds": 10,
+      "cleanup_phase_seconds": [
+        15,
+        5,
+        5
+      ]
+    }
+  },
+  {
+    "target": "native_identity_link",
+    "case": "private_identity_link_http_dual_proof_conflict_recovery_and_races",
+    "exit": 0,
+    "seconds": 3.784266233444214,
+    "binary_sha256": "9576a7b0399d5667020f05fd4d273ab01515756a18c66d0c3af827175bb29d3c",
+    "log": "recovery/nov01-build/bounded-backend/05-native_identity_link.log",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_timeout_seconds": 180,
+      "captured_births": [
+        {
+          "pid": 161,
+          "start_ticks": 8935926,
+          "group": 161,
+          "session": 161
+        },
+        {
+          "pid": 170,
+          "start_ticks": 8935939,
+          "group": 161,
+          "session": 161
+        },
+        {
+          "pid": 171,
+          "start_ticks": 8935939,
+          "group": 161,
+          "session": 161
+        },
+        {
+          "pid": 174,
+          "start_ticks": 8936003,
+          "group": 174,
+          "session": 174
+        },
+        {
+          "pid": 175,
+          "start_ticks": 8936003,
+          "group": 175,
+          "session": 175
+        },
+        {
+          "pid": 176,
+          "start_ticks": 8936003,
+          "group": 176,
+          "session": 176
+        },
+        {
+          "pid": 177,
+          "start_ticks": 8936003,
+          "group": 177,
+          "session": 177
+        },
+        {
+          "pid": 178,
+          "start_ticks": 8936003,
+          "group": 178,
+          "session": 178
+        },
+        {
+          "pid": 179,
+          "start_ticks": 8936003,
+          "group": 179,
+          "session": 179
+        },
+        {
+          "pid": 181,
+          "start_ticks": 8936004,
+          "group": 181,
+          "session": 181
+        },
+        {
+          "pid": 182,
+          "start_ticks": 8936004,
+          "group": 182,
+          "session": 182
+        },
+        {
+          "pid": 183,
+          "start_ticks": 8936004,
+          "group": 183,
+          "session": 183
+        },
+        {
+          "pid": 184,
+          "start_ticks": 8936008,
+          "group": 184,
+          "session": 184
+        },
+        {
+          "pid": 186,
+          "start_ticks": 8936010,
+          "group": 186,
+          "session": 186
+        },
+        {
+          "pid": 188,
+          "start_ticks": 8936017,
+          "group": 188,
+          "session": 188
+        },
+        {
+          "pid": 194,
+          "start_ticks": 8936019,
+          "group": 194,
+          "session": 194
+        },
+        {
+          "pid": 195,
+          "start_ticks": 8936034,
+          "group": 195,
+          "session": 195
+        },
+        {
+          "pid": 196,
+          "start_ticks": 8936068,
+          "group": 196,
+          "session": 196
+        },
+        {
+          "pid": 197,
+          "start_ticks": 8936072,
+          "group": 197,
+          "session": 197
+        },
+        {
+          "pid": 198,
+          "start_ticks": 8936073,
+          "group": 198,
+          "session": 198
+        }
+      ],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": [],
+      "test_returncode": 0,
+      "postgres_returncode": 0,
+      "startup_timeout_seconds": 10,
+      "cleanup_phase_seconds": [
+        15,
+        5,
+        5
+      ]
+    }
+  },
+  {
+    "target": "native_contributor_workflows",
+    "case": "native_team_feedback_and_credits_keep_narrow_authority",
+    "exit": 0,
+    "seconds": 2.3796544075012207,
+    "binary_sha256": "65dc79cbefbb1c7aaccb2f545cd0a67e84f95e91faee76197425f712e198162a",
+    "log": "recovery/nov01-build/bounded-backend/06-native_contributor_workflows.log",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_timeout_seconds": 180,
+      "captured_births": [
+        {
+          "pid": 203,
+          "start_ticks": 8936316,
+          "group": 203,
+          "session": 203
+        },
+        {
+          "pid": 212,
+          "start_ticks": 8936330,
+          "group": 203,
+          "session": 203
+        },
+        {
+          "pid": 213,
+          "start_ticks": 8936330,
+          "group": 203,
+          "session": 203
+        },
+        {
+          "pid": 216,
+          "start_ticks": 8936402,
+          "group": 216,
+          "session": 216
+        },
+        {
+          "pid": 217,
+          "start_ticks": 8936403,
+          "group": 217,
+          "session": 217
+        },
+        {
+          "pid": 218,
+          "start_ticks": 8936403,
+          "group": 218,
+          "session": 218
+        },
+        {
+          "pid": 219,
+          "start_ticks": 8936403,
+          "group": 219,
+          "session": 219
+        },
+        {
+          "pid": 220,
+          "start_ticks": 8936403,
+          "group": 220,
+          "session": 220
+        },
+        {
+          "pid": 221,
+          "start_ticks": 8936403,
+          "group": 221,
+          "session": 221
+        },
+        {
+          "pid": 223,
+          "start_ticks": 8936403,
+          "group": 223,
+          "session": 223
+        },
+        {
+          "pid": 224,
+          "start_ticks": 8936403,
+          "group": 224,
+          "session": 224
+        },
+        {
+          "pid": 225,
+          "start_ticks": 8936403,
+          "group": 225,
+          "session": 225
+        },
+        {
+          "pid": 226,
+          "start_ticks": 8936408,
+          "group": 226,
+          "session": 226
+        },
+        {
+          "pid": 228,
+          "start_ticks": 8936410,
+          "group": 228,
+          "session": 228
+        },
+        {
+          "pid": 230,
+          "start_ticks": 8936416,
+          "group": 230,
+          "session": 230
+        },
+        {
+          "pid": 232,
+          "start_ticks": 8936419,
+          "group": 232,
+          "session": 232
+        },
+        {
+          "pid": 233,
+          "start_ticks": 8936434,
+          "group": 233,
+          "session": 233
+        },
+        {
+          "pid": 234,
+          "start_ticks": 8936476,
+          "group": 234,
+          "session": 234
+        }
+      ],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": [],
+      "test_returncode": 0,
+      "postgres_returncode": 0,
+      "startup_timeout_seconds": 10,
+      "cleanup_phase_seconds": [
+        15,
+        5,
+        5
+      ]
+    }
+  },
+  {
+    "target": "staff_authority_http",
+    "case": "clean_bootstrap_normal_admin_review_handoff_security_and_last_admin_races",
+    "exit": 0,
+    "seconds": 8.000128269195557,
+    "binary_sha256": "eae61d37ccc440192d17f6de5c9df641b69211951ba250a124c4e55fb59dc9d0",
+    "log": "recovery/nov01-build/bounded-backend/07-staff_authority_http.log",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_timeout_seconds": 180,
+      "captured_births": [
+        {
+          "pid": 240,
+          "start_ticks": 8936563,
+          "group": 240,
+          "session": 240
+        },
+        {
+          "pid": 249,
+          "start_ticks": 8936575,
+          "group": 240,
+          "session": 240
+        },
+        {
+          "pid": 250,
+          "start_ticks": 8936575,
+          "group": 240,
+          "session": 240
+        },
+        {
+          "pid": 251,
+          "start_ticks": 8936583,
+          "group": 240,
+          "session": 240
+        },
+        {
+          "pid": 253,
+          "start_ticks": 8936635,
+          "group": 253,
+          "session": 253
+        },
+        {
+          "pid": 254,
+          "start_ticks": 8936635,
+          "group": 254,
+          "session": 254
+        },
+        {
+          "pid": 255,
+          "start_ticks": 8936635,
+          "group": 255,
+          "session": 255
+        },
+        {
+          "pid": 256,
+          "start_ticks": 8936635,
+          "group": 256,
+          "session": 256
+        },
+        {
+          "pid": 257,
+          "start_ticks": 8936635,
+          "group": 257,
+          "session": 257
+        },
+        {
+          "pid": 258,
+          "start_ticks": 8936635,
+          "group": 258,
+          "session": 258
+        },
+        {
+          "pid": 260,
+          "start_ticks": 8936636,
+          "group": 260,
+          "session": 260
+        },
+        {
+          "pid": 261,
+          "start_ticks": 8936636,
+          "group": 261,
+          "session": 261
+        },
+        {
+          "pid": 262,
+          "start_ticks": 8936636,
+          "group": 262,
+          "session": 262
+        },
+        {
+          "pid": 263,
+          "start_ticks": 8936640,
+          "group": 263,
+          "session": 263
+        },
+        {
+          "pid": 265,
+          "start_ticks": 8936642,
+          "group": 265,
+          "session": 265
+        },
+        {
+          "pid": 267,
+          "start_ticks": 8936649,
+          "group": 267,
+          "session": 267
+        },
+        {
+          "pid": 273,
+          "start_ticks": 8936651,
+          "group": 273,
+          "session": 273
+        },
+        {
+          "pid": 308,
+          "start_ticks": 8937142,
+          "group": 308,
+          "session": 308
+        },
+        {
+          "pid": 309,
+          "start_ticks": 8937142,
+          "group": 309,
+          "session": 309
+        }
+      ],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": [],
+      "test_returncode": 0,
+      "postgres_returncode": 0,
+      "startup_timeout_seconds": 10,
+      "cleanup_phase_seconds": [
+        15,
+        5,
+        5
+      ]
+    }
+  },
+  {
+    "target": "staff_workspace_http",
+    "case": "native_staff_reports_profiles_and_corrections_are_scoped_fenced_and_audited",
+    "exit": 0,
+    "seconds": 2.2973172664642334,
+    "binary_sha256": "1774f0072a2002a2555862e1f46794c46bce3bf1c8465167be54e1a643de375a",
+    "log": "recovery/nov01-build/bounded-backend/08-staff_workspace_http.log",
+    "cleanup": {
+      "postgres_cleanup": "verified_stopped",
+      "exit": 0,
+      "forced": false,
+      "closed_port": true,
+      "remaining_owned_processes": [],
+      "cleanup_errors": [],
+      "error": null,
+      "test_timeout_seconds": 180,
+      "captured_births": [
+        {
+          "pid": 314,
+          "start_ticks": 8937372,
+          "group": 314,
+          "session": 314
+        },
+        {
+          "pid": 323,
+          "start_ticks": 8937386,
+          "group": 314,
+          "session": 314
+        },
+        {
+          "pid": 324,
+          "start_ticks": 8937386,
+          "group": 314,
+          "session": 314
+        },
+        {
+          "pid": 327,
+          "start_ticks": 8937464,
+          "group": 327,
+          "session": 327
+        },
+        {
+          "pid": 328,
+          "start_ticks": 8937466,
+          "group": 328,
+          "session": 328
+        },
+        {
+          "pid": 329,
+          "start_ticks": 8937466,
+          "group": 329,
+          "session": 329
+        },
+        {
+          "pid": 330,
+          "start_ticks": 8937466,
+          "group": 330,
+          "session": 330
+        },
+        {
+          "pid": 331,
+          "start_ticks": 8937466,
+          "group": 331,
+          "session": 331
+        },
+        {
+          "pid": 332,
+          "start_ticks": 8937466,
+          "group": 332,
+          "session": 332
+        },
+        {
+          "pid": 334,
+          "start_ticks": 8937466,
+          "group": 334,
+          "session": 334
+        },
+        {
+          "pid": 335,
+          "start_ticks": 8937466,
+          "group": 335,
+          "session": 335
+        },
+        {
+          "pid": 336,
+          "start_ticks": 8937466,
+          "group": 336,
+          "session": 336
+        },
+        {
+          "pid": 337,
+          "start_ticks": 8937470,
+          "group": 337,
+          "session": 337
+        },
+        {
+          "pid": 339,
+          "start_ticks": 8937472,
+          "group": 339,
+          "session": 339
+        },
+        {
+          "pid": 341,
+          "start_ticks": 8937479,
+          "group": 341,
+          "session": 341
+        },
+        {
+          "pid": 343,
+          "start_ticks": 8937482,
+          "group": 343,
+          "session": 343
+        },
+        {
+          "pid": 344,
+          "start_ticks": 8937497,
+          "group": 344,
+          "session": 344
+        },
+        {
+          "pid": 345,
+          "start_ticks": 8937536,
+          "group": 345,
+          "session": 345
+        }
+      ],
+      "unconfirmed_births": [],
+      "unconfirmed_child_pids": [],
+      "test_returncode": 0,
+      "postgres_returncode": 0,
+      "startup_timeout_seconds": 10,
+      "cleanup_phase_seconds": [
+        15,
+        5,
+        5
+      ]
+    }
+  }
+]

@@ -230,7 +230,7 @@ async fn begin(
     for group in &payload.groups {
         groups.push(resolve(&tx, ResourceKind::Group, group).await?);
     }
-    let native = core::begin_in(&tx, &actor, &core::Begin { manga, groups }).await?;
+    let native = core::begin_in(&state, &tx, &actor, &core::Begin { manga, groups }).await?;
     let mut result = session_resource(&tx, &native).await?;
     super::native_account_profile_settings::provenance(&mut result, cap.account.as_str());
     tx.commit().await?;
@@ -275,6 +275,7 @@ async fn begin_edit(
     let public_chapter = chapter.clone();
     let chapter = resolve(&tx, ResourceKind::Chapter, &chapter).await?;
     let native = core::begin_edit_in(
+        &state,
         &tx,
         &actor,
         &chapter,
@@ -525,6 +526,7 @@ async fn upload(
     headers: HeaderMap,
     request: Request,
 ) -> PublicApiResult<Json<Value>> {
+    state.config.instance.require_upload_policies()?;
     let session = PublicUuid::parse(&session)?;
     no_query(&uri)?;
     let (cap, mut multipart, _permit) =

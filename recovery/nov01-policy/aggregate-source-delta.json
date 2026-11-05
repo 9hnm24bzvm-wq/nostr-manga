@@ -1,0 +1,12 @@
+{
+  "association_sha256": "ce5766c035d22062ca6b954ccc84bae0c4867a0e9744106acebc6de3b85b672c",
+  "changed_during_aggregate": [
+    {
+      "path": "weebdex-platform/backend/tests/public_uploads.rs",
+      "associated_sha256": "227d130ff2c6b4d5bfac20ad10932cc41ace47f37e5a5e3cc79ae8d8ae97d786",
+      "current_sha256": "3ffee43d58d388aa296bd3970c1f08c5e6d535e53a2e106d3c8aba87bbc8f04d"
+    }
+  ],
+  "behavior_inputs_changed": false,
+  "note": "Only backend HTTP test request header corrected after suite started; final provenance rerun pending."
+}

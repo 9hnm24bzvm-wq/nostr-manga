@@ -98,6 +98,7 @@ async fn fixture() -> AppState {
             .contains("weebdex-platform/test-runtime/")
     );
     let cfg = Config {
+            instance: weebdex_platform::domains::staff_workspace::InstanceInformation { terms: "Synthetic test terms".into(), privacy: "Synthetic test privacy".into(), guidelines: "Synthetic test guidelines".into(), ..Default::default() },
         public_origin: "https://catalog.fixture.invalid".into(),
         database_plaintext_local: true,
         registration_enabled: false,

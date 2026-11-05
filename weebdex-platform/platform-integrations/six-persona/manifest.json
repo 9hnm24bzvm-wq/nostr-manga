@@ -3,8 +3,8 @@
   "baseline_commit_local": "9a70b771bfa8cb1b20f82c926f65956b93c2d5e6",
   "baseline_tree": "a035b00056557f83348db13c6288a680fd35aca8",
   "qualification": "Source composition only; no runtime, browser or release acceptance inherited.",
-  "patch_count": 110,
-  "patch_registry_sha256": "f256e7baebcfb95d53a450ff7561138647462fabe33f49a506f53511335a2415",
+  "patch_count": 118,
+  "patch_registry_sha256": "d6dd3d6e611fe235c5d6e0295c5b324f54948ef618b7dfb9344301ce1fee8873",
   "rows": [
     {
       "path": "src/lib/Locale.ts",
@@ -58,7 +58,7 @@
       "path": "src/lib/components/upload/UploadChapter.svelte",
       "original_sha256": "91e44bf44322f2d67fa1990c1f9843f98c34ebc795fb27d73e09215b2191d9a3",
       "input_sha256": "cd7c05c772868f13e30268aada620ed994ba8a760a41cf4de8f97f3d9c45449a",
-      "output_sha256": "e30c967f160d2ed9a7b13124ab8e8c65c571e34843206b5bae94ada676b5fef8"
+      "output_sha256": "10390e80d2ec66f29ece16a7ae26cb91f86578b9c1300eff76e8264e9fec5d46"
     },
     {
       "path": "src/lib/components/upload/UploadChapterGroups.svelte",

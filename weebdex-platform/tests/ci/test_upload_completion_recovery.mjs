@@ -79,3 +79,8 @@ test('a late older per-group scheduling observation cannot replace a newer refus
  f.account.upload.preflight.scheduling={available:false,reason:'Current group is not eligible for scheduling.'};await owner.preflight([FILE]);assert.equal(owner.schedulingAvailable,false);
  held.release();await assert.rejects(older,/newer publishing access check/);assert.equal(owner.schedulingAvailable,false);assert.match(owner.schedulingReason,/Current group/);assert.equal(f.calls.filter(r=>r.method!=='GET').length,0);owner.dispose();
 });
+
+test('policy capability fails closed for missing or malformed values without hiding recovery context',()=>{
+ const base=fixture().account.upload.preflight;assert.equal(eligibility.uploadEligibility(base).policiesAvailable,true);
+ for(const value of [undefined,null,false,'true',1,{}]){const result=eligibility.uploadEligibility({...base,policiesAvailable:value});assert.equal(result.policiesAvailable,false);assert.equal(result.eligible,false);assert.equal(result.scheduling.available,false);assert.match(result.reason,/operator must publish/);}
+});

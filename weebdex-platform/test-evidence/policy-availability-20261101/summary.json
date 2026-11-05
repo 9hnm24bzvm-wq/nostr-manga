@@ -1,0 +1,85 @@
+{
+  "scope": "P2 chapter-upload policy availability, exact accepted-source recovery, and upload regression",
+  "baseline_commit": "1a491e48cebd716ef9eb0d3bf072a4b008ae4440",
+  "production_behavior": [
+    "Terms, privacy and guidelines must each contain validated inline text or an HTTP(S) policy URL; optional operator branding/contact are separate.",
+    "Missing policy content rejects new upload begin/edit, page intake/replacement, resumable draft changes, immediate commits and new schedules.",
+    "Ordinary authenticated safe reads/cancellation remain available under existing ownership and authority checks.",
+    "Exact committed receipt replay remains available. Accepted source recovery requires exact immutable command/payload, current authority and a healthy verified actual source receipt; no source signing, staging or republishing is called.",
+    "Unknown commands and immutable original pins are retained; missing policies do not authorize replay or purge."
+  ],
+  "verified": {
+    "backend_unit": {
+      "passed": 229,
+      "failed": 0,
+      "ignored_database_tests": 3,
+      "log": "backend-unit.log"
+    },
+    "upload_http": {
+      "passed": 11,
+      "failed": 0,
+      "includes": [
+        "three new missing-policy tests",
+        "real strfry projection",
+        "licensed 24-PNG originals, 2 chapters, 4 notices, attributed cover"
+      ]
+    },
+    "public_uploads": {
+      "passed": 26,
+      "failed": 0,
+      "runtime_tests": 25,
+      "pure_identifier_test": 1,
+      "new_gate_log": "signed-native-schedule-policy-final.log"
+    },
+    "publication_access_http": {
+      "passed": 1,
+      "failed": 0,
+      "log": "accepted-recovery-lost-ack-final.log",
+      "coverage": "Actual accepted source followed by local transaction rollback; lost wrapper acknowledgement simulated by prepared state; missing-policy altered payload refused; exact receipt materialized; rebuilt router/config repeated request without duplicate source events."
+    },
+    "fixture_cleanup": "Every reported runtime test completed through run-auth-tests.sh with exit 0; guard requires unforced verified process cleanup and closed ports.",
+    "licensed_data_restore": {
+      "files": 28,
+      "bytes": 9507080,
+      "revision": "9f065a3fde464be893dfba9fb5fc6abc93722cf9",
+      "external_upload": false
+    }
+  },
+  "test_development_notes": [
+    "The new cross-transport policy test initially used an unsupported Z timestamp suffix; corrected to existing canonical schedule_time helper.",
+    "Its native requests initially omitted the required x-weebdex-expected-account header; corrected to the existing native transport contract. Both initial failures were fixture errors, not relaxed assertions or product bypasses.",
+    "The 25 preexisting public_uploads scenarios ran from an executable snapshot built from the same final production source before the final test-only header/timestamp corrections. The added scenario ran from the rebuilt final test executable."
+  ],
+  "limits": [
+    "These are automated HTTP/router/database tests, not browser acceptance or production deployment proof.",
+    "The policy-loss receipt case recreates the router/config, not a full OS process restart. Separate existing scheduled/publication tests cover runtime restart behavior.",
+    "Licensed fixture cache/image bytes must not be included in public source or recovery uploads."
+  ],
+  "modified_backend_source_sha256": {
+    "weebdex-platform/backend/src/domains/auth/closure_native_tests.rs": "47b72fc34c2c4ad6e99876a4d9c46ec063e9c1cec3cdec008687396075ab9589",
+    "weebdex-platform/backend/src/domains/staff_workspace/instance.rs": "587726d547e8ba3db77a0709a93bbcb8770050a4e77fb17ec01d7a5b28abf6b8",
+    "weebdex-platform/backend/src/domains/uploads/sessions.rs": "ca40706f486ea973c566a08d0ecebbb51f4a18ec20cc700101fee077d20d1a61",
+    "weebdex-platform/backend/src/protocol/publication.rs": "9e6671ccf54e0a9c5c14e737097d549da9c58a1a112796f6f6180f2b28a32df3",
+    "weebdex-platform/backend/src/public_api/native_upload_extensions.rs": "ea870325081c15ad2222caeff799f6803e86ab9c351cce4f9155aef9da1a0ad6",
+    "weebdex-platform/backend/src/public_api/native_uploads.rs": "ef7524b41cb332c7f21b47d75612b323ae10f7cdf1465af8bdd3e90669eb4430",
+    "weebdex-platform/backend/src/public_api/scheduled_uploads.rs": "30b9bb94269413670b399e99791aae786427824cf7ff277ed175a55dd70750f5",
+    "weebdex-platform/backend/src/public_api/upload_extensions.rs": "5728816c4aefead2487005ee98f7936a9fdcb13d586b27476213c686fa388005",
+    "weebdex-platform/backend/src/public_api/uploads.rs": "12f2e1c31a7c14311c889a68c7f7bbeb1f2bbeba541d4eb619c8a67f528474ec",
+    "weebdex-platform/backend/tests/catalog_http.rs": "d983c098e836a5acfd03ccb5eaf879388cef4b6d97e73c170ce8e536fc7406ef",
+    "weebdex-platform/backend/tests/native_account_contributions.rs": "4338420b71abe229dde99f91fb33a1f2f422bdfc5d75520e2a9c6f27c963797e",
+    "weebdex-platform/backend/tests/native_contributor_workflows.rs": "25b419ff6205a7dbae6a1830c918d65284ca72bd326530c9f7c0d335f48de6ef",
+    "weebdex-platform/backend/tests/protocol_bridge_http.rs": "cb69b3f96fb0f63c555517d0fed5845a1879d9d5314013f630864c5daecb44d7",
+    "weebdex-platform/backend/tests/public_chapter_writes.rs": "157a9efb7bfd11657517b25b8dd5744343d0c966ddfa545dc614d2558d004b76",
+    "weebdex-platform/backend/tests/public_uploads.rs": "3ffee43d58d388aa296bd3970c1f08c5e6d535e53a2e106d3c8aba87bbc8f04d",
+    "weebdex-platform/backend/tests/publication_access_http.rs": "3d601a54d248ca3e15091a29bf11428e41e8fc9d3cac3782cab0beeb4bbd64e6",
+    "weebdex-platform/backend/tests/staff_workspace_http.rs": "62f43e8741c02016f1f65b2a2e3cae93ce1948c7462cb082dc42dbf920eee7c0",
+    "weebdex-platform/backend/tests/upload_http.rs": "a27fbbab360030cc9762b8d712b2574d5d518df3835810cb03e4ee1948d7f754"
+  },
+  "binary_sha256": {
+    "upload_http-84e4df3b3e1b0f7a": "ca8ed492458bd30559a3a1fb94dc2f81b170d9a43d0d11bf094e3e84809f2a9b",
+    "public_uploads-c00995c3e1a99d9a": "6dd74289b7f2d08181704cffa3f1aadc98f215661395dec4b105deadda3ce314",
+    "publication_access_http-0e40fb3ee7c08a4a": "657b7a7143829decc270476d94a109e835079b4ca09d01117a06374abc37229d",
+    "weebdex_platform-11aad8092e8b8ad4": "0ed6662ed3c7f227fe17ab91c10d1aacf2a5bf7848d03c67ca0a276a073c7704",
+    "public_uploads-regression-snapshot": "32effebcb543fa404d0b5b8d237d7506bc44f6e177689633e72652ede35d3b26"
+  }
+}

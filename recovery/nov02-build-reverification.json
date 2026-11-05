@@ -1,0 +1,95 @@
+{
+  "verified_at_utc": "2026-11-02T20:03:00Z",
+  "source_baseline_commit": "1a491e48cebd716ef9eb0d3bf072a4b008ae4440",
+  "working_tree_has_unpublished_policy_fix": true,
+  "optimized_artifacts": [
+    {
+      "name": "browser_fixture_provisioner",
+      "path": "weebdex-platform/artifacts/nov01-release/browser_fixture_provisioner",
+      "bytes": 34102840,
+      "sha256": "c759b3e1a1390cf8a7e0a17e691d7175c0a94384224e75d3aa62e9716a32c619",
+      "verified_again": true
+    },
+    {
+      "name": "manga-node",
+      "path": "weebdex-platform/artifacts/nov01-release/manga-node",
+      "bytes": 28408984,
+      "sha256": "1e34f373d738bf747d5c0c2398fc559c235f10e12fed488297a4277ba121c24c",
+      "verified_again": true
+    },
+    {
+      "name": "weebdex-admin",
+      "path": "weebdex-platform/artifacts/nov01-release/weebdex-admin",
+      "bytes": 9745888,
+      "sha256": "55b7d71636e0b918114d7cff69be61d3d08d380913d4c509ad60d0d20b88a78f",
+      "verified_again": true
+    },
+    {
+      "name": "weebdex-platform",
+      "path": "weebdex-platform/artifacts/nov01-release/weebdex-platform",
+      "bytes": 57064872,
+      "sha256": "c5284d29e43e4b32d800eaa998226e9c25c40f833436d57e9aab7fd563c83c45",
+      "verified_again": true
+    }
+  ],
+  "selected_build_input_count": 374,
+  "changed_build_inputs": [],
+  "backend_test_summary": {
+    "scope": "Reconstructed affected backend regression, not an exact rerun of unavailable historical 50-invocation inventory",
+    "compile": {
+      "all_backend_integration_targets": 67,
+      "passed": true,
+      "log": "recovery/nov01-build/backend-all-build.log"
+    },
+    "unique_execution_counts": {
+      "ordinary_library_units": 229,
+      "separately_guarded_db_library_units": 3,
+      "http_router_database_cases": 45,
+      "additional_pure_integration_identifier_case": 1,
+      "failures": 0
+    },
+    "sources": [
+      "weebdex-platform/test-evidence/policy-availability-20261101/summary.json",
+      "recovery/nov01-build/bounded-backend/summary.json",
+      "recovery/nov01-build/lib-db/summary.json"
+    ],
+    "limitations": [
+      "Focused repeats not added to unique counts.",
+      "Remaining compiled backend cases were not executed as part of this bounded regression.",
+      "Native browser acceptance, optimized artifact runtime equivalence, operational restore and full sustained capacity are separate gates."
+    ],
+    "fixture_cleanup": "Owned fixture guard returned exit 0 for each recorded runtime case, requiring unforced verified teardown. Eight bounded HTTP cleanup receipts retained in summary."
+  },
+  "native_browser_terminal": {
+    "finished_at_utc": "2026-11-01T19:19:15.635792+00:00",
+    "status": "verified_stopped",
+    "physical_teardown_clean": true,
+    "lifecycle_clean": false,
+    "error_type": "RuntimeError",
+    "deadline_elapsed_at_finish": true,
+    "termination_interpretation": "Consistent with the fixture observation deadline; exact exception text is not retained in cleanup JSON.",
+    "remaining_owned_process_count": 0,
+    "all_recorded_ports_closed": true,
+    "synthetic_server_keys_absent": true,
+    "mail_accepted": 0,
+    "mail_links_persisted": false,
+    "browser_signer_secret_received": false,
+    "account_provision_actions": 0,
+    "verification_simulation_enabled": false,
+    "verification_attempts": 0,
+    "organic_email_verification_completed": false
+  },
+  "open_gates": [
+    "Actual authenticated browser moderation reversal",
+    "Independent signer browser interoperability",
+    "Organic delivered-link browser verification",
+    "Full optimized-artifact runtime qualification",
+    "Previously separate operational restore and sustained-capacity qualification"
+  ],
+  "exclusions": [
+    "Do not archive test-runtime, databases, keys, cookie/browser profiles, mail links or raw runtime receipts.",
+    "Exclude licensed Ubunchu cache/image bytes and screenshots.",
+    "Preserve retained compile warnings and distinguish debug test evidence from optimized build evidence."
+  ],
+  "no_new_tests_or_services_launched": true
+}

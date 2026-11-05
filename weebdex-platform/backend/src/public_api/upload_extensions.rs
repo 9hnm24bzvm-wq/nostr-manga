@@ -146,7 +146,7 @@ async fn stage(
     for file in payload.page_order {
         page_order.push(resolve(&tx, ResourceKind::UploadFile, &file).await?);
     }
-    core::save_resume_in(&tx, &actor, &native_id, &core::ResumePatch{
+    core::save_resume_in(&state, &tx, &actor, &native_id, &core::ResumePatch{
         version:payload.version, draft:payload.draft, page_order,
     }).await?;
     let native = core::owner_snapshot_in(&state, &tx, &native_id, actor.user_id(), true).await?;
@@ -161,6 +161,7 @@ async fn replace(
     State(state): State<AppState>, Path((session, file)): Path<(String, String)>,
     OriginalUri(uri): OriginalUri, headers: HeaderMap, request: Request,
 ) -> PublicApiResult<Json<Value>> {
+    state.config.instance.require_upload_policies()?;
     let session = PublicUuid::parse(&session)?;
     let file = PublicUuid::parse(&file)?;
     no_query(&uri)?;

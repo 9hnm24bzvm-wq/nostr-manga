@@ -1,0 +1,47 @@
+{
+  "qualification": "Full current JavaScript behavior suite plus exact affected provenance reruns; no browser or production-capacity claim. Counts overlap and must not be added.",
+  "aggregate": {
+    "tests": 6042,
+    "passed": 6034,
+    "failed": 2,
+    "historical_skips": 6,
+    "log": "recovery/nov01-policy/applicable-suite-final.log",
+    "terminal": "recovery/nov01-policy/applicable-suite-final/terminal.json",
+    "failures": [
+      "Backend HTTP test header corrected after association snapshot",
+      "Historical local-page comparison omitted exact newest-layer reversal for newly changed backend binding"
+    ]
+  },
+  "resolution": {
+    "reviewed_test_only_delta": "Exact current-source reversal added only to historical backend comparison, preserving immutable pins and tamper rejection. Runtime graph still reads live source.",
+    "provenance_rerun": {
+      "passed": 31,
+      "failed": 0,
+      "log": "recovery/nov01-policy/provenance-final.log",
+      "terminal": "recovery/nov01-policy/provenance-final/terminal.json"
+    },
+    "unresolved_js_failures": 0,
+    "full_suite_repeated_after_provenance_only_delta": false
+  },
+  "targeted": {
+    "native_clients_passed": 32,
+    "dom_and_recovery_passed": 60,
+    "mailbox_tests_passed": 5
+  },
+  "semantic": {
+    "errors": 0,
+    "warnings": 21,
+    "canonical_files": 679,
+    "canonical_unchanged": true,
+    "evidence": "weebdex-platform/.build/composed-policy-20261101-r2/evidence"
+  },
+  "final_source_association_sha256": "b8b8d8200203f8ba3c04b3ad5b38e6626557d108bb686c121e70b7c9d4a0afb9",
+  "historical_exclusions_sha256": "aec018fd7111169b2d7e0350dcc91b0e5e16fe2061d387bee99fc3629addf130",
+  "build": {
+    "index_sha256": "33ef549e0843378e6bbcc88464e787ac9818c166f3f3173a1ff48e33d40c494e",
+    "file_count": 488,
+    "bytes": 7925476,
+    "receipt": "weebdex-platform/test-evidence/frontend/policy-20261101-build/build-result.json",
+    "no_artifact_changes_after_browser_start": true
+  }
+}

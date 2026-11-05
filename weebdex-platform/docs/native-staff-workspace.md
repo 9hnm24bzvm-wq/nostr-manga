@@ -118,3 +118,24 @@ and mounted production-component tests. Consult their terminal receipts before
 treating a source change as passed. Synthetic grants are test prerequisites,
 not production role policy; no real account or operator setting is changed by
 the tests.
+
+## Chapter-upload policy availability
+
+Chapter uploads require the operator to supply all three public policies: terms,
+privacy and guidelines. Each may be nonblank inline text or a validated HTTP(S)
+link in `instance`. Operator branding and contact details remain separately
+reported by `configured`; they are not substitutes for policy content.
+`/api/instance-information` reports `uploadPoliciesAvailable`, and native contribution/upload
+preflight reports `policiesAvailable`. The upload consent checkbox is disabled
+when availability cannot be established, and consent includes the privacy link.
+
+The server independently rejects new upload sessions, page edits/intake,
+resumable draft changes, publication and scheduling while policy content is
+missing. Existing safe reads and cancellation retain their ordinary authority
+checks. A matching committed receipt can still be read. Recovery of an accepted
+source publication additionally requires the exact immutable command/payload and
+current healthy, verified source receipt under current publication authority.
+That recovery does not sign, stage originals or replay source publication.
+Prepared or uncertain commands alone do not authorize recovery and are not
+silently purged. Restoring policies does not override other publication,
+account, source or scheduling restrictions.

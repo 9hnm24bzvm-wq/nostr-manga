@@ -1,0 +1,12 @@
+{
+  "files": [
+    "tests/ci/test_reviewed_local_page_source_successors.mjs",
+    "tests/ci/test_six_persona_source_association.mjs",
+    "tests/ci/test_card_spinner_source_successor.mjs",
+    "tests/ci/test_reader_followup_source_successor.mjs",
+    "tests/ci/test_reviewed_reader_ux_fixpass_source_successor.mjs",
+    "tests/ci/test_title_spinner_source_successor.mjs"
+  ],
+  "exclusions_sha256": "aec018fd7111169b2d7e0350dcc91b0e5e16fe2061d387bee99fc3629addf130",
+  "association_sha256": "b8b8d8200203f8ba3c04b3ad5b38e6626557d108bb686c121e70b7c9d4a0afb9"
+}

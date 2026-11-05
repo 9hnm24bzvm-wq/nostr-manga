@@ -821,7 +821,9 @@ pub(crate) async fn native_upload_preflight(
     let formats = if configured { NATIVE_UPLOAD_SOURCE_FORMATS.to_vec() } else { vec!["image/jpeg","image/png","image/webp","image/gif"] };
     if configured { limits["maxUniqueBytes"] = serde_json::json!(NATIVE_UPLOAD_SOURCE_UNIQUE_BYTES); }
     let mut scheduling = serde_json::json!({"available":false,"reason":"Scheduling is unavailable for this account or publication target."});
+    let policies_available = state.config.instance.upload_policies_available();
     let eligibility: ApiResult<()> = async {
+        state.config.instance.require_upload_policies()?;
         actor.require_permission("chapter.create")?;
         actor.require_permission("self.chapter.update")?;
         crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
@@ -857,8 +859,49 @@ pub(crate) async fn native_upload_preflight(
         }
         Ok(())
     }.await;
-    let (eligible, reason) = match eligibility { Ok(()) => (true, None), Err(error) => (false, Some(if error.status.is_server_error() { "Publishing access could not be checked. Please try again or contact the site operator.".to_owned() } else { error.message })) };
-    Ok(serde_json::json!({"configured":configured,"scope":if configured {"original-protocol"} else {"instance-local"},"eligible":eligible,"reason":reason,"scheduling":scheduling,"formats":formats,"limits":limits,"requiresOperatorOrAuthorizedGroup":configured,"checkedAt":tx.query_one("SELECT platform.catalog_timestamp(clock_timestamp())",&[]).await?.get::<_,String>(0),"informationalGroupDelay":true}))
+    let (eligible, reason) = match eligibility { Ok(()) => (true, None), Err(error) => (false, Some(if error.status.is_server_error() && error.code != "upload_policies_unavailable" { "Publishing access could not be checked. Please try again or contact the site operator.".to_owned() } else { error.message })) };
+    Ok(serde_json::json!({"policiesAvailable":policies_available,"configured":configured,"scope":if configured {"original-protocol"} else {"instance-local"},"eligible":eligible,"reason":reason,"scheduling":scheduling,"formats":formats,"limits":limits,"requiresOperatorOrAuthorizedGroup":configured,"checkedAt":tx.query_one("SELECT platform.catalog_timestamp(clock_timestamp())",&[]).await?.get::<_,String>(0),"informationalGroupDelay":true}))
+}
+
+/// Missing policies permit only recovery of an already accepted exact upload.
+/// A durable intent, an event digest, or an unknown source outcome is insufficient.
+/// This function is read-only: it neither signs nor publishes nor drops pins.
+pub(crate) async fn require_accepted_upload_recovery(
+    state: &crate::AppState, tx: &tokio_postgres::Transaction<'_>,
+    actor: &impl crate::domains::catalog::entity_mutations::CatalogMutationActor,
+    session: &str, hash: &str, payload: &serde_json::Value,
+) -> ApiResult<()> {
+    let unavailable = || ApiError::new(axum::http::StatusCode::SERVICE_UNAVAILABLE,
+        "upload_policies_unavailable", "Chapter upload policies are unavailable. Only an exact, verified accepted publication receipt can be recovered; uncertain commands remain retained.");
+    if state.config.protocol_publication.is_none() || !state.protocol.is_ready() { return Err(unavailable()); }
+    let command = format!("upload:{session}");
+    let Some(row) = tx.query_opt("SELECT user_id,resource_kind,upload_session_id,native_commit_hash,native_commit_payload,event_id,source_manifest,created_at FROM platform.protocol_publication_commands WHERE command_id=$1", &[&command]).await? else { return Err(unavailable()); };
+    if row.get::<_,String>(0) != actor.user_id() || row.get::<_,String>(1) != "chapter"
+        || row.get::<_,Option<String>>(2).as_deref() != Some(session)
+        || row.get::<_,Option<String>>(3).as_deref() != Some(hash)
+        || row.get::<_,Option<serde_json::Value>>(4).as_ref() != Some(payload) { return Err(unavailable()); }
+    let event_id = row.get::<_,Option<String>>(5).ok_or_else(unavailable)?;
+    let manifest = row.get::<_,Option<Vec<u8>>>(6).filter(|b| b.len() <= 1_000_000).ok_or_else(unavailable)?;
+    let parsed = manga_node::manifest::chapter(&manifest).map_err(|_| unavailable())?;
+    let event = accepted_command_event(state, tx, &event_id, 1001, Some(&parsed.series)).await?.ok_or_else(unavailable)?;
+    let content: serde_json::Value = serde_json::from_str(&event.content).map_err(|_| unavailable())?;
+    if event.created_at != row.get::<_,i64>(7) as u64 || content["manifest"].as_str() != Some(auth::hash(&manifest).as_str()) { return Err(unavailable()); }
+    Ok(())
+}
+
+async fn accepted_command_event(
+    state: &crate::AppState, tx: &tokio_postgres::Transaction<'_>,
+    event_id: &str, kind: u32, parent: Option<&str>,
+) -> ApiResult<Option<Event>> {
+    let id = identity(event_id).map_err(|_| ApiError::unavailable())?;
+    let event = if let Some(entry) = state.protocol.entry(id).await? { Some(entry.event) }
+        else if kind == 1002 { manga_node::platform_bridge::pending_series_receipt(tx, id).await.map_err(|_| ApiError::unavailable())? }
+        else { manga_node::platform_bridge::pending_chapter_receipt(tx, id, identity(parent.ok_or_else(ApiError::unavailable)?).map_err(|_| ApiError::unavailable())?).await.map_err(|_| ApiError::unavailable())? };
+    if let Some(event) = &event {
+        event.verify().map_err(|_| ApiError::unavailable())?;
+        if event.id != event_id || event.kind != kind { return Err(ApiError::unavailable()); }
+    }
+    Ok(event)
 }
 
 async fn command_publish(
@@ -875,6 +918,7 @@ async fn command_publish(
     mut input: PublicationInput,
     expected_signer: Option<&str>,
     scheduled_session: Option<&str>,
+    receipt_only: bool,
 ) -> ApiResult<PublicationReceipt> {
     let runtime = state.protocol.publication_runtime().await?;
     let delegated=publication_access::resolve_native_in(state,account_tx,actor.native_publication_session(),true).await?;
@@ -947,6 +991,30 @@ async fn command_publish(
     // Preserve every existing legacy hash byte; delegated intents add exact authority capture.
     if let Some(capture)=&delegated{hash_body["nativePublicationDelegation"]=serde_json::to_value(capture).map_err(|_|ApiError::unavailable())?;}
     let input_hash=auth::hash(hash_body.to_string().as_bytes());
+    if receipt_only {
+        let row = account_tx.query_opt("SELECT user_id,group_id,input_hash,created_at,catalog_id,event_id,native_commit_hash,upload_session_id,native_commit_payload,source_manifest,scheduled_session_id FROM platform.protocol_publication_commands WHERE command_id=$1", &[&command]).await?
+            .ok_or_else(|| ApiError::conflict("Policies are unavailable and no accepted command exists; no new source effect is allowed"))?;
+        if row.get::<_,String>(0) != actor.user_id() || row.get::<_,Option<String>>(1).as_deref() != group
+            || row.get::<_,String>(2) != input_hash || row.get::<_,Option<String>>(6).as_deref() != commit_hash
+            || row.get::<_,Option<String>>(7).as_deref() != session || row.get::<_,Option<serde_json::Value>>(8).as_ref() != native_payload
+            || row.get::<_,Option<Vec<u8>>>(9).as_deref() != Some(input.canonical_manifest.as_slice())
+            || row.get::<_,Option<String>>(10).as_deref() != scheduled_session {
+            return Err(ApiError::conflict("Accepted publication command differs from the exact requested input or authority"));
+        }
+        let event_id = row.get::<_,Option<String>>(5).ok_or_else(|| ApiError::conflict("Source outcome is unknown; the command and originals remain retained"))?;
+        let parent = if input.kind == 1001 { Some(manga_node::manifest::chapter(&input.canonical_manifest).map_err(|_| ApiError::unavailable())?.series) } else { None };
+        let event = accepted_command_event(state, account_tx, &event_id, input.kind, parent.as_deref()).await?
+            .ok_or_else(|| ApiError::conflict("No current accepted source receipt; no signing, replay or purge was attempted"))?;
+        let content: serde_json::Value = serde_json::from_str(&event.content).map_err(|_| ApiError::unavailable())?;
+        if event.pubkey != publisher || event.created_at != row.get::<_,i64>(3) as u64
+            || content["manifest"].as_str() != Some(manifest.as_str()) { return Err(ApiError::conflict("Accepted source receipt does not match the command")); }
+        *catalog_id = row.get(4);
+        let receipt = runtime.receipt(event, false).await.map_err(|_| ApiError::unavailable())?;
+        // The current receipt resolves this exact previously unknown command.
+        // Record that fact in the caller's transaction; rollback keeps all pins.
+        account_tx.execute("UPDATE platform.protocol_publication_commands SET state='source_accepted',updated_at=clock_timestamp() WHERE command_id=$1 AND state='prepared'", &[&command]).await?;
+        return Ok(receipt);
+    }
     let timestamp = auth::now();
     let mut unsigned = Event {
         id: String::new(),
@@ -1198,6 +1266,7 @@ pub(crate) async fn publish_native_manga_with_cover_requirement(
         input,
         None,
         None,
+        false,
     )
     .await?;
     if alias != manga {
@@ -1250,6 +1319,9 @@ pub(crate) async fn publish_native_upload_fenced(
     expected_parent_manifest: Option<&[u8]>,
 ) -> ApiResult<Option<PublicationReceipt>> {
     crate::domains::auth::closure::active_in(tx,actor.user_id()).await?;
+    if !state.config.instance.upload_policies_available() {
+        require_accepted_upload_recovery(state, tx, actor, session, commit_hash, native_commit_payload).await?;
+    }
     if state.config.protocol_publication.is_none() {
         let prepared:bool=tx.query_one("SELECT EXISTS(SELECT 1 FROM platform.protocol_publication_commands WHERE upload_session_id=$1)", &[&session]).await?.get(0);
         if prepared {
@@ -1338,6 +1410,7 @@ pub(crate) async fn publish_native_upload_fenced(
             input,
         expected_identity.map(|(signer, _)| signer),
         expected_identity.map(|_| session),
+        !state.config.instance.upload_policies_available(),
         )
         .await?;
         crate::domains::catalog::CatalogRepository::associate_protocol_manga(
@@ -1394,6 +1467,7 @@ pub(crate) async fn publish_native_upload_fenced(
         input,
         expected_identity.map(|(signer, _)| signer),
         expected_identity.map(|_| session),
+        !state.config.instance.upload_policies_available(),
     )
     .await?;
     record.protocol_event_id = Some(receipt.event.id.clone());

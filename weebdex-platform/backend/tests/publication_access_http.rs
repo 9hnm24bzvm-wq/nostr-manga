@@ -152,6 +152,7 @@ async fn fixture() -> Fixture {
     let cfg: OperatorRuntimeConfig = serde_json::from_value(publication).unwrap();
     let state = AppState::connect(
         Config {
+            instance: weebdex_platform::domains::staff_workspace::InstanceInformation { terms: "Synthetic test terms".into(), privacy: "Synthetic test privacy".into(), guidelines: "Synthetic test guidelines".into(), ..Default::default() },
             public_origin: origin.clone(),
             database_plaintext_local: true,
             database_connections: 12,
@@ -234,6 +235,19 @@ async fn fixture() -> Fixture {
         secret,
         _server: server,
     }
+}
+// Real Router request under a restarted policy configuration; no source calls are mocked.
+async fn policy_call(f: &Fixture, method: &str, path: &str, body: Value, status: u16) -> Value {
+    use tower::ServiceExt;
+    let mut state=f.state.clone();let mut config=(*state.config).clone();
+    config.instance=Default::default();state.config=std::sync::Arc::new(config);
+    let request=axum::http::Request::builder().method(method).uri(path)
+        .header("origin",&f.origin).header("cookie","weebdex_session=synthetic-pub-PubOwner")
+        .header("content-type","application/json").body(axum::body::Body::from(body.to_string())).unwrap();
+    let response=weebdex_platform::router::router(state).oneshot(request).await.unwrap();
+    let actual=response.status().as_u16();let bytes=axum::body::to_bytes(response.into_body(),1024*1024).await.unwrap();
+    let result:Value=serde_json::from_slice(&bytes).unwrap_or(Value::Null);
+    assert_eq!(actual,status,"{path}: {result}");result
 }
 async fn run_cli(f: &Fixture, args: &[&str], confirm: bool) -> (bool, String) {
     let mut child = tokio::process::Command::new(env!("CARGO_BIN_EXE_weebdex-admin"))
@@ -982,15 +996,19 @@ async fn reviewed_cli_native_only_publication_recovery_and_lifecycle() {
     assert_eq!(error.status.as_u16(), 409);
     assert!(error.message.contains("irreversible"));
     let accepted_counts = f.counts().await;
-    let recovered = f
-        .call(
-            "POST",
-            &format!("/api/upload/{uncertain}/commit"),
-            "PubOwner",
-            Some(uncertain_body),
-            200,
-        )
-        .await;
+    // Simulate losing only the wrapper's acceptance acknowledgement after the
+    // real source accepted. The signed source receipt is never fabricated.
+    f.state.db.client().await.unwrap().execute("UPDATE platform.protocol_publication_commands SET state='prepared' WHERE command_id=$1", &[&format!("upload:{uncertain}")]).await.unwrap();
+    let mut changed = uncertain_body.clone();
+    changed["draft"]["title"]=json!("Changed input cannot use an accepted receipt");
+    policy_call(&f,"POST",&format!("/api/upload/{uncertain}/commit"),changed,503).await;
+    assert_eq!(f.counts().await, accepted_counts);
+    let recovered=policy_call(&f,"POST",&format!("/api/upload/{uncertain}/commit"),uncertain_body.clone(),200).await;
+    // Recreated router/config and exact retry cannot duplicate source acceptance.
+    let retried=policy_call(&f,"POST",&format!("/api/upload/{uncertain}/commit"),uncertain_body,200).await;
+    assert_eq!(retried["protocol_event_id"],accepted);
+    let recovered_state:String=f.state.db.client().await.unwrap().query_one("SELECT state FROM platform.protocol_publication_commands WHERE command_id=$1", &[&format!("upload:{uncertain}")]).await.unwrap().get(0);
+    assert_eq!(recovered_state,"materialized");
     assert_eq!(recovered["protocol_event_id"], accepted);
     assert_eq!(f.counts().await, accepted_counts);
     let counts = f.counts().await;

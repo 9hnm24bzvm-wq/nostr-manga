@@ -1,0 +1,21 @@
+{
+  "scope": "Restored build dependencies only, not deployment or production qualification",
+  "rust": "1.90.0",
+  "node": "v24.22.1",
+  "node_limit": "Compatible newer system Node 24.22.1, not README hosted pin 24.19.0",
+  "postgres": "postgres (PostgreSQL) 18.6",
+  "bootstrap_exit": 0,
+  "frontend_frozen_yarn_install_exit": 0,
+  "canonical_lock_hashes": {
+    "manga-protocol-lab/server/Cargo.lock": "d7cdff3f56961c3e64ea986c65bfbc71ddb36d9202f4dad7dd6747c0a00e3503",
+    "weebdex-platform/backend/Cargo.lock": "5db937f7dcd8a329096d725730feb5e172985800ba0c19d5e056885cc1c47f26",
+    "weebdex-platform/frontend/yarn.lock": "2169f69125e5d59bb8b143ed2c68a4c7be351ff3b3edd83b29260f2bb4f848ea",
+    "weebdex-platform/docs/fixtures/reader-test-dependencies-20261028/package-lock.json": "2bd37bce08716decd41804dccf010a9bea42f6f698e7a5b47acadcefce5e7ac5"
+  },
+  "pinned_strfry_commit": "4cd3cf64850caf47dda46c2a2abbbf3525a64d10",
+  "strfry_sha256": "ac0f3e86236458f994f79b40c8a9c3fdd9e136dc673122f406b708815a57860c",
+  "frontend_dependency_stage": "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/weebdex-platform/frontend/node_modules",
+  "qa_dom_dependency_stage": "/workspace/scratch/3eafc9756ff3/manga-protocol-lab/weebdex-platform/.build/qualified-test-deps-20261028/node_modules",
+  "svelte_review_sources": "41 exact source pins verified",
+  "npm_package_hooks_executed": false
+}

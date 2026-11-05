@@ -24,8 +24,8 @@ async fn stale_principal_core_families_refuse_after_disable() {
  refused!(tx,discussion::delete_in(&tx,&actor,"UnusedThread",1,Some(1)));
  refused!(tx,discussion::thread_vote_in(&tx,&actor,"UnusedThread",1,None));
  refused!(tx,discussion::reply_vote_in(&tx,&actor,"UnusedThread",1,1,None,Some(1)));
- refused!(tx,upload::begin_in(&tx,&actor,&upload::Begin{manga:"UnusedManga".into(),groups:vec![]}));
- refused!(tx,upload::begin_edit_in(&tx,&actor,"UnusedChapter",&upload::Edit{replace:true,version:1}));
+ refused!(tx,upload::begin_in(&state, &tx,&actor,&upload::Begin{manga:"UnusedManga".into(),groups:vec![]}));
+ refused!(tx,upload::begin_edit_in(&state, &tx,&actor,"UnusedChapter",&upload::Edit{replace:true,version:1}));
  refused!(tx,upload::cancel_in(&tx,&actor,"UnusedUpload"));
  refused!(tx,upload::remove_files_in(&tx,&actor,"UnusedUpload",&["UnusedFile".into()]));
  refused!(tx,moderation::create_report(&tx,&actor,"manga","UnusedManga","UnusedReason","No late report"));

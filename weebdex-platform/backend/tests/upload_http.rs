@@ -148,6 +148,7 @@ async fn fixture() -> Fixture {
         .unwrap();
     let state = AppState::connect(
         Config {
+            instance: weebdex_platform::domains::staff_workspace::InstanceInformation { terms: "Synthetic test terms".into(), privacy: "Synthetic test privacy".into(), guidelines: "Synthetic test guidelines".into(), ..Default::default() },
             public_origin: ORIGIN.into(),
             database_plaintext_local: true,
             uploads_dir: storage.path().join("media"),
@@ -3032,4 +3033,81 @@ async fn licensed_ubunchu_originals_upload_cover_reader_hashes_and_attribution()
     println!(
         "Real local Ubunchu acceptance:24 unchangedPNG originals,2chapters,4 verified notices,1 attributed cover; HTTP bytes/HEAD/ranges/ETags; no browser or external publication claim."
     );
+}
+
+fn hide_upload_policies(f: &mut Fixture) {
+    let mut config = (*f.state.config).clone();
+    config.instance.privacy.clear();
+    config.instance.privacy_url = None;
+    f.state.config = std::sync::Arc::new(config);
+    // Rebuilding the router simulates loading the changed immutable configuration.
+    f.app = weebdex_platform::router::router(f.state.clone());
+}
+
+#[tokio::test]
+#[ignore = "Requires the explicitly isolated PostgreSQL runner"]
+async fn missing_policies_block_new_upload_effects_but_keep_cleanup_and_reads() {
+    let mut f = fixture().await;
+    let manga = create_manga(&f, "Up policy gate fixture", true).await;
+    let mid = manga["id"].as_str().unwrap();
+    let session = begin(&f, mid).await;
+    let bytes = png();
+    let files = file_array(upload(&f, &session, &[image_part("policy.png", "image/png", &bytes)], Some(&f.owner), StatusCode::OK).await, 1);
+    let before = f.state.db.client().await.unwrap().query_one("SELECT version,(SELECT count(*) FROM platform.upload_files WHERE session_id=$1) FROM platform.upload_sessions WHERE id=$1", &[&session]).await.unwrap();
+    hide_upload_policies(&mut f);
+    let blocked = api(&f.app, Method::POST, "/api/upload/begin", Some(&f.owner), Some(json!({"manga":mid,"groups":[]})), StatusCode::SERVICE_UNAVAILABLE).await;
+    assert_eq!(blocked["code"], "upload_policies_unavailable");
+    upload(&f, &session, &[image_part("blocked.png", "image/png", &bytes)], Some(&f.owner), StatusCode::SERVICE_UNAVAILABLE).await;
+    api(&f.app, Method::PATCH, &format!("/api/upload/{session}"), Some(&f.owner), Some(json!({"version":before.get::<_,i32>(0),"draft":draft("Blocked metadata"),"page_order":[files[0]["id"]]})), StatusCode::SERVICE_UNAVAILABLE).await;
+    api(&f.app, Method::POST, &format!("/api/upload/{session}/commit"), Some(&f.owner), Some(commit_payload("Blocked commit", &files)), StatusCode::SERVICE_UNAVAILABLE).await;
+    let after = f.state.db.client().await.unwrap().query_one("SELECT version,(SELECT count(*) FROM platform.upload_files WHERE session_id=$1) FROM platform.upload_sessions WHERE id=$1", &[&session]).await.unwrap();
+    assert_eq!(before.get::<_,i32>(0), after.get::<_,i32>(0));
+    assert_eq!(before.get::<_,i64>(1), after.get::<_,i64>(1));
+    let read = api(&f.app, Method::GET, "/api/upload", Some(&f.owner), None, StatusCode::OK).await;
+    assert_eq!(read["id"], session); assert_eq!(read["can_mutate"], false);
+    // Missing policy is not a reason to strand otherwise cancellable local work.
+    api(&f.app, Method::DELETE, &format!("/api/upload/{session}"), Some(&f.owner), None, StatusCode::NO_CONTENT).await;
+}
+
+#[tokio::test]
+#[ignore = "Requires the explicitly isolated PostgreSQL runner"]
+async fn missing_policies_preserve_exact_committed_receipt_only() {
+    let mut f = fixture().await;
+    let manga = create_manga(&f, "Up policy receipt fixture", true).await;
+    let session = begin(&f, manga["id"].as_str().unwrap()).await;
+    let bytes=png();
+    let files=file_array(upload(&f,&session,&[image_part("receipt.png","image/png",&bytes)],Some(&f.owner),StatusCode::OK).await,1);
+    let payload=commit_payload("Exact receipt",&files);
+    let path=format!("/api/upload/{session}/commit");
+    let receipt=api(&f.app,Method::POST,&path,Some(&f.owner),Some(payload.clone()),StatusCode::OK).await;
+    hide_upload_policies(&mut f);
+    let replay=api(&f.app,Method::POST,&path,Some(&f.owner),Some(payload.clone()),StatusCode::OK).await;
+    assert_eq!(replay["id"],receipt["id"]);
+    let mut changed=payload;changed["draft"]["title"]=json!("Changed input is not a receipt");
+    api(&f.app,Method::POST,&path,Some(&f.owner),Some(changed),StatusCode::CONFLICT).await;
+    let count:i64=f.state.db.client().await.unwrap().query_one("SELECT count(*) FROM platform.catalog_chapters WHERE manga_id=$1",&[&manga["id"].as_str().unwrap()]).await.unwrap().get(0);
+    assert_eq!(count,1);
+}
+
+#[tokio::test]
+#[ignore = "Requires the explicitly isolated PostgreSQL runner"]
+async fn missing_policies_do_not_convert_unknown_command_into_replay_or_purge() {
+    let mut f=fixture().await;
+    let manga=create_manga(&f,"Up unknown policy fixture",true).await;
+    let session=begin(&f,manga["id"].as_str().unwrap()).await;
+    let bytes=png();
+    let files=file_array(upload(&f,&session,&[image_part("unknown.png","image/png",&bytes)],Some(&f.owner),StatusCode::OK).await,1);
+    let command=format!("upload:{session}");let file=files[0]["id"].as_str().unwrap();
+    let db=f.state.db.client().await.unwrap();
+    db.execute("INSERT INTO platform.protocol_publication_commands(command_id,user_id,input_hash,resource_kind,catalog_id,upload_session_id,created_at,state) VALUES($1,$2,$3,'chapter',$4,$5,1,'prepared')",&[&command,&f.owner_id,&"11".repeat(32),&file,&session]).await.unwrap();
+    let object:String=db.query_one("SELECT object_id FROM platform.upload_files WHERE id=$1",&[&file]).await.unwrap().get(0);
+    db.execute("INSERT INTO platform.protocol_publication_originals(command_id,hash,object_id) VALUES($1,$2,$3)",&[&command,&hex::encode(Sha256::digest(&bytes)),&object]).await.unwrap();
+    drop(db);hide_upload_policies(&mut f);
+    for _ in 0..2 {
+        api(&f.app,Method::POST,&format!("/api/upload/{session}/commit"),Some(&f.owner),Some(commit_payload("Unknown source outcome",&files)),StatusCode::SERVICE_UNAVAILABLE).await;
+        domains::uploads::recover_storage(&f.state).await;
+    }
+    api(&f.app,Method::DELETE,&format!("/api/upload/{session}"),Some(&f.owner),None,StatusCode::CONFLICT).await;
+    let row=f.state.db.client().await.unwrap().query_one("SELECT p.state,(SELECT count(*) FROM platform.protocol_publication_originals WHERE command_id=$1),(SELECT count(*) FROM platform.upload_files WHERE session_id=$2),(SELECT state FROM platform.upload_sessions WHERE id=$2) FROM platform.protocol_publication_commands p WHERE command_id=$1",&[&command,&session]).await.unwrap();
+    assert_eq!(row.get::<_,String>(0),"prepared");assert_eq!(row.get::<_,i64>(1),1);assert_eq!(row.get::<_,i64>(2),1);assert_eq!(row.get::<_,String>(3),"open");
 }

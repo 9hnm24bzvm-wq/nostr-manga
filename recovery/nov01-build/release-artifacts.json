@@ -1,0 +1,46 @@
+{
+  "status": "release_build_completed",
+  "profile": "release optimized, Rust 1.90.0",
+  "commands_exit": 0,
+  "selected_source_inputs_checked": 374,
+  "changed_inputs": [],
+  "artifacts": [
+    {
+      "name": "browser_fixture_provisioner",
+      "path": "weebdex-platform/artifacts/nov01-release/browser_fixture_provisioner",
+      "bytes": 34102840,
+      "sha256": "c759b3e1a1390cf8a7e0a17e691d7175c0a94384224e75d3aa62e9716a32c619"
+    },
+    {
+      "name": "manga-node",
+      "path": "weebdex-platform/artifacts/nov01-release/manga-node",
+      "bytes": 28408984,
+      "sha256": "1e34f373d738bf747d5c0c2398fc559c235f10e12fed488297a4277ba121c24c"
+    },
+    {
+      "name": "weebdex-admin",
+      "path": "weebdex-platform/artifacts/nov01-release/weebdex-admin",
+      "bytes": 9745888,
+      "sha256": "55b7d71636e0b918114d7cff69be61d3d08d380913d4c509ad60d0d20b88a78f"
+    },
+    {
+      "name": "weebdex-platform",
+      "path": "weebdex-platform/artifacts/nov01-release/weebdex-platform",
+      "bytes": 57064872,
+      "sha256": "c5284d29e43e4b32d800eaa998226e9c25c40f833436d57e9aab7fd563c83c45"
+    }
+  ],
+  "configuration_smoke": {
+    "result": "passed",
+    "database_opened": false,
+    "signer_opened": false,
+    "log": "recovery/nov01-build/release-check/config-check.log"
+  },
+  "frontend_manifest_sha256": "3883af4beaad5483bf3d87cbc166c638d56be315d2985c35a2301ec18e156c55",
+  "frontend_index_sha256": "33ef549e0843378e6bbcc88464e787ac9818c166f3f3173a1ff48e33d40c494e",
+  "limits": [
+    "Browser and main regression executed debug binaries. Release build success and check-config are not full optimized runtime qualification.",
+    "Retained compiler warnings recorded in release-binaries.log.",
+    "No deployment, main merge or external publication performed."
+  ]
+}

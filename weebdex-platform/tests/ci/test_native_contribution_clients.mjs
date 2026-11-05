@@ -98,3 +98,24 @@ test('related-title name search is bounded, public, cancellable and never grants
 test('related-title search discards a delayed response after cancellation or account change',async()=>{
  const m=await import('./native-contribution-fixture.mjs');for(const replacement of ['cancel','account']){const entered=deferred(),held=deferred(),f=fixture({request:async(r,next)=>{if(r.route==='/manga'){entered.release();await held.promise;return response({result:'ok',response:'collection',data:[],limit:25,offset:0,total:0});}return next(r);}}),c=await m.relations.createSessionRelationController(NATIVE,MANGA,USER,f.check,f.deps),abort=new AbortController(),pending=c.search('Weekend',abort.signal);const rejected=assert.rejects(pending);await entered.promise;if(replacement==='cancel')abort.abort();else f.state.active=false;held.release();await rejected;assert.equal(f.calls.filter(r=>r.method!=='GET').length,0);c.dispose();}
 });
+
+test('missing policies refuse a fresh commit before dispatch without losing staged pages',async()=>{
+ const f=await ready(),{payload}=await stagedCommit(f);f.account.upload.preflight.policiesAvailable=false;
+ await assert.rejects(f.owner.request('/upload/'+SESSION+'/commit','POST',payload),/operator must publish/);
+ assert.equal(f.calls.filter(r=>r.route.endsWith('/commit')).length,0);assert.equal(f.owner.commitState(),undefined);assert.equal(f.state.sessions.get(SESSION).files.length,1);f.owner.dispose();
+});
+test('policy loss after uncertain accepted commit still permits exact receipt recovery without replay',async()=>{
+ const f=await ready({request:async(r,next)=>{const result=await next(r);if(r.route.endsWith('/commit'))throw Error('Synthetic dropped accepted response');return result;}}),{payload}=await stagedCommit(f);
+ await assert.rejects(f.owner.request('/upload/'+SESSION+'/commit','POST',payload));assert.equal(f.owner.commitState(),'uncertain');
+ delete f.account.upload.preflight.policiesAvailable;
+ const user=await f.adapter.loadUploadAccount(f.check),owner=f.adapter.publicUploadOwner(()=>MANGA,user,'manga','caller');
+ assert.equal(owner.capabilities().policiesAvailable,false);assert.equal(owner.capabilities().eligible,false);
+ const saved=await f.adapter.currentUpload(owner);assert.equal(saved.can_mutate,false);
+ const recovered=await f.adapter.reconcileUploadReceipt(owner,SESSION);assert.equal(recovered.receipt.id,CHAPTER);assert.equal(f.state.commits,1);owner.dispose();
+});
+test('missing policies do not clear an unknown publication pin when receipt is still unavailable',async()=>{
+ const f=await ready({request:async(r,next)=>{if(r.route.endsWith('/commit'))throw Error('Synthetic dispatch outcome unknown');return next(r);}}),{payload}=await stagedCommit(f);
+ await assert.rejects(f.owner.request('/upload/'+SESSION+'/commit','POST',payload));assert.equal(f.owner.commitState(),'uncertain');
+ f.account.upload.preflight.policiesAvailable=false;await assert.rejects(f.adapter.reconcileUploadReceipt(f.owner,SESSION));
+ assert.equal(f.owner.commitState(),'uncertain');await assert.rejects(f.owner.request('/upload/'+SESSION+'/commit','POST',payload));assert.equal(f.calls.filter(r=>r.route.endsWith('/commit')).length,1);assert.equal(f.state.sessions.get(SESSION).files.length,1);f.owner.dispose();
+});

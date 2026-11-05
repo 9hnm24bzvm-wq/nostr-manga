@@ -145,6 +145,7 @@ async fn fixture() -> Fixture {
         .unwrap();
     let state = AppState::connect(
         Config {
+            instance: weebdex_platform::domains::staff_workspace::InstanceInformation { terms: "Synthetic test terms".into(), privacy: "Synthetic test privacy".into(), guidelines: "Synthetic test guidelines".into(), ..Default::default() },
             public_origin: ORIGIN.into(),
             database_plaintext_local: true,
             uploads_dir: storage.path().join("media"),
@@ -1369,6 +1370,7 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
         .unwrap();
     let peer_state = AppState::connect(
         Config {
+            instance: weebdex_platform::domains::staff_workspace::InstanceInformation { terms: "Synthetic test terms".into(), privacy: "Synthetic test privacy".into(), guidelines: "Synthetic test guidelines".into(), ..Default::default() },
             public_origin: ORIGIN.into(),
             database_plaintext_local: true,
             uploads_dir: peer_storage.path().join("native"),

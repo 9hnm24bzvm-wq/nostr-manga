@@ -157,6 +157,7 @@ async fn admit_inner(
         if intent.state=="complete" {return Ok(None)}
         return Ok(Some(intent.receipt()));
     }
+    state.config.instance.require_upload_policies()?;
     let horizon=i64::from(state.config.scheduled_upload_horizon_seconds);
     let timing=tx.query_one("SELECT ($1::text::timestamp AT TIME ZONE 'UTC')>clock_timestamp(),($1::text::timestamp AT TIME ZONE 'UTC')<=clock_timestamp()+$2::bigint*interval '1 second'",&[&publish_at,&horizon]).await?;
     if !timing.get::<_,bool>(0) {return Ok(None)}
@@ -266,6 +267,7 @@ async fn gate(state:&AppState,tx:&Transaction<'_>,id:&str,token:&str,execution:b
     let current_manifest=crate::protocol::publication::scheduled_parent_manifest(state,tx,&manga).await?;
     if parent_cover(tx,&manga).await?!=intent.parent_cover||parent_fingerprint(parent_version,&current_manifest)!=intent.parent_fingerprint||intent.parent_manifest.as_deref()!=Some(current_manifest.as_slice()) {return Err(PublicApiError::conflict("Scheduled parent version or immutable metadata changed"));}
     if is_edit {
+        state.config.instance.require_upload_policies()?;
         if !intent.within_retry||parent_source!=intent.parent_source {return Err(PublicApiError::conflict("Scheduled edit deadline or parent identity changed"));}
         return Ok((intent,actor));
     }
@@ -293,6 +295,9 @@ async fn gate(state:&AppState,tx:&Transaction<'_>,id:&str,token:&str,execution:b
     }
     if let Some(existing)=tx.query_opt("SELECT protocol_event_id FROM platform.catalog_chapters WHERE id=$1",&[&intent.chapter]).await? {
         if accepted_chapter.is_none()||existing.get::<_,Option<String>>(0)!=accepted_chapter {return Err(PublicApiError::conflict("Reserved scheduled chapter identity is already occupied"));}
+    }
+    if !state.config.instance.upload_policies_available() {
+        crate::protocol::publication::require_accepted_upload_recovery(state, tx, &actor, id, &intent.hash, &intent.payload).await?;
     }
     Ok((intent,actor))
 }

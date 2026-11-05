@@ -6,7 +6,7 @@ mail sink. No login password/token is generated or logged by this supervisor.
 The browser owns synthetic passwords; mail links are held only in sink memory.
 """
 from __future__ import annotations
-import argparse, collections, ctypes, hashlib, io, json, os, re, shutil, signal, socket, subprocess, sys, tempfile, threading, time
+import argparse, collections, ctypes, hashlib, html, io, json, os, re, shutil, signal, socket, subprocess, sys, tempfile, threading, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from http.client import HTTPConnection
 from pathlib import Path
@@ -68,6 +68,24 @@ PUBLIC_UPLOAD_CONTROLS={'upload-account','upload-snapshot'}
 UI_REGRESSION_CONTROLS={'ui-regressions-seed':120,'ui-regressions-readers':120,'ui-regressions-status':30,'ui-regressions-withdraw':30}
 PG_HOME_FAULT_CONTROLS={'pg-home-fault-begin','pg-home-fault-resume'}
 READER_VERIFICATION_EMAIL='synthetic-reader-final@example.invalid'
+
+
+def verification_mailbox_html(origin, recipient, link=None):
+    """Render captured verification mail, never synthesize or redeem a token."""
+    if not isinstance(recipient, str) or not EMAIL.fullmatch(recipient):
+        raise ValueError('Reserved synthetic mailbox required')
+    if not isinstance(origin, str) or not re.fullmatch(r'http://127\.0\.0\.1:[1-9][0-9]{0,4}', origin):
+        raise ValueError('Exact loopback platform origin required')
+    if not 1 <= urlsplit(origin).port <= 65535:
+        raise ValueError('Loopback platform port required')
+    body = '<p>No captured verification message yet. Request a link on the site, then reload this page.</p>'
+    if link is not None:
+        if not isinstance(link, str) or not re.fullmatch(re.escape(origin) + r'/auth/self-service/verification\?token=[A-Za-z0-9_-]{43}', link):
+            raise ValueError('Exact captured verification link required')
+        body = '<p>A verification message was accepted by the local test mail sink.</p><p><a rel="noreferrer" href="' + html.escape(link, quote=True) + '">Verify this test email</a></p>'
+    return ('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+            '<title>Local test verification mailbox</title><body><h1>Local test verification mailbox</h1><p>' + html.escape(recipient, quote=True) + '</p>' + body +
+            '<p>This is captured application mail in a disposable loopback fixture. It does not establish external email-provider delivery. Opening this mailbox does not verify the account.</p></body></html>').encode()
 
 
 def public_feature_command(phase, options, script, timeout, public_upload_controls):
@@ -623,6 +641,9 @@ class Fixture:
                 'public_origin':self.origin,'ui_dir':str(self.ui_dir),'uploads_dir':str(uploads),
                 'database_connections':8,'database_plaintext_local':True,'maximum_requests':32,'registration_enabled':True,
                 'json_body_timeout_seconds':30,'upload_body_timeout_seconds':180,'shutdown_grace_seconds':210,
+                'instance':{'terms':'Synthetic local test terms: publish only mock fixture content.',
+                            'privacy':'Synthetic local test privacy: this disposable fixture is not a public service.',
+                            'guidelines':'Synthetic local test guidelines: use only the authorized mock test actions.'},
                 'auth_mail':{'endpoint':self.mail_origin+'/send','from':'fixture@example.invalid','allow_loopback_test_sink':True}}
         write_json(self.run/'platform.json',config)
         return config
@@ -710,6 +731,28 @@ class Fixture:
             def do_OPTIONS(self): self.respond(200,{'fixture_only':True})
             def do_GET(self):
                 url=urlsplit(self.path)
+                if url.path=='/mail/inbox':
+                    # A normal local page replaces unsupported data/attachment handoffs.
+                    # Keep the delivered token only in memory and the browser response.
+                    if self.headers.get('Host')!=urlsplit(fixture.mail_origin).netloc:
+                        return self.respond(403,{'error':'exact loopback mailbox host required'})
+                    if fixture.stop.is_set() or fixture.maintenance.is_set():
+                        return self.respond(503,{'error':'fixture is draining or intentionally rebuilding'})
+                    q=parse_qs(url.query,keep_blank_values=True)
+                    if set(q)!={'to','kind'} or len(q['to'])!=1 or q['kind']!=['verification'] or not EMAIL.fullmatch(q['to'][0]):
+                        return self.respond(400,{'error':'one reserved synthetic verification mailbox required'})
+                    to=q['to'][0]
+                    with fixture.lock: matches=[m for m in fixture.mail if m['to']==to and m['kind']=='verification']
+                    try: body=verification_mailbox_html(fixture.origin,to,matches[-1]['link'] if matches else None)
+                    except ValueError: return self.respond(503,{'error':'captured verification message is invalid'})
+                    self.send_response(200)
+                    self.send_header('Content-Type','text/html; charset=utf-8')
+                    self.send_header('Content-Length',str(len(body)))
+                    self.send_header('Cache-Control','no-store')
+                    self.send_header('Referrer-Policy','no-referrer')
+                    self.send_header('X-Content-Type-Options','nosniff')
+                    self.send_header('Content-Security-Policy',"default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
+                    self.end_headers();self.wfile.write(body);return
                 if url.path=='/healthz': return self.respond(200,{'fixture_only':True,'status':'ready'})
                 if url.path=='/fixture/state':
                     with fixture.lock: data={'fixture_only':True,'mail_accepted':fixture.mail_count,'provisions':fixture.provisions,'ids':IDS,'protocol_enabled':fixture.protocol_enabled,'protocol_seed':fixture.receipt.get('protocol_seed')}

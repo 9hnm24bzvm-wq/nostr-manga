@@ -203,7 +203,7 @@ async fn begin(State(state): State<AppState>, OriginalUri(uri): OriginalUri,
     super::editorial::expected_account(&tx,&actor,expected.as_ref()).await?;
     let manga=resolve(&tx,ResourceKind::Manga,&payload.manga).await?;
     let mut groups=Vec::new(); for group in &payload.groups { groups.push(resolve(&tx,ResourceKind::Group,group).await?); }
-    let native=core::begin_in(&tx,&actor,&core::Begin{manga,groups}).await?;
+    let native=core::begin_in(&state, &tx,&actor,&core::Begin{manga,groups}).await?;
     let result=session_resource(&tx,&native).await?;
     tx.commit().await?; core::cleanup(&state).await; Ok(Json(result))
 }
@@ -222,7 +222,7 @@ async fn begin_edit(State(state): State<AppState>, Path(chapter): Path<String>,
     super::editorial::expected_account(&tx,&actor,expected.as_ref()).await?;
     let public_chapter=chapter.clone();
     let chapter=resolve(&tx,ResourceKind::Chapter,&chapter).await?;
-    let native=core::begin_edit_in(&tx,&actor,&chapter,&core::Edit{version:payload.version,replace:payload.replace}).await?;
+    let native=core::begin_edit_in(&state, &tx,&actor,&chapter,&core::Edit{version:payload.version,replace:payload.replace}).await?;
     let mut result=session_resource(&tx,&native).await?;
     // Bind successful admission to the signed target, version and chosen mode.
     result["attributes"]["edit"] = json!({"chapterId":public_chapter,"version":payload.version,"replace":payload.replace});
@@ -342,6 +342,7 @@ async fn remove(state:&AppState, cap:&AdmittedHttpCapability, session:&PublicUui
 
 async fn upload(State(state): State<AppState>, Path(session): Path<String>,
     OriginalUri(uri): OriginalUri, headers: HeaderMap, request: Request) -> PublicApiResult<Json<Value>> {
+    state.config.instance.require_upload_policies()?;
     let session=PublicUuid::parse(&session)?;
     no_query(&uri)?;
     let (cap,mut multipart,_permit)=super::uploads_body::receive(&state,&uri,&headers,request).await?;

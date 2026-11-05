@@ -150,6 +150,7 @@ async fn fixture() -> Fixture {
     let origin = format!("http://{}", listener.local_addr().unwrap());
     let state = AppState::connect(
         Config {
+            instance: weebdex_platform::domains::staff_workspace::InstanceInformation { terms: "Synthetic test terms".into(), privacy: "Synthetic test privacy".into(), guidelines: "Synthetic test guidelines".into(), ..Default::default() },
             public_origin: origin.clone(),
             database_plaintext_local: true,
             database_connections: 8,

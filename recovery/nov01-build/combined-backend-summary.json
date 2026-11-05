@@ -1,0 +1,26 @@
+{
+  "scope": "Reconstructed affected backend regression, not an exact rerun of unavailable historical 50-invocation inventory",
+  "compile": {
+    "all_backend_integration_targets": 67,
+    "passed": true,
+    "log": "recovery/nov01-build/backend-all-build.log"
+  },
+  "unique_execution_counts": {
+    "ordinary_library_units": 229,
+    "separately_guarded_db_library_units": 3,
+    "http_router_database_cases": 45,
+    "additional_pure_integration_identifier_case": 1,
+    "failures": 0
+  },
+  "sources": [
+    "weebdex-platform/test-evidence/policy-availability-20261101/summary.json",
+    "recovery/nov01-build/bounded-backend/summary.json",
+    "recovery/nov01-build/lib-db/summary.json"
+  ],
+  "limitations": [
+    "Focused repeats not added to unique counts.",
+    "Remaining compiled backend cases were not executed as part of this bounded regression.",
+    "Native browser acceptance, optimized artifact runtime equivalence, operational restore and full sustained capacity are separate gates."
+  ],
+  "fixture_cleanup": "Owned fixture guard returned exit 0 for each recorded runtime case, requiring unforced verified teardown. Eight bounded HTTP cleanup receipts retained in summary."
+}

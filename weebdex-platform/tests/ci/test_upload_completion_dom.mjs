@@ -11,7 +11,7 @@ const guidelinesPath='src/lib/components/Guidelines.svelte',Guidelines=await com
 const {default:Mutex}=await module('RealUploadMutex',fs.readFileSync(path.join(root,'frontend/src/lib/Mutex.ts'),'utf8')),eligibility=await api('upload-eligibility'),schedules=await api('upload-schedules'),workbench=await api('upload-workbench');
 function button(host,label){const value=[...host.querySelectorAll('button')].find(row=>row.textContent.trim()===label);assert.ok(value,label+' '+host.textContent);return value;}
 async function render(options={}){
- const f=options.empty?fixture(options):await ready(options);if(!options.empty)await stagedCommit(f);if(options.readonlyServer)Object.assign(f.state.sessions.get(SESSION),{canMutate:false,canCancel:false,canRetryCommit:true,publicationStatus:'prepared'});const user=f.user??(await f.owner()).user;const SessionStore=writable({identity:{id:'Reader1234'}}),VisibleError=uploads.resumeError(403).constructor,Constants={Error:{Error:VisibleError,Unknown:new VisibleError('Unknown Error','Unknown'),Forbidden:new VisibleError('Forbidden','Refused')}};
+ const f=options.empty?fixture(options):await ready(options);if(!options.empty)await stagedCommit(f);if(options.policiesAvailable!==undefined)f.account.upload.preflight.policiesAvailable=options.policiesAvailable;if(options.readonlyServer)Object.assign(f.state.sessions.get(SESSION),{canMutate:false,canCancel:false,canRetryCommit:true,publicationStatus:'prepared'});const user=f.user??(await f.owner()).user;const SessionStore=writable({identity:{id:'Reader1234'}}),VisibleError=uploads.resumeError(403).constructor,Constants={Error:{Error:VisibleError,Unknown:new VisibleError('Unknown Error','Unknown'),Forbidden:new VisibleError('Forbidden','Refused')}};
  const modules={'$publicApi/native-upload-client':{...uploads,...f.adapter,publicUploadOwner:(target,user,kind='manga')=>f.adapter.publicUploadOwner(target,user,kind,'caller'),setUploadOwner(){}},'$publicApi/upload-eligibility':eligibility,'$publicApi/upload-schedules':schedules,'$publicApi/upload-preview':{revokeUploadPreviewUrl:()=>false},'$app/navigation':{beforeNavigate(){},goto:async()=>{}},'$lib':{Constants,Mutex,Utils:{isValidVolumeChapter:()=>true,makeSlug:()=>''}},'$lib/API':{default:{}},'$lib/Context.js':{setMutex(){},setUploadSession(){}},'http-status-codes':{StatusCodes:{OK:200,ACCEPTED:202,FORBIDDEN:403,TOO_MANY_REQUESTS:429}},'svelte-sonner':{toast:{info(){},error(){},success(){}}},'$lib/components/ui/button/index.js':{Button},'$lib/components/ui/checkbox/checkbox.svelte':{default:Checkbox},'$lib/components/ui/dialog':{Root:Blank,Content:Empty,Header:Empty,Title:Empty,Description:Empty,Footer:Empty,Close:Blank},'$lib/components/ui/label/label.svelte':{default:Empty},'$lib/components/ui/separator':{Separator:Blank},'$lib/components/ui/spinner':{Spinner:Blank},'$lib/stores':{Session:SessionStore},'./upload-workbench':{...workbench,createUploadWorkbench:(native,check)=>workbench.createUploadWorkbench(native,check,f.deps)},'./native-upload-client':{...uploads,...f.adapter,publicUploadOwner:(target,user,kind='manga')=>f.adapter.publicUploadOwner(target,user,kind,'caller')},'./UploadSchedulesPanel.svelte':{default:Blank}};
  for(const p of ['$lib/components/Guidelines.svelte','$lib/components/ConfirmDialog.svelte','$lib/components/ReportMangaCard.svelte','$lib/components/upload/UploadChapterGroups.svelte','$lib/components/upload/UploadChapterMetadata.svelte','$lib/components/upload/UploadChapterPages.svelte','$publicApi/UploadSchedulesPanel.svelte'])modules[p]={default:Blank};
  modules['$lib/components/Guidelines.svelte']={default:Guidelines};if(options.realSchedules){modules['$publicApi/UploadSchedulesPanel.svelte']={default:SchedulesPanel};modules['./UploadSchedulesPanel.svelte']={default:SchedulesPanel};}
@@ -58,5 +58,29 @@ test('actual saved-schedule panel remains readable and cancellable without new s
   const detail=[...f.host.querySelectorAll('details')].find(e=>e.querySelector('summary')?.textContent.includes('Scheduled uploads'));assert.ok(detail);assert.equal(detail.open,false);assert.doesNotMatch(f.host.textContent,/even when creating a new schedule is unavailable/);assert.equal(detail.querySelector('section'),null);detail.open=true;detail.dispatchEvent(new Event('toggle'));await settle();
   assert.match(f.host.textContent,/Saved work/);assert.match(f.host.textContent,/even when creating a new schedule is unavailable/);assert.doesNotMatch(f.host.textContent,/not available on this site/);button(f.host,'Check saved status').click();await settle();button(f.host,'Cancel scheduled upload').click();await settle();
   assert.equal(receipt.nostr.scheduleState,'cancelled');assert.equal(f.calls.filter(r=>r.route.endsWith('/commit')).length,0);assert.equal(f.calls.filter(r=>r.method==='DELETE').length,1);
+ }finally{await f.dispose();}
+});
+
+test('missing instance policies disable mandatory consent and upload on otherwise mutable saved work',async()=>{
+ const f=await render({policiesAvailable:false}),mutations=f.calls.filter(r=>r.method!=='GET').length;try{
+  assert.equal(f.host.querySelector('#terms').disabled,true);assert.equal(button(f.host,'Upload').disabled,true);assert.match(f.host.textContent,/Terms, Privacy policy and Guidelines available/);assert.ok(f.host.querySelector('a[href="/privacy"]'));
+  assert.equal(f.state.sessions.get(SESSION).canMutate,true);button(f.host,'Upload').click();await settle();assert.equal(f.state.commits,0);assert.equal(f.calls.filter(r=>r.method!=='GET').length,mutations);assert.equal(f.state.sessions.get(SESSION).files.length,1);
+ }finally{await f.dispose();}
+});
+test('policies disappearing at submit clear prior consent without dispatching a chapter command',async()=>{
+ const f=await render();try{
+  f.account.upload.preflight.policiesAvailable=false;await acceptAndSubmit(f);
+  assert.equal(f.state.commits,0);assert.equal(f.calls.filter(r=>r.route.endsWith('/commit')).length,0);assert.equal(f.host.querySelector('#terms').checked,false);assert.equal(f.host.querySelector('#terms').disabled,true);assert.equal(button(f.host,'Upload').disabled,true);assert.equal(f.state.sessions.get(SESSION).files.length,1);
+  f.account.upload.preflight.policiesAvailable=true;button(f.host,'Check selected groups and access').click();await settle();assert.equal(f.host.querySelector('#terms').disabled,false);assert.equal(f.host.querySelector('#terms').checked,false);assert.equal(button(f.host,'Upload').disabled,true);
+  await acceptAndSubmit(f);assert.equal(f.state.commits,1);
+ }finally{await f.dispose();}
+});
+
+test('missing policies leave read-only saved upload status checking usable',async()=>{
+ const f=await render({policiesAvailable:false,readonlyServer:true}),mutations=f.calls.filter(r=>r.method!=='GET').length;try{button(f.host,'Check saved upload status').click();await settle();assert.equal(f.calls.filter(r=>r.method!=='GET').length,mutations);assert.equal(f.state.commits,0);assert.match(f.host.textContent,/Your pages are kept/);}finally{await f.dispose();}
+});
+test('failed policy access refresh clears consent and cannot submit with the previous good observation',async()=>{
+ let fail=false;const f=await render({request:(r,next)=>fail&&r.route.startsWith('/upload/preflight/')?refusal(503,'Policies temporarily unavailable'):next(r)});try{
+  fail=true;await acceptAndSubmit(f);assert.equal(f.host.querySelector('#terms').checked,false);assert.equal(f.host.querySelector('#terms').disabled,true);assert.equal(button(f.host,'Upload').disabled,true);assert.equal(f.state.commits,0);assert.equal(f.calls.filter(r=>r.route.endsWith('/commit')).length,0);assert.equal(f.state.sessions.get(SESSION).files.length,1);
  }finally{await f.dispose();}
 });

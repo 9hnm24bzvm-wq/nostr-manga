@@ -1,0 +1,8 @@
+{
+  "exit_code": 0,
+  "signal": null,
+  "association_before": "b8b8d8200203f8ba3c04b3ad5b38e6626557d108bb686c121e70b7c9d4a0afb9",
+  "association_after": "b8b8d8200203f8ba3c04b3ad5b38e6626557d108bb686c121e70b7c9d4a0afb9",
+  "finished_at": "2026-11-01T18:26:15.158Z",
+  "qualification": "Historical byte-association and source-provenance checks only; current behavior covered by separate aggregate."
+}
