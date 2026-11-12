@@ -1,0 +1,25 @@
+name: Windows portability baseline
+on:
+  push:
+    branches: [windows-port-diagnostics]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        manifest:
+          - manga-protocol-lab/server/Cargo.toml
+          - weebdex-platform/backend/Cargo.toml
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install Rust 1.90
+        run: rustup toolchain install 1.90.0 --profile minimal
+      - name: Check Windows target
+        run: cargo +1.90.0 check --locked --manifest-path ${{ matrix.manifest }} --bins
