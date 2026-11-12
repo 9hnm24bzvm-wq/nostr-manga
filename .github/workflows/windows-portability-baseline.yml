@@ -1,4 +1,4 @@
-name: Windows portability baseline
+name: nostrfy Windows baseline
 on:
   push:
     branches: [windows-port-diagnostics]
@@ -8,18 +8,14 @@ permissions:
 jobs:
   check:
     runs-on: windows-2022
-    timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        manifest:
-          - manga-protocol-lab/server/Cargo.toml
-          - weebdex-platform/backend/Cargo.toml
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
+          repository: iqbqioza/nostrfy
+          ref: 56640d89639394372e04103236ddba61a19b4ef2
           persist-credentials: false
-      - name: Install Rust 1.90
-        run: rustup toolchain install 1.90.0 --profile minimal
-      - name: Check Windows target
-        run: cargo +1.90.0 check --locked --manifest-path ${{ matrix.manifest }} --bins
+      - name: Select stable Rust
+        run: rustup update stable --no-self-update
+      - name: Check nostrfy on Windows
+        run: cargo +stable check --locked --bins
