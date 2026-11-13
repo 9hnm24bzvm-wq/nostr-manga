@@ -130,24 +130,38 @@ impl FilesystemVolume {
             (1..=16).contains(&cleanup_slots),
             "filesystem cleanup slot bounds"
         );
+        #[cfg(windows)]
+        {
+            create_private_tree(&root)?;
+            create_private_tree(&root.join("objects"))?;
+        }
+        #[cfg(not(windows))]
         fs::create_dir_all(root.join("objects"))?;
         let root = root.canonicalize()?;
-        let owner = fs::OpenOptions::new()
-            .read(true)
-            .write(true)
-            .create(true)
-            .truncate(false)
-            .open(root.join(".volume-owner"))?;
+        let owner_path = root.join(".volume-owner");
+        let owner = if owner_path.try_exists()? {
+            #[cfg(windows)]
+            {
+                crate::private_files::open_private(&owner_path)?
+            }
+            #[cfg(not(windows))]
+            {
+                fs::OpenOptions::new()
+                    .read(true)
+                    .write(true)
+                    .open(&owner_path)?
+            }
+        } else {
+            crate::private_files::create_private(&owner_path)?
+        };
+        crate::platform_fs::sync_directory(&root)?;
         owner
             .try_lock()
             .context("storage volume already has a mutation owner")?;
-        use std::os::unix::fs::MetadataExt;
-        let metadata = owner.metadata()?;
         let mut identity = Sha256::new();
         identity.update(b"manga-public-volume-v1");
-        identity.update(fs::read("/proc/sys/kernel/random/boot_id")?);
-        identity.update(metadata.dev().to_be_bytes());
-        identity.update(metadata.ino().to_be_bytes());
+        identity.update(crate::platform_fs::storage_epoch()?);
+        identity.update(crate::platform_fs::file_identity(&owner)?);
         identity.update(root.as_os_str().as_encoded_bytes());
         let identity: Id = identity.finalize().into();
         Ok(Self {
@@ -163,17 +177,15 @@ impl FilesystemVolume {
     pub(crate) async fn update_cleanup_headroom(&self, quota: (u64, u64)) -> Result<()> {
         let inner = self.inner.clone();
         let filesystem = crate::node::spawn_blocking_owned_scope(move || {
-            use std::os::fd::AsRawFd;
-            let mut stats = std::mem::MaybeUninit::<libc::statvfs>::uninit();
-            // The live owner descriptor identifies this exact opened volume;
-            // fstatvfs initializes the output only when it returns success.
-            if unsafe { libc::fstatvfs(inner._owner.as_raw_fd(), stats.as_mut_ptr()) } != 0 {
-                tracing::warn!(error=%std::io::Error::last_os_error(), "filesystem headroom sample unavailable");
-                return None;
+            match crate::platform_fs::available_space(&inner._owner, &inner.root) {
+                Ok(value) => value,
+                Err(error) => {
+                    tracing::warn!(%error, "filesystem headroom sample unavailable");
+                    None
+                }
             }
-            let stats = unsafe { stats.assume_init() };
-            (stats.f_blocks > 0).then_some((stats.f_bavail, stats.f_blocks))
-        }).await?;
+        })
+        .await?;
         self.admission.observe_headroom(quota, filesystem);
         Ok(())
     }
@@ -251,7 +263,7 @@ impl VolumeInner {
     fn sync_ancestors(&self, parent: &Path) -> Result<()> {
         let mut current = parent;
         loop {
-            fs::File::open(current)?.sync_all()?;
+            crate::platform_fs::sync_directory(current)?;
             if current == self.root {
                 break;
             }
@@ -271,6 +283,9 @@ impl VolumeInner {
         // scan up to the configured blob maximum for a small expected object.
         let capacity = usize::try_from(expected.checked_add(1).context("blob size overflow")?)?;
         let mut bytes = vec![0; capacity];
+        #[cfg(windows)]
+        let mut file = crate::private_files::open_private(&path)?;
+        #[cfg(not(windows))]
         let mut file = fs::File::open(path)?;
         let mut used = 0;
         while used < capacity {
@@ -291,7 +306,13 @@ impl VolumeInner {
     fn recover(&self, key: BlobKey, expected: u64, limit: u64) -> Result<DurableReceipt> {
         self.read_verified(&key, expected, limit)?;
         let path = self.object_path(&key);
-        fs::File::open(&path)?.sync_all()?;
+        let verified = crate::private_files::open_private(&path)?;
+        let flushing = fs::OpenOptions::new().read(true).write(true).open(&path)?;
+        ensure!(
+            crate::platform_fs::same_file(&verified, &flushing)?,
+            "object changed before flush"
+        );
+        flushing.sync_all()?;
         self.sync_ancestors(path.parent().unwrap())?;
         Ok(DurableReceipt {
             key,
@@ -306,6 +327,9 @@ impl VolumeInner {
         );
         let path = self.object_path(&key);
         let parent = path.parent().unwrap();
+        #[cfg(windows)]
+        create_private_tree(parent)?;
+        #[cfg(not(windows))]
         fs::create_dir_all(parent)?;
         if path.try_exists()? {
             return self.recover(key, bytes.len() as u64, limit);
@@ -316,14 +340,7 @@ impl VolumeInner {
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
             Err(e) => return Err(e.into()),
         }
-        let mut options = fs::OpenOptions::new();
-        options.write(true).create_new(true);
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::OpenOptionsExt;
-            options.mode(0o600);
-        }
-        let mut file = options.open(&partial)?;
+        let mut file = crate::private_files::create_private(&partial)?;
         file.write_all(bytes)?;
         file.sync_all()?;
         drop(file);
@@ -335,7 +352,7 @@ impl VolumeInner {
         })
     }
     fn link_public(&self, receipt: &DurableReceipt, mime: &str) -> Result<()> {
-        use std::os::unix::fs::{DirBuilderExt, MetadataExt};
+        crate::platform_fs::require_external_serving()?;
         let extension = match mime {
             "image/png" => "png",
             "image/jpeg" => "jpg",
@@ -352,7 +369,16 @@ impl VolumeInner {
         let mut parent = self.root.clone();
         for part in ["public", &hash[..2], &hash[2..4]] {
             parent = parent.join(part);
-            match fs::DirBuilder::new().mode(0o700).create(&parent) {
+            let create = {
+                let mut builder = fs::DirBuilder::new();
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::DirBuilderExt;
+                    builder.mode(0o700);
+                }
+                builder.create(&parent)
+            };
+            match create {
                 Ok(()) => {}
                 Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}
                 Err(error) => return Err(error.into()),
@@ -369,8 +395,10 @@ impl VolumeInner {
                 let meta = fs::symlink_metadata(&target)?;
                 ensure!(
                     meta.file_type().is_file()
-                        && meta.dev() == source_meta.dev()
-                        && meta.ino() == source_meta.ino(),
+                        && crate::platform_fs::same_file(
+                            &fs::File::open(&source)?,
+                            &fs::File::open(&target)?
+                        )?,
                     "public alias belongs to a different inode"
                 );
             }
@@ -380,6 +408,21 @@ impl VolumeInner {
         Ok(())
     }
     fn withdraw_public(&self, key: BlobKey) -> Result<PublicWithdrawal> {
+        // Native HTTP creates no exported namespace. Permit its corruption
+        // quarantine receipt only when no legacy public tree exists; never
+        // unlink or attest to recovery of legacy external readers here.
+        #[cfg(not(target_os = "linux"))]
+        {
+            ensure!(
+                !self.root.join("public").try_exists()?,
+                "legacy public namespace requires Linux recovery"
+            );
+            crate::platform_fs::sync_directory(&self.root)?;
+            return Ok(PublicWithdrawal {
+                key,
+                root_identity: self.identity,
+            });
+        }
         let hash = hex::encode(key.hash);
         let mut parent = self.root.clone();
         for part in ["public", &hash[..2], &hash[2..4]] {
@@ -480,5 +523,21 @@ impl Mutation {
     pub async fn cleanup(&self, generation: Generation) -> Result<CleanupReceipt> {
         self.blocking(move |inner, hash| inner.cleanup(BlobKey { hash, generation }))
             .await
+    }
+}
+
+#[cfg(windows)]
+fn create_private_tree(path: &Path) -> Result<()> {
+    match fs::symlink_metadata(path) {
+        Ok(_) => crate::private_files::verify_private_directory(path),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+            let parent = path.parent().context("private directory has no parent")?;
+            if !parent.as_os_str().is_empty() && !parent.exists() {
+                create_private_tree(parent)?;
+            }
+            crate::private_files::create_private_directory(path)?;
+            crate::private_files::verify_private_directory(path)
+        }
+        Err(error) => Err(error.into()),
     }
 }

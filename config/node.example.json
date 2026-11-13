@@ -16,10 +16,9 @@
     "upload_slots": 4
   },
   "backend": {
-    "binary": "/REPLACE_WITH_PACKAGE_PATH/bin/strfry",
-    "data_dir": "/REPLACE_WITH_DATA_PATH/strfry",
-    "timeout_seconds": 10,
-    "map_bytes": 1073741824
+    "engine": "native",
+    "data_dir": "./projection",
+    "timeout_seconds": 10
   },
   "cors_origins": [],
   "discovery_private_overrides": [],

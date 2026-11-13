@@ -148,6 +148,7 @@ const MIGRATIONS: &[(i64, &str)] = &[
         include_str!("../migrations/0051_group_profile_audit.sql"),
     ),
     (52, include_str!("../migrations/0052_reader_enrollment.sql")),
+    (53, include_str!("../migrations/0053_native_backend.sql")),
 ];
 
 // Do not derive Debug: a DSN may contain a password.

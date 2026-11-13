@@ -9,7 +9,12 @@ use crate::{
 use anyhow::{Context, Result, ensure};
 use serde::Deserialize;
 use serde_json::json;
-use std::{fs, io::Write, path::PathBuf, sync::Arc};
+use std::{
+    fs,
+    io::{Read, Write},
+    path::PathBuf,
+    sync::Arc,
+};
 use zeroize::Zeroizing;
 fn id(s: &str) -> Result<Id> {
     ensure!(auth::valid_hash(s), "invalid group/member identifier");
@@ -56,7 +61,18 @@ struct KeyStore {
 }
 impl KeyStore {
     fn open(root: PathBuf) -> Result<Self> {
+        #[cfg(unix)]
         fs::create_dir_all(&root)?;
+        #[cfg(windows)]
+        {
+            if !root.exists() {
+                if let Some(parent) = root.parent().filter(|p| !p.as_os_str().is_empty()) {
+                    fs::create_dir_all(parent)?;
+                }
+                crate::private_files::create_private_directory(&root)?;
+            }
+            crate::private_files::verify_private_directory(&root)?;
+        }
         let root = root.canonicalize()?;
         Ok(Self { root })
     }
@@ -65,20 +81,11 @@ impl KeyStore {
     }
     fn read(&self, group: Id) -> Result<Zeroizing<String>> {
         let path = self.path(group);
-        let metadata = fs::symlink_metadata(&path)?;
-        ensure!(
-            metadata.file_type().is_file() && metadata.len() <= 128,
-            "invalid group key file"
-        );
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            ensure!(
-                metadata.permissions().mode() & 0o077 == 0,
-                "group key file must not be group/world accessible"
-            );
-        }
-        let secret = Zeroizing::new(fs::read_to_string(path)?);
+        let file = crate::private_files::open_private(&path)?;
+        ensure!(file.metadata()?.len() <= 128, "invalid group key size");
+        let mut secret = Zeroizing::new(String::new());
+        file.take(129).read_to_string(&mut secret)?;
+        ensure!(secret.len() <= 128, "group key exceeded size limit");
         let secret = Zeroizing::new(secret.trim().to_owned());
         let event = auth::sign(&secret, 1, vec![], String::new()).map_err(anyhow::Error::msg)?;
         ensure!(
@@ -97,17 +104,10 @@ impl KeyStore {
         let key = id(&auth::sign(&secret, 1, vec![], String::new())
             .map_err(anyhow::Error::msg)?
             .pubkey)?;
-        let mut options = fs::OpenOptions::new();
-        options.write(true).create_new(true);
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::OpenOptionsExt;
-            options.mode(0o600);
-        }
-        let mut file = options.open(self.path(key))?;
+        let mut file = crate::private_files::create_private(&self.path(key))?;
         file.write_all(secret.as_bytes())?;
         file.sync_all()?;
-        fs::File::open(&self.root)?.sync_all()?;
+        crate::platform_fs::sync_directory(&self.root)?;
         Ok(key)
     }
 }

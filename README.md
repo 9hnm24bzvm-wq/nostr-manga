@@ -8,8 +8,8 @@ The original crate name, `manga-node` (imported as `manga_node`), is preserved f
 
 - Signed Nostr event verification, exact HTTP authentication binding, Blossom scopes, and bounded CBOR chapter, series, and public-library codecs.
 - Publication and publisher admission, complete-original retention, storage accounting, guarded reads, moderation, groups, and public-library lifecycle.
-- Approved-peer federation, identity and endpoint discovery, reconciliation, durable synchronization, and private strfry projection.
-- PostgreSQL persistence and all 52 checksum-guarded migrations.
+- Approved-peer federation, identity and endpoint discovery, reconciliation, durable synchronization, and native Rust/PostgreSQL projection (with optional Linux-only strfry compatibility).
+- PostgreSQL persistence and all 53 checksum-guarded migrations.
 - The `manga-node` service, `manga-key-tool` operator utility, and optional managed-image-serving supervisor.
 
 There are no tests, test fixtures, test helpers, test evidence, demos, website assets, runtime databases, credentials, installed dependencies, or compiled binaries in this branch's current tree. Existing repository history is retained. The small `platform_bridge` module is a read-only protocol visibility interface for downstream consumers; it does not depend on the WeebDex platform.
@@ -22,7 +22,7 @@ Install Rust 1.90 or later with a C compiler and linker, then:
 cargo build --locked --release
 ```
 
-The library and both production executables are built. Dependencies are recorded in `server/Cargo.toml` and pinned by the root `Cargo.lock`. Building does not require a running database or relay. Running a complete node requires PostgreSQL and strfry. Optional managed original-image serving also needs Python 3 and NGINX.
+The library and both production executables are built. Dependencies are recorded in `server/Cargo.toml` and pinned by the root `Cargo.lock`. Building does not require a running database or relay. Running a native node requires PostgreSQL, not strfry. Optional legacy managed image serving is Linux-only and requires Python 3 and NGINX.
 
 ## Use as a Rust dependency
 
@@ -51,3 +51,8 @@ A consumer using this JSON example must declare its own `serde_json` dependency.
 - [License status](LICENSE-STATUS.md)
 
 This is experimental software. Publication does not certify production security, availability, storage durability, or traffic capacity.
+
+
+## Portability status
+
+This reconstruction introduces native projection and platform-specific Rust filesystem adapters. Windows and macOS builds and database runtime validation are still unverified. Do not treat this publication as a production-ready Windows release. Windows durability operations may require elevation and fail closed. See [native backend](server/NATIVE-BACKEND.md), [storage](server/STORAGE-PORTABILITY.md), and [private files](server/PRIVATE-FILES-PORTABILITY.md).

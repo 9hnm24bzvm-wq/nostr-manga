@@ -2,6 +2,7 @@ mod blossom_http;
 mod catalogue_http;
 mod compatibility_http;
 mod enrollment_http;
+mod original_http;
 mod read_admission;
 mod reader_http;
 mod review_http;
@@ -95,21 +96,15 @@ struct Signer {
 }
 impl Signer {
     fn load(path: &std::path::Path) -> Result<Self> {
-        let metadata =
-            std::fs::metadata(path).context("cannot read configured service-key file")?;
-        ensure!(
-            metadata.is_file() && metadata.len() <= 128,
-            "invalid service-key file"
-        );
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::PermissionsExt;
-            ensure!(
-                metadata.permissions().mode() & 0o077 == 0,
-                "service-key file must not be group/world accessible"
-            );
-        }
-        let raw = Zeroizing::new(std::fs::read_to_string(path).context("cannot read service key")?);
+        use std::io::Read;
+        let file = crate::private_files::open_private(path)
+            .context("cannot open configured private service-key file")?;
+        ensure!(file.metadata()?.len() <= 128, "invalid service-key size");
+        let mut raw = Zeroizing::new(String::new());
+        file.take(129)
+            .read_to_string(&mut raw)
+            .context("cannot read service key")?;
+        ensure!(raw.len() <= 128, "service key exceeded size limit");
         let secret = Zeroizing::new(raw.trim().to_owned());
         let public = auth::sign(&secret, 1, vec![], String::new())
             .map_err(|_| anyhow::anyhow!("invalid service key"))?
@@ -2239,6 +2234,8 @@ async fn publish_event(
 async fn public_original(
     State(a): State<Shared>,
     Path(hash): Path<String>,
+    method: axum::http::Method,
+    headers: HeaderMap,
 ) -> Result<axum::response::Response, ApiError> {
     let hash = id(&hash).map_err(|_| bad("invalid hash"))?;
     let storage = a.storage.clone().ok_or_else(unavailable)?;
@@ -2247,7 +2244,7 @@ async fn public_original(
         .await
         .map_err(download_error)?
         .ok_or_else(|| download_error(crate::upload::BlobUnavailable.into()))?;
-    Ok(snapshot.response(None, &mime, false))
+    Ok(original_http::response(snapshot, &mime, &method, &headers))
 }
 
 async fn query_chapters(

@@ -24,7 +24,7 @@ The current application uses chapter kind 1001, series kind 1002, public-library
 
 `inventory`, `transfer`, `sync_jobs` and `sync_schedules` implement bounded reconciliation and durable peer synchronization with explicit item outcomes and retry/cancellation state. Peer failures do not authorize accepting unverified or unretained content.
 
-`backend` projects accepted signed events to private strfry through durable state. `relay`, `relay_query`, `relay_feed` and `relay_dispatch` provide the public bounded relay surface, read-policy checks and live delivery. The raw strfry endpoint is not an equivalent policy authority.
+`backend` projects accepted signed events to native PostgreSQL through durable state; legacy strfry is explicitly selectable on Linux. `relay`, `relay_query`, `relay_feed` and `relay_dispatch` provide the public bounded relay surface, read-policy checks and live delivery. The raw strfry endpoint is not an equivalent policy authority.
 
 ## Embedding
 
@@ -35,3 +35,4 @@ The public `manga_node` modules can be used by another Rust program. Most comple
 ## Boundaries
 
 This branch has no browser UI, full website/platform backend, browser signer integration, general import/backup CLI suite, benchmark/demo programs or test material. It retains the protocol node's native operator key utility and optional production image-serving supervisor. The complete production module graph remains in `server/src/lib.rs`.
+

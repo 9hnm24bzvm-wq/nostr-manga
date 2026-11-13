@@ -149,3 +149,7 @@ pub mod http_auth;
 pub mod library_lists;
 
 pub mod library_statuses;
+
+pub mod platform_fs;
+
+pub mod private_files;

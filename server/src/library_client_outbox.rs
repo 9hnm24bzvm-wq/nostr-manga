@@ -56,36 +56,20 @@ fn read_regular(path: &Path, limit: usize) -> Result<Vec<u8>> {
         meta.is_file() && !meta.file_type().is_symlink() && meta.len() <= limit as u64,
         "outbox regular file/size required"
     );
-    let file = File::open(path)?;
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::MetadataExt;
-        let opened = file.metadata()?;
-        ensure!(
-            opened.dev() == meta.dev() && opened.ino() == meta.ino(),
-            "outbox file changed"
-        );
-    }
+    let file = crate::private_files::open_private(path)?;
     let mut bytes = vec![];
     file.take(limit as u64 + 1).read_to_end(&mut bytes)?;
     ensure!(bytes.len() <= limit, "outbox read budget");
     Ok(bytes)
 }
 fn new_file(path: &Path, bytes: &[u8]) -> Result<()> {
-    let mut options = File::options();
-    options.write(true).create_new(true);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::OpenOptionsExt;
-        options.mode(0o600);
-    }
-    let mut file = options.open(path)?;
+    let mut file = crate::private_files::create_private(path)?;
     file.write_all(bytes)?;
     file.sync_all()?;
     Ok(())
 }
 fn synced_dir(path: &Path) -> Result<()> {
-    File::open(path)?.sync_all()?;
+    crate::platform_fs::sync_directory(path)?;
     Ok(())
 }
 impl Outbox {
@@ -99,7 +83,18 @@ impl Outbox {
                 && (1..=32).contains(&limits.attempts),
             "outbox limits"
         );
+        #[cfg(unix)]
         fs::create_dir_all(root)?;
+        #[cfg(windows)]
+        {
+            if !root.exists() {
+                if let Some(parent) = root.parent().filter(|p| !p.as_os_str().is_empty()) {
+                    fs::create_dir_all(parent)?;
+                }
+                crate::private_files::create_private_directory(root)?;
+            }
+            crate::private_files::verify_private_directory(root)?;
+        }
         let meta = fs::symlink_metadata(root)?;
         ensure!(
             meta.is_dir() && !meta.file_type().is_symlink(),

@@ -180,6 +180,8 @@ pub(super) async fn at_home(
 pub(super) async fn image(
     State(a): State<Shared>,
     Path((event, file)): Path<(String, String)>,
+    method: axum::http::Method,
+    headers: HeaderMap,
 ) -> Result<axum::response::Response, ApiError> {
     let e = a
         .repo
@@ -198,7 +200,7 @@ pub(super) async fn image(
                 .then(|| hash.to_owned())
         })
         .ok_or_else(missing)?;
-    public_original(State(a), Path(hash)).await
+    public_original(State(a), Path(hash), method, headers).await
 }
 pub(super) async fn cover(
     State(a): State<Shared>,
@@ -217,6 +219,8 @@ pub(super) async fn cover(
 pub(super) async fn cover_image(
     State(a): State<Shared>,
     Path((key, file)): Path<(String, String)>,
+    method: axum::http::Method,
+    headers: HeaderMap,
 ) -> Result<axum::response::Response, ApiError> {
     let e = entry(&a, "manga", &key).await?;
     let attrs = compat::cover_attributes(&e).map_err(|_| missing())?;
@@ -227,7 +231,7 @@ pub(super) async fn cover_image(
         .as_str()
         .ok_or_else(missing)?
         .to_owned();
-    public_original(State(a), Path(hash)).await
+    public_original(State(a), Path(hash), method, headers).await
 }
 pub(super) async fn aliases(
     State(a): State<Shared>,
