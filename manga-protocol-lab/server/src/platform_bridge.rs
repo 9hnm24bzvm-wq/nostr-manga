@@ -277,7 +277,14 @@ pub async fn visible_resource_ids<C: tokio_postgres::GenericClient + Sync>(
             "invalid original compatibility alias"
         );
         let series: Option<String> = row.get(3);
-        ensure!(match event.kind {1001=>series.as_deref().is_some_and(crate::auth::valid_hash),1002=>series.is_none(),_=>false},"invalid original resource parent");
+        ensure!(
+            match event.kind {
+                1001 => series.as_deref().is_some_and(crate::auth::valid_hash),
+                1002 => series.is_none(),
+                _ => false,
+            },
+            "invalid original resource parent"
+        );
         result.push(VisibleResource {
             event,
             compatibility_id,

@@ -114,14 +114,9 @@ pub fn publication(key: u8, kind: u32, manifest: &[u8]) -> auth::Event {
 }
 pub fn write_key(path: &std::path::Path, key: u8) -> anyhow::Result<()> {
     use std::io::Write;
-    let mut options = std::fs::OpenOptions::new();
-    options.write(true).create_new(true);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::OpenOptionsExt;
-        options.mode(0o600);
-    }
-    write!(options.open(path)?, "{key:064x}")?;
+    let mut file = manga_node::private_files::create_private(path)?;
+    write!(file, "{key:064x}")?;
+    file.sync_all()?;
     Ok(())
 }
 pub fn http_get(key: u8, url: &str) -> String {

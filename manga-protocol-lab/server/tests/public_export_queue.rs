@@ -76,6 +76,7 @@ async fn durable_queue_backfills_and_follows_publication_visibility() -> Result<
     let backend = Backend::open(
         repo.clone(),
         BackendConfig {
+            engine: manga_node::backend::BackendEngine::Strfry,
             binary: project.join("vendor/strfry/strfry"),
             data_dir: dir.as_path().join("backend"),
             timeout_seconds: 3,

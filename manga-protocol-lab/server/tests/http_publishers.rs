@@ -83,7 +83,7 @@ async fn independent_publishers_have_scoped_staging_and_fenced_authority() -> Re
     std::fs::write(
         &config,
         serde_json::to_vec(
-            &json!({"bind":bind,"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":storage,"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"timeout_seconds":2,"map_bytes":67108864}}),
+            &json!({"bind":bind,"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":storage,"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"timeout_seconds":2,"map_bytes":67108864}}),
         )?,
     )?;
     let log = std::fs::File::create(dir.path().join("node.log"))?;

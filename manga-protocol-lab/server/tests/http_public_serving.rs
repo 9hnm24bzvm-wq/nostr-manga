@@ -196,6 +196,7 @@ async fn node_serving_recovers_before_policy_and_database_startup() -> Result<()
     let backend = Backend::open(
         repo.clone(),
         BackendConfig {
+            engine: manga_node::backend::BackendEngine::Strfry,
             binary: root.join("vendor/strfry/strfry"),
             data_dir: backend_path.clone(),
             timeout_seconds: 3,
@@ -225,7 +226,7 @@ async fn node_serving_recovers_before_policy_and_database_startup() -> Result<()
     write_key(&key, 11)?;
     let helper = dir.path().join("serving_supervisor.py");
     std::fs::copy(root.join("src/serving_supervisor.py"), &helper)?;
-    let mut cfg = json!({"bind":api_bind,"base_url":origin,"service_key_file":key,"admin_pubkey":public(21),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":storage,"volume":"publicnode","physical_bytes":1048576,"staging_bytes":1048576,"max_blob_bytes":1048576},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":backend_path,"timeout_seconds":3,"map_bytes":67108864},"public_serving":{"enabled":true,"helper":helper,"nginx":root.join("vendor/nginx-1.28.0/objs/nginx"),"bind":image_bind,"shutdown_seconds":1}});
+    let mut cfg = json!({"bind":api_bind,"base_url":origin,"service_key_file":key,"admin_pubkey":public(21),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":storage,"volume":"publicnode","physical_bytes":1048576,"staging_bytes":1048576,"max_blob_bytes":1048576},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":backend_path,"timeout_seconds":3,"map_bytes":67108864},"public_serving":{"enabled":true,"helper":helper,"nginx":root.join("vendor/nginx-1.28.0/objs/nginx"),"bind":image_bind,"shutdown_seconds":1}});
     let config = dir.path().join("node.json");
     let log = dir.path().join("node.log");
     let runtime = storage.join("public/.serving");

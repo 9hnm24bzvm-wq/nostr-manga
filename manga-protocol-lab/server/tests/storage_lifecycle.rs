@@ -6,9 +6,10 @@ use sha2::{Digest, Sha256};
 use std::{path::Path, process::Stdio, sync::Arc, time::Duration};
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 
+#[cfg(target_os = "linux")]
 async fn cancellation_preserves_owned_io(read: bool) -> Result<()> {
     let dir = tempfile::tempdir()?;
-    let root = dir.path().to_path_buf();
+    let root = dir.path().join("store");
     let volume = Arc::new(FilesystemVolume::open(root.clone())?);
     let data = b"real filesystem lease blocks an application storage operation";
     let hash: [u8; 32] = Sha256::digest(data).into();
@@ -154,10 +155,12 @@ async fn reopen(root: &Path) -> Result<FilesystemVolume> {
     .await
     .context("completed I/O did not release volume ownership")
 }
+#[cfg(target_os = "linux")]
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn cancelled_public_read_keeps_real_io_and_volume_fences() -> Result<()> {
     cancellation_preserves_owned_io(true).await
 }
+#[cfg(target_os = "linux")]
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn cancelled_public_recovery_keeps_real_io_and_volume_fences() -> Result<()> {
     cancellation_preserves_owned_io(false).await
@@ -177,7 +180,7 @@ fn object_path(root: &Path, key: &manga_node::storage::BlobKey) -> std::path::Pa
 #[tokio::test]
 async fn receipt_requires_verified_exact_bytes_and_recovers_idempotently() {
     let dir = tempfile::tempdir().unwrap();
-    let volume = FilesystemVolume::open(dir.path().into()).unwrap();
+    let volume = FilesystemVolume::open(dir.path().join("store")).unwrap();
     let data = b"original bytes";
     let h = hash(data);
     let m = volume.mutation(h).await;
@@ -199,7 +202,7 @@ async fn receipt_requires_verified_exact_bytes_and_recovers_idempotently() {
 #[tokio::test]
 async fn stale_generation_cleanup_preserves_replacement() {
     let dir = tempfile::tempdir().unwrap();
-    let volume = FilesystemVolume::open(dir.path().into()).unwrap();
+    let volume = FilesystemVolume::open(dir.path().join("store")).unwrap();
     let data = b"same hash, distinct storage generations";
     let m = volume.mutation(hash(data)).await;
     let old = m.put_verified([1; 16], data, 100).await.unwrap();
@@ -230,14 +233,17 @@ async fn stale_generation_cleanup_preserves_replacement() {
 #[tokio::test]
 async fn corruption_and_oversize_do_not_mint_receipts() {
     let dir = tempfile::tempdir().unwrap();
-    let volume = FilesystemVolume::open(dir.path().into()).unwrap();
+    let volume = FilesystemVolume::open(dir.path().join("store")).unwrap();
     let data = b"correct";
     let m = volume.mutation(hash(data)).await;
     assert!(m.put_verified([1; 16], data, 2).await.is_err());
     let receipt = m.put_verified([1; 16], data, 100).await.unwrap();
-    tokio::fs::write(object_path(dir.path(), receipt.key()), b"corrupt")
-        .await
-        .unwrap();
+    tokio::fs::write(
+        object_path(&dir.path().join("store"), receipt.key()),
+        b"corrupt",
+    )
+    .await
+    .unwrap();
     assert!(m.recover([1; 16], data.len() as u64, 100).await.is_err());
     assert!(m.put_verified([1; 16], data, 100).await.is_err());
     m.cleanup([1; 16]).await.unwrap();
@@ -246,7 +252,7 @@ async fn corruption_and_oversize_do_not_mint_receipts() {
 #[tokio::test]
 async fn hash_mutations_serialize_without_blocking_other_hashes() {
     let dir = tempfile::tempdir().unwrap();
-    let volume = FilesystemVolume::open(dir.path().into()).unwrap();
+    let volume = FilesystemVolume::open(dir.path().join("store")).unwrap();
     let guard = volume.mutation([1; 32]).await;
     assert!(
         tokio::time::timeout(
@@ -278,8 +284,32 @@ async fn hash_mutations_serialize_without_blocking_other_hashes() {
 #[test]
 fn volume_has_one_mutation_owner() {
     let dir = tempfile::tempdir().unwrap();
-    let first = FilesystemVolume::open(dir.path().into()).unwrap();
-    assert!(FilesystemVolume::open(dir.path().into()).is_err());
+    let first = FilesystemVolume::open(dir.path().join("store")).unwrap();
+    assert!(FilesystemVolume::open(dir.path().join("store")).is_err());
     drop(first);
-    assert!(FilesystemVolume::open(dir.path().into()).is_ok());
+    assert!(FilesystemVolume::open(dir.path().join("store")).is_ok());
+}
+
+#[cfg(not(target_os = "linux"))]
+#[test]
+#[ignore = "child harness"]
+fn storage_epoch_child() {
+    let output = std::env::var_os("MANGA_EPOCH_TEST_OUTPUT").expect("child output required");
+    std::fs::write(output, manga_node::platform_fs::storage_epoch().unwrap()).unwrap();
+}
+#[cfg(not(target_os = "linux"))]
+#[test]
+fn storage_epoch_changes_in_new_process() -> Result<()> {
+    let dir = tempfile::tempdir()?;
+    let output = dir.path().join("epoch");
+    let status = std::process::Command::new(std::env::current_exe()?)
+        .args(["--exact", "storage_epoch_child", "--ignored"])
+        .env("MANGA_EPOCH_TEST_OUTPUT", &output)
+        .status()?;
+    ensure!(status.success(), "child epoch test failed");
+    ensure!(
+        std::fs::read(output)? != manga_node::platform_fs::storage_epoch()?,
+        "process epoch reused"
+    );
+    Ok(())
 }

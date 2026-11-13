@@ -127,7 +127,7 @@ async fn tls_proxy_preserves_external_auth_scope_without_trusting_forwarded_head
     std::fs::write(
         &config,
         serde_json::to_vec(
-            &json!({"bind":format!("127.0.0.1:{api_port}"),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
+            &json!({"bind":format!("127.0.0.1:{api_port}"),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
         )?,
     )?;
     let node_log = std::fs::File::create(dir.path().join("node.log"))?;

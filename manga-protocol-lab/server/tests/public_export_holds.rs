@@ -78,6 +78,7 @@ async fn external_reader_holds_block_refund_and_repair() -> Result<()> {
     let backend = Backend::open(
         repo.clone(),
         BackendConfig {
+            engine: manga_node::backend::BackendEngine::Strfry,
             binary: project.join("vendor/strfry/strfry"),
             data_dir: dir.path().join("backend"),
             timeout_seconds: 3,

@@ -56,36 +56,20 @@ fn read_regular(path: &Path, limit: usize) -> Result<Vec<u8>> {
         meta.is_file() && !meta.file_type().is_symlink() && meta.len() <= limit as u64,
         "outbox regular file/size required"
     );
-    let file = File::open(path)?;
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::MetadataExt;
-        let opened = file.metadata()?;
-        ensure!(
-            opened.dev() == meta.dev() && opened.ino() == meta.ino(),
-            "outbox file changed"
-        );
-    }
+    let file = crate::private_files::open_private(path)?;
     let mut bytes = vec![];
     file.take(limit as u64 + 1).read_to_end(&mut bytes)?;
     ensure!(bytes.len() <= limit, "outbox read budget");
     Ok(bytes)
 }
 fn new_file(path: &Path, bytes: &[u8]) -> Result<()> {
-    let mut options = File::options();
-    options.write(true).create_new(true);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::OpenOptionsExt;
-        options.mode(0o600);
-    }
-    let mut file = options.open(path)?;
+    let mut file = crate::private_files::create_private(path)?;
     file.write_all(bytes)?;
     file.sync_all()?;
     Ok(())
 }
 fn synced_dir(path: &Path) -> Result<()> {
-    File::open(path)?.sync_all()?;
+    crate::platform_fs::sync_directory(path)?;
     Ok(())
 }
 impl Outbox {
@@ -99,7 +83,18 @@ impl Outbox {
                 && (1..=32).contains(&limits.attempts),
             "outbox limits"
         );
+        #[cfg(unix)]
         fs::create_dir_all(root)?;
+        #[cfg(windows)]
+        {
+            if !root.exists() {
+                if let Some(parent) = root.parent().filter(|p| !p.as_os_str().is_empty()) {
+                    fs::create_dir_all(parent)?;
+                }
+                crate::private_files::create_private_directory(root)?;
+            }
+            crate::private_files::verify_private_directory(root)?;
+        }
         let meta = fs::symlink_metadata(root)?;
         ensure!(
             meta.is_dir() && !meta.file_type().is_symlink(),
@@ -658,16 +653,17 @@ mod tests {
     #[test]
     fn durable_reopen_attempt_fences_and_terminal_outcomes() -> Result<()> {
         let dir = tempfile::tempdir()?;
+        let outbox_path = dir.path().join("outbox");
         let bundle = bundle();
-        let mut outbox = Outbox::open(dir.path(), OutboxLimits::default())?;
-        assert!(Outbox::open(dir.path(), OutboxLimits::default()).is_err());
+        let mut outbox = Outbox::open(&outbox_path, OutboxLimits::default())?;
+        assert!(Outbox::open(&outbox_path, OutboxLimits::default()).is_err());
         let id = outbox.enqueue(&bundle, vec![recipient()], vec![])?;
         assert_eq!(outbox.enqueue(&bundle, vec![recipient()], vec![])?, id);
         assert!(outbox.load("../state.json").is_err());
         let first = outbox.begin(&id)?;
         assert_eq!(first[0].1, 1);
         drop(outbox);
-        let mut outbox = Outbox::open(dir.path(), OutboxLimits::default())?;
+        let mut outbox = Outbox::open(&outbox_path, OutboxLimits::default())?;
         assert_eq!(outbox.bundle(&id)?.event().id, id);
         let next = outbox.begin(&id)?;
         assert_eq!(next[0].1, 2);
@@ -687,14 +683,14 @@ mod tests {
         )?);
         assert!(outbox.begin(&id)?.is_empty());
         drop(outbox);
-        let outbox = Outbox::open(dir.path(), OutboxLimits::default())?;
+        let outbox = Outbox::open(&outbox_path, OutboxLimits::default())?;
         assert!(matches!(
             outbox.load(&id)?.recipients[0].outcome,
             Some(Outcome::Accepted { .. })
         ));
         let root_hash = crate::library_manifest::pointer(bundle.event())?;
         fs::write(
-            dir.path().join(&id).join(hex::encode(root_hash)),
+            outbox_path.join(&id).join(hex::encode(root_hash)),
             b"corrupt",
         )?;
         assert!(outbox.bundle(&id).is_err());
@@ -714,8 +710,9 @@ mod tests {
     #[test]
     fn killed_process_releases_lock_and_preserves_pending_attempt() -> Result<()> {
         let dir = tempfile::tempdir()?;
+        let outbox_path = dir.path().join("outbox");
         let bundle = bundle();
-        let mut outbox = Outbox::open(dir.path(), OutboxLimits::default())?;
+        let mut outbox = Outbox::open(&outbox_path, OutboxLimits::default())?;
         let id = outbox.enqueue(&bundle, vec![recipient()], vec![])?;
         drop(outbox);
         let mut child = std::process::Command::new(std::env::current_exe()?)
@@ -725,22 +722,22 @@ mod tests {
                 "--nocapture",
                 "--ignored",
             ])
-            .env("MANGA_OUTBOX_TEST_PATH", dir.path())
+            .env("MANGA_OUTBOX_TEST_PATH", &outbox_path)
             .env("MANGA_OUTBOX_TEST_ID", &id)
             .stdout(std::process::Stdio::null())
             .stderr(std::process::Stdio::null())
             .spawn()?;
         let started = std::time::Instant::now();
-        while !dir.path().join("child-ready").exists()
+        while !outbox_path.join("child-ready").exists()
             && started.elapsed() < std::time::Duration::from_secs(5)
         {
             std::thread::sleep(std::time::Duration::from_millis(10));
         }
-        let ready = dir.path().join("child-ready").exists();
+        let ready = outbox_path.join("child-ready").exists();
         let _ = child.kill();
         let _ = child.wait();
         assert!(ready, "child must persist before crash");
-        let mut outbox = Outbox::open(dir.path(), OutboxLimits::default())?;
+        let mut outbox = Outbox::open(&outbox_path, OutboxLimits::default())?;
         assert_eq!(outbox.load(&id)?.recipients[0].attempts, 1);
         assert!(outbox.load(&id)?.recipients[0].outcome.is_none());
         assert_eq!(outbox.begin(&id)?[0].1, 2);
@@ -749,6 +746,7 @@ mod tests {
     #[test]
     fn completed_retention_never_prunes_unfinished_jobs() -> Result<()> {
         let dir = tempfile::tempdir()?;
+        let outbox_path = dir.path().join("outbox");
         let first = bundle();
         let root = first
             .objects()
@@ -764,7 +762,7 @@ mod tests {
         )
         .unwrap();
         let second = SaveBundle::validate(event, root, BTreeMap::new())?;
-        let mut outbox = Outbox::open(dir.path(), OutboxLimits::default())?;
+        let mut outbox = Outbox::open(&outbox_path, OutboxLimits::default())?;
         let old = outbox.enqueue(&first, vec![recipient()], vec![])?;
         let attempt = outbox.begin(&old)?[0].1;
         outbox.record(
@@ -792,8 +790,8 @@ mod tests {
             },
         )?;
         fs::rename(
-            dir.path().join(&pending),
-            dir.path().join(format!(".completed-{pending}")),
+            outbox_path.join(&pending),
+            outbox_path.join(format!(".completed-{pending}")),
         )?;
         assert_eq!(outbox.prune_completed(0)?, 1);
         assert!(outbox.load(&pending).is_err());
@@ -803,9 +801,10 @@ mod tests {
     #[test]
     fn storage_attempt_and_binding_budgets_are_enforced() -> Result<()> {
         let dir = tempfile::tempdir()?;
+        let outbox_path = dir.path().join("outbox");
         let bundle = bundle();
         let mut box1 = Outbox::open(
-            dir.path(),
+            &outbox_path,
             OutboxLimits {
                 jobs: 1,
                 bytes: 131_073,
@@ -815,7 +814,7 @@ mod tests {
         assert!(box1.enqueue(&bundle, vec![recipient()], vec![]).is_err());
         drop(box1);
         let mut box1 = Outbox::open(
-            dir.path(),
+            &outbox_path,
             OutboxLimits {
                 attempts: 1,
                 ..OutboxLimits::default()

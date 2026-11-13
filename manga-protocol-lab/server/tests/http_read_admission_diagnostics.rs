@@ -170,7 +170,7 @@ impl Fixture {
                     "physical_bytes": 1048576, "staging_bytes": 1048576,
                     "max_blob_bytes": 262144
                 },
-                "backend": {"binary": root.join("vendor/strfry/strfry"),
+                "backend": {"engine":"strfry","binary": root.join("vendor/strfry/strfry"),
                     "data_dir": dir.join("backend"), "map_bytes": 67108864}
             }))?,
         )?;

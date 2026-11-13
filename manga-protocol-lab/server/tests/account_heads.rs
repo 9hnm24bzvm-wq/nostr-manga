@@ -108,6 +108,7 @@ async fn account_replacement_authority_and_ordering() -> Result<()> {
     let backend = manga_node::backend::Backend::open(
         repo.clone(),
         manga_node::backend::BackendConfig {
+            engine: manga_node::backend::BackendEngine::Strfry,
             binary: root.join("vendor/strfry/strfry"),
             data_dir: dir.path().into(),
             timeout_seconds: 10,

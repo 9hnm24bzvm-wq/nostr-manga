@@ -1,20 +1,34 @@
 //! Versioned immutable imports and explicit local deletion barriers. Raw kind5
-//! never enters strfry. A subprocess-held flock survives death of the API parent.
+//! never enters the projection. Native PostgreSQL is the portable default;
+//! the legacy strfry adapter remains explicitly selectable on Linux.
 use crate::{auth::Event, db::Repository};
 use anyhow::{Context, Result, ensure};
 use serde::Deserialize;
 use serde_json::{Value, json};
-use std::{collections::HashSet, path::PathBuf, process::Stdio, sync::Arc, time::Duration};
+#[cfg(target_os = "linux")]
+use std::process::Stdio;
+use std::{collections::HashSet, path::PathBuf, sync::Arc, time::Duration};
+#[cfg(target_os = "linux")]
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct BackendConfig {
+    #[serde(default)]
+    pub engine: BackendEngine,
+    #[serde(default)]
     pub binary: PathBuf,
     pub data_dir: PathBuf,
     #[serde(default = "deadline")]
     pub timeout_seconds: u64,
     #[serde(default = "map_bytes")]
     pub map_bytes: u64,
+}
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum BackendEngine {
+    #[default]
+    Native,
+    Strfry,
 }
 fn deadline() -> u64 {
     10
@@ -23,6 +37,7 @@ fn map_bytes() -> u64 {
     1024 * 1024 * 1024
 }
 pub struct Backend {
+    engine: BackendEngine,
     repo: Repository,
     binary: PathBuf,
     config: PathBuf,
@@ -32,10 +47,12 @@ pub struct Backend {
 }
 // Observe the leader without reaping, retaining its process-group identity
 // until actual descendants terminate. The command task also joins every pipe.
+#[cfg(target_os = "linux")]
 struct OwnedCommand {
     child: tokio::process::Child,
     embedded: bool,
 }
+#[cfg(target_os = "linux")]
 impl OwnedCommand {
     async fn wait_terminal(&mut self) -> Result<std::process::ExitStatus> {
         if !self.embedded {
@@ -103,6 +120,7 @@ impl OwnedCommand {
         Ok(status)
     }
 }
+#[cfg(target_os = "linux")]
 impl Drop for OwnedCommand {
     fn drop(&mut self) {
         if self.embedded
@@ -116,6 +134,7 @@ impl Drop for OwnedCommand {
         }
     }
 }
+#[cfg(target_os = "linux")]
 fn process_group_running(group: i32) -> Result<bool> {
     for entry in std::fs::read_dir("/proc")? {
         let entry = entry?;
@@ -159,10 +178,16 @@ impl Backend {
             "backend timeout outside 1..60 seconds"
         );
         ensure!(cfg.map_bytes >= 16 * 1024 * 1024, "backend map too small");
-        ensure!(
-            cfg.binary.is_absolute() && cfg.binary.is_file(),
-            "explicit installed strfry binary required"
-        );
+        if cfg.engine == BackendEngine::Strfry {
+            ensure!(
+                cfg!(target_os = "linux"),
+                "strfry adapter requires Linux; use native engine"
+            );
+            ensure!(
+                cfg.binary.is_absolute() && cfg.binary.is_file(),
+                "explicit installed strfry binary required"
+            );
+        }
         std::fs::create_dir_all(&cfg.data_dir)?;
         let root = cfg.data_dir.canonicalize()?;
         let owner = std::fs::OpenOptions::new()
@@ -174,7 +199,10 @@ impl Backend {
         owner
             .try_lock()
             .context("backend directory already has a projection owner")?;
-        let identity_path = root.join(".projection-id");
+        let identity_path = root.join(match cfg.engine {
+            BackendEngine::Native => ".native-projection-id",
+            BackendEngine::Strfry => ".projection-id",
+        });
         let target: [u8; 32] = if identity_path.exists() {
             hex::decode(std::fs::read_to_string(&identity_path)?.trim())?
                 .try_into()
@@ -189,7 +217,7 @@ impl Backend {
                 .open(&identity_path)?;
             file.write_all(hex::encode(target).as_bytes())?;
             file.sync_all()?;
-            std::fs::File::open(&root)?.sync_all()?;
+            crate::platform_fs::sync_directory(&root)?;
             target
         };
         let mut client = repo.pool.get().await?;
@@ -209,22 +237,25 @@ impl Backend {
         );
         tx.commit().await?;
         drop(client);
-        let db = root.join("strfry");
-        std::fs::create_dir_all(&db)?;
-        let path = db.to_str().context("backend path is not UTF8")?;
-        ensure!(
-            !path.contains(['"', '\\', '\n', '\r']),
-            "unsupported backend path quoting"
-        );
         let config = root.join("strfry.conf");
-        std::fs::write(
-            &config,
-            format!(
-                "db = \"{path}\"\ndbParams {{ mapsize = {} }}\nevents {{ maxEventSize = 1048576 rejectEventsOlderThanSeconds = 4294967295 }}\nrelay {{ nofiles = 0 bind = \"127.0.0.1\" }}\n",
-                cfg.map_bytes
-            ),
-        )?;
+        if cfg.engine == BackendEngine::Strfry {
+            let db = root.join("strfry");
+            std::fs::create_dir_all(&db)?;
+            let path = db.to_str().context("backend path is not UTF8")?;
+            ensure!(
+                !path.contains(['"', '\\', '\n', '\r']),
+                "unsupported backend path quoting"
+            );
+            std::fs::write(
+                &config,
+                format!(
+                    "db = \"{path}\"\ndbParams {{ mapsize = {} }}\nevents {{ maxEventSize = 1048576 rejectEventsOlderThanSeconds = 4294967295 }}\nrelay {{ nofiles = 0 bind = \"127.0.0.1\" }}\n",
+                    cfg.map_bytes
+                ),
+            )?;
+        }
         Ok(Arc::new(Self {
+            engine: cfg.engine,
             repo,
             binary: cfg.binary,
             config,
@@ -233,7 +264,8 @@ impl Backend {
             _owner: owner,
         }))
     }
-    async fn command(
+    #[cfg(target_os = "linux")]
+    async fn strfry_command(
         &self,
         args: &[String],
         input: Vec<u8>,
@@ -312,6 +344,106 @@ impl Backend {
         } else {
             operation.await
         }
+    }
+
+    async fn command(
+        &self,
+        client: &mut deadpool_postgres::ClientWrapper,
+        args: &[String],
+        input: Vec<u8>,
+        output_limit: usize,
+    ) -> Result<Vec<u8>> {
+        if self.engine == BackendEngine::Strfry {
+            #[cfg(target_os = "linux")]
+            {
+                return self.strfry_command(args, input, output_limit).await;
+            }
+            #[cfg(not(target_os = "linux"))]
+            anyhow::bail!("strfry adapter requires Linux");
+        }
+        // The actual detached, advisory-locked session must do every projection
+        // write. Never reconnect via the pool after that session loses its lock.
+        let tx = client.transaction().await?;
+        tx.query_one(
+            "SELECT set_config('statement_timeout', $1, true)",
+            &[&format!("{}s", self.timeout)],
+        )
+        .await?;
+        let mut output = Vec::new();
+        match args.first().map(String::as_str) {
+            Some("import") => {
+                ensure!(input.len() <= 1048577, "projection input budget exceeded");
+                for line in input
+                    .split(|byte| *byte == b'\n')
+                    .filter(|line| !line.is_empty())
+                {
+                    ensure!(line.len() <= 1048576, "event exceeds backend bound");
+                    let event: Event = serde_json::from_slice(line)?;
+                    event.verify().map_err(anyhow::Error::msg)?;
+                    ensure!(
+                        matches!(
+                            event.kind,
+                            0 | 3 | 10002 | 11999 | 1 | 7 | 1111 | 1001 | 1002
+                        ),
+                        "event requires a guarded projection workflow"
+                    );
+                    let kind = i64::from(event.kind);
+                    let created_at = i64::try_from(event.created_at)?;
+                    if matches!(event.kind, 0 | 3 | 10002 | 11999) {
+                        if let Some(current) = tx.query_opt("SELECT id,created_at FROM native_backend_events WHERE pubkey=$1 AND kind=$2", &[&event.pubkey, &kind]).await? {
+                            let id: String = current.get(0);
+                            let timestamp: i64 = current.get(1);
+                            // NIP-01: newest timestamp, then lexically lowest ID.
+                            if timestamp > created_at || (timestamp == created_at && id <= event.id) {
+                                continue;
+                            }
+                        }
+                        tx.execute(
+                            "DELETE FROM native_backend_events WHERE pubkey=$1 AND kind=$2",
+                            &[&event.pubkey, &kind],
+                        )
+                        .await?;
+                    }
+                    let payload = serde_json::to_value(&event)?;
+                    tx.execute("INSERT INTO native_backend_events(id,pubkey,kind,created_at,payload) VALUES($1,$2,$3,$4,$5) ON CONFLICT(id) DO NOTHING", &[&event.id,&event.pubkey,&kind,&created_at,&payload]).await?;
+                }
+            }
+            Some("delete") | Some("scan") => {
+                let filter: Value =
+                    serde_json::from_str(args.last().context("projection filter missing")?)?;
+                let ids = filter
+                    .get("ids")
+                    .and_then(Value::as_array)
+                    .context("projection IDs missing")?
+                    .iter()
+                    .map(|id| {
+                        id.as_str()
+                            .filter(|id| crate::auth::valid_hash(id))
+                            .map(str::to_owned)
+                            .context("invalid projection ID")
+                    })
+                    .collect::<Result<Vec<_>>>()?;
+                ensure!(ids.len() <= 64, "projection ID budget exceeded");
+                if args[0] == "delete" {
+                    tx.execute(
+                        "DELETE FROM native_backend_events WHERE id=ANY($1)",
+                        &[&ids],
+                    )
+                    .await?;
+                } else {
+                    for row in tx.query("SELECT payload FROM native_backend_events WHERE id=ANY($1) ORDER BY id", &[&ids]).await? {
+                        let payload: Value = row.get(0);
+                        let bytes = serde_json::to_vec(&payload)?;
+                        ensure!(output.len().saturating_add(bytes.len()).saturating_add(1) <= output_limit, "backend output budget exceeded");
+                        output.extend_from_slice(&bytes);
+                        output.push(b'\n');
+                    }
+                }
+            }
+            _ => anyhow::bail!("unsupported projection operation"),
+        }
+        tx.commit().await?;
+        Ok(output)
     }
 
     async fn batch(&self, client: &mut deadpool_postgres::ClientWrapper) -> Result<usize> {
@@ -398,6 +530,7 @@ impl Backend {
         }
         if !input.is_empty() {
             self.command(
+                client,
                 &["import".into(), "--debounce-millis=0".into()],
                 input,
                 65536,
@@ -406,6 +539,7 @@ impl Backend {
         }
         if !deleted.is_empty() {
             self.command(
+                client,
                 &[
                     "delete".into(),
                     "--filter".into(),
@@ -418,6 +552,7 @@ impl Backend {
         }
         let output = self
             .command(
+                client,
                 &["scan".into(), json!({"ids":ids}).to_string()],
                 vec![],
                 2 * 1048576,
@@ -516,7 +651,7 @@ impl Backend {
     pub async fn run(self: Arc<Self>) {
         loop {
             if let Err(error) = self.session().await {
-                tracing::warn!(error=%error,"strfry projection pending; retrying");
+                tracing::warn!(error=%error,"projection pending; retrying");
             }
             tokio::time::sleep(Duration::from_secs(1)).await;
         }
@@ -538,7 +673,7 @@ impl Backend {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, target_os = "linux"))]
 mod owned_command_tests {
     use super::*;
     #[tokio::test]
@@ -578,3 +713,7 @@ mod owned_command_tests {
         assert!(owned.child.id().is_none());
     }
 }
+
+#[cfg(test)]
+#[path = "backend_native_tests.rs"]
+mod native_tests;

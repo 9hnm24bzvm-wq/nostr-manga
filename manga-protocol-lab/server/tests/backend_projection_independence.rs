@@ -167,6 +167,7 @@ async fn imports_and_four_retirements_progress_before_a_fifth_author_unlocks() -
     let backend = Backend::open(
         repo.clone(),
         BackendConfig {
+            engine: manga_node::backend::BackendEngine::Strfry,
             binary: root_path.join("vendor/strfry/strfry"),
             data_dir: dir.path().join("backend"),
             timeout_seconds: 10,

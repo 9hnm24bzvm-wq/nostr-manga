@@ -128,7 +128,7 @@ impl Fixture {
                 },
                 "sync_worker_enabled": false,
                 "backend": {
-                    "binary": root.join("vendor/strfry/strfry"),
+                    "engine":"strfry","binary": root.join("vendor/strfry/strfry"),
                     "data_dir": directory.join("backend"), "map_bytes": 67108864
                 },
                 "storage": {

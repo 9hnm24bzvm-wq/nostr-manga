@@ -209,7 +209,7 @@ async fn approved_three_node_transfer_and_fallback() -> Result<()> {
         std::fs::write(
             &config,
             serde_json::to_vec(
-                &json!({"bind":format!("127.0.0.1:{}",19510+index),"base_url":origins[index],"service_key_file":key,"admin_pubkey":public(1+index as u8),"database_plaintext_local":true,"discovery_private_overrides":origins,"backend":{"binary":binary,"data_dir":base.join("backend"),"timeout_seconds":3,"map_bytes":67108864},"storage":{"path":base.join("originals"),"volume":format!("peer{index}"),"physical_bytes":2097152,"staging_bytes":2097152,"max_blob_bytes":262144}}),
+                &json!({"bind":format!("127.0.0.1:{}",19510+index),"base_url":origins[index],"service_key_file":key,"admin_pubkey":public(1+index as u8),"database_plaintext_local":true,"discovery_private_overrides":origins,"backend":{"engine":"strfry","binary":binary,"data_dir":base.join("backend"),"timeout_seconds":3,"map_bytes":67108864},"storage":{"path":base.join("originals"),"volume":format!("peer{index}"),"physical_bytes":2097152,"staging_bytes":2097152,"max_blob_bytes":262144}}),
             )?,
         )?;
         let log = std::fs::File::create(base.join("node.log"))?;

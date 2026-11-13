@@ -110,7 +110,7 @@ async fn admitted_review_is_private_one_off_atomic_and_expiring() -> Result<()> 
     std::fs::write(
         &path,
         serde_json::to_vec(
-            &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"submission_review":{"account_pending":2,"instance_pending":4,"account_bytes":32768,"instance_bytes":65536,"submission_bytes":16384,"objects":8,"lifetime_seconds":3600,"records":32},"storage":{"path":dir.path().join("originals"),"volume":"review","physical_bytes":2097152,"staging_bytes":65536,"max_blob_bytes":262144},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
+            &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"submission_review":{"account_pending":2,"instance_pending":4,"account_bytes":32768,"instance_bytes":65536,"submission_bytes":16384,"objects":8,"lifetime_seconds":3600,"records":32},"storage":{"path":dir.path().join("originals"),"volume":"review","physical_bytes":2097152,"staging_bytes":65536,"max_blob_bytes":262144},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
         )?,
     )?;
     let spawn = || -> Result<Node> {

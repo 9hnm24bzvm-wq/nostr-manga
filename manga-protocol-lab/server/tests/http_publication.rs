@@ -128,7 +128,7 @@ async fn complete_originals_before_publication() -> Result<()> {
     std::fs::write(
         &config,
         serde_json::to_vec(
-            &json!({"bind":"127.0.0.1:19507","base_url":ORIGIN,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"backend":{"binary":binary,"data_dir":backend,"timeout_seconds":2,"map_bytes":67108864},"storage":{"path":dir.path().join("originals"),"volume":"chapterfixture","physical_bytes":2097152,"staging_bytes":8192,"max_blob_bytes":262144,"formats":["image/png"]}}),
+            &json!({"bind":"127.0.0.1:19507","base_url":ORIGIN,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"backend":{"engine":"strfry","binary":binary,"data_dir":backend,"timeout_seconds":2,"map_bytes":67108864},"storage":{"path":dir.path().join("originals"),"volume":"chapterfixture","physical_bytes":2097152,"staging_bytes":8192,"max_blob_bytes":262144,"formats":["image/png"]}}),
         )?,
     )?;
     let start = || -> Result<Node> {

@@ -44,7 +44,7 @@ async fn personal_metadata_http_authority() -> Result<()> {
     std::fs::write(
         &config,
         serde_json::to_vec(
-            &json!({"bind":"127.0.0.1:19516","base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"library_concurrency":{"request_slots":256,"processing_slots":16,"commit_slots":8},"storage":{"path":dir.path().join("objects"),"volume":"libraryhttp","physical_bytes":10000000,"staging_bytes":10000000,"max_blob_bytes":1000000,"upload_slots":4},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
+            &json!({"bind":"127.0.0.1:19516","base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"library_concurrency":{"request_slots":256,"processing_slots":16,"commit_slots":8},"storage":{"path":dir.path().join("objects"),"volume":"libraryhttp","physical_bytes":10000000,"staging_bytes":10000000,"max_blob_bytes":1000000,"upload_slots":4},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
         )?,
     )?;
     let log = std::fs::File::create(dir.path().join("node.log"))?;

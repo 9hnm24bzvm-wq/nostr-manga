@@ -606,9 +606,11 @@ impl PeerSync {
             if let Ok((intent, existing)) = self.storage.snapshot(hash, self.storage.owner()).await
                 && existing.len() as u64 == page.size
             {
-                crate::node::spawn_blocking_owned_scope(move || manifest::validate_image(&existing, &page))
-                    .await?
-                    .map_err(|_| Reject::invalid(Why::Original))?;
+                crate::node::spawn_blocking_owned_scope(move || {
+                    manifest::validate_image(&existing, &page)
+                })
+                .await?
+                .map_err(|_| Reject::invalid(Why::Original))?;
                 self.repo.hold_staging_original(operation, &intent).await?;
                 continue;
             }

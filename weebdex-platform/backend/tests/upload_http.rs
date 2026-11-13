@@ -1921,7 +1921,7 @@ async fn signed_upload_projection_journey(materialize: bool, shared_signer: Opti
                 "database_plaintext_local":true, "read_policy":"public",
                 "cors_origins":[ORIGIN], "sync_worker_enabled":false,
                 "auto_approve_publication_deletions":false,
-                "backend":{"binary":binary,"data_dir":shared_projection.map(std::path::Path::to_path_buf).unwrap_or_else(|| f._storage.path().join("real-projection")),
+                "backend":{"engine":"strfry","binary":binary,"data_dir":shared_projection.map(std::path::Path::to_path_buf).unwrap_or_else(|| f._storage.path().join("real-projection")),
                     "map_bytes":64*1024*1024,"timeout_seconds":5}
             }))
         } else { None },

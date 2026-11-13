@@ -128,8 +128,10 @@ impl LibraryObjects {
         } else {
             trace.count("root_decode_reused", 0);
             Arc::new(
-                crate::node::spawn_blocking_owned_scope(move || Root::decode(&bytes, &Limits::default()))
-                    .await??,
+                crate::node::spawn_blocking_owned_scope(move || {
+                    Root::decode(&bytes, &Limits::default())
+                })
+                .await??,
             )
         };
         let owner = self.storage.owner();

@@ -593,7 +593,7 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
         backend: None,
         storage: json!({"path":f._storage.path().join("source-originals"),"volume":"BridgeOriginalsFixture","physical_bytes":64*1024*1024,"staging_bytes":64*1024*1024,"max_blob_bytes":8*1024*1024,"upload_slots":2}),
         native_node: Some(
-            json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":publisher,"database_plaintext_local":true,"read_policy":"public","cors_origins":[ORIGIN],"sync_worker_enabled":false,"auto_approve_publication_deletions":false,"backend":{"binary":binary,"data_dir":f._storage.path().join("real-projection"),"map_bytes":64*1024*1024,"timeout_seconds":5}}),
+            json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":publisher,"database_plaintext_local":true,"read_policy":"public","cors_origins":[ORIGIN],"sync_worker_enabled":false,"auto_approve_publication_deletions":false,"backend":{"engine":"strfry","binary":binary,"data_dir":f._storage.path().join("real-projection"),"map_bytes":64*1024*1024,"timeout_seconds":5}}),
         ),
     };
     let mut config = (*f.state.config).clone();
@@ -1425,7 +1425,7 @@ async fn accepted_upload_rollback_recovers_source_media_covers_revocation_and_em
         .install_visibility_function()
         .await
         .unwrap();
-    peer_state.protocol.configure_publication(OperatorRuntimeConfig{operator_key_file:peer_key.clone(),expected_publisher:peer_publisher.clone(),storage_owner:peer_publisher.clone(),storage_holder:peer_publisher.clone(),storage:json!({"path":peer_storage.path().join("originals"),"volume":"BridgeDistinctPeer","physical_bytes":64*1024*1024,"staging_bytes":64*1024*1024,"max_blob_bytes":8*1024*1024,"upload_slots":2}),group_keys_dir:None,backend:None,native_node:Some(json!({"bind":peer_bind.to_string(),"base_url":peer_origin,"service_key_file":peer_key,"admin_pubkey":peer_publisher,"database_plaintext_local":true,"read_policy":"public","cors_origins":[ORIGIN],"sync_worker_enabled":false,"auto_approve_publication_deletions":false,"backend":{"binary":binary,"data_dir":peer_storage.path().join("real-projection"),"map_bytes":64*1024*1024,"timeout_seconds":5}}))}).await.unwrap();
+    peer_state.protocol.configure_publication(OperatorRuntimeConfig{operator_key_file:peer_key.clone(),expected_publisher:peer_publisher.clone(),storage_owner:peer_publisher.clone(),storage_holder:peer_publisher.clone(),storage:json!({"path":peer_storage.path().join("originals"),"volume":"BridgeDistinctPeer","physical_bytes":64*1024*1024,"staging_bytes":64*1024*1024,"max_blob_bytes":8*1024*1024,"upload_slots":2}),group_keys_dir:None,backend:None,native_node:Some(json!({"bind":peer_bind.to_string(),"base_url":peer_origin,"service_key_file":peer_key,"admin_pubkey":peer_publisher,"database_plaintext_local":true,"read_policy":"public","cors_origins":[ORIGIN],"sync_worker_enabled":false,"auto_approve_publication_deletions":false,"backend":{"engine":"strfry","binary":binary,"data_dir":peer_storage.path().join("real-projection"),"map_bytes":64*1024*1024,"timeout_seconds":5}}))}).await.unwrap();
     let peer_runtime = peer_state.protocol.publication_runtime().await.unwrap();
     let mut peer_listener = ListenerGuard(peer_runtime.start_native_listener().await.unwrap());
     let peer = Fixture {

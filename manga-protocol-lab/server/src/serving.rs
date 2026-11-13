@@ -89,6 +89,7 @@ async fn bounded_line(output: &mut BufReader<ChildStdout>) -> Result<serde_json:
 impl ManagedServing {
     /// Recover the prior family and hold the runtime lock without binding any listener.
     pub async fn prepare(config: ServingConfig) -> Result<Self> {
+        crate::platform_fs::require_external_serving()?;
         ensure!(
             (1..=16).contains(&config.workers) && (1..=120).contains(&config.shutdown_seconds),
             "serving worker/deadline bounds"

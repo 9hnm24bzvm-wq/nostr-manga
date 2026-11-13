@@ -69,6 +69,17 @@ pub fn path_hash(path: &str) -> Result<&str> {
     }
     Ok(hash)
 }
+// Saturation keeps arbitrarily large valid suffix/end numbers clamped to the
+// representation; an oversized start is still unsatisfiable. Never accept signs.
+fn range_decimal(value: &str) -> Result<usize> {
+    ensure!(
+        !value.is_empty() && value.bytes().all(|b| b.is_ascii_digit()),
+        "invalid range number"
+    );
+    Ok(value.bytes().fold(0usize, |n, b| {
+        n.saturating_mul(10).saturating_add((b - b'0') as usize)
+    }))
+}
 /// One satisfiable byte range. Unsupported multipart requests are ignored.
 pub fn range(header: Option<&str>, len: usize) -> Result<Option<(usize, usize)>> {
     let Some(header) = header else {
@@ -85,15 +96,15 @@ pub fn range(header: Option<&str>, len: usize) -> Result<Option<(usize, usize)>>
         .ok_or_else(|| anyhow::anyhow!("invalid range"))?;
     ensure!(len > 0, "empty blob");
     if start.is_empty() {
-        let suffix = end.parse::<usize>()?;
+        let suffix = range_decimal(end)?;
         ensure!(suffix > 0, "empty suffix");
         return Ok(Some((len.saturating_sub(suffix), len - 1)));
     }
-    let start = start.parse::<usize>()?;
+    let start = range_decimal(start)?;
     let end = if end.is_empty() {
         len - 1
     } else {
-        end.parse::<usize>()?.min(len - 1)
+        range_decimal(end)?.min(len - 1)
     };
     ensure!(start < len && start <= end, "unsatisfiable range");
     Ok(Some((start, end)))

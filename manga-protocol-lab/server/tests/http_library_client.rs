@@ -171,7 +171,7 @@ async fn first_acceptance_retry_supersession_and_cold_recovery() -> Result<()> {
         std::fs::write(
             &path,
             serde_json::to_vec(
-                &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":dir.path().join(format!("objects{n}")),"volume":format!("client{n}"),"physical_bytes":134217728,"staging_bytes":134217728,"max_blob_bytes":1000000},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join(format!("backend{n}")),"map_bytes":67108864}}),
+                &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":dir.path().join(format!("objects{n}")),"volume":format!("client{n}"),"physical_bytes":134217728,"staging_bytes":134217728,"max_blob_bytes":1000000},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join(format!("backend{n}")),"map_bytes":67108864}}),
             )?,
         )?;
         origins.push(origin);

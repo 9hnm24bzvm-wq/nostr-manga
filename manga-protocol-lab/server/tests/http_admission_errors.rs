@@ -49,7 +49,7 @@ async fn database_faults_are_retryable_not_role_denials() -> Result<()> {
     std::fs::write(
         &cfg,
         serde_json::to_vec(
-            &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"read_policy":"admitted","read_admission":{"overall":4,"wait_ms":200,"catalogue":{"active":4,"waiting":0},"library_head":{"active":4,"waiting":0},"live":{"active":4,"waiting":0}},"database_plaintext_local":true,"sync_worker_enabled":false,"group_keys_dir":dir.path().join("groups"),"storage":{"path":dir.path().join("objects"),"volume":"groupprofile","physical_bytes":1048576,"staging_bytes":1048576,"max_blob_bytes":262144},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
+            &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"read_policy":"admitted","read_admission":{"overall":4,"wait_ms":200,"catalogue":{"active":4,"waiting":0},"library_head":{"active":4,"waiting":0},"live":{"active":4,"waiting":0}},"database_plaintext_local":true,"sync_worker_enabled":false,"group_keys_dir":dir.path().join("groups"),"storage":{"path":dir.path().join("objects"),"volume":"groupprofile","physical_bytes":1048576,"staging_bytes":1048576,"max_blob_bytes":262144},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
         )?,
     )?;
     let log = std::fs::File::create(dir.path().join("node.log"))?;

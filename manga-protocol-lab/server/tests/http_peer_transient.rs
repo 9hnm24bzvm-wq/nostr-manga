@@ -363,7 +363,7 @@ async fn transient_sources_are_retryable_without_replaying_writes() -> Result<()
                 "read_admission":{"overall":4,"wait_ms":200,"catalogue":{"active":1,"waiting":0},"library_head":{"active":1,"waiting":0},"live":{"active":1,"waiting":0}},
                 "sync_worker_enabled":n==1,"discovery_private_overrides":origins,
                 "storage":{"path":base.join("objects"),"volume":format!("transient{n}"),"physical_bytes":2097152,"staging_bytes":2097152,"max_blob_bytes":262144},
-                "backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":base.join("backend"),"map_bytes":67108864}
+                "backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":base.join("backend"),"map_bytes":67108864}
             }))?,
         )?;
         nodes.push(Some(spawn(&config, database)?));

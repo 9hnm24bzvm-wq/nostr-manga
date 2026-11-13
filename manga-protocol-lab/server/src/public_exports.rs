@@ -26,6 +26,7 @@ impl Repository {
         mime: &str,
         root_identity: Id,
     ) -> Result<bool> {
+        crate::platform_fs::require_external_serving()?;
         ensure!(
             matches!(mime, "image/png" | "image/jpeg" | "image/webp"),
             "only original image MIME types may export"

@@ -154,7 +154,7 @@ async fn real_node_recovers_unlinked_library_without_early_or_double_refund() ->
         .unwrap();
     let config = dir.path().join("node.json");
     let origin = "http://127.0.0.1:19518";
-    let mut settings = json!({"bind":"127.0.0.1:19518","base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"library_reclamation":true,"staging_reclamation":false,"storage":{"path":dir.path().join("store"),"volume":"gccrash","physical_bytes":10000000,"staging_bytes":10000000,"max_blob_bytes":1000000,"upload_slots":4},"backend":{"binary":project.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}});
+    let mut settings = json!({"bind":"127.0.0.1:19518","base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"library_reclamation":true,"staging_reclamation":false,"storage":{"path":dir.path().join("store"),"volume":"gccrash","physical_bytes":10000000,"staging_bytes":10000000,"max_blob_bytes":1000000,"upload_slots":4},"backend":{"engine":"strfry","binary":project.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}});
     std::fs::write(&config, serde_json::to_vec(&settings)?)?;
     let spawn = || -> Result<Node> {
         let log = std::fs::OpenOptions::new()

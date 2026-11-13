@@ -103,6 +103,7 @@ async fn retired_library_history_is_pruned_in_bounded_transactions() -> Result<(
     let backend = Backend::open(
         repo.clone(),
         BackendConfig {
+            engine: manga_node::backend::BackendEngine::Strfry,
             binary: project.join("vendor/strfry/strfry"),
             data_dir: dir.path().join("backend"),
             timeout_seconds: 10,

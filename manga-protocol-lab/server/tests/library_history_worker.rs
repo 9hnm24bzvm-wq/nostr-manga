@@ -103,6 +103,7 @@ async fn background_history_worker_continues_full_bounded_pages_without_idle_del
     let backend = Backend::open(
         repo.clone(),
         BackendConfig {
+            engine: manga_node::backend::BackendEngine::Strfry,
             binary: project.join("vendor/strfry/strfry"),
             data_dir: dir.path().join("backend"),
             timeout_seconds: 10,

@@ -91,7 +91,7 @@ async fn characterize_missing_contracts() -> Result<()> {
     std::fs::write(
         &config,
         serde_json::to_vec(
-            &json!({"bind":bind,"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":dir.path().join("node-store"),"volume":"nodeaudit","physical_bytes":1048576,"staging_bytes":1048576,"max_blob_bytes":1048576},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
+            &json!({"bind":bind,"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":dir.path().join("node-store"),"volume":"nodeaudit","physical_bytes":1048576,"staging_bytes":1048576,"max_blob_bytes":1048576},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
         )?,
     )?;
     let log = std::fs::File::create(dir.path().join("node.log"))?;

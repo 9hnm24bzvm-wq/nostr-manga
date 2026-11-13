@@ -130,7 +130,7 @@ async fn mixed_versions_and_policy_rejections_do_not_cancel_other_items() -> Res
         std::fs::write(
             &path,
             serde_json::to_vec(
-                &json!({"bind":format!("127.0.0.1:{}",19585+n),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1+n as u8),"database_plaintext_local":true,"sync_worker_enabled":n==1,"storage":{"path":base.join("objects"),"volume":format!("skip{n}"),"physical_bytes":4194304,"staging_bytes":4194304,"max_blob_bytes":1048576,"formats":if n==0{vec!["image/png","image/jpeg"]}else{vec!["image/png"]}},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":base.join("backend"),"map_bytes":67108864}}),
+                &json!({"bind":format!("127.0.0.1:{}",19585+n),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1+n as u8),"database_plaintext_local":true,"sync_worker_enabled":n==1,"storage":{"path":base.join("objects"),"volume":format!("skip{n}"),"physical_bytes":4194304,"staging_bytes":4194304,"max_blob_bytes":1048576,"formats":if n==0{vec!["image/png","image/jpeg"]}else{vec!["image/png"]}},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":base.join("backend"),"map_bytes":67108864}}),
             )?,
         )?;
         let log = std::fs::File::create(base.join("node.log"))?;

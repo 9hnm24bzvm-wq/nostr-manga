@@ -85,7 +85,7 @@ async fn durable_job_resumes_after_real_worker_crash() -> Result<()> {
         std::fs::write(
             &path,
             serde_json::to_vec(
-                &json!({"bind":format!("127.0.0.1:{}",19530+n),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1+n as u8),"database_plaintext_local":true,"sync_worker_enabled":false,"backend":{"binary":binary,"data_dir":base.join("backend"),"timeout_seconds":3,"map_bytes":67108864},"storage":{"path":base.join("originals"),"volume":format!("sync{n}"),"physical_bytes":2097152,"staging_bytes":65536,"max_blob_bytes":262144}}),
+                &json!({"bind":format!("127.0.0.1:{}",19530+n),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1+n as u8),"database_plaintext_local":true,"sync_worker_enabled":false,"backend":{"engine":"strfry","binary":binary,"data_dir":base.join("backend"),"timeout_seconds":3,"map_bytes":67108864},"storage":{"path":base.join("originals"),"volume":format!("sync{n}"),"physical_bytes":2097152,"staging_bytes":65536,"max_blob_bytes":262144}}),
             )?,
         )?;
         paths.push(path);

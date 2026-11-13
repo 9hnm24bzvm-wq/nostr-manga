@@ -75,7 +75,7 @@ async fn forwarded_identity_does_not_authorize_modified_or_replayed_metadata() -
         std::fs::write(
             &config,
             serde_json::to_vec(
-                &json!({"bind":format!("127.0.0.1:{}",19561+i),"base_url":origins[i],"service_key_file":key,"admin_pubkey":public(1+i as u8),"database_plaintext_local":true,"storage":{"path":base.join("objects"),"volume":format!("proof{i}"),"physical_bytes":1048576,"staging_bytes":1048576,"max_blob_bytes":262144},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":base.join("backend"),"map_bytes":67108864}}),
+                &json!({"bind":format!("127.0.0.1:{}",19561+i),"base_url":origins[i],"service_key_file":key,"admin_pubkey":public(1+i as u8),"database_plaintext_local":true,"storage":{"path":base.join("objects"),"volume":format!("proof{i}"),"physical_bytes":1048576,"staging_bytes":1048576,"max_blob_bytes":262144},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":base.join("backend"),"map_bytes":67108864}}),
             )?,
         )?;
         let log = std::fs::File::create(base.join("node.log"))?;

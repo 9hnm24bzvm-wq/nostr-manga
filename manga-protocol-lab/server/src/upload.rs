@@ -796,6 +796,7 @@ impl UploadStore {
         self: &Arc<Self>,
         key: crate::storage::BlobKey,
     ) -> Result<bool> {
+        crate::platform_fs::require_external_serving()?;
         let this = self.clone();
         let mutation = self.volume.background_mutation(key.hash).await;
         crate::node::spawn_owned_scope(async move {
@@ -824,6 +825,7 @@ impl UploadStore {
         self: &Arc<Self>,
         serving: Arc<crate::serving::ManagedServing>,
     ) -> Result<usize> {
+        crate::platform_fs::require_external_serving()?;
         ensure!(
             serving.owner() == self.owner && serving.public_path() == self.volume.public_path(),
             "serving family is bound to another owner/public tree"
@@ -907,6 +909,7 @@ impl UploadStore {
 
 impl UploadStore {
     pub async fn configure_public_export_role(&self) -> Result<()> {
+        crate::platform_fs::require_external_serving()?;
         self.repo
             .configure_public_export_role(self.owner, &self.name, self.volume.identity())
             .await
@@ -916,6 +919,7 @@ impl UploadStore {
     pub async fn reconcile_public_exports(
         self: &Arc<Self>,
     ) -> Result<crate::export_queue::ExportStep> {
+        crate::platform_fs::require_external_serving()?;
         let guard = self.export_work_lock.clone().lock_owned().await;
         let this = self.clone();
         crate::node::spawn_owned_scope(async move {

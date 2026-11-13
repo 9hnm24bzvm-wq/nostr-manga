@@ -47,23 +47,15 @@ fn identity(text: &str) -> Result<Id> {
         .context("invalid configured protocol identity")
 }
 fn load_signer(path: &Path, expected: &str) -> Result<Zeroizing<String>> {
-    let metadata =
-        std::fs::symlink_metadata(path).context("configured publication signer is unavailable")?;
-    ensure!(
-        metadata.file_type().is_file() && metadata.len() <= 128,
-        "invalid publication signer file"
-    );
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        ensure!(
-            metadata.permissions().mode() & 0o077 == 0,
-            "publication signer must not be group/world accessible"
-        );
-    }
-    let raw = Zeroizing::new(
-        std::fs::read_to_string(path).context("configured publication signer is unavailable")?,
-    );
+    use std::io::Read;
+    let file = manga_node::private_files::open_private(path)
+        .context("configured publication signer is unavailable")?;
+    ensure!(file.metadata()?.len() <= 128, "invalid publication signer file");
+    let mut raw = Zeroizing::new(String::new());
+    file.take(129)
+        .read_to_string(&mut raw)
+        .context("configured publication signer is unavailable")?;
+    ensure!(raw.len() <= 128, "invalid publication signer file");
     let secret = Zeroizing::new(raw.trim().to_owned());
     let event = auth::sign(&secret, 1, vec![], String::new())
         .map_err(|_| anyhow::anyhow!("invalid publication signer"))?;
@@ -628,6 +620,25 @@ mod tests {
         assert!(load_signer(&missing, &"00".repeat(32)).is_err());
         assert!(!missing.exists());
     }
+    #[test]
+    fn private_signer_is_read_from_verified_handle_and_bounded() {
+        use std::io::Write;
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("synthetic-test-only.key");
+        let secret = "11".repeat(32);
+        let public = auth::sign(&secret, 1, vec![], String::new()).unwrap().pubkey;
+        let mut file = manga_node::private_files::create_private(&path).unwrap();
+        file.write_all(secret.as_bytes()).unwrap();
+        file.sync_all().unwrap();
+        drop(file);
+        assert!(load_signer(&path, &public).is_ok());
+        assert!(load_signer(&path, &"00".repeat(32)).is_err());
+        let mut file = std::fs::OpenOptions::new().append(true).open(&path).unwrap();
+        file.write_all(&[b' '; 129]).unwrap();
+        drop(file);
+        assert!(load_signer(&path, &public).is_err());
+    }
+
     #[cfg(unix)]
     #[test]
     fn unsafe_permissions_and_wrong_identity_are_rejected() {

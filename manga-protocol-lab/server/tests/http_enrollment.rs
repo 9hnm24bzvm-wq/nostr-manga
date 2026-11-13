@@ -184,7 +184,7 @@ async fn closed_default_scoped_enrollment_limits_and_revocation() -> Result<()> 
     let key = dir.path().join("service.key");
     write_key(&key, 11)?;
     let cfg = dir.path().join("node.json");
-    let mut config = json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"read_policy":"admitted","database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":dir.path().join("objects"),"volume":"enrollment","physical_bytes":10485760,"staging_bytes":10485760,"max_blob_bytes":1048576},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}});
+    let mut config = json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"read_policy":"admitted","database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":dir.path().join("objects"),"volume":"enrollment","physical_bytes":10485760,"staging_bytes":10485760,"max_blob_bytes":1048576},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}});
     std::fs::write(&cfg, serde_json::to_vec(&config)?)?;
     let mut node = Some(start(&cfg, &dsn, &dir.path().join("node.log"))?);
     let c = reqwest::Client::builder()

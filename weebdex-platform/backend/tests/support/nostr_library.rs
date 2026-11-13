@@ -253,7 +253,7 @@ impl Fixture {
             group_keys_dir: None,
             backend: None,
             native_node: Some(
-                json!({"bind":native_bind.to_string(),"base_url":native_origin,"service_key_file":service,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"peer_discovery_enabled":false,"staging_reclamation":false,"backend":{"binary":std::env::var_os("MANGA_TEST_STRFRY_BINARY").map(std::path::PathBuf::from).unwrap_or_else(||root.join("manga-protocol-lab/vendor/strfry/strfry")),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
+                json!({"bind":native_bind.to_string(),"base_url":native_origin,"service_key_file":service,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"peer_discovery_enabled":false,"staging_reclamation":false,"backend":{"engine":"strfry","binary":std::env::var_os("MANGA_TEST_STRFRY_BINARY").map(std::path::PathBuf::from).unwrap_or_else(||root.join("manga-protocol-lab/vendor/strfry/strfry")),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
             ),
         };
         if !backend {

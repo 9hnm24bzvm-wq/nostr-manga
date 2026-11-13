@@ -111,7 +111,7 @@ async fn reviewed_export_import_is_retryable_and_portable() -> Result<()> {
         std::fs::write(
             &config,
             serde_json::to_vec(
-                &json!({"bind":format!("127.0.0.1:{}",19520+i),"base_url":origins[i],"service_key_file":key,"admin_pubkey":public(1+i as u8),"database_plaintext_local":true,"group_keys_dir":base.join("group-keys"),"storage":{"path":base.join("objects"),"volume":format!("import{i}"),"physical_bytes":8388608,"staging_bytes":2097152,"max_blob_bytes":1048576},"backend":{"binary":project.join("vendor/strfry/strfry"),"data_dir":base.join("backend"),"map_bytes":67108864}}),
+                &json!({"bind":format!("127.0.0.1:{}",19520+i),"base_url":origins[i],"service_key_file":key,"admin_pubkey":public(1+i as u8),"database_plaintext_local":true,"group_keys_dir":base.join("group-keys"),"storage":{"path":base.join("objects"),"volume":format!("import{i}"),"physical_bytes":8388608,"staging_bytes":2097152,"max_blob_bytes":1048576},"backend":{"engine":"strfry","binary":project.join("vendor/strfry/strfry"),"data_dir":base.join("backend"),"map_bytes":67108864}}),
             )?,
         )?;
         let log = std::fs::File::create(base.join("node.log"))?;

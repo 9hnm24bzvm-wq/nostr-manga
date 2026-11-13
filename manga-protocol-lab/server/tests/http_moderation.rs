@@ -162,7 +162,7 @@ async fn local_moderation_and_orphaned_projection() -> Result<()> {
     std::fs::write(
         &config,
         serde_json::to_vec(
-            &json!({"bind":"127.0.0.1:19509","base_url":ORIGIN,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"backend":{"binary":wrapper,"data_dir":backend,"timeout_seconds":10,"map_bytes":67108864},"storage":{"path":dir.path().join("originals"),"volume":"moderation","physical_bytes":2097152,"staging_bytes":65536,"max_blob_bytes":262144}}),
+            &json!({"bind":"127.0.0.1:19509","base_url":ORIGIN,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"backend":{"engine":"strfry","binary":wrapper,"data_dir":backend,"timeout_seconds":10,"map_bytes":67108864},"storage":{"path":dir.path().join("originals"),"volume":"moderation","physical_bytes":2097152,"staging_bytes":65536,"max_blob_bytes":262144}}),
         )?,
     )?;
     let spawn = || -> Result<Node> {

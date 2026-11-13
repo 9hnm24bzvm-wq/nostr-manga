@@ -72,12 +72,20 @@ pub struct StoredImage {
 /// Persist directory entries on the supported local filesystem, not only file
 /// contents. Failure is propagated before a database reference may commit.
 pub(crate) async fn sync_directory(path: &Path) -> ApiResult<()> {
-    fs::File::open(path)
+    let path = path.to_owned();
+    tokio::task::spawn_blocking(move || manga_node::platform_fs::sync_directory(&path))
         .await
-        .map_err(io_error)?
-        .sync_all()
-        .await
+        .map_err(|_| ApiError::unavailable())?
         .map_err(io_error)
+}
+/// Create private data with its ACL/permissions in place before any bytes exist.
+async fn create_private_file(path: &Path) -> ApiResult<fs::File> {
+    let path = path.to_owned();
+    let file = tokio::task::spawn_blocking(move || manga_node::private_files::create_private(&path))
+        .await
+        .map_err(|_| ApiError::unavailable())?
+        .map_err(|_| ApiError::unavailable())?;
+    Ok(fs::File::from_std(file))
 }
 pub(crate) async fn ensure_directory(path: &Path) -> ApiResult<()> {
     let absolute = if path.is_absolute() {
@@ -108,24 +116,36 @@ pub(crate) async fn ensure_directory(path: &Path) -> ApiResult<()> {
 }
 /// A paused writer can resume after maintenance removed its pre-lock name.
 /// Never continue writing an unlinked inode or attach an object without its
-/// actual locked journal entry. Runtime storage requires local Unix semantics.
+/// actual locked journal entry. Compare opened objects using native identity.
 pub(crate) fn verify_named_lease(file: &std::fs::File, path: &Path) -> ApiResult<()> {
-    #[cfg(unix)]
+    let metadata = std::fs::symlink_metadata(path).map_err(io_error)?;
+    if !metadata.is_file() || metadata.file_type().is_symlink() {
+        return Err(ApiError::unavailable());
+    }
+    let mut options = std::fs::File::options();
+    options.read(true);
+    #[cfg(windows)]
     {
-        use std::os::unix::fs::MetadataExt;
-        let held = file.metadata().map_err(io_error)?;
-        let named = std::fs::symlink_metadata(path).map_err(io_error)?;
-        if held.is_file()
-            && named.is_file()
-            && held.dev() == named.dev()
-            && held.ino() == named.ino()
-        {
-            return Ok(());
+        use std::os::windows::fs::OpenOptionsExt;
+        options.custom_flags(0x00200000); // FILE_FLAG_OPEN_REPARSE_POINT
+    }
+    let named = options.open(path).map_err(io_error)?;
+    let metadata = named.metadata().map_err(io_error)?;
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::MetadataExt;
+        if metadata.file_attributes() & 0x400 != 0 {
+            return Err(ApiError::unavailable());
         }
     }
-    #[cfg(not(unix))]
-    let _ = (file, path);
-    Err(ApiError::unavailable())
+    if file.metadata().map_err(io_error)?.is_file()
+        && metadata.is_file()
+        && manga_node::platform_fs::same_file(file, &named).map_err(io_error)?
+    {
+        Ok(())
+    } else {
+        Err(ApiError::unavailable())
+    }
 }
 impl StoredImage {
     /// This key-only intent is durable BEFORE any final object entry exists.
@@ -139,13 +159,7 @@ impl StoredImage {
         ensure_directory(&directory).await?;
         let marker = directory.join(&self.key);
         self.pending = Some(marker.clone());
-        let journal = OpenOptions::new()
-            .read(true)
-            .write(true)
-            .create_new(true)
-            .open(&marker)
-            .await
-            .map_err(io_error)?;
+        let journal = create_private_file(&marker).await?;
         let journal = journal.into_std().await;
         journal.try_lock().map_err(|_| ApiError::unavailable())?;
         verify_named_lease(&journal, &marker)?;
@@ -162,7 +176,12 @@ impl StoredImage {
     /// An uncertain COMMIT retains this already-durable original and intent.
     pub async fn protect_commit(&mut self, root: &Path) -> ApiResult<()> {
         self.prepare_write(root).await?;
-        let file = fs::File::open(&self.path).await.map_err(io_error)?;
+        let file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .open(&self.path)
+            .await
+            .map_err(io_error)?;
         let metadata = file.metadata().await.map_err(io_error)?;
         if !metadata.is_file() || metadata.len() != self.bytes as u64 {
             return Err(ApiError::unavailable());
@@ -235,12 +254,7 @@ pub(crate) async fn store_encoded(
         journal_lease: None,
     };
     image.prepare_write(root).await?;
-    let mut output = OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&image.path)
-        .await
-        .map_err(io_error)?;
+    let mut output = create_private_file(&image.path).await?;
     output.write_all(bytes).await.map_err(io_error)?;
     output.sync_all().await.map_err(io_error)?;
     sync_directory(image.path.parent().expect("object parent")).await?;
@@ -252,7 +266,7 @@ impl Drop for StoredImage {
         if !self.retained {
             let _ = std::fs::remove_file(&self.path);
             if let Some(directory) = self.path.parent() {
-                let _ = std::fs::File::open(directory).and_then(|file| file.sync_all());
+                let _ = manga_node::platform_fs::sync_directory(directory);
             }
             // Keep the durable intent even after best-effort unlink: a canceled
             // Tokio filesystem job can finish later, and Drop cannot certify
@@ -317,12 +331,7 @@ async fn receive_with_derivatives(
     let temporary = root.join("temporary");
     ensure_directory(&temporary).await?;
     let mut tmp = TempGuard(temporary.join(key()), None);
-    let mut file = OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&tmp.0)
-        .await
-        .map_err(io_error)?;
+    let mut file = create_private_file(&tmp.0).await?;
     let lease = file.into_std().await;
     lease.try_lock().map_err(|_| ApiError::unavailable())?;
     verify_named_lease(&lease, &tmp.0)?;
@@ -428,12 +437,7 @@ async fn receive_with_derivatives(
             journal_lease: None,
         };
         guard.prepare_write(root).await?;
-        let mut out = OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(&guard.path)
-            .await
-            .map_err(io_error)?;
+        let mut out = create_private_file(&guard.path).await?;
         out.write_all(&encoded).await.map_err(io_error)?;
         out.sync_all().await.map_err(io_error)?;
         sync_directory(guard.path.parent().expect("object parent")).await?;
@@ -715,6 +719,19 @@ mod tests {
             contender.try_lock().is_ok(),
             "Process/owner lease release permits recovery"
         );
+    }
+
+    #[test]
+    fn named_lease_identity_is_checked_on_every_platform() {
+        let root = tempfile::tempdir().unwrap();
+        let path = root.path().join("lease");
+        let other = root.path().join("other");
+        std::fs::write(&path, b"same bytes").unwrap();
+        std::fs::write(&other, b"same bytes").unwrap();
+        let held = std::fs::File::open(&path).unwrap();
+        assert!(verify_named_lease(&held, &path).is_ok());
+        assert!(verify_named_lease(&held, &other).is_err());
+        assert!(verify_named_lease(&held, &root.path().join("missing")).is_err());
     }
 
     #[cfg(unix)]

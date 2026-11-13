@@ -187,7 +187,7 @@ async fn mixed_routes_share_download_capacity_without_bypassing_policy_or_upload
     std::fs::write(
         &cfg,
         serde_json::to_vec(
-            &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"group_keys_dir":dir.path().join("groups"),"storage":{"path":dir.path().join("objects"),"volume":"groupprofile","physical_bytes":536870912,"staging_bytes":536870912,"max_blob_bytes":67108864,"upload_slots":1},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
+            &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"group_keys_dir":dir.path().join("groups"),"storage":{"path":dir.path().join("objects"),"volume":"groupprofile","physical_bytes":536870912,"staging_bytes":536870912,"max_blob_bytes":67108864,"upload_slots":1},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}}),
         )?,
     )?;
     let log = std::fs::File::create(dir.path().join("node.log"))?;

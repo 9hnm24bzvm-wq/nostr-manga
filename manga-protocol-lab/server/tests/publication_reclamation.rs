@@ -77,6 +77,7 @@ async fn only_acknowledged_approved_last_references_release_originals() -> Resul
     let backend = Backend::open(
         repo.clone(),
         BackendConfig {
+            engine: manga_node::backend::BackendEngine::Strfry,
             binary: project.join("vendor/strfry/strfry"),
             data_dir: dir.path().join("backend"),
             timeout_seconds: 3,

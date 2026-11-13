@@ -182,7 +182,7 @@ async fn durable_real_strfry_projection() -> Result<()> {
     std::fs::write(
         &config,
         serde_json::to_vec(
-            &json!({"bind":"127.0.0.1:19505","base_url":"http://127.0.0.1:19505","service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"backend":{"binary":wrapper,"data_dir":backend,"timeout_seconds":2,"map_bytes":67108864}}),
+            &json!({"bind":"127.0.0.1:19505","base_url":"http://127.0.0.1:19505","service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"backend":{"engine":"strfry","binary":wrapper,"data_dir":backend,"timeout_seconds":2,"map_bytes":67108864}}),
         )?,
     )?;
     let spawn = || -> Result<Node> {

@@ -88,7 +88,7 @@ async fn catalogue_and_original_cover_survive_replication_and_deletion() -> Resu
         std::fs::write(
             &cfg,
             serde_json::to_vec(
-                &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join(format!("backend{n}")),"map_bytes":67108864},"storage":{"path":dir.path().join(format!("originals{n}")),"volume":format!("catalogue{n}"),"physical_bytes":2097152,"staging_bytes":262144,"max_blob_bytes":262144}}),
+                &json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join(format!("backend{n}")),"map_bytes":67108864},"storage":{"path":dir.path().join(format!("originals{n}")),"volume":format!("catalogue{n}"),"physical_bytes":2097152,"staging_bytes":262144,"max_blob_bytes":262144}}),
             )?,
         )?;
         let log = std::fs::File::create(dir.path().join(format!("node{n}.log")))?;

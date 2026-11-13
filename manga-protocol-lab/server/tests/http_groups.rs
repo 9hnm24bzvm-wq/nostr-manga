@@ -166,7 +166,7 @@ async fn member_roles_signing_restart_and_key_only_recovery() -> Result<()> {
         std::fs::write(
             &path,
             serde_json::to_vec(
-                &json!({"bind":format!("127.0.0.1:{}",19540+n),"base_url":origin,"service_key_file":key,"admin_pubkey":public(if n==0{1}else{5}),"database_plaintext_local":true,"group_keys_dir":groups,"backend":{"binary":binary,"data_dir":base.join("backend"),"timeout_seconds":3,"map_bytes":67108864},"storage":{"path":base.join("originals"),"volume":format!("groups{n}"),"physical_bytes":2097152,"staging_bytes":65536,"max_blob_bytes":262144}}),
+                &json!({"bind":format!("127.0.0.1:{}",19540+n),"base_url":origin,"service_key_file":key,"admin_pubkey":public(if n==0{1}else{5}),"database_plaintext_local":true,"group_keys_dir":groups,"backend":{"engine":"strfry","binary":binary,"data_dir":base.join("backend"),"timeout_seconds":3,"map_bytes":67108864},"storage":{"path":base.join("originals"),"volume":format!("groups{n}"),"physical_bytes":2097152,"staging_bytes":65536,"max_blob_bytes":262144}}),
             )?,
         )?;
         paths.push(path);

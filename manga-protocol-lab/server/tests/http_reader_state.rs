@@ -186,7 +186,7 @@ async fn profiles_lists_progress_and_signed_mutations_follow_current_public_libr
     let key = dir.path().join("service.key");
     write_key(&key, 11)?;
     let path = dir.path().join("node.json");
-    let mut cfg = json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":dir.path().join("objects"),"volume":"readerstate","physical_bytes":16777216,"staging_bytes":16777216,"max_blob_bytes":1000000},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}});
+    let mut cfg = json!({"bind":bind.to_string(),"base_url":origin,"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"storage":{"path":dir.path().join("objects"),"volume":"readerstate","physical_bytes":16777216,"staging_bytes":16777216,"max_blob_bytes":1000000},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":dir.path().join("backend"),"map_bytes":67108864}});
     std::fs::write(&path, serde_json::to_vec(&cfg)?)?;
     let mut node = Some(start(&path, &dsn, &dir.path().join("node.log"))?);
     let c = reqwest::Client::builder()

@@ -66,6 +66,7 @@ async fn guarded_history_filters_and_notifications() -> Result<()> {
     let backend = Backend::open(
         repo.clone(),
         BackendConfig {
+            engine: manga_node::backend::BackendEngine::Strfry,
             binary: project.join("vendor/strfry/strfry"),
             data_dir: directory.path().into(),
             timeout_seconds: 10,

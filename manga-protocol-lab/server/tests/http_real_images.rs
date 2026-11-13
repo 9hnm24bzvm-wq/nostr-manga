@@ -352,7 +352,7 @@ async fn met_originals_survive_source_loss_with_progress_and_immutable_reupload(
         let key = runtime.join(format!("key-{index}"));
         write_key(&key, 11 + index as u8)?;
         let config = runtime.join(format!("node-{index}.json"));
-        let mut value = json!({"bind":addresses[index],"base_url":origins[index],"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"discovery_private_overrides":origins,"storage":{"path":runtime.join(format!("originals-{index}")),"volume":format!("realimages{index}"),"formats":["image/jpeg"],"physical_bytes":67108864,"staging_bytes":16777216,"max_blob_bytes":2097152},"backend":{"binary":root.join("vendor/strfry/strfry"),"data_dir":runtime.join(format!("backend-{index}")),"timeout_seconds":5,"map_bytes":67108864}});
+        let mut value = json!({"bind":addresses[index],"base_url":origins[index],"service_key_file":key,"admin_pubkey":public(1),"database_plaintext_local":true,"sync_worker_enabled":false,"discovery_private_overrides":origins,"storage":{"path":runtime.join(format!("originals-{index}")),"volume":format!("realimages{index}"),"formats":["image/jpeg"],"physical_bytes":67108864,"staging_bytes":16777216,"max_blob_bytes":2097152},"backend":{"engine":"strfry","binary":root.join("vendor/strfry/strfry"),"data_dir":runtime.join(format!("backend-{index}")),"timeout_seconds":5,"map_bytes":67108864}});
         if index == 1 {
             value["public_serving"] = json!({"enabled":true,"helper":root.join("src/serving_supervisor.py"),"nginx":root.join("vendor/nginx-1.28.0/objs/nginx"),"bind":image_bind,"shutdown_seconds":1});
         }

@@ -469,7 +469,7 @@ impl SyncRunner {
                     });
                     // Cancellation of the sync parent must stop its private
                     // renewal loop; its actual termination stays lifecycle-owned.
-                    let _heartbeat_owner=crate::node::AbortChildOnDrop(heartbeat.abort_handle());
+                    let _heartbeat_owner = crate::node::AbortChildOnDrop(heartbeat.abort_handle());
                     let outcome =
                         tokio::time::timeout(Duration::from_secs(600), self.quantum(&work))
                             .await

@@ -1,0 +1,75 @@
+name: Portable Rust builds
+on:
+  workflow_dispatch:
+  push:
+    branches: [cross-platform-rust]
+permissions:
+  contents: read
+concurrency:
+  group: portable-build-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native:
+    if: github.repository == '9hnm24bzvm-wq/nostr-manga' && github.event.repository.private == false
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    env:
+      CARGO_BUILD_JOBS: 2
+      CARGO_TERM_COLOR: never
+      CARGO_TARGET_DIR: ${{ github.workspace }}/target/portable
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+      - name: Record native environment
+        shell: bash
+        run: |
+          python -c 'import platform; print(platform.platform()); print(platform.machine())'
+          whoami
+          if [[ "$RUNNER_OS" == Windows ]]; then MSYS_NO_PATHCONV=1 whoami.exe /groups; fi
+      - name: Install pinned Rust toolchain
+        shell: bash
+        run: rustup toolchain install 1.90.0 --profile minimal
+      - name: Core unit tests
+        shell: bash
+        run: cargo +1.90.0 test --locked --manifest-path manga-protocol-lab/server/Cargo.toml --lib
+      - name: Portable storage tests
+        shell: bash
+        run: cargo +1.90.0 test --locked --manifest-path manga-protocol-lab/server/Cargo.toml --test platform_fs_portable --test storage_lifecycle
+      - name: Prepare macOS PostgreSQL tools
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          brew list postgresql@17 >/dev/null 2>&1 || brew install postgresql@17
+          echo "PGBIN=$(brew --prefix postgresql@17)/bin" >> "$GITHUB_ENV"
+      - name: Start isolated PostgreSQL fixture
+        shell: bash
+        run: python scripts/ci/portable-postgres.py start
+      - name: Native projection acceptance
+        shell: bash
+        run: python scripts/ci/portable-postgres.py test
+      - name: Stop only owned PostgreSQL fixture
+        if: always()
+        shell: bash
+        run: python scripts/ci/portable-postgres.py stop
+      - name: Platform unit tests
+        shell: bash
+        run: cargo +1.90.0 test --locked --manifest-path weebdex-platform/backend/Cargo.toml --lib
+      - name: Build production executables
+        shell: bash
+        run: |
+          cargo +1.90.0 build --locked --release --manifest-path manga-protocol-lab/server/Cargo.toml --bin manga-node --bin manga-key-tool
+          cargo +1.90.0 build --locked --release --manifest-path weebdex-platform/backend/Cargo.toml --bin weebdex-platform --bin weebdex-admin
+      - name: Package and smoke-test executables
+        shell: bash
+        run: python scripts/ci/package-portable.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-${{ matrix.os }}-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
